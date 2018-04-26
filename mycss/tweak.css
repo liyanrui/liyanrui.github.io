@@ -15,6 +15,9 @@ p, blockquote, blockquote p {
     line-height: 1.8;
     text-align: justify;
 }
+
+blockquote { background: #ccc;}
+
 p.par-step {
     text-align:center;
     color: #66cc14;
