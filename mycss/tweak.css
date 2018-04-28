@@ -5,14 +5,14 @@ h1, h2, h3, h4 {
     padding: 0.5em 0 0.5em 0;
 }
 
-h1 {font-size: 20px;}
-h2 {font-size: 18px;}
-h3 {font-size: 16px;}
-h4 {font-size: 14px;}
+h1 {font-size: 22px;}
+h2 {font-size: 20px;}
+h3 {font-size: 18px;}
+h4 {font-size: 16px;}
 
 p, blockquote, blockquote p {
     font-size: 14px;
-    line-height: 1.8;
+    line-height: 1.6;
     text-align: justify;
 }
 
