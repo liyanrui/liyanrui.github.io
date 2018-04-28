@@ -10,11 +10,17 @@ h2 {font-size: 20px;}
 h3 {font-size: 18px;}
 h4 {font-size: 16px;}
 
-p, blockquote, blockquote p {
+p, blockquote p {
     font-size: 14px;
     line-height: 1.7;
     margin-top: 1em;
     margin-bottom: 1em;
+    text-align: justify;
+}
+
+blockquote {
+    font-size: 14px;
+    line-height: 1.7;
     text-align: justify;
 }
 
