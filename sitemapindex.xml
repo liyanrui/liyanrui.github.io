@@ -15,11 +15,11 @@
  </sitemap>
  <sitemap>
   <loc>/galleries/demo/rss.xml</loc>
-  <lastmod>2018-04-28T02:20:00Z</lastmod>
+  <lastmod>2018-04-28T02:42:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/galleries/rss.xml</loc>
-  <lastmod>2018-04-28T02:20:00Z</lastmod>
+  <lastmod>2018-04-28T02:42:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/rss.xml</loc>
@@ -27,6 +27,6 @@
  </sitemap>
  <sitemap>
   <loc>/sitemap.xml</loc>
-  <lastmod>2018-04-28T02:20:00Z</lastmod>
+  <lastmod>2018-04-28T02:42:00Z</lastmod>
  </sitemap>
 </sitemapindex>
