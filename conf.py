@@ -207,11 +207,11 @@ TIMEZONE = "Asia/Shanghai"
 
 # Date format used to display post dates. (translatable)
 # (str used by datetime.datetime.strftime)
-# DATE_FORMAT = '%Y-%m-%d %H:%M'
+DATE_FORMAT = '%m-%d'
 
 # Date format used to display post dates, if local dates are used. (translatable)
 # (str used by moment.js)
-# JS_DATE_FORMAT = 'YYYY-MM-DD HH:mm'
+JS_DATE_FORMAT = 'MM-DD'
 
 # Date fanciness.
 #
@@ -943,7 +943,7 @@ LICENSE = ""
 # A small copyright notice for the page footer (in HTML).
 # (translatable)
 
-CONTENT_FOOTER = '若有问题，可通过邮件 {email} 联系我。'
+CONTENT_FOOTER = '我的邮箱：{email}'
 
 # Things that will be passed to CONTENT_FOOTER.format().  This is done
 # for translatability, as dicts are not formattable.  Nikola will
