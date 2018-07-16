@@ -9,10 +9,6 @@
 .. type: text
 -->
 
-<div>
-
-<img src="/images/cikada.jpg" style="width:100px;" />
-
 # 蝉蜕
 
 死了很多次<br/>
@@ -42,4 +38,3 @@
 谁会真的在意<br/>
 我的夏天<br/>
 如此短暂
-</div>
