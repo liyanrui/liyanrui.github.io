@@ -7,7 +7,7 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-07-16T01:36:00Z</lastmod>
+  <lastmod>2018-07-16T01:37:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
@@ -51,11 +51,11 @@
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-07-16T01:36:00Z</lastmod>
+  <lastmod>2018-07-16T01:37:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/hibernate.html</loc>
-  <lastmod>2018-07-16T01:36:00Z</lastmod>
+  <lastmod>2018-07-16T01:37:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/nikola-tips.html</loc>

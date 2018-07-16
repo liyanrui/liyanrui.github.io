@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Mon, 16 Jul 2018 01:36:14 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>冬眠</title><link>/posts/hibernate.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;h2&gt;蝉蜕&lt;/h2&gt;
-&lt;p&gt;&lt;img src="/images/cikada.jpg" width="400px"&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Mon, 16 Jul 2018 01:37:56 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>冬眠</title><link>/posts/hibernate.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;h2&gt;蝉蜕&lt;/h2&gt;
+&lt;p&gt;&lt;img src="/images/cikada.jpg" style="width:400px; float:right;"&gt;&lt;/p&gt;
 &lt;p&gt;死了很多次&lt;br&gt;
 流出黑色的血&lt;br&gt;
 因为僵硬而被卡住&lt;br&gt;
@@ -12,7 +12,7 @@
 在林间鸣叫&lt;br&gt;
 求偶&lt;br&gt;
 生子&lt;br&gt;
-逃避鸟类的追杀&amp;lt;&lt;/p&gt;
+逃避鸟类的追杀&lt;/p&gt;
 &lt;p&gt;等我老去&lt;br&gt;
 坠地&lt;br&gt;
 黄叶埋葬秋天&lt;br&gt;
