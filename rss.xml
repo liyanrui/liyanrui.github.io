@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Mon, 16 Jul 2018 01:40:06 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>冬眠</title><link>/posts/hibernate.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;img src="/images/cikada.jpg" style="width:400px; float:right;"&gt;&lt;/p&gt;
-&lt;h2&gt;蝉蜕&lt;/h2&gt;
-&lt;p&gt;死了很多次&lt;br&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Mon, 16 Jul 2018 01:41:27 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>冬眠</title><link>/posts/hibernate.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;
+
+&lt;img src="/images/cikada.jpg" style="width:400px; float:right;"&gt;
+
+# 蝉蜕
+
+死了很多次&lt;br&gt;
 流出黑色的血&lt;br&gt;
 因为僵硬而被卡住&lt;br&gt;
 要脱去这件丑陋的衣裳&lt;br&gt;
 我的肢体&lt;br&gt;
-必须变得极为柔软&lt;/p&gt;
-&lt;p&gt;脱掉了衣裳&lt;br&gt;
+必须变得极为柔软
+
+脱掉了衣裳&lt;br&gt;
 我可以飞&lt;br&gt;
 在林间鸣叫&lt;br&gt;
 求偶&lt;br&gt;
 生子&lt;br&gt;
-逃避鸟类的追杀&lt;/p&gt;
-&lt;p&gt;等我老去&lt;br&gt;
+逃避鸟类的追杀
+
+等我老去&lt;br&gt;
 坠地&lt;br&gt;
 黄叶埋葬秋天&lt;br&gt;
 再次遇见这丑陋的衣裳&lt;br&gt;
 很想重新穿上&lt;br&gt;
-回归浑噩温暖的地下&lt;/p&gt;
-&lt;p&gt;最后的鸣叫&lt;br&gt;
+回归浑噩温暖的地下
+
+最后的鸣叫&lt;br&gt;
 我唯一的悲吟&lt;br&gt;
 在寒薄的露水里沉没&lt;br&gt;
 谁会真的在意&lt;br&gt;
 我的夏天&lt;br&gt;
-如此短暂&lt;/p&gt;&lt;/div&gt;</description><guid>/posts/hibernate.html</guid><pubDate>Mon, 16 Jul 2018 01:10:19 GMT</pubDate></item><item><title>Nikola 琐事</title><link>/posts/nikola-tips.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;Nikola 是我用了 3 年的静态网页生成工具，这个 Github 主页上的所有页面皆由它生成。它的安装与基本用法可参考《&lt;a href="https://www.getnikola.com/getting-started.html"&gt;Nikola 入门文档&lt;/a&gt;》，对于 Linux 环境，建议在 virtualenv + python 3 环境中安装它。它的更详细的用法，见《&lt;a href="https://www.getnikola.com/handbook.html"&gt;Nikola 手册&lt;/a&gt;》。本文仅记录我在使用 Nikola 过程中遇到的一些小问题以及不甚高明的对策，仅作备忘之用。&lt;/p&gt;
+如此短暂
+&lt;/div&gt;</description><guid>/posts/hibernate.html</guid><pubDate>Mon, 16 Jul 2018 01:10:19 GMT</pubDate></item><item><title>Nikola 琐事</title><link>/posts/nikola-tips.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;Nikola 是我用了 3 年的静态网页生成工具，这个 Github 主页上的所有页面皆由它生成。它的安装与基本用法可参考《&lt;a href="https://www.getnikola.com/getting-started.html"&gt;Nikola 入门文档&lt;/a&gt;》，对于 Linux 环境，建议在 virtualenv + python 3 环境中安装它。它的更详细的用法，见《&lt;a href="https://www.getnikola.com/handbook.html"&gt;Nikola 手册&lt;/a&gt;》。本文仅记录我在使用 Nikola 过程中遇到的一些小问题以及不甚高明的对策，仅作备忘之用。&lt;/p&gt;
 &lt;h2&gt;自定义首页&lt;/h2&gt;
 &lt;p&gt;Nikola 会自动生成首页，将 10 近期的文章内容收集到一个页面，该页面对应的文件为 index.html。这份文件默认会被放到站点的根目录里，所以，它就成了站点的首页。我觉得 Nikola 这个功能很鸡肋，因为我想自己定义首页，而不是这种自动生成的东西。该怎么办呢？&lt;/p&gt;
 &lt;p&gt;首先，在 conf.py 文件里，将 &lt;code&gt;INDEX_PATH&lt;/code&gt; 设为&lt;/p&gt;
