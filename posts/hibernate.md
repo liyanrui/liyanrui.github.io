@@ -11,7 +11,7 @@
 
 <div>
 
-<img src="/images/cikada.jpg" style="width:400px; float:right;" />
+<img src="/images/cikada.jpg" style="width:100px;" />
 
 # 蝉蜕
 
