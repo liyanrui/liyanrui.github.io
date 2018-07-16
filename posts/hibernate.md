@@ -9,10 +9,9 @@
 .. type: text
 -->
 
-# 蝉蜕
-
 <img src="/images/cikada.jpg" style="width:400px; float:right;" />
 
+# 蝉蜕
 
 死了很多次<br/>
 流出黑色的血<br/>
