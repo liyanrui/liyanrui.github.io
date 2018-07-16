@@ -11,7 +11,7 @@
 
 # 蝉蜕
 
-<img src="/images/cikada.jpg" width="400px" />
+<img src="/images/cikada.jpg" style="width:400px; float:right;" />
 
 
 死了很多次<br/>
@@ -26,7 +26,7 @@
 在林间鸣叫<br/>
 求偶<br/>
 生子<br/>
-逃避鸟类的追杀<
+逃避鸟类的追杀
 
 等我老去<br/>
 坠地<br/>
