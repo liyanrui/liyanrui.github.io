@@ -17,8 +17,8 @@ import time
 
 
 # Data about this site
-BLOG_AUTHOR = "明夷船"  # (translatable)
-BLOG_TITLE = " 不在岛"  # (translatable)
+BLOG_AUTHOR = "明夷虫"  # (translatable)
+BLOG_TITLE = " 冬眠"  # (translatable)
 # This is the main URL for your site. It will be used
 # in a prominent link. Don't forget the protocol (http/https)!
 SITE_URL = "/"
@@ -819,7 +819,7 @@ GITHUB_COMMIT_SOURCE = True
 # (the thumbnail has ``.thumbnail`` added before the file extension by default,
 # but a different naming template can be configured with IMAGE_THUMBNAIL_FORMAT).
 
-IMAGE_FOLDERS = {'images': 'images'}
+# IMAGE_FOLDERS = {'images': 'images'}
 # IMAGE_THUMBNAIL_SIZE = 400
 # IMAGE_THUMBNAIL_FORMAT = '{name}.thumbnail{ext}'
 
