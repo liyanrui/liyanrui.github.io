@@ -10,8 +10,16 @@
   <lastmod>2018-07-16T01:19:00Z</lastmod>
  </sitemap>
  <sitemap>
+  <loc>/categories/cat_zhi-xue.xml</loc>
+  <lastmod>2018-07-16T04:23:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>/categories/nikola.xml</loc>
   <lastmod>2018-07-16T01:19:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>/categories/zhi-xue-jia.xml</loc>
+  <lastmod>2018-07-16T04:23:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/galleries/demo/rss.xml</loc>
@@ -23,10 +31,10 @@
  </sitemap>
  <sitemap>
   <loc>/rss.xml</loc>
-  <lastmod>2018-07-16T02:30:00Z</lastmod>
+  <lastmod>2018-07-16T04:23:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/sitemap.xml</loc>
-  <lastmod>2018-07-16T02:30:00Z</lastmod>
+  <lastmod>2018-07-16T04:23:00Z</lastmod>
  </sitemap>
 </sitemapindex>

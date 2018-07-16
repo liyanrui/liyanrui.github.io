@@ -7,23 +7,31 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-07-16T02:30:00Z</lastmod>
+  <lastmod>2018-07-16T04:23:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
-  <lastmod>2018-07-16T01:19:00Z</lastmod>
+  <lastmod>2018-07-16T04:23:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_bi-ji.html</loc>
   <lastmod>2018-07-16T01:19:00Z</lastmod>
  </url>
  <url>
+  <loc>/categories/cat_zhi-xue.html</loc>
+  <lastmod>2018-07-16T04:23:00Z</lastmod>
+ </url>
+ <url>
   <loc>/categories/index.html</loc>
-  <lastmod>2018-07-16T01:19:00Z</lastmod>
+  <lastmod>2018-07-16T04:23:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/nikola.html</loc>
   <lastmod>2018-07-16T01:19:00Z</lastmod>
+ </url>
+ <url>
+  <loc>/categories/zhi-xue-jia.html</loc>
+  <lastmod>2018-07-16T04:23:00Z</lastmod>
  </url>
  <url>
   <loc>/galleries/demo/index.html</loc>
@@ -51,11 +59,15 @@
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-07-16T02:30:00Z</lastmod>
+  <lastmod>2018-07-16T04:23:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/hibernate.html</loc>
-  <lastmod>2018-07-16T02:30:00Z</lastmod>
+  <lastmod>2018-07-16T04:23:00Z</lastmod>
+ </url>
+ <url>
+  <loc>/posts/love.html</loc>
+  <lastmod>2018-07-16T04:23:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/nikola-tips.html</loc>
