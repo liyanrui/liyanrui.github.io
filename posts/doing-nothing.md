@@ -1,5 +1,5 @@
 <!--
-.. title: 老子「无为」解
+.. title: 无为
 .. slug: doing-nothing
 .. date: 2018-01-01 16:58:26 UTC+08:00
 .. tags: 
