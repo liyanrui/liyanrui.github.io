@@ -1,5 +1,5 @@
 <!--
-.. title: 冬眠集
+.. title: 冬眠
 .. slug: hibernate
 .. date: 2018-07-16 09:10:19 UTC+08:00
 .. tags: 
