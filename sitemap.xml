@@ -7,11 +7,11 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-07-17T08:47:00Z</lastmod>
+  <lastmod>2018-07-17T09:20:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
-  <lastmod>2018-07-17T08:39:00Z</lastmod>
+  <lastmod>2018-07-17T09:20:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_bi-ji.html</loc>
@@ -63,7 +63,11 @@
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-07-17T08:47:00Z</lastmod>
+  <lastmod>2018-07-17T09:20:00Z</lastmod>
+ </url>
+ <url>
+  <loc>/posts/doing-nothing.html</loc>
+  <lastmod>2018-07-17T09:20:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/hibernate.html</loc>
@@ -71,11 +75,11 @@
  </url>
  <url>
   <loc>/posts/love.html</loc>
-  <lastmod>2018-07-17T08:39:00Z</lastmod>
+  <lastmod>2018-07-17T09:20:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/lover.html</loc>
-  <lastmod>2018-07-17T08:39:00Z</lastmod>
+  <lastmod>2018-07-17T09:20:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/new-year.html</loc>
@@ -86,8 +90,16 @@
   <lastmod>2018-07-17T08:47:00Z</lastmod>
  </url>
  <url>
+  <loc>/posts/online-dating.html</loc>
+  <lastmod>2018-07-17T09:20:00Z</lastmod>
+ </url>
+ <url>
+  <loc>/posts/seeing-nothing.html</loc>
+  <lastmod>2018-07-17T09:20:00Z</lastmod>
+ </url>
+ <url>
   <loc>/posts/staying-up-late.html</loc>
-  <lastmod>2018-07-17T08:39:00Z</lastmod>
+  <lastmod>2018-07-17T09:20:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/warm.html</loc>
