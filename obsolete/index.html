@@ -558,6 +558,22 @@
 
 <p>剩下的内容可自由定义。</p>
 <p>当网站内容重新发布时，这份源文件就会被转化为网站根目录中的 index.html 文件。因为 Nikola 就是这样对待 <code>PAGES</code> 目录中的源文件的，会把它们「平铺」在网站的根目录里。</p>
+<h2>图片目录冲突</h2>
+<p>在 conf.py 文件中，我设定了专门用于放图片的目录 images：</p>
+<pre class="code literal-block"><span></span>FILES_FOLDERS = {'files': 'files',
+                 'meta-doc': 'meta-doc',
+                 'mycss': 'mycss',
+                 'MathJax': 'MathJax',
+                 'images': 'images'} # &lt;&lt;&lt;----- here ----------
+</pre>
+
+
+<p>但是 Nikola 有个自动缩放图片的功能，它会将自动缩放的图片也存放在一个名为 images 的目录，这样就与我设定的目录发生了冲突，而且 Nikola 在生成网页文件的时候会罢工。</p>
+<p>解决这个问题的最简单的办法是金庸它的自动缩放图片功能，即注释掉 conf.py 文件中的下面几行：</p>
+<pre class="code literal-block"><span></span># IMAGE_FOLDERS = {'images': 'images'}
+# IMAGE_THUMBNAIL_SIZE = 400
+# IMAGE_THUMBNAIL_FORMAT = '{name}.thumbnail{ext}'
+</pre>
 </div>
     </div>
     </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../posts/warm.html" class="u-url">很暖</a></h1>
