@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Tue, 17 Jul 2018 11:35:01 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>爱情</title><link>/posts/love.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;我一贯自以为是，思考过许多与人生观有关的问题，唯独未曾认真思考过爱情。估计是我的爱情太多了，一时半会也思考不出来什么。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Tue, 17 Jul 2018 11:36:19 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>爱情</title><link>/posts/love.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;我一贯自以为是，思考过许多与人生观有关的问题，唯独未曾认真思考过爱情。估计是我的爱情太多了，一时半会也思考不出来什么。&lt;/p&gt;
 &lt;p&gt;文学作品写爱情，从诗经就开始写，到现在已经两千多年了。人类想明白了么？&lt;/p&gt;
 &lt;p&gt;肯定还没有，否则就不会有那么多人还在写爱情小说。不仅还在写，而且内容也逐渐细化了起来，校园爱情，乡村爱情，都市情感，同性爱情，情色抑或色情，甚至还有人兽爱情——&lt;/p&gt;
 &lt;p&gt;我看过次数最多的三篇爱情小说，《一个陌生女人的来信》，《茵梦湖》以及《伊豆的舞女》，从这些小说里，只学会了情绪上的忧伤，以为爱情就是一种令人忧伤的东西。这种忧伤来自于，眼前这么多美好的姑娘，得不到她们的芳心，也就罢了……问题是，连身体也得不到啊。&lt;/p&gt;
@@ -447,10 +447,7 @@
 &lt;p&gt;母亲在前面走，什么也没说。&lt;/p&gt;
 &lt;p&gt;她想说的话昨晚就说完了。我们过得好，她就没念想，也不要我念想着她。&lt;/p&gt;
 &lt;p&gt;晚饭后，我们找出来去年买了但是只放了一支的那把小烟花，要到小花园里放。母亲嫌上楼太累，我和妻让她在家歇着，带着孩子下了楼。可能受了点潮，没有几支烟花能顺利地形成完整的绽放，但它们依然美丽。&lt;/p&gt;
-&lt;p&gt;娃小心翼翼捏住一支，冲着我……小伙子，枪口要向外，不要指向自己人！我给他燃着，于是一簇明亮又骄傲的火焰向这个小小的世界华丽地喷射。那一刻，我忘记了烟花的主要成分不过是落后的黑火药。&lt;/p&gt;&lt;/div&gt;</description><guid>/posts/new-year.html</guid><pubDate>Sat, 17 Feb 2018 08:24:24 GMT</pubDate></item><item><title>同时</title><link>/posts/same-time.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;blockquote&gt;
-&lt;p&gt;此文，忘记了何时所写。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;与人有关的事，都可以表示为命题，用概率表示命题为真的可能性大小。&lt;/p&gt;
+&lt;p&gt;娃小心翼翼捏住一支，冲着我……小伙子，枪口要向外，不要指向自己人！我给他燃着，于是一簇明亮又骄傲的火焰向这个小小的世界华丽地喷射。那一刻，我忘记了烟花的主要成分不过是落后的黑火药。&lt;/p&gt;&lt;/div&gt;</description><guid>/posts/new-year.html</guid><pubDate>Sat, 17 Feb 2018 08:24:24 GMT</pubDate></item><item><title>同时</title><link>/posts/same-time.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;与人有关的事，都可以表示为命题，用概率表示命题为真的可能性大小。&lt;/p&gt;
 &lt;p&gt;可以用 $P(A)$ 来表示命题 $A$ 为真的概率，而且对于命题，还可以把它们「乘」起来，或者「+」起来。&lt;/p&gt;
 &lt;p&gt;例如，$AB$，就是两个命题乘了起来。例如，上帝……算了，还是不要再气他了。例如，假设命题 $A$ 是「今天太阳从东方升起」，命题 $B$ 是「明天太阳从东方升起」，那么 $AB$ 就表示「今天和明天，太阳都从东方升起」。&lt;/p&gt;
 &lt;p&gt;$P(AB)$ 表示命题 $A$ 与 $B$ 皆为真的概率。以后看到 $AB$，可以将它读为「$AB$ 皆为真」。&lt;/p&gt;
