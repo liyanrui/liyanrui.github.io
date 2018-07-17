@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠 (文章分类：蛰学家)</title><link>/</link><description></description><atom:link href="/categories/cat_zhi-xue-jia.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Tue, 17 Jul 2018 11:36:19 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>同时</title><link>/posts/same-time.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;与人有关的事，都可以表示为命题，用概率表示命题为真的可能性大小。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠 (文章分类：蛰学家)</title><link>/</link><description></description><atom:link href="/categories/cat_zhi-xue-jia.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Tue, 17 Jul 2018 11:42:40 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>同时</title><link>/posts/same-time.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;与人有关的事，都可以表示为命题，用概率表示命题为真的可能性大小。&lt;/p&gt;
 &lt;p&gt;可以用 $P(A)$ 来表示命题 $A$ 为真的概率，而且对于命题，还可以把它们「乘」起来，或者「+」起来。&lt;/p&gt;
 &lt;p&gt;例如，$AB$，就是两个命题乘了起来。例如，上帝……算了，还是不要再气他了。例如，假设命题 $A$ 是「今天太阳从东方升起」，命题 $B$ 是「明天太阳从东方升起」，那么 $AB$ 就表示「今天和明天，太阳都从东方升起」。&lt;/p&gt;
 &lt;p&gt;$P(AB)$ 表示命题 $A$ 与 $B$ 皆为真的概率。以后看到 $AB$，可以将它读为「$AB$ 皆为真」。&lt;/p&gt;
@@ -33,12 +33,12 @@ $$&lt;/p&gt;
 &lt;p&gt;这就是概率的乘法定理与条件概率的「物理意义」——让那些将时间视为客观存在的世界里的人理解同时性。也就是说，在 $P(AB)$ 里没有时间，但是在 $P(A)P(B|A)$ 与 $P(B)P(A|B)$ 里有时间。&lt;/p&gt;
 &lt;p&gt;当上帝在我面前，连续扔了 10 次硬币，结果皆为正。在我看来，他是一次接一次扔的，倘若以字母来表示这 10 次扔硬币且皆为正面的命题，那么这个命题的概率可表示为 $P(ABCDEFGHIJ)$。我要理解这个概率，只能是逐步展开：&lt;/p&gt;
 &lt;p&gt;$$
-\begin{align}
-&amp;amp; P(ABCDEFGHIJ) &amp;amp; = P(A)P(BCDEFGHIJ|A) \
-&amp;amp; &amp;amp; = P(A)P(B|A)P(CDEFGHIJ|AB) \
-&amp;amp; &amp;amp; = ... ... ... \
-&amp;amp; &amp;amp; = P(A)P(B|A)P(C|AB)P(D|ABC)...P(J|ABCDEFGHI)
-\end{align}
+\begin{aligned}
+P(ABCDEFGHIJ) &amp;amp; = P(A)P(BCDEFGHIJ|A) \
+&amp;amp; = P(A)P(B|A)P(CDEFGHIJ|AB) \
+&amp;amp; = ... ... ... \
+&amp;amp; = P(A)P(B|A)P(C|AB)P(D|ABC)...P(J|ABCDEFGHI)
+\end{aligned}
 $$&lt;/p&gt;
 &lt;p&gt;站在上帝的角度来看，他一次扔出了 10 个硬币，皆为正面。站在硬币的角度来看，它的正面一次扔出了 10 个上帝。&lt;/p&gt;
 &lt;p&gt;是将一个硬币扔了 10 次也好，是一次扔了 10 个硬币也好，还是一次扔出 10 个上帝，反正都归结为 10 个命题皆为真的概率。糟糕的是，我看不出这 10 个命题之间存在着什么必然的联系。例如，即使我知道 $ABCDEFGHI$ 这个命题（9 个命题相乘）为真，但是我还是不知道它与命题 $J$ 与这个命题的关系是什么。既然不知道，就只好认为&lt;/p&gt;
