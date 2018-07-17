@@ -9,8 +9,6 @@
 .. type: text
 -->
 
-<div style="text-align:center;"><img src="/images/snow.jpg" style="align:width:400px" /></div>
-
 多年以前，我和她有过许多次美好的约会。昨天，她路过这个城市，就来看我。
 
 微黄的路灯下，我们有些拘谨，互相打量，欲语还休。弥散着数十年的往事，浸润着眼角的沧桑。我们一起走了三十分钟的路，我不知是该高兴还是忧伤。
@@ -27,6 +25,8 @@
 
 我向孩子隐瞒了一点现在的真相。她离去之后，世界会继续寒冷和僵硬。这一切，还需要慢慢习惯。
 
-写于 2018-01-28
+<div style="text-align:center;"><img src="/images/snow.jpg" style="width:400px" /></div>
+
+**2018-01-28**
 
 
