@@ -9,7 +9,7 @@
 .. type: text
 -->
 
-<image src="/images/snow.jpg" style="align:middle; width:400px" />
+<div style="text-align:center;"><img src="/images/snow.jpg" style="align:width:400px" /></div>
 
 多年以前，我和她有过许多次美好的约会。昨天，她路过这个城市，就来看我。
 
