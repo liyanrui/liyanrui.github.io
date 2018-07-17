@@ -7,7 +7,7 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-07-17T03:16:00Z</lastmod>
+  <lastmod>2018-07-17T03:40:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
@@ -19,7 +19,7 @@
  </url>
  <url>
   <loc>/categories/cat_san-wen.html</loc>
-  <lastmod>2018-07-17T03:16:00Z</lastmod>
+  <lastmod>2018-07-17T03:40:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_zhi-xue.html</loc>
@@ -63,7 +63,7 @@
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-07-17T03:16:00Z</lastmod>
+  <lastmod>2018-07-17T03:40:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/hibernate.html</loc>
@@ -75,7 +75,7 @@
  </url>
  <url>
   <loc>/posts/lover.html</loc>
-  <lastmod>2018-07-17T03:16:00Z</lastmod>
+  <lastmod>2018-07-17T03:40:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/nikola-tips.html</loc>

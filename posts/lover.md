@@ -25,8 +25,6 @@
 
 我向孩子隐瞒了一点现在的真相。她离去之后，世界会继续寒冷和僵硬。这一切，还需要慢慢习惯。
 
-<div style="text-align:center;"><img src="/images/snow.jpg" style="width:400px" /></div>
-
 **2018-01-28**
 
 
