@@ -50,4 +50,24 @@ PAGES = (
 
 当网站内容重新发布时，这份源文件就会被转化为网站根目录中的 index.html 文件。因为 Nikola 就是这样对待 `PAGES` 目录中的源文件的，会把它们「平铺」在网站的根目录里。
 
+# 图片目录冲突
 
+在 conf.py 文件中，我设定了专门用于放图片的目录 images：
+
+```
+FILES_FOLDERS = {'files': 'files',
+                 'meta-doc': 'meta-doc',
+                 'mycss': 'mycss',
+                 'MathJax': 'MathJax',
+                 'images': 'images'} # <<<----- here ----------
+```
+
+但是 Nikola 有个自动缩放图片的功能，它会将自动缩放的图片也存放在一个名为 images 的目录，这样就与我设定的目录发生了冲突，而且 Nikola 在生成网页文件的时候会罢工。
+
+解决这个问题的最简单的办法是金庸它的自动缩放图片功能，即注释掉 conf.py 文件中的下面几行：
+
+```
+# IMAGE_FOLDERS = {'images': 'images'}
+# IMAGE_THUMBNAIL_SIZE = 400
+# IMAGE_THUMBNAIL_FORMAT = '{name}.thumbnail{ext}'
+```
