@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Tue, 17 Jul 2018 08:39:41 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>熬夜</title><link>/posts/staying-up-late.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;我这样的人会很长寿。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Tue, 17 Jul 2018 08:42:50 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>熬夜</title><link>/posts/staying-up-late.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;我这样的人会很长寿。&lt;/p&gt;
 &lt;p&gt;即使我活到诸葛亮那般年纪，也比大多数人长寿。因为我们经常熬夜。将清醒的总时间加起来，大家寿命就差不多。诸葛亮自比管仲、乐毅。我这种人，文不能安邦，武不能定国，只能在熬夜方面可自比诸葛。&lt;/p&gt;
 &lt;p&gt;经常熬夜的人，不该树敌，否则会让熬夜不够单纯。因为，敌人要干掉我们，太过于容易。他们只需要坚持不熬夜。诸葛亮的敌人是司马懿。司马懿说，这个人，睡少而事多，必不能长久。于是，司马懿就赢了。&lt;/p&gt;
 &lt;p&gt;这种战略也能用于复仇，只要活得比仇人更久。许多小说有复仇的情节。写小说的人或许是担心读者没耐心而先死掉，所以就刻意为复仇者安排了诸多奇遇，从而导致最有效的复仇战略反而被大家视为笑话。试想，在仇人墓前烧张纸，骂两句，笑一笑，兵不血刃，行不违法，不是很好么？还有一种更高的复仇战略，那就是娶仇人的女儿为妻，或者嫁给仇人的儿子为妻。仇恨杀不死仇恨，真爱可以。&lt;/p&gt;
@@ -434,7 +434,7 @@
 
 
 &lt;p&gt;剩下的内容可自由定义。&lt;/p&gt;
-&lt;p&gt;当网站内容重新发布时，这份源文件就会被转化为网站根目录中的 index.html 文件。因为 Nikola 就是这样对待 &lt;code&gt;PAGES&lt;/code&gt; 目录中的源文件的，会把它们「平铺」在网站的根目录里。&lt;/p&gt;&lt;/div&gt;</description><category>nikola</category><guid>/posts/nikola-tips.html</guid><pubDate>Thu, 26 Apr 2018 02:03:25 GMT</pubDate></item><item><title>warm</title><link>/posts/warm.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;昨天，风大，天气很暖，让我有点怀疑，春天来了。&lt;/p&gt;
+&lt;p&gt;当网站内容重新发布时，这份源文件就会被转化为网站根目录中的 index.html 文件。因为 Nikola 就是这样对待 &lt;code&gt;PAGES&lt;/code&gt; 目录中的源文件的，会把它们「平铺」在网站的根目录里。&lt;/p&gt;&lt;/div&gt;</description><category>nikola</category><guid>/posts/nikola-tips.html</guid><pubDate>Thu, 26 Apr 2018 02:03:25 GMT</pubDate></item><item><title>很暖</title><link>/posts/warm.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;昨天，风大，天气很暖，让我有点怀疑，春天来了。&lt;/p&gt;
 &lt;p&gt;我决定走着回去。三十分钟的路，足够思考一生。我带了一本书，思考累了，就装作看书。路上低头看手机的人，看见我，或许会觉得，自己有些庸俗。&lt;/p&gt;
 &lt;p&gt;要绕一个大圈。最短路径，早已生出围墙。这个大圈，大名叫人生，小名叫在路上。路边站着一些精神文明，高唱主旋律，丝毫不关心我对它们是否欣赏。&lt;/p&gt;
 &lt;p&gt;我没有看书。一路都在想着心事。有点后悔要走着回去，一生的思考已经完毕，剩下的是前生，后世，还有很暖的尘土，它们的名字都叫虚无。&lt;/p&gt;
