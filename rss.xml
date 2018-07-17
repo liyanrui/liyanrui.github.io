@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Tue, 17 Jul 2018 11:30:38 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>爱情</title><link>/posts/love.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;我一贯自以为是，思考过许多与人生观有关的问题，唯独未曾认真思考过爱情。估计是我的爱情太多了，一时半会也思考不出来什么。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Tue, 17 Jul 2018 11:35:01 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>爱情</title><link>/posts/love.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;我一贯自以为是，思考过许多与人生观有关的问题，唯独未曾认真思考过爱情。估计是我的爱情太多了，一时半会也思考不出来什么。&lt;/p&gt;
 &lt;p&gt;文学作品写爱情，从诗经就开始写，到现在已经两千多年了。人类想明白了么？&lt;/p&gt;
 &lt;p&gt;肯定还没有，否则就不会有那么多人还在写爱情小说。不仅还在写，而且内容也逐渐细化了起来，校园爱情，乡村爱情，都市情感，同性爱情，情色抑或色情，甚至还有人兽爱情——&lt;/p&gt;
 &lt;p&gt;我看过次数最多的三篇爱情小说，《一个陌生女人的来信》，《茵梦湖》以及《伊豆的舞女》，从这些小说里，只学会了情绪上的忧伤，以为爱情就是一种令人忧伤的东西。这种忧伤来自于，眼前这么多美好的姑娘，得不到她们的芳心，也就罢了……问题是，连身体也得不到啊。&lt;/p&gt;
@@ -483,12 +483,14 @@ $$&lt;/p&gt;
 &lt;p&gt;我可以这样做，我对 $A$ 事件里的人说 $P(A)P(B|A)$，于是 $A$ 事件里的人就明白了，这是 $P(AB)$。我再对 $B$ 事件里的人说 $P(B)P(A|B)$，$B$ 事件里的人也明白了，这是 $P(BA)$。此时，我觉得自己像个上帝。&lt;/p&gt;
 &lt;p&gt;这就是概率的乘法定理与条件概率的「物理意义」——让那些将时间视为客观存在的世界里的人理解同时性。也就是说，在 $P(AB)$ 里没有时间，但是在 $P(A)P(B|A)$ 与 $P(B)P(A|B)$ 里有时间。&lt;/p&gt;
 &lt;p&gt;当上帝在我面前，连续扔了 10 次硬币，结果皆为正。在我看来，他是一次接一次扔的，倘若以字母来表示这 10 次扔硬币且皆为正面的命题，那么这个命题的概率可表示为 $P(ABCDEFGHIJ)$。我要理解这个概率，只能是逐步展开：&lt;/p&gt;
-&lt;p&gt;$$ \startalign
-\NC P(ABCDEFGHIJ) \NC = P(A)P(BCDEFGHIJ|A) \NR
-\NC \NC = P(A)P(B|A)P(CDEFGHIJ|AB) \NR
-\NC \NC = ... ... ... \NR
-\NC \NC = P(A)P(B|A)P(C|AB)P(D|ABC)...P(J|ABCDEFGHI)
-\stopalign $$&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+&amp;amp; P(ABCDEFGHIJ) &amp;amp; = P(A)P(BCDEFGHIJ|A) \
+&amp;amp; &amp;amp; = P(A)P(B|A)P(CDEFGHIJ|AB) \
+&amp;amp; &amp;amp; = ... ... ... \
+&amp;amp; &amp;amp; = P(A)P(B|A)P(C|AB)P(D|ABC)...P(J|ABCDEFGHI)
+\end{align}
+$$&lt;/p&gt;
 &lt;p&gt;站在上帝的角度来看，他一次扔出了 10 个硬币，皆为正面。站在硬币的角度来看，它的正面一次扔出了 10 个上帝。&lt;/p&gt;
 &lt;p&gt;是将一个硬币扔了 10 次也好，是一次扔了 10 个硬币也好，还是一次扔出 10 个上帝，反正都归结为 10 个命题皆为真的概率。糟糕的是，我看不出这 10 个命题之间存在着什么必然的联系。例如，即使我知道 $ABCDEFGHI$ 这个命题（9 个命题相乘）为真，但是我还是不知道它与命题 $J$ 与这个命题的关系是什么。既然不知道，就只好认为&lt;/p&gt;
 &lt;p&gt;$$

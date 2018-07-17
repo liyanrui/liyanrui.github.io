@@ -72,12 +72,14 @@ $$
 
 当上帝在我面前，连续扔了 10 次硬币，结果皆为正。在我看来，他是一次接一次扔的，倘若以字母来表示这 10 次扔硬币且皆为正面的命题，那么这个命题的概率可表示为 $P(ABCDEFGHIJ)$。我要理解这个概率，只能是逐步展开：
 
-$$ \startalign
-\NC P(ABCDEFGHIJ) \NC = P(A)P(BCDEFGHIJ|A) \NR
-\NC \NC = P(A)P(B|A)P(CDEFGHIJ|AB) \NR
-\NC \NC = ... ... ... \NR
-\NC \NC = P(A)P(B|A)P(C|AB)P(D|ABC)...P(J|ABCDEFGHI)
-\stopalign $$
+$$
+\begin{align}
+& P(ABCDEFGHIJ) & = P(A)P(BCDEFGHIJ|A) \\
+& & = P(A)P(B|A)P(CDEFGHIJ|AB) \\
+& & = ... ... ... \\
+& & = P(A)P(B|A)P(C|AB)P(D|ABC)...P(J|ABCDEFGHI)
+\end{align}
+$$
 
 站在上帝的角度来看，他一次扔出了 10 个硬币，皆为正面。站在硬币的角度来看，它的正面一次扔出了 10 个上帝。
 
