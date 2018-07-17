@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠 (文章分类：蛰学家)</title><link>/</link><description></description><atom:link href="/categories/cat_zhi-xue-jia.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Tue, 17 Jul 2018 11:47:15 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>同时</title><link>/posts/same-time.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;与人有关的事，都可以表示为命题，用概率表示命题为真的可能性大小。&lt;/p&gt;
-&lt;p&gt;可以用 $P(A)$ 来表示命题 $A$ 为真的概率，而且对于命题，还可以把它们「乘」起来，或者「+」起来。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 冬眠 (文章分类：蛰学家)</title><link>/</link><description></description><atom:link href="/categories/cat_zhi-xue-jia.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Tue, 17 Jul 2018 11:50:07 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>同时</title><link>/posts/same-time.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;与人有关的事，都可以表示为命题，用概率表示命题为真的可能性大小。&lt;/p&gt;
+&lt;p&gt;可以用 $P(A)$ 来表示命题 $A$ 为真的概率，而且对于命题，还可以把它们「$\times$」起来，或者「$+$」起来。&lt;/p&gt;
 &lt;p&gt;例如，$AB$，就是两个命题乘了起来。例如，上帝……算了，还是不要再气他了。例如，假设命题 $A$ 是「今天太阳从东方升起」，命题 $B$ 是「明天太阳从东方升起」，那么 $AB$ 就表示「今天和明天，太阳都从东方升起」。&lt;/p&gt;
-&lt;p&gt;$P(AB)$ 表示命题 $A$ 与 $B$ 皆为真的概率。以后看到 $AB$，可以将它读为「$AB$ 皆为真」。&lt;/p&gt;
+&lt;p&gt;$P(AB)$ 表示命题 $A$ 与 $B$ 皆为真的概率。以后看到 $AB$，可以将它读为「$AB$ 皆真」。&lt;/p&gt;
 &lt;p&gt;如果已经知道了 $P(A)$ 与 $P(B)$，那么怎么用它们来算 $P(AB)$？毕竟我们对乘法的最朴素的认识是源于 $2 \times 3 = 6$ 这样的数学运算。在概率论里是否存在相似的计算，即 $P(AB) = P(A)P(B)$ 呢？&lt;/p&gt;
 &lt;p&gt;概率论的教科书里说没这么简单，于是它就给出了概率的乘法定理：&lt;/p&gt;
 &lt;p&gt;$$
