@@ -71,9 +71,9 @@ $$
 
 $$
 \begin{aligned}
-P(ABCDEFGHIJ) & = P(A)P(BCDEFGHIJ|A) \\
-& = P(A)P(B|A)P(CDEFGHIJ|AB) \\
-& = ... ... ... \\
+P(ABCDEFGHIJ) & = P(A)P(BCDEFGHIJ|A) \\\\
+& = P(A)P(B|A)P(CDEFGHIJ|AB) \\\\
+& = ... ... ... \\\\
 & = P(A)P(B|A)P(C|AB)P(D|ABC)...P(J|ABCDEFGHI)
 \end{aligned}
 $$
