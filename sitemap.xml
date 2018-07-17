@@ -7,11 +7,11 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-07-17T11:09:00Z</lastmod>
+  <lastmod>2018-07-17T11:30:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
-  <lastmod>2018-07-17T11:07:00Z</lastmod>
+  <lastmod>2018-07-17T11:30:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_bi-ji.html</loc>
@@ -23,7 +23,7 @@
  </url>
  <url>
   <loc>/categories/cat_zhi-xue-jia.html</loc>
-  <lastmod>2018-07-17T11:02:00Z</lastmod>
+  <lastmod>2018-07-17T11:30:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_zhi-xue.html</loc>
@@ -31,7 +31,7 @@
  </url>
  <url>
   <loc>/categories/index.html</loc>
-  <lastmod>2018-07-17T11:02:00Z</lastmod>
+  <lastmod>2018-07-17T11:30:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/nikola.html</loc>
@@ -67,11 +67,11 @@
  </url>
  <url>
   <loc>/obsolete/index-1.html</loc>
-  <lastmod>2018-07-17T11:08:00Z</lastmod>
+  <lastmod>2018-07-17T11:30:00Z</lastmod>
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-07-17T11:09:00Z</lastmod>
+  <lastmod>2018-07-17T11:30:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/cause-and-effect.html</loc>
@@ -95,15 +95,19 @@
  </url>
  <url>
   <loc>/posts/lover.html</loc>
-  <lastmod>2018-07-17T11:02:00Z</lastmod>
+  <lastmod>2018-07-17T11:30:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/new-year.html</loc>
-  <lastmod>2018-07-17T08:39:00Z</lastmod>
+  <lastmod>2018-07-17T11:30:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/nikola-tips.html</loc>
   <lastmod>2018-07-17T08:47:00Z</lastmod>
+ </url>
+ <url>
+  <loc>/posts/same-time.html</loc>
+  <lastmod>2018-07-17T11:30:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/seeing-nothing.html</loc>
