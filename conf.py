@@ -1245,7 +1245,7 @@ EXTRA_HEAD_DATA = """
                     bold: ['{\\bf #1}', 1],
              }
         },
-        "HTML-CSS": {imageFont: null, scale: 90}
+        "HTML-CSS": {imageFont: null, scale: 85}
     });
 </script>
 <script type="text/javascript" src="../MathJax/MathJax.js?config=TeX-AMS_HTML-full"></script>
