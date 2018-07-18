@@ -7,11 +7,11 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-07-18T02:48:00Z</lastmod>
+  <lastmod>2018-07-18T02:56:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
-  <lastmod>2018-07-18T02:20:00Z</lastmod>
+  <lastmod>2018-07-18T02:56:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_bi-ji.html</loc>
@@ -63,11 +63,11 @@
  </url>
  <url>
   <loc>/obsolete/index-1.html</loc>
-  <lastmod>2018-07-18T02:20:00Z</lastmod>
+  <lastmod>2018-07-18T02:56:00Z</lastmod>
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-07-18T02:48:00Z</lastmod>
+  <lastmod>2018-07-18T02:56:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/cause-and-effect.html</loc>
@@ -91,7 +91,7 @@
  </url>
  <url>
   <loc>/posts/love.html</loc>
-  <lastmod>2018-07-18T02:48:00Z</lastmod>
+  <lastmod>2018-07-18T02:56:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/lover.html</loc>
@@ -108,6 +108,10 @@
  <url>
   <loc>/posts/nikola-tips.html</loc>
   <lastmod>2018-07-18T02:20:00Z</lastmod>
+ </url>
+ <url>
+  <loc>/posts/online-dating.html</loc>
+  <lastmod>2018-07-18T02:56:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/same-time.html</loc>
