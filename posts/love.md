@@ -2,8 +2,8 @@
 .. title: 爱情
 .. slug: love
 .. date: 2018-07-16 12:21:57 UTC+08:00
-.. tags: 蛰学家
-.. category: 蛰学
+.. tags: 蛰学
+.. category: 蛰学家
 .. link: 
 .. description: 
 .. type: text
