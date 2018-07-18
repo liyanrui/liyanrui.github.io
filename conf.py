@@ -18,7 +18,7 @@ import time
 
 # Data about this site
 BLOG_AUTHOR = "明夷虫"  # (translatable)
-BLOG_TITLE = " 冬眠"  # (translatable)
+BLOG_TITLE = " 温暖的冬眠"  # (translatable)
 # This is the main URL for your site. It will be used
 # in a prominent link. Don't forget the protocol (http/https)!
 SITE_URL = "/"
