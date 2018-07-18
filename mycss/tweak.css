@@ -21,6 +21,7 @@ p, blockquote p {
 blockquote {
     font-size: 14px;
     line-height: 1.7;
+    margin: 0px !important;
     text-align: justify;
 }
 
