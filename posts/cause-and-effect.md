@@ -80,4 +80,4 @@ Talk is cheap, show me the power!
 
 ----
 
-[1] [长生](posts/long-life.html)
+[1] [长生](long-life.html)
