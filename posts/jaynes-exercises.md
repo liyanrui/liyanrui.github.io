@@ -14,5 +14,7 @@
 假设有 $k$ 个正数 $\\{m_1,\cdots,m_k\\}$，$m_1 + \cdots + m_k = m$。$m$ 次取球过程中每种颜色的球至少取一个，这一命题的概率可根据广义超几何分布公式得到
 
 $$
+\begin{euqtion*}
 h(m_1\cdots m_k|N_1,\cdots,N_k) = \frac{\begin{pmatrix} N_1\\ r_1\end{pmatrix}}{aaa}
+\end{equation*}
 $$
