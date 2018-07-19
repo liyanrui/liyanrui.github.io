@@ -7,11 +7,11 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-07-19T00:53:00Z</lastmod>
+  <lastmod>2018-07-19T08:57:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
-  <lastmod>2018-07-19T00:53:00Z</lastmod>
+  <lastmod>2018-07-19T08:57:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_bi-ji.html</loc>
@@ -63,11 +63,11 @@
  </url>
  <url>
   <loc>/obsolete/index-1.html</loc>
-  <lastmod>2018-07-19T00:53:00Z</lastmod>
+  <lastmod>2018-07-19T08:57:00Z</lastmod>
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-07-19T00:53:00Z</lastmod>
+  <lastmod>2018-07-19T08:57:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/cause-and-effect.html</loc>
@@ -86,12 +86,16 @@
   <lastmod>2018-07-19T00:53:00Z</lastmod>
  </url>
  <url>
+  <loc>/posts/jaynes-exercises.html</loc>
+  <lastmod>2018-07-19T08:57:00Z</lastmod>
+ </url>
+ <url>
   <loc>/posts/long-life.html</loc>
   <lastmod>2018-07-18T01:33:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/love.html</loc>
-  <lastmod>2018-07-18T10:27:00Z</lastmod>
+  <lastmod>2018-07-19T08:57:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/ming-yi-fish.html</loc>
