@@ -11,8 +11,10 @@
 
 # 习题 3.2
 
-假设有 $k$ 个正数 $\\{m_1,\cdots,m_k\\}$，$m_1 + \cdots + m_k = m$。$m$ 次取球过程中每种颜色的球至少取一个，这一命题的概率可根据广义超几何分布公式得到
+假设有 $k$ 个正数 $\\{m_1,\cdots,m_k\\}$，$m_1 + \cdots + m_k = m$，根据广义超几何分布公式，可得
 
 $$
 h(m_1\cdots m_k|N_1,\cdots,N_k) = \frac{\begin{pmatrix} N_1\\\\ m_1\end{pmatrix}\cdots\begin{pmatrix} N_k\\\\ m_k\end{pmatrix}}{\begin{pmatrix} N\\\\ m\end{pmatrix}}
 $$
+
+由于满足 $m_1 + \cdots + m_k = m$ 的 $\\{m_1,\cdots,m_k\\}$ 可能不止一个，对于每个这样的集合，都有着上述的概率。并且这些集合不相互依赖，因此从瓮中所取 $m$ 个球能够覆盖所有颜色的概率为所有的 $\\{m_1,\cdots,m_k\\}$ 的概率之和。
