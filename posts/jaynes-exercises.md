@@ -38,5 +38,5 @@ $$
 其中 $m_{ij}$ 表示第 $i$ 组 $m$ 的分解的第 $j$ 个元素。由于 $m_{ij} \le 1$，所以上式分子部分可以展开为
 
 $$
-\frac{10^k}{m_{11}\cdots m_{1k}}\begin{pmatrix} 10\\\\ m_{11}\end{pmatrix}\cdots\begin{pmatrix} 10\\\\ m_{1k}\end{pmatrix} + \frac{10^k}{m_{21}\cdots m_{2k}}\begin{pmatrix} 10\\\\ m_{21}\end{pmatrix} \cdots\begin{pmatrix} 10\\\\ m_{2k}\end{pmatrix} + \cdots + \frac{10^k}{m_{r1}\cdots m_{rk}}\begin{pmatrix} 10\\\\ m_{r1}\end{pmatrix}\cdots\begin{pmatrix} 10\\\\ m_{rk}\end{pmatrix}
+\frac{10^k}{m_{11}\cdots m_{1k}}\begin{pmatrix} 9\\\\ m_{11} - 1\end{pmatrix}\cdots\begin{pmatrix} 9\\\\ m_{1k} - 1\end{pmatrix} + \frac{10^k}{m_{21}\cdots m_{2k}}\begin{pmatrix} 9\\\\ m_{21} - 1\end{pmatrix} \cdots\begin{pmatrix} 9\\\\ m_{2k} - 1\end{pmatrix} + \cdots + \frac{10^k}{m_{r1}\cdots m_{rk}}\begin{pmatrix} 9\\\\ m_{r1} - 1\end{pmatrix}\cdots\begin{pmatrix} 9\\\\ m_{rk} - 1\end{pmatrix}
 $$
