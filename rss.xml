@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 温暖的冬眠</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Fri, 20 Jul 2018 03:16:02 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>冬眠</title><link>/posts/hibernate.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;h2&gt;尘埃&lt;/h2&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 温暖的冬眠</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Fri, 20 Jul 2018 03:25:33 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>冬眠</title><link>/posts/hibernate.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;h2&gt;尘埃&lt;/h2&gt;
 &lt;p&gt;我想早早睡去&lt;br&gt;
 化作尘埃&lt;br&gt;
 在你的深夜&lt;br&gt;
@@ -546,19 +546,21 @@ $$&lt;/p&gt;
 &lt;p&gt;$$
 \sum_{\{m_i\}}h(m_1\cdots m_k|N_1,\cdots,N_k)
 $$&lt;/p&gt;
+&lt;p&gt;展开可得&lt;/p&gt;
+&lt;p&gt;$$
+\frac{\begin{pmatrix} N_1\\ m_{11}\end{pmatrix}\cdots\begin{pmatrix} N_2\\ m_{1k}\end{pmatrix} + \cdots + \begin{pmatrix} 10\\ m_{r1}\end{pmatrix}\cdots\begin{pmatrix} N_k\\ m_{rk}\end{pmatrix}}{\begin{pmatrix} N\\ m\end{pmatrix}}
+$$&lt;/p&gt;
+&lt;p&gt;其中 $m_{ij}$ 表示第 $i$ 组 $m$ 的分解的第 $j$ 个元素。由于 $m_{ij} \le 1$，所以上式分子部分可以展开为&lt;/p&gt;
+&lt;p&gt;$$
+\frac{1}{m_{11}\cdots m_{1k}}\begin{pmatrix} N_1 - 1\\ m_{11} - 1\end{pmatrix}\cdots\begin{pmatrix} N_1 - 1\\ m_{1k} - 1\end{pmatrix} +  \cdots + \frac{1}{m_{r1}\cdots m_{rk}}\begin{pmatrix} N_1 - 1\\ m_{r1} - 1\end{pmatrix}\cdots\begin{pmatrix} N_k - 1\\ m_{rk} - 1\end{pmatrix}
+$$&lt;/p&gt;
+&lt;p&gt;由于 $m_{i1} + \cdots + m_{ik} = m$，可以确定当 $m_{i1} = \cdots = m_{ik}$ 时，$m_{i1}\cdots m_{ik}$ 为最大值，亦即上式有最小值。因此，只需要确定有多少个 $\{m_{ij}\}$，便可获得只包含一个未知数 $m$ 的分式。&lt;/p&gt;
+&lt;p&gt;$\{m_{ij}\}$ 的数量等价于将 $m$ 个 1 分为 $k$ 组，共有多少种分法。&lt;/p&gt;
 &lt;p&gt;在 $k = 5$，所有的 $N_i = 10$ 的情况下，有&lt;/p&gt;
 &lt;p&gt;$$
 \sum_{\{m_i\}}h(m_1\cdots m_k|N_1,\cdots,N_k) \ge 90\%
 $$&lt;/p&gt;
-&lt;p&gt;展开可得&lt;/p&gt;
-&lt;p&gt;$$
-\frac{\begin{pmatrix} 10\\ m_{11}\end{pmatrix}\cdots\begin{pmatrix} 10\\ m_{1k}\end{pmatrix} + \begin{pmatrix} 10\\ m_{21}\end{pmatrix} \cdots\begin{pmatrix} 10\\ m_{2k}\end{pmatrix} + \cdots + \begin{pmatrix} 10\\ m_{r1}\end{pmatrix}\cdots\begin{pmatrix} 10\\ m_{rk}\end{pmatrix}}{\begin{pmatrix} 50\\ m\end{pmatrix}} \ge 90\%
-$$&lt;/p&gt;
-&lt;p&gt;其中 $m_{ij}$ 表示第 $i$ 组 $m$ 的分解的第 $j$ 个元素。由于 $m_{ij} \le 1$，所以上式分子部分可以展开为&lt;/p&gt;
-&lt;p&gt;$$
-\frac{10^k}{m_{11}\cdots m_{1k}}\begin{pmatrix} 9\\ m_{11} - 1\end{pmatrix}\cdots\begin{pmatrix} 9\\ m_{1k} - 1\end{pmatrix} + \frac{10^k}{m_{21}\cdots m_{2k}}\begin{pmatrix} 9\\ m_{21} - 1\end{pmatrix} \cdots\begin{pmatrix} 9\\ m_{2k} - 1\end{pmatrix} + \cdots + \frac{10^k}{m_{r1}\cdots m_{rk}}\begin{pmatrix} 9\\ m_{r1} - 1\end{pmatrix}\cdots\begin{pmatrix} 9\\ m_{rk} - 1\end{pmatrix}
-$$&lt;/p&gt;
-&lt;p&gt;由于 $m_{i1} + \cdots + m_{ik} = m$，可以确定当 $m_{i1} = \cdots = m_{ik}$ 时，$m_{i1}\cdots m_{ik}$ 为最大值，亦即上式有最小值。因此，只需要确定有多少组 $\{m_{ij}\}$ 即可得到只包含一个未知数 $m$ 的分式。&lt;/p&gt;&lt;/div&gt;</description><guid>/posts/jaynes-exercises.html</guid><pubDate>Thu, 19 Jul 2018 08:18:11 GMT</pubDate></item><item><title>爱情</title><link>/posts/love.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;我一贯自以为是，思考过许多与人生观有关的问题，唯独未曾认真思考过爱情。估计是我的爱情太多了，一时半会也思考不出来什么。&lt;/p&gt;
+&lt;p&gt;展开可得&lt;/p&gt;&lt;/div&gt;</description><guid>/posts/jaynes-exercises.html</guid><pubDate>Thu, 19 Jul 2018 08:18:11 GMT</pubDate></item><item><title>爱情</title><link>/posts/love.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;p&gt;我一贯自以为是，思考过许多与人生观有关的问题，唯独未曾认真思考过爱情。估计是我的爱情太多了，一时半会也思考不出来什么。&lt;/p&gt;
 &lt;p&gt;文学作品写爱情，从诗经就开始写，到现在已经两千多年了。人类想明白了么？&lt;/p&gt;
 &lt;p&gt;肯定还没有，否则就不会有那么多人还在写爱情小说。不仅还在写，而且内容也逐渐细化了起来，校园爱情，乡村爱情，都市情感，同性爱情，情色抑或色情，甚至还有人兽爱情——&lt;/p&gt;
 &lt;p&gt;我看过次数最多的三篇爱情小说，《一个陌生女人的来信》，《茵梦湖》以及《伊豆的舞女》，从这些小说里，只学会了情绪上的忧伤，以为爱情就是一种令人忧伤的东西。这种忧伤来自于，眼前这么多美好的姑娘，得不到她们的芳心，也就罢了……问题是，连身体也得不到啊。&lt;/p&gt;
