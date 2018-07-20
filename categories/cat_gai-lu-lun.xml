@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 温暖的冬眠 (文章分类：概率论)</title><link>/</link><description></description><atom:link href="/categories/cat_gai-lu-lun.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Fri, 20 Jul 2018 07:35:30 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Jaynes 概率论习题答案</title><link>/posts/jaynes-exercises.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;h2&gt;习题 3.2&lt;/h2&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title> 温暖的冬眠 (文章分类：概率论)</title><link>/</link><description></description><atom:link href="/categories/cat_gai-lu-lun.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;明夷虫&lt;/a&gt; </copyright><lastBuildDate>Fri, 20 Jul 2018 07:37:10 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Jaynes 概率论习题答案</title><link>/posts/jaynes-exercises.html</link><dc:creator>明夷虫</dc:creator><description>&lt;div&gt;&lt;h2&gt;习题 3.2&lt;/h2&gt;
 &lt;p&gt;假设由 $k$ 个正数构成的集合 $\{m_1,\cdots,m_k\}$，当它满足 $m_1 + \cdots + m_k = m$ 时，将其称为 $m$ 的分解。$m_i$ 表示第 $i$ 种颜色的球的个数。根据广义超几何分布公式，可得&lt;/p&gt;
 &lt;p&gt;$$
 h(m_1\cdots m_k|N_1,\cdots,N_k) = \frac{\begin{pmatrix} N_1\\ m_1\end{pmatrix}\cdots\begin{pmatrix} N_k\\ m_k\end{pmatrix}}{\begin{pmatrix} N\\ m\end{pmatrix}}
@@ -16,12 +16,11 @@ $$&lt;/p&gt;
 &lt;p&gt;$$
 (N_1\cdots N_k)\left(\frac{1}{m_{11}\cdots m_{1k}}\begin{pmatrix} N_1 - 1\\ m_{11} - 1\end{pmatrix}\cdots\begin{pmatrix} N_1 - 1\\ m_{1k} - 1\end{pmatrix} +  \cdots + \frac{1}{m_{r1}\cdots m_{rk}}\begin{pmatrix} N_1 - 1\\ m_{r1} - 1\end{pmatrix}\cdots\begin{pmatrix} N_k - 1\\ m_{rk} - 1\end{pmatrix}\right)
 $$&lt;/p&gt;
-&lt;p&gt;由于 $m_{i1} + \cdots + m_{ik} = m$，可以确定当 $m_{i1} = \cdots = m_{ik}$ 时，$m_{i1}\cdots m_{ik}$ 为最大值，亦即上式有最小值。因此，只需要确定有多少个 $\{m_{ij}\}$，便可获得只包含一个未知数 $m$ 的分式。&lt;/p&gt;
-&lt;p&gt;$\{m_{ij}\}$ 的数量等价于将 $m$ 个 1 分为 $k$ 组，共有多少种分法。在《统计学习基础——数据挖掘、推理与预测》（Trevor Hastie 等（著），范明 等（译），p321）中指出，共有&lt;/p&gt;
+&lt;p&gt;由于 $m_{i1} + \cdots + m_{ik} = m$，可以确定当 $m_{i1} = \cdots = m_{ik}$ 时，$m_{i1}\cdots m_{ik}$ 为最大值，亦即上式有最小值。又由于$\{m_{ij}\}$ 的数量等价于将 $m$ 个数据分为 $k$ 组的可行解的个数。在《统计学习基础——数据挖掘、推理与预测》（Trevor Hastie 等（著），范明 等（译），p321）中指出，共有&lt;/p&gt;
 &lt;p&gt;$$
 C = \frac{1}{k!}\sum_{i = 1}^k(-1)^{k - i}\begin{pmatrix}k\\ i\end{pmatrix}i^m
 $$&lt;/p&gt;
-&lt;p&gt;个。&lt;/p&gt;
+&lt;p&gt;个可行解。&lt;/p&gt;
 &lt;p&gt;因此，有&lt;/p&gt;
 &lt;p&gt;$$
 \sum_{\{m_i\}}h(m_1\cdots m_k|N_1,\cdots,N_k) \ge C\frac{\begin{pmatrix} N_1\\ \frac{m}{k}\end{pmatrix}\cdots\begin{pmatrix} N_2\\ \frac{m}{k}\end{pmatrix} + \cdots + \begin{pmatrix} N_k\\ \frac{m}{k}\end{pmatrix}\cdots\begin{pmatrix} N_k\\ \frac{m}{k}\end{pmatrix}}{\begin{pmatrix} N\\ m\end{pmatrix}}
