@@ -59,5 +59,5 @@ $$
 因此
 
 $$
-\frac{\left(\frac{1}{5!}\sum_{i = 1}^5(-1)^{5 - i}\begin{pmatrix}5\\\\ i\end{pmatrix}i^m\right)\begin{pmatrix} 10\\\\ \frac{m}{k5}\end{pmatrix}^5}{\begin{pmatrix} 50\\\\ m\end{pmatrix}} = 90\%
+\frac{\left(\frac{1}{5!}\sum_{i = 1}^5(-1)^{5 - i}\begin{pmatrix}5\\\\ i\end{pmatrix}i^m\right)\begin{pmatrix} 10\\\\ \frac{m}{5}\end{pmatrix}^5}{\begin{pmatrix} 50\\\\ m\end{pmatrix}} = 90\%
 $$
