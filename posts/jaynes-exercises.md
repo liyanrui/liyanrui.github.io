@@ -32,7 +32,7 @@ $$
 展开可得
 
 $$
-\frac{\begin{pmatrix} 10\\\\ m_{11}\end{pmatrix}\cdots\begin{pmatrix} 10\\\\ m_{1k}\end{pmatrix}\begin{pmatrix} 10\\\\ m_{21}\end{pmatrix}\cdots\begin{pmatrix} 10\\\\ m_{2k}\end{pmatrix}\cdots\begin{pmatrix} 10\\\\ m_{r1}\end{pmatrix}\cdots\begin{pmatrix} 10\\\\ m_{rk}\end{pmatrix}}{\begin{pmatrix} 50\\\\ m\end{pmatrix}} \ge 90\%
+\frac{\begin{pmatrix} 10\\\\ m_{11}\end{pmatrix}\cdots\begin{pmatrix} 10\\\\ m_{1k}\end{pmatrix} + \begin{pmatrix} 10\\\\ m_{21}\end{pmatrix} \cdotS\begin{pmatrix} 10\\\\ m_{2k}\end{pmatrix} + \cdots + \begin{pmatrix} 10\\\\ m_{r1}\end{pmatrix}\cdots\begin{pmatrix} 10\\\\ m_{rk}\end{pmatrix}}{\begin{pmatrix} 50\\\\ m\end{pmatrix}} \ge 90\%
 $$
 
 其中 $m_{ij}$ 表示第 $i$ 组 $m$ 的分解的第 $j$ 个元素。
