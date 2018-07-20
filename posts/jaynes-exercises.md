@@ -56,4 +56,8 @@ $$
 \sum_{\\{m_i\\}}h(m_1\cdots m_k|N_1,\cdots,N_k) \ge 90\%
 $$
 
-展开可得
+因此
+
+$$
+\left(\frac{1}{5!}\sum_{i = 1}^5(-1)^{5 - i}\begin{pmatrix}5\\\\ i\end{pmatrix}i^m\right)\frac{C\begin{pmatrix} N_1\\\\ \frac{m}{k}\end{pmatrix}\cdots\begin{pmatrix} N_2\\\\ \frac{m}{k}\end{pmatrix}}{\begin{pmatrix} N\\\\ m\end{pmatrix}} = 90\%
+$$
