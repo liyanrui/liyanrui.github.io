@@ -45,6 +45,12 @@ $$
 
 个。
 
+因此，有
+
+$$
+\sum_{\\{m_i\\}}h(m_1\cdots m_k|N_1,\cdots,N_k) \ge C\frac{(N_1\cdots N_k)}{\frac{m}{k}^k}
+$$
+
 
 在 $k = 5$，所有的 $N_i = 10$ 的情况下，有
 
