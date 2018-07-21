@@ -17,7 +17,7 @@ $$
 h(m_1\cdots m_k|N_1,\cdots,N_k) = \frac{\begin{pmatrix} N_1\\\\ m_1\end{pmatrix}\cdots\begin{pmatrix} N_k\\\\ m_k\end{pmatrix}}{\begin{pmatrix} N\\\\ m\end{pmatrix}}
 $$
 
-由于 $m$ 的分解可能不止一个，对于每个这样的集合，都有着上述的概率。并且这些集合不相互依赖，因此从瓮中所取 $m$ 个球能够覆盖所有颜色的概率为所有的 $\\{m_1,\cdots,m_k\\}$ 的概率之和，即
+由于 $m$ 的分解可能不止一个，并且各个分解不相互依赖，因此从瓮中所取 $m$ 个球能够覆盖所有颜色的概率为 $m$ 所有的分解对应的概率之和，即
 
 $$
 \sum_{\\{m_i\\}}h(m_1\cdots m_k|N_1,\cdots,N_k)
