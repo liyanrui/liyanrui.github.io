@@ -24,6 +24,12 @@ $$
 先看一下较为简单的情况。假设 $k = 2$，$N_1 = 3$，$N_2 = 4$，$m = 3$，则得到颜色全集的概率为
 
 $$
-\frac{\begin{pmatrix}3 \\\\ 1\end{pmatrix}\begin{pmatrix}4 \\\\ 2\end{pmatrix}}{\begin{pmatrix}7\\\\ 3\end{pmatrix}} + \frac{\begin{pmatrix}3 \\\\ 2\end{pmatrix}\begin{pmatrix}4 \\\\ 1\end{pmatrix}}{\begin{pmatrix}7\\\\ 3\end{pmatrix}} = \frac{6}{7}
+\frac{\begin{pmatrix}3 \\\\ 1\end{pmatrix}\begin{pmatrix}4 \\\\ 2\end{pmatrix} + \begin{pmatrix}3 \\\\ 2\end{pmatrix}\begin{pmatrix}4 \\\\ 1\end{pmatrix}}{\begin{pmatrix}7\\\\ 3\end{pmatrix}} = \frac{6}{7}
 $$
 
+
+假设 $k = 3$，$N_1 = 3$，$N_2 = 4$，$N_3 = 2$，$m = 4$，则得到颜色全集的概率为
+
+$$
+\frac{\begin{pmatrix}3 \\\\ 1\end{pmatrix}\begin{pmatrix}4 \\\\ 1\end{pmatrix}\begin{pmatrix}2 \\\\ 2\end{pmatrix} + \begin{pmatrix}3 \\\\ 1\end{pmatrix}\begin{pmatrix}4 \\\\ 2\end{pmatrix}\begin{pmatrix}2 \\\\ 1\end{pmatrix} + \begin{pmatrix}3 \\\\ 2\end{pmatrix}\begin{pmatrix}4 \\\\ 1\end{pmatrix}\begin{pmatrix}2 \\\\ 1\end{pmatrix}}{\begin{pmatrix}9\\\\ 4\end{pmatrix}} = \frac{4}{7}
+$$
