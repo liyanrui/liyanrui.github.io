@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Sat, 20 Oct 2018 11:43:19 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Cygwin</title><link>/posts/cygwin.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;我：键盘，最近这几天，要在一台装有微软 Windows 7 的机器上工作，也就是说，这段时间没有 Linux 可用。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Sat, 20 Oct 2018 11:44:04 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Cygwin</title><link>/posts/cygwin.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;我：键盘，最近这几天，要在一台装有微软 Windows 7 的机器上工作，也就是说，这段时间没有 Linux 可用。&lt;/p&gt;
 &lt;p&gt;键盘：Windows 7 里有终端么？&lt;/p&gt;
 &lt;p&gt;我：有一个，但是不叫终端，而叫控制台，是那个通常被称为命令提示符或 cmd 的命令行窗口。不过，从 Windows 7 开始，微软提供了 PowerShell，在功能与 Bash 较为接近，可视为同类。由于我每年在 Windows 系统里呆的时间很短，所以 PowerShell 的好坏，和我没有关系。&lt;/p&gt;
 &lt;p&gt;键盘：和我也没有关系。希望早日回到 Linux。&lt;/p&gt;
@@ -11,12 +11,12 @@
 &lt;p&gt;得益于中国互联网举世无双的开放，所以 Cygwin 安装文件的下载速度只有 7 KB/秒，导致虽然只有 1 MB 的文件，下载了半个小时也没成功，总是断。只好重启系统，进入 Linux……我的 Linux 里有个梯子，通过梯子，下载速度总算过了 100 KB/秒……必须坚信，中国的互联网的确是举世无双的开放。&lt;/p&gt;
 &lt;p&gt;为了备以后的自己之需或他人之需，我将 Cygwin 的 32 位和 64 位安装文件都下载了下来，存到了百度网盘：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;setup-x86.exe&lt;/li&gt;
-&lt;li&gt;地址：&lt;a href="https://pan.baidu.com/s/1Y23JGMdtLgHRAywKXnnYvg"&gt;https://pan.baidu.com/s/1Y23JGMdtLgHRAywKXnnYvg&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;提取码：ujdm&lt;/li&gt;
-&lt;li&gt;setup-x86_64.exe&lt;/li&gt;
-&lt;li&gt;地址：&lt;a href="https://pan.baidu.com/s/1ijhLFFBoE5a74LRXLVeoHA"&gt;https://pan.baidu.com/s/1ijhLFFBoE5a74LRXLVeoHA&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;提取码：q745&lt;/li&gt;
+&lt;li&gt;setup-x86.exe
+  &lt;strong&gt; 地址：&lt;a href="https://pan.baidu.com/s/1Y23JGMdtLgHRAywKXnnYvg"&gt;https://pan.baidu.com/s/1Y23JGMdtLgHRAywKXnnYvg&lt;/a&gt;
+  &lt;/strong&gt; 提取码：ujdm&lt;/li&gt;
+&lt;li&gt;setup-x86_64.exe
+  &lt;strong&gt; 地址：&lt;a href="https://pan.baidu.com/s/1ijhLFFBoE5a74LRXLVeoHA"&gt;https://pan.baidu.com/s/1ijhLFFBoE5a74LRXLVeoHA&lt;/a&gt;
+  &lt;/strong&gt; 提取码：q745&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;键盘：……刚才梦到了终端。&lt;/p&gt;
 &lt;p&gt;机器轻微响了起来，Linux 去了，Windows 7 来了……我终于能够从百度网盘以 100+ KB/秒的速度终于将 Cygwin 的 32 位安装文件 setup-x86.exe 下载成功……&lt;/p&gt;
