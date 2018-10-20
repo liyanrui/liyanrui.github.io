@@ -1,5 +1,5 @@
 <!--
-.. title: cygwin
+.. title: Cygwin
 .. slug: cygwin
 .. date: 2018-10-20 11:20:12 UTC+08:00
 .. tags: 
@@ -31,10 +31,10 @@
 
 为了备以后的自己之需或他人之需，我将 Cygwin 的 32 位和 64 位安装文件都下载了下来，存到了百度网盘：
 
-* setup-x86.exe
+ * setup-x86.exe
   * 地址：[https://pan.baidu.com/s/1Y23JGMdtLgHRAywKXnnYvg](https://pan.baidu.com/s/1Y23JGMdtLgHRAywKXnnYvg)
-  * 提取码：ujdm
-* setup-x86_64.exe
+   * 提取码：ujdm
+ * setup-x86_64.exe
   * 地址：[https://pan.baidu.com/s/1ijhLFFBoE5a74LRXLVeoHA](https://pan.baidu.com/s/1ijhLFFBoE5a74LRXLVeoHA)
   * 提取码：q745
 
