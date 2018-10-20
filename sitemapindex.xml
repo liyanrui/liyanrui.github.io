@@ -10,10 +10,6 @@
   <lastmod>2018-10-20T09:31:00Z</lastmod>
  </sitemap>
  <sitemap>
-  <loc>/categories/cat_gai-lu-lun.xml</loc>
-  <lastmod>2018-10-20T04:34:00Z</lastmod>
- </sitemap>
- <sitemap>
   <loc>/categories/cat_zhi-xue-jia.xml</loc>
   <lastmod>2018-10-20T04:34:00Z</lastmod>
  </sitemap>
@@ -23,11 +19,11 @@
  </sitemap>
  <sitemap>
   <loc>/galleries/demo/rss.xml</loc>
-  <lastmod>2018-10-20T08:53:00Z</lastmod>
+  <lastmod>2018-10-20T09:34:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/galleries/rss.xml</loc>
-  <lastmod>2018-10-20T08:53:00Z</lastmod>
+  <lastmod>2018-10-20T09:34:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/rss.xml</loc>
@@ -35,6 +31,6 @@
  </sitemap>
  <sitemap>
   <loc>/sitemap.xml</loc>
-  <lastmod>2018-10-20T09:31:00Z</lastmod>
+  <lastmod>2018-10-20T09:34:00Z</lastmod>
  </sitemap>
 </sitemapindex>
