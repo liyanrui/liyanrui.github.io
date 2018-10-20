@@ -18,7 +18,7 @@ import time
 
 # Data about this site
 BLOG_AUTHOR = "Garfileo"  # (translatable)
-BLOG_TITLE = "NULL"  # (translatable)
+BLOG_TITLE = "<code>NULL</code>"  # (translatable)
 # This is the main URL for your site. It will be used
 # in a prominent link. Don't forget the protocol (http/https)!
 SITE_URL = "/"
@@ -141,7 +141,7 @@ NAVIGATION_LINKS = {
 }
 
 # Name of the theme to use.
-THEME = "Jinja2"
+THEME = "bootblog4"
 
 # Primary color of your theme. This will be used to customize your theme and
 # auto-generate related colors in POSTS_SECTION_COLORS. Must be a HEX value.
