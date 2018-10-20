@@ -79,7 +79,7 @@ Nikola">
     <div>
 <p>Nikola 是我用了 3 年的静态网页生成工具，这个 Github 主页上的所有页面皆由它生成。它的安装与基本用法可参考《<a href="https://www.getnikola.com/getting-started.html">Nikola 入门文档</a>》，对于 Linux 环境，建议在 virtualenv + python 3 环境中安装它。它的更详细的用法，见《<a href="https://www.getnikola.com/handbook.html">Nikola 手册</a>》。本文仅记录我在使用 Nikola 过程中遇到的一些小问题以及不甚高明的对策，仅作备忘之用。</p>
 <h2>自定义首页</h2>
-<p>Nikola 会自动生成首页，将 10 近期的文章内容收集到一个页面，该页面对应的文件为 index.html。这份文件默认会被放到站点的根目录里，所以，它就成了站点的首页。我觉得 Nikola 这个功能很鸡肋，因为我想自己定义首页，而不是这种自动生成的东西。该怎么办呢？</p>
+<p>Nikola 会自动生成首页，将近期的文章内容收集到一个页面，该页面对应的文件为 index.html。这份文件默认会被放到站点的根目录里，所以，它就成了站点的首页。我觉得 Nikola 这个功能很鸡肋，因为我想自己定义首页，而不是这种自动生成的东西。该怎么办呢？</p>
 <p>首先，在 conf.py 文件里，将 <code>INDEX_PATH</code> 设为</p>
 <pre class="code literal-block"><span></span>INDEX_PATH = "blog"
 </pre>
