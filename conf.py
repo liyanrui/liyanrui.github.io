@@ -207,7 +207,7 @@ TIMEZONE = "Asia/Shanghai"
 
 # Date format used to display post dates. (translatable)
 # (str used by datetime.datetime.strftime)
-DATE_FORMAT = 'MM-DD HH:MM'
+DATE_FORMAT = 'MM-dd HH:mm'
 
 # Date format used to display post dates, if local dates are used. (translatable)
 # (str used by moment.js)
