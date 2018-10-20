@@ -939,7 +939,7 @@ LICENSE = ""
 # A small copyright notice for the page footer (in HTML).
 # (translatable)
 
-CONTENT_FOOTER = '我的邮箱：{email}'
+CONTENT_FOOTER = '<我的邮箱：{email}'
 
 # Things that will be passed to CONTENT_FOOTER.format().  This is done
 # for translatability, as dicts are not formattable.  Nikola will
