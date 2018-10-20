@@ -3,7 +3,7 @@
 .. slug: index
 -->
 
-<p style="align:center">
+<p style="text-align:center">
 祭司死了<br />
 最后一个人<br />
 作为祭品<br />
