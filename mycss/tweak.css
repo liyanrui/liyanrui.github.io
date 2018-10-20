@@ -1,11 +1,10 @@
-.block-header py-3{ display: none !important; }
 .storypage .entry-title { display:none; }
 .footer { text-align:center; }
 
 .entry-title, .metadata { text-align: center; }
 h1, h2, h3, h4 {
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
-    padding: 0.5em 0 0.5em 0;
+    padding: 0.5em 0;
 }
 
 h1 {font-size: 28px;}
