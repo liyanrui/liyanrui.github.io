@@ -17,8 +17,8 @@ import time
 
 
 # Data about this site
-BLOG_AUTHOR = "明夷虫"  # (translatable)
-BLOG_TITLE = " 温暖的冬眠"  # (translatable)
+BLOG_AUTHOR = "Garfileo"  # (translatable)
+BLOG_TITLE = "NULL"  # (translatable)
 # This is the main URL for your site. It will be used
 # in a prominent link. Don't forget the protocol (http/https)!
 SITE_URL = "/"
@@ -207,7 +207,7 @@ TIMEZONE = "Asia/Shanghai"
 
 # Date format used to display post dates. (translatable)
 # (str used by datetime.datetime.strftime)
-DATE_FORMAT = 'MM-dd'
+DATE_FORMAT = 'YY-MM-dd'
 
 # Date format used to display post dates, if local dates are used. (translatable)
 # (str used by moment.js)
