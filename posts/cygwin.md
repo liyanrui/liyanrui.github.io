@@ -21,7 +21,7 @@
 
 键盘：在 Windows 系统上造一个假的内核来欺骗 Bash 么？
 
-我：意识到自身的存在，意识到意识的存在，意识到意识可以产生新的意识，之后，世界就充满了欺骗……去 https://cygwin.com/setup-x86.exe 下载 32 位的 Cygwin 安装文件。我的机器虽然有 64 位的 CPU，所安装的 Windows 7 却是 32 位的……这是很多年前的机器。若是 Windows 系统是 64 位，需要去这里下载：https://cygwin.com/setup-x86_64.exe
+我：意识到自身的存在，意识到意识的存在，意识到意识可以产生新的意识，之后，世界就充满了欺骗……从 [https://cygwin.com](https://cygwin.com) 可以下载面 Cygwin 的安装文件。若所用的 Windows 系统为 64 位，就下载 setup-x86_64.exe；若系统为 32 位，则应下载 setup-x86.exe。我的机器虽然是 64 位，但因安装的 Windows 7 是 32 位的，所以应下载 setup-x86.exe。
 
 鼠标：唯！
 
@@ -31,11 +31,11 @@
 
 为了备以后的自己之需或他人之需，我将 Cygwin 的 32 位和 64 位安装文件都下载了下来，存到了百度网盘：
 
-* 32 位
-  * 地址：https://pan.baidu.com/s/1Y23JGMdtLgHRAywKXnnYvg  
+* setup-x86.exe
+  * 地址：[https://pan.baidu.com/s/1Y23JGMdtLgHRAywKXnnYvg](https://pan.baidu.com/s/1Y23JGMdtLgHRAywKXnnYvg)
   * 提取码：ujdm
-* 64 位
-  * 地址：https://pan.baidu.com/s/1ijhLFFBoE5a74LRXLVeoHA
+* setup-x86_64.exe
+  * 地址：[https://pan.baidu.com/s/1ijhLFFBoE5a74LRXLVeoHA](https://pan.baidu.com/s/1ijhLFFBoE5a74LRXLVeoHA)
   * 提取码：q745
 
 键盘：……刚才梦到了终端。
