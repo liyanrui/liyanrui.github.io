@@ -1,4 +1,6 @@
+.block-header {display: none; }
 .storypage .entry-title {display:none;}
+
 .entry-title, .metadata {text-align: center;}
 h1, h2, h3, h4 {
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
