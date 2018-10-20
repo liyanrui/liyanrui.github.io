@@ -1,7 +1,8 @@
 .storypage .entry-title { display:none; }
 .footer { text-align:center; }
 
-.entry-title, .metadata { text-align: center; }
+.entry-title { text-align: center; }
+.metadata { display:none !important; }
 
 #brand {
     margin: 0;
