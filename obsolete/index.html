@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title> 温暖的冬眠</title>
 <link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
 <meta name="theme-color" content="#5670d4">
 <meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="../rss.xml">
@@ -32,60 +33,203 @@
 <body>
 <a href="#content" class="sr-only sr-only-focusable">跳到主内容</a>
 
-<!-- Menubar -->
-
-<nav class="navbar navbar-inverse navbar-static-top"><div class="container">
-<!-- This keeps the margins nice -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar" aria-controls="bs-navbar" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
+<!-- Header and menu bar -->
+<div class="container">
+      <header class="blog-header py-3"><div class="row nbb-header align-items-center">
+          <div class="col-md-3 col-xs-2 col-sm-2" style="width: auto;">
+            <button class="navbar-toggler navbar-light bg-light nbb-navbar-toggler" type="button" data-toggle="collapse" data-target=".bs-nav-collapsible" aria-controls="bs-navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
-            <a class="navbar-brand" href="../">
-
-                <span id="blog-title"> 温暖的冬眠</span>
-            </a>
+            <div class="collapse bs-nav-collapsible bootblog4-search-form-holder">
+                
+            </div>
         </div>
-<!-- /.navbar-header -->
-        <div class="collapse navbar-collapse" id="bs-navbar" role="navigation" aria-expanded="false">
-            <ul class="nav navbar-nav">
-<li>
-<a href="../categories/index.html">标签</a>
+          <div class="col-md-6 col-xs-10 col-sm-10 bootblog4-brand" style="width: auto;">
+            <a class="navbar-brand blog-header-logo text-dark" href="../">
+
+            <span id="blog-title"> 温暖的冬眠</span>
+        </a>
+          </div>
+            <div class="col-md-3 justify-content-end align-items-center bs-nav-collapsible collapse flex-collapse bootblog4-right-nav">
+            <nav class="navbar navbar-light bg-white"><ul class="navbar-nav bootblog4-right-nav"></ul></nav>
+</div>
+    </div>
+</header><nav class="navbar navbar-expand-md navbar-light bg-white static-top"><div class="collapse navbar-collapse bs-nav-collapsible" id="bs-navbar">
+            <ul class="navbar-nav nav-fill d-flex w-100">
+<li class="nav-item">
+<a href="../categories/index.html" class="nav-link">标签</a>
                 </li>
-<li>
-<a href="../archive.html">文章存档</a>
+<li class="nav-item">
+<a href="../archive.html" class="nav-link">文章存档</a>
 
                 
             </li>
 </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!-- /.navbar-collapse -->
-    </div>
-<!-- /.container -->
-</nav><!-- End of Menubar --><div class="container" id="content" role="main">
+</nav>
+</div>
+
+<div class="container" id="content" role="main">
     <div class="body-content">
         <!--Body content-->
-        <div class="row">
-            
-            
+        
+        
+    
+        
 
     
+        
+    <div class="postindex">
+            <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/cygwin.html" class="u-url">cygwin</a></h1>
+                <div class="metadata">
+                    <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                        明夷虫
+                    </span></p>
+            <p class="dateline">
+            <a href="../posts/cygwin.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-10-20T11:20:12+08:00" itemprop="datePublished" title="10-20">10-20</time></a>
+            </p>
+                </div>
+            </header><div class="e-content entry-content">
+                    <div>
+<p>我：键盘，最近这几天，要在一台装有微软 Windows 7 的机器上工作，也就是说，这段时间没有 Linux 可用。</p>
+<p>键盘：Windows 7 里有终端么？</p>
+<p>我：有一个，但是不叫终端，而叫控制台，是那个通常被称为命令提示符或 cmd 的命令行窗口。不过，从 Windows 7 开始，微软提供了 PowerShell，在功能与 Bash 较为接近，可视为同类。由于我每年在 Windows 系统里呆的时间很短，所以 PowerShell 的好坏，和我没有关系。</p>
+<p>键盘：和我也没有关系。希望早日回到 Linux。</p>
+<p>我：可以在 Windows 7 上安装一个 Cygwin，这样我们就可以临时有个模拟的 Linux 内核，可以在这个内核上运行 Bash。</p>
+<p>键盘：在 Windows 系统上造一个假的内核来欺骗 Bash 么？</p>
+<p>我：意识到自身的存在，意识到意识的存在，意识到意识可以产生新的意识，之后，世界就充满了欺骗……去 https://cygwin.com/setup-x86.exe 下载 32 位的 Cygwin 安装文件。我的机器虽然有 64 位的 CPU，所安装的 Windows 7 却是 32 位的……这是很多年前的机器。若是 Windows 系统是 64 位，需要去这里下载：https://cygwin.com/setup-x86_64.exe</p>
+<p>鼠标：唯！</p>
+<p>键盘：我可以睡一会了。</p>
+<p>得益于中国互联网举世无双的开放，所以 Cygwin 安装文件的下载速度只有 7 KB/秒，导致虽然只有 1 MB 的文件，下载了半个小时也没成功，总是断。只好重启系统，进入 Linux……我的 Linux 里有个梯子，通过梯子，下载速度总算过了 100 KB/秒……必须坚信，中国的互联网的确是举世无双的开放。</p>
+<p>为了备以后的自己之需或他人之需，我将 Cygwin 的 32 位和 64 位安装文件都下载了下来，存到了百度网盘：</p>
+<ul>
+<li>32 位</li>
+<li>地址：https://pan.baidu.com/s/1Y23JGMdtLgHRAywKXnnYvg  </li>
+<li>提取码：ujdm</li>
+<li>64 位</li>
+<li>地址：https://pan.baidu.com/s/1ijhLFFBoE5a74LRXLVeoHA</li>
+<li>提取码：q745</li>
+</ul>
+<p>键盘：……刚才梦到了终端。</p>
+<p>机器轻微响了起来，Linux 去了，Windows 7 来了……我终于能够从百度网盘以 100+ KB/秒的速度终于将 Cygwin 的 32 位安装文件 setup-x86.exe 下载成功……</p>
+<p>鼠标：我找到它了……双击！</p>
+<p>setup-x86.exe：你想允许来自未知发布者的以下程序对此计算机的更改吗？</p>
+<p>鼠标：是！</p>
+<p>setup-x86.exe：要开始安装了，下一步，还是取消？</p>
+<p>鼠标：下一步！</p>
+<p>setup-x86.exe：选哪个？</p>
+<ul>
+<li>Install from internet (downloaded files will be kept for future re-use)</li>
+<li>Download without installing</li>
+<li>Install from Local Directory</li>
+</ul>
+<p>鼠标：从网络安装，嗯……Install from internet！下一步！</p>
+<p>setup-x86.exe：Root Directory，要设为 C:\cygwin 吗？Install for All users 吗？</p>
+<p><img alt="" src="../images/cygwin-installation/01.png"></p>
+<p>键盘：D:\cygwin</p>
+<p>鼠标：Install for All users！下一步！</p>
+<p>setup-x86.exe：Local Package Directory（本地包目录）是设为 D:\ 吗？</p>
+<p><img alt="" src="../images/cygwin-installation/02.png"></p>
+<p>键盘：D:\cygwin-packages</p>
+<p>鼠标：下一步……</p>
+<p>setup-x86.exe：出错啦，这个目录不存在，要不要我帮你建一个？</p>
+<p>鼠标：嗯！</p>
+<p>setup-x86.exe：Select Your Internet Connection……</p>
+<p><img alt="" src="../images/cygwin-installation/03.png"></p>
+<p>鼠标：……Direct Connection……下一步！</p>
+<p>setup-x86.exe：等一会吧，我要从 https://cygwin.com 下载软件包镜像网站列表……当然，你有权利选择取消，但后果自负……</p>
+<p><img alt="" src="../images/cygwin-installation/04.png"></p>
+<p>好了……网站列表有了，从里面选一个！</p>
+<p><img alt="" src="../images/cygwin-installation/05.png"></p>
+<p>键盘：鼠标，不要轻举妄动……要记住，你是在中国，这个列表里的，大多不符合国情。还是我来吧，User URL：http://mirrors.163.com/cygwin/</p>
+<p>最终解释权归网易所有：http://mirrors.163.com/.help/cygwin.html</p>
+<p>鼠标：Add！</p>
+<p>setup-x86.exe：现在可从列表里选中 http://mirrors.163.com</p>
+<p><img alt="" src="../images/cygwin-installation/06.png"></p>
+<p>鼠标：下一步！</p>
+<p>setup-x86.exe：现在，我要从符合国情的 http://mirrors.163.com 网站获取软件包列表，稍等片刻……当然，你有权利选择取消，但后果自负……</p>
+<p><img alt="" src="../images/cygwin-installation/07.png"></p>
+<p>好了，已获得所有的软件包列表……接下来，选择自己要安装的软件吧。</p>
+<p><img alt="" src="../images/cygwin-installation/08.png"></p>
+<p>键盘：鼠标，点手绘的蓝色箭头所指向的蓝色圈圈里的那个小图标！那是 Bash。</p>
+<p><img alt="" src="../images/cygwin-installation/09.png"></p>
+<p>鼠标：诺！下一步！</p>
+<p>setup-x86.exe：要安装 Bash，我告诉你，它需要依赖一些其他软件包，</p>
+<p><img alt="" src="../images/cygwin-installation/10.png"></p>
+<p>鼠标：下一步！</p>
+<p>setup-x86.exe：唯！我帮你下载，然后安装它们……</p>
+<p><img alt="" src="../images/cygwin-installation/11.png"></p>
+<p>完毕！</p>
+<p><img alt="" src="../images/cygwin-installation/12.png"></p>
+<p>要在桌面和开始菜单里出现可以开启 Cygwin 的优美的快捷图标吗？我的建议是，要。</p>
+<p>鼠标：完成！</p>
+<p>键盘：桌面上或开始菜单里的 Cygwin Terminal 的图标……鼠标，拜托你双击它！</p>
+<p><img alt="" src="../images/cygwin-installation/13.png"></p>
+<p>鼠标：诺！出现了这个……</p>
+<p><img alt="" src="../images/cygwin-installation/14.png"></p>
+<p>键盘：字太小了……在这个窗口内单击右键，看看有没有可以设置的选项……</p>
+<p>鼠标：诺！</p>
+<p><img alt="" src="../images/cygwin-installation/15.png"></p>
+<p>唉……好累啊……我把一些重要的地方打上圈，设好后，最后记得 Save 就好。</p>
+<p><img alt="" src="../images/cygwin-installation/16.png"></p>
+<p>键盘：大恩不言谢……不过，总算可以观察到终端的存在了。</p>
+<p><img alt="" src="../images/cygwin-installation/17.png"></p>
+<p>我：键盘，你知道我为什么不喜欢用 Windows 了么？</p>
+<p>键盘：连鼠标都觉得累。</p>
+<p>我：最累的是截屏软件。</p>
+<p>键盘：在刚才的安装过程里，软件包的列表有很多软件，而我们却只安装了一个 Bash。以后若安装别的软件包该怎么办？</p>
+<p>setup-x86.exe：把我复制到 D:\cygwin\bin 目录，以后在 Cygwin Terminal 里执行</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> setup-x86.exe -q -P 软件包名称
+</pre>
 
 
-    
-<div class="postindex">
-    <article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../posts/jaynes-exercises.html" class="u-url">Jaynes 概率论习题答案</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                明夷虫
-            </span></p>
-            <p class="dateline"><a href="../posts/jaynes-exercises.html" rel="bookmark"><time class="published dt-published" datetime="2018-07-19T16:18:11+08:00" title="07-19">07-19</time></a></p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div>
+<p>便可以安装制定的软件包。例如，安装 lua：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> setup-x86.exe -q -P lua
+</pre>
+
+
+<p>可以对上述安装命令进行一些简化：</p>
+<pre class="code literal-block"><span></span>$ cat <span class="s">&lt;&lt; EOF &gt;&gt; .bashrc</span>
+<span class="s">alias pkg="setup-x86.exe -q -P"</span>
+<span class="s">EOF</span>
+</pre>
+
+
+<p>以后可直接使用 <code>pkg</code> 命令安装软件包，例如</p>
+<pre class="code literal-block"><span></span>$ pkg lua
+</pre>
+
+
+<blockquote>
+<p>注：我用的是 32 位 Windows。对于 64 位 Windows，需将上述的 <code>setup-x86.exe</code> 换成 <code>setup-x86_64.exe</code>。</p>
+</blockquote>
+<p>PS1：我是命令行提示符，让我显得更友好一些的设定是</p>
+<pre class="code literal-block"><span></span>$ cat <span class="s">&lt;&lt; EOF &gt;&gt; .bashrc</span>
+
+<span class="s">PS1="\[\e[0;32m\]\w\n\[\e[00m\]$ "</span>
+<span class="s">EOF</span>
+</pre>
+
+
+<p>source：看我施展法力，让上述在 .bashrc 中的设定在当前终端中生效，</p>
+<pre class="code literal-block"><span></span>$ <span class="nb">source</span> ~/.bashrc
+</pre>
+</div>
+                </div>
+            </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/jaynes-exercises.html" class="u-url">Jaynes 概率论习题答案</a></h1>
+                <div class="metadata">
+                    <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                        明夷虫
+                    </span></p>
+            <p class="dateline">
+            <a href="../posts/jaynes-exercises.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-07-19T16:18:11+08:00" itemprop="datePublished" title="07-19">07-19</time></a>
+            </p>
+                </div>
+            </header><div class="e-content entry-content">
+                    <div>
 <h2>习题 3.2</h2>
 <p>假设瓮内含有 $N = \sum N_i$ 个球，$N_1$ 个颜色 $1$ 的，$N_2$ 个颜色 $2$ 的，$\cdots$，$N_k$ 个颜色 $k$ 的。从瓮中无放回地取出 $m$ 个球；每种颜色的球至少取一个的概率是多大？假设 $k = 5$，所有的 $N_i = 10$，若得到颜色全集的概率为 90\%，需要取多少次？</p>
 <p>假设由 $k$ 个正数构成的集合 $\{m_1,\cdots,m_k\}$，当它满足 $m_1 + \cdots + m_k = m$ 时，将其称为 $m$ 的分解。$m_i$ 表示第 $i$ 种颜色的球的个数。根据广义超几何分布公式，可得</p>
@@ -102,16 +246,19 @@ $$</p>
 \frac{\begin{pmatrix}3 \\ 1\end{pmatrix}\begin{pmatrix}4 \\ 1\end{pmatrix}\begin{pmatrix}2 \\ 2\end{pmatrix} + \begin{pmatrix}3 \\ 1\end{pmatrix}\begin{pmatrix}4 \\ 2\end{pmatrix}\begin{pmatrix}2 \\ 1\end{pmatrix} + \begin{pmatrix}3 \\ 2\end{pmatrix}\begin{pmatrix}4 \\ 1\end{pmatrix}\begin{pmatrix}2 \\ 1\end{pmatrix}}{\begin{pmatrix}9\\ 4\end{pmatrix}} = \frac{4}{7}
 $$</p>
 </div>
-    </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../posts/first-sight.html" class="u-url">第一眼</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                明夷虫
-            </span></p>
-            <p class="dateline"><a href="../posts/first-sight.html" rel="bookmark"><time class="published dt-published" datetime="2018-05-12T10:20:07+08:00" title="05-12">05-12</time></a></p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div>
+                </div>
+            </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/first-sight.html" class="u-url">第一眼</a></h1>
+                <div class="metadata">
+                    <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                        明夷虫
+                    </span></p>
+            <p class="dateline">
+            <a href="../posts/first-sight.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-05-12T10:20:07+08:00" itemprop="datePublished" title="05-12">05-12</time></a>
+            </p>
+                </div>
+            </header><div class="e-content entry-content">
+                    <div>
 <p>许多天前说过，当你觉得万般无聊之时，可能是好事。因为自己已经站立在一个新世界的门外了。不妨推开那扇门，走进去。只凭借思想在这个新的世界里行走。能走多远就走多远。</p>
 <p>第一步该如何走呢？这可能是人类的一小步，自己的一大步。不过，在考虑如何走第一步之前，不是应该打量一下这个世界么？</p>
 <p>放眼望去，眼前必定是什么都没有，连空旷都没有，连光都没有，连虚无都没有。若是门尚未关上，回首望去，身后的世界应当依然光彩黯淡，令人厌倦。这第一眼，可以确定无聊的真实存在。若是看不到，那么就应当从哪里来就回哪里去。纵使归去，也并非白来，想必会更加珍惜以往的所有。</p>
@@ -129,16 +276,19 @@ $$</p>
 <p>动荡的湖面，多高的波峰就对应着多深的波谷，它们总是同时出现，同时存在。在追求人生的巅峰的时候，人生的波谷也就已经出现了。恨当由爱来补，失意当由友情来补，抑郁当由学习、工作和充足的睡眠来补。一味地报复，酗酒，向无情的世界诉说自己有多么愤怒多么悲伤，只不过是自己将一块又一块的巨石投入心里，从而更剧烈地扭曲一切罢了。若是时间足够长，一切可能也终会归于平静。不过，既然现在已经确定了对立面的存在，为何不拿来加以利用呢？</p>
 <p>当我能够微笑着把伤心的事讲给别人听的时候，我看到的是自己的平凡。这个时候，我在这个什么都没有的世界里看了第一眼。</p>
 </div>
-    </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../posts/nikola-tips.html" class="u-url">Nikola 琐事</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                明夷虫
-            </span></p>
-            <p class="dateline"><a href="../posts/nikola-tips.html" rel="bookmark"><time class="published dt-published" datetime="2018-04-26T10:03:25+08:00" title="04-26">04-26</time></a></p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div>
+                </div>
+            </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/nikola-tips.html" class="u-url">Nikola 琐事</a></h1>
+                <div class="metadata">
+                    <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                        明夷虫
+                    </span></p>
+            <p class="dateline">
+            <a href="../posts/nikola-tips.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-04-26T10:03:25+08:00" itemprop="datePublished" title="04-26">04-26</time></a>
+            </p>
+                </div>
+            </header><div class="e-content entry-content">
+                    <div>
 <p>Nikola 是我用了 3 年的静态网页生成工具，这个 Github 主页上的所有页面皆由它生成。它的安装与基本用法可参考《<a href="https://www.getnikola.com/getting-started.html">Nikola 入门文档</a>》，对于 Linux 环境，建议在 virtualenv + python 3 环境中安装它。它的更详细的用法，见《<a href="https://www.getnikola.com/handbook.html">Nikola 手册</a>》。本文仅记录我在使用 Nikola 过程中遇到的一些小问题以及不甚高明的对策，仅作备忘之用。</p>
 <h2>自定义首页</h2>
 <p>Nikola 会自动生成首页，将 10 近期的文章内容收集到一个页面，该页面对应的文件为 index.html。这份文件默认会被放到站点的根目录里，所以，它就成了站点的首页。我觉得 Nikola 这个功能很鸡肋，因为我想自己定义首页，而不是这种自动生成的东西。该怎么办呢？</p>
@@ -188,16 +338,19 @@ $$</p>
 # IMAGE_THUMBNAIL_FORMAT = '{name}.thumbnail{ext}'
 </pre>
 </div>
-    </div>
-    </article><article class="h-entry post-text"><header><h1 class="p-name entry-title"><a href="../posts/same-time.html" class="u-url">同时</a></h1>
-        <div class="metadata">
-            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
-                明夷虫
-            </span></p>
-            <p class="dateline"><a href="../posts/same-time.html" rel="bookmark"><time class="published dt-published" datetime="2018-03-23T19:27:07+08:00" title="03-23">03-23</time></a></p>
-        </div>
-    </header><div class="e-content entry-content">
-    <div>
+                </div>
+            </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/same-time.html" class="u-url">同时</a></h1>
+                <div class="metadata">
+                    <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                        明夷虫
+                    </span></p>
+            <p class="dateline">
+            <a href="../posts/same-time.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-03-23T19:27:07+08:00" itemprop="datePublished" title="03-23">03-23</time></a>
+            </p>
+                </div>
+            </header><div class="e-content entry-content">
+                    <div>
 <p>与人有关的事，都可以表示为命题，用概率表示命题为真的可能性大小。</p>
 <p>可以用 $P(A)$ 来表示命题 $A$ 为真的概率，而且对于命题，还可以把它们「$\times$」起来，或者「$+$」起来。</p>
 <p>例如，$AB$，就是两个命题乘了起来。例如，上帝……算了，还是不要再气他了。例如，假设命题 $A$ 是「今天太阳从东方升起」，命题 $B$ 是「明天太阳从东方升起」，那么 $AB$ 就表示「今天和明天，太阳都从东方升起」。</p>
@@ -260,17 +413,16 @@ $$</p>
 <p>再看一下 $P(B|A)$ 这样的条件概率。倘若我不知道 $A$ 与 $B$ 的关系—— $A$ 为真会对 $B$ 有何影响，所以我可以无知地认为 $P(B|A) = P(B)$。但是，是否存在 $A$ 为真而对 $B$ 产生影响的情况呢？</p>
 <p>存在。例如，量子纠缠现象，不过，与相对论一样，我对它的了解程度仅仅是科普级别，还是换一个例子为好。以一个妹子为例。她怀孕了，这个命题与一大堆命题有关系。有三个男人分别变成了准父亲、准爷爷、准外公，有三个女人分别变成了准妈妈、准奶奶、准外婆。某地计生部门又多了一项准生育记录……房地产商又卖出了一套准房子。倘若细说下去，估计这一生也说不完，然而令我匪夷所思的是，这些命题皆为真。或许这足以说明，我对宇宙很无知，但对世事已洞明。</p>
 </div>
-    </div>
-    </article>
+                </div>
+            </article>
 </div>
+    
+
+    
+
+    
 
 
-
-
-
-
-
-        </div>
         <!--End of body content-->
 
         <footer id="footer">
@@ -281,9 +433,15 @@ $$</p>
 </div>
 
 
-            <script src="../assets/js/all-nocdn.js"></script><script src="../assets/js/colorbox-i18n/jquery.colorbox-zh-CN.js"></script><script>$('a.image-reference:not(.islink) img:not(.islink)').parent().colorbox({rel:"gal",maxWidth:"100%",maxHeight:"100%",scalePhotos:true});</script><!-- fancy dates --><script>
+        <script src="../assets/js/all-nocdn.js"></script><!-- fancy dates --><script>
     moment.locale("zh-cn");
     fancydates(0, "YYYY-MM-DD HH:mm");
-    </script><!-- end fancy dates -->
+    </script><!-- end fancy dates --><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element) {
+            return element.getElementsByTagName('img')[0].alt;
+    }});
+    </script>
 </body>
 </html>
