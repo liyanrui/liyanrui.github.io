@@ -1,3 +1,5 @@
+html {font-size: 62.5%; /*10 ÷ 16 × 100% = 62.5%*/}
+
 .storypage .entry-title { display:none; }
 .footer { text-align:center; }
 
@@ -15,10 +17,10 @@ h1, h2, h3, h4 {
     margin: 0;
 }
 
-h1 {font-size: 28px;}
-h2 {font-size: 24px;}
-h3 {font-size: 20px;}
-h4 {font-size: 16px;}
+h1 {font-size: 2.5rem;}
+h2 {font-size: 2rem;}
+h3 {font-size: 1.5rem;}
+h4 {font-size: 1rem;}
 
 p {
     font-size: 14px;
