@@ -11,7 +11,6 @@ html {font-size: 62.5%; /*10 ÷ 16 × 100% = 62.5%*/}
 .storypage .entry-title { display:none; }
 .footer { text-align:center; }
 
-.entry-title { text-align: center; }
 .metadata { display:none !important; }
 
 #brand {
@@ -26,6 +25,7 @@ h1, h2, h3, h4 {
     margin: 0;
 }
 
+.entry-title { text-align: center; font-size: 1.7rem;}
 h1 {font-size: 1.7rem;}
 h2 {font-size: 1.5rem;}
 h3 {font-size: 1.3rem;}
