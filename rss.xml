@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL</title><link>/index.html</link><description>LiYanrui's homepage.</description><atom:link href="/index.html/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Sun, 21 Oct 2018 02:40:38 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Cygwin</title><link>/index.html/posts/cygwin.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;我：键盘，最近这几天，要在一台装有微软 Windows 7 的机器上工作，也就是说，这段时间没有 Linux 可用。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Sun, 21 Oct 2018 02:41:01 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Cygwin</title><link>/posts/cygwin.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;我：键盘，最近这几天，要在一台装有微软 Windows 7 的机器上工作，也就是说，这段时间没有 Linux 可用。&lt;/p&gt;
 &lt;p&gt;键盘：Windows 7 里有终端么？&lt;/p&gt;
 &lt;p&gt;我：有一个，但是不叫终端，而叫控制台，是那个通常被称为命令提示符或 cmd 的命令行窗口。不过，从 Windows 7 开始，微软提供了 PowerShell，在功能与 Bash 较为接近，可视为同类。由于我每年在 Windows 系统里呆的时间很短，所以 PowerShell 的好坏，和我没有关系。&lt;/p&gt;
 &lt;p&gt;键盘：和我也没有关系。希望早日回到 Linux。&lt;/p&gt;
@@ -29,55 +29,55 @@
 &lt;/ul&gt;
 &lt;p&gt;鼠标：从网络安装，嗯……Install from internet！下一步！&lt;/p&gt;
 &lt;p&gt;setup-x86.exe：Root Directory，要设为 C:\cygwin 吗？Install for All users 吗？&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/01.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/01.png"&gt;&lt;/p&gt;
 &lt;p&gt;键盘：D:\cygwin&lt;/p&gt;
 &lt;p&gt;鼠标：Install for All users！下一步！&lt;/p&gt;
 &lt;p&gt;setup-x86.exe：Local Package Directory（本地包目录）是设为 D:\ 吗？&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/02.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/02.png"&gt;&lt;/p&gt;
 &lt;p&gt;键盘：D:\cygwin-packages&lt;/p&gt;
 &lt;p&gt;鼠标：下一步……&lt;/p&gt;
 &lt;p&gt;setup-x86.exe：出错啦，这个目录不存在，要不要我帮你建一个？&lt;/p&gt;
 &lt;p&gt;鼠标：嗯！&lt;/p&gt;
 &lt;p&gt;setup-x86.exe：Select Your Internet Connection……&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/03.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/03.png"&gt;&lt;/p&gt;
 &lt;p&gt;鼠标：……Direct Connection……下一步！&lt;/p&gt;
 &lt;p&gt;setup-x86.exe：等一会吧，我要从 https://cygwin.com 下载软件包镜像网站列表……当然，你有权利选择取消，但后果自负……&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/04.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/04.png"&gt;&lt;/p&gt;
 &lt;p&gt;好了……网站列表有了，从里面选一个！&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/05.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/05.png"&gt;&lt;/p&gt;
 &lt;p&gt;键盘：鼠标，不要轻举妄动……要记住，你是在中国，这个列表里的，大多不符合国情。还是我来吧，User URL：http://mirrors.163.com/cygwin/&lt;/p&gt;
 &lt;p&gt;最终解释权归网易所有：http://mirrors.163.com/.help/cygwin.html&lt;/p&gt;
 &lt;p&gt;鼠标：Add！&lt;/p&gt;
 &lt;p&gt;setup-x86.exe：现在可从列表里选中 http://mirrors.163.com&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/06.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/06.png"&gt;&lt;/p&gt;
 &lt;p&gt;鼠标：下一步！&lt;/p&gt;
 &lt;p&gt;setup-x86.exe：现在，我要从符合国情的 http://mirrors.163.com 网站获取软件包列表，稍等片刻……当然，你有权利选择取消，但后果自负……&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/07.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/07.png"&gt;&lt;/p&gt;
 &lt;p&gt;好了，已获得所有的软件包列表……接下来，选择自己要安装的软件吧。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/08.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/08.png"&gt;&lt;/p&gt;
 &lt;p&gt;键盘：鼠标，点手绘的蓝色箭头所指向的蓝色圈圈里的那个小图标！那是 Bash。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/09.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/09.png"&gt;&lt;/p&gt;
 &lt;p&gt;鼠标：诺！下一步！&lt;/p&gt;
 &lt;p&gt;setup-x86.exe：要安装 Bash，我告诉你，它需要依赖一些其他软件包，&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/10.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/10.png"&gt;&lt;/p&gt;
 &lt;p&gt;鼠标：下一步！&lt;/p&gt;
 &lt;p&gt;setup-x86.exe：唯！我帮你下载，然后安装它们……&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/11.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/11.png"&gt;&lt;/p&gt;
 &lt;p&gt;完毕！&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/12.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/12.png"&gt;&lt;/p&gt;
 &lt;p&gt;要在桌面和开始菜单里出现可以开启 Cygwin 的优美的快捷图标吗？我的建议是，要。&lt;/p&gt;
 &lt;p&gt;鼠标：完成！&lt;/p&gt;
 &lt;p&gt;键盘：桌面上或开始菜单里的 Cygwin Terminal 的图标……鼠标，拜托你双击它！&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/13.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/13.png"&gt;&lt;/p&gt;
 &lt;p&gt;鼠标：诺！出现了这个……&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/14.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/14.png"&gt;&lt;/p&gt;
 &lt;p&gt;键盘：字太小了……在这个窗口内单击右键，看看有没有可以设置的选项……&lt;/p&gt;
 &lt;p&gt;鼠标：诺！&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/15.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/15.png"&gt;&lt;/p&gt;
 &lt;p&gt;唉……好累啊……我把一些重要的地方打上圈，设好后，最后记得 Save 就好。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/16.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/16.png"&gt;&lt;/p&gt;
 &lt;p&gt;键盘：大恩不言谢……不过，总算可以观察到终端的存在了。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="" src="/index.html/images/cygwin-installation/17.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/cygwin-installation/17.png"&gt;&lt;/p&gt;
 &lt;p&gt;我：键盘，你知道我为什么不喜欢用 Windows 了么？&lt;/p&gt;
 &lt;p&gt;键盘：连鼠标都觉得累。&lt;/p&gt;
 &lt;p&gt;我：最累的是截屏软件。&lt;/p&gt;
@@ -117,7 +117,7 @@
 
 &lt;p&gt;source：看我施展法力，让上述在 .bashrc 中的设定在当前终端中生效，&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;source&lt;/span&gt; ~/.bashrc
-&lt;/pre&gt;&lt;/div&gt;</description><guid>/index.html/posts/cygwin.html</guid><pubDate>Sat, 20 Oct 2018 03:20:12 GMT</pubDate></item><item><title>Nikola 琐事</title><link>/index.html/posts/nikola-tips.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;Nikola 是我用了 3 年的静态网页生成工具，这个 Github 主页上的所有页面皆由它生成。它的安装与基本用法可参考《&lt;a href="https://www.getnikola.com/getting-started.html"&gt;Nikola 入门文档&lt;/a&gt;》，对于 Linux 环境，建议在 virtualenv + python 3 环境中安装它。它的更详细的用法，见《&lt;a href="https://www.getnikola.com/handbook.html"&gt;Nikola 手册&lt;/a&gt;》。本文仅记录我在使用 Nikola 过程中遇到的一些小问题以及不甚高明的对策，仅作备忘之用。&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</description><guid>/posts/cygwin.html</guid><pubDate>Sat, 20 Oct 2018 03:20:12 GMT</pubDate></item><item><title>Nikola 琐事</title><link>/posts/nikola-tips.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;Nikola 是我用了 3 年的静态网页生成工具，这个 Github 主页上的所有页面皆由它生成。它的安装与基本用法可参考《&lt;a href="https://www.getnikola.com/getting-started.html"&gt;Nikola 入门文档&lt;/a&gt;》，对于 Linux 环境，建议在 virtualenv + python 3 环境中安装它。它的更详细的用法，见《&lt;a href="https://www.getnikola.com/handbook.html"&gt;Nikola 手册&lt;/a&gt;》。本文仅记录我在使用 Nikola 过程中遇到的一些小问题以及不甚高明的对策，仅作备忘之用。&lt;/p&gt;
 &lt;h2&gt;自定义首页&lt;/h2&gt;
 &lt;p&gt;Nikola 会自动生成首页，将近期的文章内容收集到一个页面，该页面对应的文件为 index.html。这份文件默认会被放到站点的根目录里，所以，它就成了站点的首页。我觉得 Nikola 这个功能很鸡肋，因为我想自己定义首页，而不是这种自动生成的东西。该怎么办呢？&lt;/p&gt;
 &lt;p&gt;首先，在 conf.py 文件里，将 &lt;code&gt;INDEX_PATH&lt;/code&gt; 设为&lt;/p&gt;
@@ -164,4 +164,4 @@
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;# IMAGE_FOLDERS = {'images': 'images'}
 # IMAGE_THUMBNAIL_SIZE = 400
 # IMAGE_THUMBNAIL_FORMAT = '{name}.thumbnail{ext}'
-&lt;/pre&gt;&lt;/div&gt;</description><category>nikola</category><guid>/index.html/posts/nikola-tips.html</guid><pubDate>Thu, 26 Apr 2018 02:03:25 GMT</pubDate></item></channel></rss>
+&lt;/pre&gt;&lt;/div&gt;</description><category>nikola</category><guid>/posts/nikola-tips.html</guid><pubDate>Thu, 26 Apr 2018 02:03:25 GMT</pubDate></item></channel></rss>
