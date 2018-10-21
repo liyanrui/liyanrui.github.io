@@ -420,7 +420,7 @@ WRITE_TAG_CLOUD = True
 # }
 
 # Set special titles for tag pages. The default is "Posts about TAG".
-TAG_PAGES_TITLES = {
+TAG_TITLES = {
    DEFAULT_LANG: {
        "blogging": "",
        "open source": ""
