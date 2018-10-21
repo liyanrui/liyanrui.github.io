@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Sun, 21 Oct 2018 02:57:31 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>安装 Cygwin</title><link>/posts/cygwin-installation.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;我：键盘，最近这几天，要在一台装有微软 Windows 7 的机器上工作，也就是说，这段时间没有 Linux 可用。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 技术)</title><link>/</link><description></description><atom:link href="/categories/cat_ji-zhu.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Sun, 21 Oct 2018 02:57:31 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>安装 Cygwin</title><link>/posts/cygwin-installation.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;我：键盘，最近这几天，要在一台装有微软 Windows 7 的机器上工作，也就是说，这段时间没有 Linux 可用。&lt;/p&gt;
 &lt;p&gt;键盘：Windows 7 里有终端么？&lt;/p&gt;
 &lt;p&gt;我：有一个，但是不叫终端，而叫控制台，是那个通常被称为命令提示符或 cmd 的命令行窗口。不过，从 Windows 7 开始，微软提供了 PowerShell，在功能与 Bash 较为接近，可视为同类。由于我每年在 Windows 系统里呆的时间很短，所以 PowerShell 的好坏，和我没有关系。&lt;/p&gt;
 &lt;p&gt;键盘：和我也没有关系。希望早日回到 Linux。&lt;/p&gt;
@@ -117,51 +117,4 @@
 
 &lt;p&gt;source：看我施展法力，让上述在 .bashrc 中的设定在当前终端中生效，&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;source&lt;/span&gt; ~/.bashrc
-&lt;/pre&gt;&lt;/div&gt;</description><category>Linux</category><guid>/posts/cygwin-installation.html</guid><pubDate>Sat, 20 Oct 2018 03:20:12 GMT</pubDate></item><item><title>Nikola 琐事</title><link>/posts/nikola-tips.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;Nikola 是我用了 3 年的静态网页生成工具，这个 Github 主页上的所有页面皆由它生成。它的安装与基本用法可参考《&lt;a href="https://www.getnikola.com/getting-started.html"&gt;Nikola 入门文档&lt;/a&gt;》，对于 Linux 环境，建议在 virtualenv + python 3 环境中安装它。它的更详细的用法，见《&lt;a href="https://www.getnikola.com/handbook.html"&gt;Nikola 手册&lt;/a&gt;》。本文仅记录我在使用 Nikola 过程中遇到的一些小问题以及不甚高明的对策，仅作备忘之用。&lt;/p&gt;
-&lt;h2&gt;自定义首页&lt;/h2&gt;
-&lt;p&gt;Nikola 会自动生成首页，将近期的文章内容收集到一个页面，该页面对应的文件为 index.html。这份文件默认会被放到站点的根目录里，所以，它就成了站点的首页。我觉得 Nikola 这个功能很鸡肋，因为我想自己定义首页，而不是这种自动生成的东西。该怎么办呢？&lt;/p&gt;
-&lt;p&gt;首先，在 conf.py 文件里，将 &lt;code&gt;INDEX_PATH&lt;/code&gt; 设为&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;INDEX_PATH = "blog"
-&lt;/pre&gt;
-
-
-&lt;p&gt;这样，Nikola 就会将这个自动生成的 index.html 文件放到 &lt;code&gt;站点根目录/blog&lt;/code&gt; 目录里，从而令它失去了担当站点首页的资格。理论上，也可以随便取个目录名来用，例如
-·&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;INDEX_PATH = "obsolete"
-&lt;/pre&gt;
-
-
-&lt;p&gt;用这种乾坤大挪移的办法，算是将这个鸡肋的站点首页「消灭」了。接下来，就是建立一个自定义的首页，以后手工来维护它。方法很简单，只需要在 &lt;code&gt;PAGES&lt;/code&gt; 目录，任意建立一份源文件，将其 &lt;code&gt;slug&lt;/code&gt; 设为 &lt;code&gt;index.html&lt;/code&gt; 即可。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;PAGES&lt;/code&gt; 目录，就是在 conf.py 文件中设定的目录。例如，我的设定是：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;PAGES = (
-    ("stories/*.md", "", "story.tmpl"),
-)
-&lt;/pre&gt;
-
-
-&lt;p&gt;这就意味着，我可以在 &lt;code&gt;stories&lt;/code&gt; 目录建立 &lt;code&gt;slug&lt;/code&gt; 设为 &lt;code&gt;index.html&lt;/code&gt; 的源文件（至于它对应的文件名是什么，并不重要）。假设这份源文件是 Markdown 格式，那么所谓 &lt;code&gt;slug&lt;/code&gt; 就是文件头中的 &lt;code&gt;slug&lt;/code&gt; 条目，例如：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;!-- 
-.. title: 
-.. slug: index
---&amp;gt;
-&lt;/pre&gt;
-
-
-&lt;p&gt;剩下的内容可自由定义。&lt;/p&gt;
-&lt;p&gt;当网站内容重新发布时，这份源文件就会被转化为网站根目录中的 index.html 文件。因为 Nikola 就是这样对待 &lt;code&gt;PAGES&lt;/code&gt; 目录中的源文件的，会把它们「平铺」在网站的根目录里。&lt;/p&gt;
-&lt;h2&gt;图片目录冲突&lt;/h2&gt;
-&lt;p&gt;在 conf.py 文件中，我设定了专门用于放图片的目录 images：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;FILES_FOLDERS = {'files': 'files',
-                 'meta-doc': 'meta-doc',
-                 'mycss': 'mycss',
-                 'MathJax': 'MathJax',
-                 'images': 'images'} # &amp;lt;&amp;lt;&amp;lt;----- here ----------
-&lt;/pre&gt;
-
-
-&lt;p&gt;但是 Nikola 有个自动缩放图片的功能，它会将自动缩放的图片也存放在一个名为 images 的目录，这样就与我设定的目录发生了冲突，而且 Nikola 在生成网页文件的时候会罢工。&lt;/p&gt;
-&lt;p&gt;解决这个问题的最简单的办法是金庸它的自动缩放图片功能，即注释掉 conf.py 文件中的下面几行：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;# IMAGE_FOLDERS = {'images': 'images'}
-# IMAGE_THUMBNAIL_SIZE = 400
-# IMAGE_THUMBNAIL_FORMAT = '{name}.thumbnail{ext}'
-&lt;/pre&gt;&lt;/div&gt;</description><category>nikola</category><guid>/posts/nikola-tips.html</guid><pubDate>Thu, 26 Apr 2018 02:03:25 GMT</pubDate></item></channel></rss>
+&lt;/pre&gt;&lt;/div&gt;</description><category>Linux</category><guid>/posts/cygwin-installation.html</guid><pubDate>Sat, 20 Oct 2018 03:20:12 GMT</pubDate></item></channel></rss>
