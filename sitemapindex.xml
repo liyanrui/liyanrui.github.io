@@ -6,27 +6,27 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
-  <loc>/categories/cat_bi-ji.xml</loc>
-  <lastmod>2018-10-20T09:31:00Z</lastmod>
+  <loc>/index.html/categories/cat_bi-ji.xml</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </sitemap>
  <sitemap>
-  <loc>/categories/nikola.xml</loc>
-  <lastmod>2018-10-20T09:31:00Z</lastmod>
+  <loc>/index.html/categories/nikola.xml</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </sitemap>
  <sitemap>
-  <loc>/galleries/demo/rss.xml</loc>
-  <lastmod>2018-10-20T09:35:00Z</lastmod>
+  <loc>/index.html/galleries/demo/rss.xml</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </sitemap>
  <sitemap>
-  <loc>/galleries/rss.xml</loc>
-  <lastmod>2018-10-20T09:35:00Z</lastmod>
+  <loc>/index.html/galleries/rss.xml</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </sitemap>
  <sitemap>
-  <loc>/rss.xml</loc>
-  <lastmod>2018-10-20T11:47:00Z</lastmod>
+  <loc>/index.html/rss.xml</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </sitemap>
  <sitemap>
-  <loc>/sitemap.xml</loc>
-  <lastmod>2018-10-20T11:47:00Z</lastmod>
+  <loc>/index.html/sitemap.xml</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </sitemap>
 </sitemapindex>

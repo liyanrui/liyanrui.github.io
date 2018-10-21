@@ -1,4 +1,4 @@
-Sitemap: /sitemapindex.xml
+Sitemap: /index.html/sitemapindex.xml
 
 User-Agent: *
 Host: 

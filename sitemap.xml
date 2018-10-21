@@ -6,59 +6,59 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
-  <loc>/2018/index.html</loc>
-  <lastmod>2018-10-20T11:47:00Z</lastmod>
+  <loc>/index.html/2018/index.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
  <url>
-  <loc>/archive.html</loc>
-  <lastmod>2018-10-20T09:36:00Z</lastmod>
+  <loc>/index.html/archive.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
  <url>
-  <loc>/categories/cat_bi-ji.html</loc>
-  <lastmod>2018-10-20T09:35:00Z</lastmod>
+  <loc>/index.html/categories/cat_bi-ji.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
  <url>
-  <loc>/categories/index.html</loc>
-  <lastmod>2018-10-20T09:36:00Z</lastmod>
+  <loc>/index.html/categories/index.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
  <url>
-  <loc>/categories/nikola.html</loc>
-  <lastmod>2018-10-20T09:35:00Z</lastmod>
+  <loc>/index.html/categories/nikola.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
  <url>
-  <loc>/galleries/demo/index.html</loc>
-  <lastmod>2018-10-20T09:35:00Z</lastmod>
+  <loc>/index.html/galleries/demo/index.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
  <url>
-  <loc>/galleries/index.html</loc>
-  <lastmod>2018-10-20T09:35:00Z</lastmod>
+  <loc>/index.html/galleries/index.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
  <url>
-  <loc>/index.html</loc>
-  <lastmod>2018-10-20T10:21:00Z</lastmod>
+  <loc>/index.html/index.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
  <url>
-  <loc>/listings/__pycache__/index.html</loc>
-  <lastmod>2018-10-20T09:35:00Z</lastmod>
+  <loc>/index.html/listings/__pycache__/index.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
  <url>
-  <loc>/listings/hello.py.html</loc>
-  <lastmod>2018-10-20T09:35:00Z</lastmod>
+  <loc>/index.html/listings/hello.py.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
  <url>
-  <loc>/listings/index.html</loc>
-  <lastmod>2018-10-20T09:35:00Z</lastmod>
+  <loc>/index.html/listings/index.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
  <url>
-  <loc>/obsolete/index.html</loc>
-  <lastmod>2018-10-20T11:47:00Z</lastmod>
+  <loc>/index.html/obsolete/index.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
  <url>
-  <loc>/posts/cygwin.html</loc>
-  <lastmod>2018-10-20T11:47:00Z</lastmod>
+  <loc>/index.html/posts/cygwin.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
  <url>
-  <loc>/posts/nikola-tips.html</loc>
-  <lastmod>2018-10-20T09:36:00Z</lastmod>
+  <loc>/index.html/posts/nikola-tips.html</loc>
+  <lastmod>2018-10-21T02:40:00Z</lastmod>
  </url>
 </urlset>
