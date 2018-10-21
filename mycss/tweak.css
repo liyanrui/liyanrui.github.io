@@ -8,7 +8,7 @@ html {font-size: 62.5%; /*10 ÷ 16 × 100% = 62.5%*/}
 @media screen and (min-width:800px){html{font-size:25px}}
 
 
-.storypage .entry-title, .listpage header { display:none; }
+.storypage .entry-title, .listpage header, .tagindex header{ display:none; }
 .footer { text-align:center; }
 
 .metadata { display:none !important; }
