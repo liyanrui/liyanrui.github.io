@@ -1,9 +1,9 @@
 <!--
-.. title: Cygwin
-.. slug: cygwin
+.. title: 安装 Cygwin
+.. slug: cygwin-installation
 .. date: 2018-10-20 11:20:12 UTC+08:00
-.. tags: 
-.. category: 
+.. tags: Linux
+.. category: 技术
 .. link: 
 .. description: 
 .. type: text
