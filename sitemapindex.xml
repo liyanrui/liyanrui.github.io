@@ -6,10 +6,6 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
-  <loc>/categories/cat_bi-ji.xml</loc>
-  <lastmod>2018-10-21T02:41:00Z</lastmod>
- </sitemap>
- <sitemap>
   <loc>/categories/cat_ji-zhu.xml</loc>
   <lastmod>2018-10-21T03:08:00Z</lastmod>
  </sitemap>
@@ -35,6 +31,6 @@
  </sitemap>
  <sitemap>
   <loc>/sitemap.xml</loc>
-  <lastmod>2018-10-21T03:08:00Z</lastmod>
+  <lastmod>2018-10-21T03:09:00Z</lastmod>
  </sitemap>
 </sitemapindex>
