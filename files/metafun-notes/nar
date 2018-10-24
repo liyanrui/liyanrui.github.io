@@ -1,0 +1,3 @@
+#!/bin/bash
+
+awk -f ~/.myscript/mkd-decorate.awk $1 | xclip -selection c
