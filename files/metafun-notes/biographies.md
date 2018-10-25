@@ -435,8 +435,6 @@ drawpoints p transformed T withcolor .7cyan;
 
 ![](https://upload-images.jianshu.io/upload_images/11203728-bf45602fdf31d939.png)
 
-以上描述了以变换的合成方式对 `p` 进行了缩放、平移、旋转、镜象等变换，虽然路径 `p` 一直保持不变，但是通过这些变换，由它衍生出 4 条新的路径。图形变换的意义在于，基于简单的图形构造复杂图形。
-
 # 路径合成
 
 不仅变换可以叠加合成，路径也可以如此。例如，对于上一节所给出的路径 `p`，对其作旋转、平移变换，生成路径 `q`，然后通过 `--` 可将二者连接起来，即
@@ -452,4 +450,6 @@ drawpath t; drawpoints t;
 
 ![](https://upload-images.jianshu.io/upload_images/11203728-31a5f30ab31335e3.png)
 
+# 从简单到复杂
 
+通过图形变换和路径合成，可以基于简单的图形构造复杂图形。
