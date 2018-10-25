@@ -96,16 +96,26 @@ darkred := (0.625, 0, 0);
 
 ```MetaPost
 color darkred;
+darkred := 0.625 * red;
+```
+
+类似于 `1 * cm` 可以写为 `1cm`，倍数也可以直接作用于颜色：
+
+```MetaPost
 darkred := 0.625red;
+```
+
+若绘图语句未使用 `withcolor` 宏，则默认颜色为黑色。由于颜色的倍数不可能大于 1，因此整数部分必定为 `0`，在 MetaPost 语句中可以省略，例如
+
+```MetaPost
+darkred := .625red;
 ```
 
 在绘图语句中可以通过 `withcolor` 宏设定所绘线条或区域填充的颜色，例如
 
 ```MetaPost
-withcolor 0.625red
+withcolor .625red
 ```
-
-若绘图语句未使用 `withcolor` 宏，则默认颜色为黑色。
 
 # 线条
 
@@ -135,7 +145,7 @@ p := a -- b;
 可构造从点 `a` 到 `b` 的线段 `a -- b`，并将其保存到路径变量 `p` 中。使用
 
 ```MetaPost
-draw p withcolor 0.625green;
+draw p withcolor .625green;
 ```
 
 即可绘制这条线段。在该条语句中，线条颜色被设为暗蓝色 `0.625blue`。
@@ -143,7 +153,7 @@ draw p withcolor 0.625green;
 由于 MetaPost 允许在 `draw` 宏语句中直接给出点的坐标的形式构造路径，因此上述 MetaPost 程序可缩减为一行语句：
 
 ```MetaPost
-draw (2cm, 3.5cm) -- (5cm, 5cm) withcolor 0.625green;
+draw (2cm, 3.5cm) -- (5cm, 5cm) withcolor .625green;
 ```
 
 但是，若要绘制复杂的图形，借助变量，会使得 MetaPost 程序更易于编写和理解。例如，
@@ -154,15 +164,15 @@ a := (2cm, 3.5cm); b := (5cm, 5cm);
 p := a -- b;
 
 pickup pencircle scaled 2pt;
-draw p withcolor 0.625green;
+draw p withcolor .625green;
 
 pickup pencircle scaled 4pt;
-color darkgreen; darkred := 0.625red;
+color darkred; darkred := .625red;
 draw a withcolor darkred;
 draw b withcolor darkred;
 ```
 
-![](https://upload-images.jianshu.io/upload_images/11203728-bc40e50fadd67c52.png)
+![](https://upload-images.jianshu.io/upload_images/11203728-a5159ad43d0e17ee.png)
 
 不仅绘制了线段，而且将线段的端点也绘制了出来。
 
@@ -176,13 +186,13 @@ p := a -- b -- c -- a;
 % 注意：凡以百分号领起的文本为 MetaPost 代码注释。
 
 pickup pencircle scaled 5; % 将画笔设为 5 bp
-draw p withcolor 0.8white;
+draw p withcolor .8white;
 
 pickup pencircle scaled 4;
 draw a; draw b; draw c;
 ```
 
-![](https://upload-images.jianshu.io/upload_images/11203728-d84658abef4f281d.png)
+![](https://upload-images.jianshu.io/upload_images/11203728-7dfd9b66f60771a4.png)
 
 为了便于图形的演示，MetaFun 提供了 `drawpath` 和 `drawpoints` 宏，前者用于绘制路径，后者用于绘制路径的节点。通过这两个宏，上例可简化为
 
@@ -208,10 +218,11 @@ pair a, b, c; path p;
 a := (0, 0); b := (4cm, 0); c := (4cm, 3cm);
 p := a -- b -- c -- cycle;
 drawpath p; drawpoints p;
-fill p withcolor 0.8blue;
+fill p withcolor .8blue;
 ```
 
 ![](https://upload-images.jianshu.io/upload_images/11203728-017c53d6e60f9228.png)
+
 
 上例中的路径 `p` 皆为直线插值。MetaPost 支持以曲线插值的方式构造路径。倘若将直线插值符的 `--` 替换为曲线插值符 `..` 便可产生一条插值于点 `a`、`b` 和 `c` 的曲线路径，
 
@@ -219,7 +230,7 @@ fill p withcolor 0.8blue;
 p := a .. b .. c .. cycle;
 ```
 
-![](https://upload-images.jianshu.io/upload_images/11203728-63fc69d17d9fe55b.png)
+![](https://upload-images.jianshu.io/upload_images/11203728-d7caaa3553d17939.png)
 
 直线插值符与曲线插值符可并用，例如
 
@@ -227,7 +238,7 @@ p := a .. b .. c .. cycle;
 p := a .. b .. c -- cycle;
 ```
 
-![](https://upload-images.jianshu.io/upload_images/11203728-58cf0f7a68da82ba.png)
+![](https://upload-images.jianshu.io/upload_images/11203728-d37645d274771f6f.png)
 
 `controls` 宏可将路径中的某些结点转化为控制点，从而可构造 Bézier 曲线。例如
 
@@ -236,8 +247,7 @@ p := a .. b .. c -- cycle;
 p := a .. controls b ..c; draw p;
 ```
 
-
-![](https://upload-images.jianshu.io/upload_images/11203728-a9be265660583441.png)
+![](https://upload-images.jianshu.io/upload_images/11203728-703bdecb6915b7e1.png)
 
 构造的是一条二次 Bézier 曲线路径，此时点 `b` 成为控制点，曲线只插值于点 `a` 和 `b`。MetaFun 提供了 `drawcontrollines` 以及 `drawcontrolpoints` 宏，分别用于绘制 Bézier 曲线的控制形及控制点，例如，
 
@@ -247,7 +257,7 @@ drawpath p; drawpoints p;
 drawcontrollines p; drawcontrolpoints p;
 ```
 
-![](https://upload-images.jianshu.io/upload_images/11203728-468fc7d14a59251c.png)
+![](https://upload-images.jianshu.io/upload_images/11203728-857eddbe0d4562a1.png)
 
 三次 Bézier 曲线需要在路径中设定 2 个控制点，例如
 
@@ -260,13 +270,13 @@ drawpath p; drawpoints p;
 drawcontrollines p; drawcontrolpoints p;
 ```
 
-![](https://upload-images.jianshu.io/upload_images/11203728-64072d63c3e2849d.png)
+![](https://upload-images.jianshu.io/upload_images/11203728-ae699251e0ae9f7a.png)
 
 无论是插值曲线还是 Bézier 曲线，MetaPost 最高支持三次曲线。不过，对于形状较为复杂的路径，MetaPost 支持以多段插值直线、曲线以及 Bézier 曲线拼接\note{对于一组曲线，MetaPost 会以切向连续并且近似曲率连续的方式予以光滑拼接。}的方式构造路径。
 
 # 变换
 
-为了便于对所绘图形作缩放、旋转、平移、错切以及随机扰动等处理，MetaPost 提供了一种数据类型——变换，即六元组
+为了便于对所绘图形作缩放、旋转、平移、错切以及随机扰动等处理，MetaPost 提供了一种数据类型——变换，即含有六个分量的向量：
 
 $$
 T = (t_x, t_y, t_{xx}, t_{xy}, t_{yx}, t_{yy})
@@ -283,7 +293,7 @@ $$
 $$
 M = \left[\begin{matrix}
 t_{xx} & t_{xy} & t_x \\
-t_{xx} & t_{xy} & t_x \\
+t_{yx} & t_{yy} & t_y \\
 0 & 0 & 1\end{matrix}\right]
 $$
 
@@ -292,13 +302,13 @@ $$
 假设存在四个点，
 
 ```MetaPost
-length := 5cm;
-
+numeric s;
 pair a, b, c, d;
-a := length * (0.25, -0.75); 
-b := length * (0.25, -0.25); 
-c := length * (0.75, -0.25); 
-d := length * (0.75, -0.75);
+s := 4cm;
+a := (-0.5, -0.5) * s;
+b := (-0.5, 0.5) * s;
+c := (0.5, 0.5) * s;
+d := (0.5, -0.5) * s;
 ```
 
 它们构成路径 `p`，
@@ -308,5 +318,138 @@ path p; p := a -- b -- c -- d;
 drawpath p; drawpoints p;
 ```
 
+![](https://upload-images.jianshu.io/upload_images/11203728-f768ca06f0ca802e.png)
+
+`numeric` 表示数值类型的变量，该类型的变量的声明虽然可省略，但予以保留可让代码更清楚。
+
+现在将 `p` 缩小为原来的 0.5 倍，可为此构造变换 `T`，
+
+```MetaPost
+transform T;
+T := identity scaled 0.5;
+```
+
+`identity` 是 MetaPost 内置的恒等变换，其值为向量 `(0, 0, 1, 0, 0, 1)`，将其写为齐次坐标变换矩阵，可得
+
+$$
+\left[\begin{matrix}
+1 & 0  & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1\end{matrix}\right]
+$$
+
+因此，实际上 `identity` 表示的是单位矩阵。因此 `identity scaled 0.5` 所构造的变换，本质上是以一个单位矩阵乘以由 `scaled 0.5` 构造的缩放变换矩阵
+
+$$
+\left[\begin{matrix}
+0.5 & 0 & 0 \\
+0 & 0.5 & 0 \\
+0 & 0 & 1\end{matrix}\right]
+$$
+
+在这里，`identity` 的唯一作用是喂给 `scaled` 宏，令其得以工作。因为 MetaPost 所有的特定坐标变换宏在工作时要求它的前面必须存在一个表达式，这个表达式可以是一个变换，也可以是一条路径。因此 `identity` 能够满足这些宏的需要，而且不影响它们的行为。
+
+
+使用 `transformed` 宏可将 `T` 作用于路径 `p`，
+
+```MetaPost
+drawpath p transformed T withcolor .7green;
+drawpoints p transformed T withcolor .7red;
+```
+
+![](https://upload-images.jianshu.io/upload_images/11203728-1b061a45250ca869.png)
+
+在 `T` 的基础上可以继续增加变换。例如，通过 `shifted` 宏让经过了缩放变换的 `p` 向左平移 `0.7 * s`：
+
+```MetaPost
+T := T shifted (-0.7 * s, 0);
+drawpath p transformed T withcolor .7yellow;
+```
+
+![](https://upload-images.jianshu.io/upload_images/11203728-1b061a45250ca869.png)
+
+
+接下来，在 `T` 的基础上，再增加一个旋转变换，令经过了缩放和平移变换后的 `p`，即 `p transformed T`，绕其中心点逆时针转动 90 度。通过 `rotated` 宏可构造旋转变换，但是该宏是以原点为中心对路径进行旋转。若对经过了缩放和平移变换后的 `p` 绕其中心作旋转变换，首先需要确定 `p` 在经过缩放和平移之后的中心点。由于 `p` 的初始中心点可根据它的 4 个节点计算出来，结果为 `(0, 0)`，亦即原点，因此只需对 `p` 的初始中心点予以 `T` 变换，便可得到变换后的 `p` 的中心点，即
+
+```MetaPost
+pair pcenter;
+pcenter := (0, 0) transformed T;
+```
+
+若让 `p transformed T` 围绕 `pcenter` 逆时针旋转 90 度角，需要先对 `p transformed T` 进行平移变换，令其中心与原点对准，即
+
+```MetaPost
+p transofmed T shifted (-(xpart pcenter), -(ypart pcenter))
+```
+
+宏 `xpart` 和 `ypart` 分别用于提取任意一点的横坐标与纵坐标分量。然后，对此刻的 `p` 逆时针旋转 90 度角，即
+
+```MetaPost
+p transofmed T shifted (-(xpart pcenter), -(ypart pcenter)) rotated 90
+```
+
+接下来，通过 `shifted` 宏将此刻的 `p` 移回原位，即
+
+```MetaPost
+p transofmed T shifted (-(xpart pcenter), -(ypart pcenter)) 
+               rotated 90 
+               shifted (-(xpart pcenter), -(ypart pcenter))
+```
+
+若将上述的变换叠加到 `T` 中，即
+
+```MetaPost
+T := T shifted (-(xpart pcenter), -(ypart pcenter)) 
+     rotated 90 
+     shifted (-(xpart pcenter), -(ypart pcenter));
+```
+
+将 `T` 作用于 `p`，便可实现 `p transformed T` 围绕 `pcenter` 逆时针旋转 90 度角，即
+
+```MetaPost
+drawpath p transformed T withcolor .7red;
+drawpoints p transformed T withcolor .7cyan;
+```
+
+现在，在 `T` 的基础上，增加一个镜象变换，例如，以过原点 `(0, 0)` 且斜率为 1 的一条直线为镜线，将 `p transformed T` 变换为自身的影像。为了便于观察，先将镜线绘制出来，
+
+```MetaPost
+pair mb, me;
+mb := (-1, -1) * s;
+me := (1, 1) * s;
+drawarrowpath mb -- me;
+```
+
+`drawarrowpath` 宏可绘制路径及其走向。显然，`mirrorline` 过原点 `(0, 0)` 且斜率为 1，基于它，可构造一个镜象变换。并将其叠加至 `T`，即
+
+```MetaPost
+T := T reflectedabout (mb, me);
+```
+
+将 `T` 作用于 `p` 便可得到 `p` 的镜象，
+
+```MetaPost
+drawpath p transformed T withcolor .7red;
+drawpoints p transformed T withcolor .7cyan;
+```
+
+![](https://upload-images.jianshu.io/upload_images/11203728-bf45602fdf31d939.png)
+
+以上描述了以变换的合成方式对 `p` 进行了缩放、平移、旋转、镜象等变换，虽然路径 `p` 一直保持不变，但是通过这些变换，由它衍生出 4 条新的路径。图形变换的意义在于，基于简单的图形构造复杂图形。
+
+# 路径合成
+
+不仅变换可以叠加合成，路径也可以如此。例如，对于上一节所给出的路径 `p`，对其作旋转、平移变换，生成路径 `q`，然后通过 `--` 可将二者连接起来，即
+
+```
+path q;
+q := p rotated 180 shifted (s, -s);
+
+path t;
+t := p -- q;
+drawpath t; drawpoints t;
+```
+
+![](https://upload-images.jianshu.io/upload_images/11203728-31a5f30ab31335e3.png)
 
 
