@@ -1,0 +1,137 @@
+open source     > level 1, order 1, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/cont-yes.mkiv'
+system          > 
+system          > ConTeXt  ver: 2018.10.18 00:07 MKIV beta  fmt: 2018.10.26  int: english/english
+system          > 
+system          > 'cont-new.mkiv' loaded
+open source     > level 2, order 2, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/cont-new.mkiv'
+system          > beware: some patches loaded from cont-new.mkiv
+close source    > level 2, order 2, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/cont-new.mkiv'
+system          > files > jobname 'workflow', input './workflow', result 'workflow'
+fonts           > latin modern fonts are not preloaded
+languages       > language 'en' is active
+open source     > level 2, order 3, name '/home/garfileo/meta-documents/awkbib/metafun/workflow.tex'
+modules         > 'zhfonts' is loaded
+open source     > level 3, order 4, name '/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.mkiv'
+loading         > ConTeXt User Module / zhfonts
+resolvers       > lua > loading file '/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.lua' succeeded
+fonts           > preloading latin modern fonts (third stage)
+open source     > level 4, order 5, name '/home/garfileo/opt/context/tex/texmf-local/tex/context/third/empty-files/type-loc.mkiv'
+close source    > level 4, order 5, name '/home/garfileo/opt/context/tex/texmf-local/tex/context/third/empty-files/type-loc.mkiv'
+fonts           > 'fallback modern-designsize rm 11pt' is loaded
+close source    > level 3, order 5, name '/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.mkiv'
+system          > auto \starttext ... \stoptext
+open source     > level 3, order 6, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/type-imp-xits.mkiv'
+open source     > level 4, order 7, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/type-imp-texgyre.mkiv'
+close source    > level 4, order 7, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/type-imp-texgyre.mkiv'
+close source    > level 3, order 7, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/type-imp-xits.mkiv'
+metapost        > initializing instance 'metafun:1' using format 'metafun' and method 'default'
+metapost        > loading 'metafun' as '/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/metafun.mpiv' using method 'default'
+metapost        > initializing number mode 'scaled'
+backend         > xmp > using file '/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/lpdf-pdx.xml'
+pages           > flushing realpage 1, userpage 1, subpage 1
+close source    > level 2, order 7, name '/home/garfileo/meta-documents/awkbib/metafun/workflow.tex'
+close source    > level 1, order 7, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/cont-yes.mkiv'
+
+system          > start used files
+
+system          > text: workflow
+
+system          > stop used files
+
+
+system          > start used files
+
+system          >    1: filename=char-prv.lua filetype=tex format=tex foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/char-prv.lua fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/char-prv.lua usedmethod=database
+system          >    2: filename=cont-yes.mkiv filetype=tex foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/cont-yes.mkiv fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/cont-yes.mkiv usedmethod=database
+system          >    3: filename=publ-imp-default.lua filetype=scripts foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/publ-imp-default.lua fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/publ-imp-default.lua usedmethod=database
+system          >    4: filename=cont-new.mkiv filetype=tex foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/cont-new.mkiv fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/cont-new.mkiv usedmethod=database
+system          >    5: filename=lang-exc.lua filetype=scripts foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/lang-exc.lua fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/lang-exc.lua usedmethod=database
+system          >    6: filename=lang-us.lua filetype=scripts foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/patterns/mkiv/lang-us.lua fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/patterns/mkiv/lang-us.lua usedmethod=database
+system          >    7: filename=/home/garfileo/meta-documents/awkbib/metafun/workflow foundname=/home/garfileo/meta-documents/awkbib/metafun/workflow.tex fullname=/home/garfileo/meta-documents/awkbib/metafun/workflow.tex usedmethod=qualified
+system          >    8: filename=t-zhfonts.mkiv filetype=tex foundname=/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.mkiv fullname=/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.mkiv usedmethod=database
+system          >    9: filename=t-zhfonts.lua filetype=tex format=tex foundname=/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.lua fullname=/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.lua usedmethod=database
+system          >   10: filename=t-zhspuncs.lua filetype=tex format=tex foundname=/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhspuncs.lua fullname=/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhspuncs.lua usedmethod=database
+system          >   11: filename=type-loc.mkiv filetype=tex foundname=/home/garfileo/opt/context/tex/texmf-local/tex/context/third/empty-files/type-loc.mkiv fullname=/home/garfileo/opt/context/tex/texmf-local/tex/context/third/empty-files/type-loc.mkiv usedmethod=database
+system          >   12: filename=lm.lfg filetype=tex foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/lm.lfg fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/lm.lfg usedmethod=database
+system          >   13: filename=lmroman10-regular filetype=otf format=otf foundname=/home/garfileo/opt/context/tex/texmf/fonts/opentype/public/lm/lmroman10-regular.otf fullname=/home/garfileo/opt/context/tex/texmf/fonts/opentype/public/lm/lmroman10-regular.otf usedmethod=database
+system          >   14: filename=latinmodern-math.otf filetype=opentypefonts foundname=/home/garfileo/opt/context/tex/texmf/fonts/opentype/public/lm-math/latinmodern-math.otf fullname=/home/garfileo/opt/context/tex/texmf/fonts/opentype/public/lm-math/latinmodern-math.otf usedmethod=database
+system          >   15: filename=type-imp-xits.mkiv filetype=tex foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/type-imp-xits.mkiv fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/type-imp-xits.mkiv usedmethod=database
+system          >   16: filename=type-imp-texgyre.mkiv filetype=tex foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/type-imp-texgyre.mkiv fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/type-imp-texgyre.mkiv usedmethod=database
+system          >   17: filename=xits-math.lfg filetype=tex foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/xits-math.lfg fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/xits-math.lfg usedmethod=database
+system          >   18: filename=lmroman10-regular.otf filetype=otf format=otf foundname=/home/garfileo/opt/context/tex/texmf/fonts/opentype/public/lm/lmroman10-regular.otf fullname=/home/garfileo/opt/context/tex/texmf/fonts/opentype/public/lm/lmroman10-regular.otf usedmethod=database
+system          >   19: filename=simsun.ttc filetype=ttc format=ttc foundname=/home/garfileo/opt/context/tex/texmf-local/fonts/truetype/non-free/simsun.ttc fullname=/home/garfileo/opt/context/tex/texmf-local/fonts/truetype/non-free/simsun.ttc usedmethod=otherwise
+system          >   20: filename=xitsmath-regular.otf filetype=opentypefonts foundname=/home/garfileo/opt/context/tex/texmf/fonts/opentype/public/xits/XITSMath-Regular.otf fullname=/home/garfileo/opt/context/tex/texmf/fonts/opentype/public/xits/XITSMath-Regular.otf usedmethod=database
+system          >   21: filename=xitsmath-bold.otf filetype=opentypefonts foundname=/home/garfileo/opt/context/tex/texmf/fonts/opentype/public/xits/XITSMath-Bold.otf fullname=/home/garfileo/opt/context/tex/texmf/fonts/opentype/public/xits/XITSMath-Bold.otf usedmethod=database
+system          >   22: filename=metafun.mpiv filetype=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/metafun.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/metafun.mpiv usedmethod=database
+system          >   23: filename=mp-base.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-base.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-base.mpiv usedmethod=database
+system          >   24: filename=mp-tool.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-tool.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-tool.mpiv usedmethod=database
+system          >   25: filename=mp-mlib.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-mlib.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-mlib.mpiv usedmethod=database
+system          >   26: filename=mp-luas.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-luas.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-luas.mpiv usedmethod=database
+system          >   27: filename=mp-page.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-page.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-page.mpiv usedmethod=database
+system          >   28: filename=mp-butt.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-butt.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-butt.mpiv usedmethod=database
+system          >   29: filename=mp-shap.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-shap.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-shap.mpiv usedmethod=database
+system          >   30: filename=mp-grph.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-grph.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-grph.mpiv usedmethod=database
+system          >   31: filename=mp-grid.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-grid.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-grid.mpiv usedmethod=database
+system          >   32: filename=mp-form.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-form.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-form.mpiv usedmethod=database
+system          >   33: filename=mp-figs.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-figs.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-figs.mpiv usedmethod=database
+system          >   34: filename=mp-func.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-func.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-func.mpiv usedmethod=database
+system          >   35: filename=mp-node.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-node.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-node.mpiv usedmethod=database
+system          >   36: filename=mp-apos.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-apos.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-apos.mpiv usedmethod=database
+system          >   37: filename=mp-abck.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-abck.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-abck.mpiv usedmethod=database
+system          >   38: filename=mp-blob.mpiv filetype=mp format=mp foundname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-blob.mpiv fullname=/home/garfileo/opt/context/tex/texmf-context/metapost/context/base/mpiv/mp-blob.mpiv usedmethod=database
+system          >   39: filename=flowchart.mp format=mp foundname=flowchart.mp fullname=/home/garfileo/meta-documents/awkbib/metafun/flowchart.mp usedmethod=direct
+system          >   40: filename=lpdf-pdx.xml filetype=tex foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/lpdf-pdx.xml fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/lpdf-pdx.xml usedmethod=database
+
+system          > stop used files
+
+
+system          > start commandline options
+
+system          > currentrun="1"
+system          > fulljobname="./workflow"
+system          > input="./workflow"
+system          > kindofrun="1"
+system          > maxnofruns="9"
+system          > no-parse-first-line="true"
+
+system          > stop commandline options
+
+
+system          > start commandline files
+
+system          >    1: ./workflow
+
+system          > stop commandline files
+
+
+modules         > start used modules
+
+modules         > loaded : *-zhfonts
+
+modules         > stop used modules
+
+
+mkiv lua stats  > used config file: selfautoparent:/texmf/web2c/texmfcnf.lua
+mkiv lua stats  > used cache path: /home/garfileo/opt/context/tex/texmf-cache/luatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e
+mkiv lua stats  > resource resolver: loadtime 0.010 seconds, 0 scans with scantime 0.000 seconds, 0 shared scans, 40 found files, scanned paths: <none>
+mkiv lua stats  > stored bytecode data: 443 modules (0.356 sec), 93 tables (0.020 sec), 536 chunks (0.375 sec)
+mkiv lua stats  > traced context: maxstack: 1353, freed: 2, unreachable: 1351
+mkiv lua stats  > cleaned up reserved nodes: 68 nodes, 10 lists of 440
+mkiv lua stats  > node memory usage: 4 glue, 2 kern, 4 penalty, 21 attribute, 50 glue_spec, 6 attribute_list, 2 temp, 2 user_defined
+mkiv lua stats  > node list callback tasks: 8 unique task lists, 7 instances (re)created, 58 calls
+mkiv lua stats  > used backend: pdf (backend for directly generating pdf output)
+mkiv lua stats  > jobdata time: 0.001 seconds saving, 0.000 seconds loading
+mkiv lua stats  > callbacks: internal: 182, file: 562, direct: 4, late: 0, function 1234, total: 1982
+mkiv lua stats  > randomizer: resumed with value 0.62178706936538
+mkiv lua stats  > loaded tex modules: 1 requested, all found (*-zhfonts)
+mkiv lua stats  > loaded patterns: en::1, load time: 0.000
+mkiv lua stats  > result saved in file: workflow.pdf, compresslevel 3, objectcompresslevel 3
+mkiv lua stats  > loaded fonts: 5 files: simsun.ttc, latinmodern-math.otf, lmroman10-regular.otf, xitsmath-bold.otf, xitsmath-regular.otf
+mkiv lua stats  > font engine: otf 3.106, afm 1.513, tfm 1.000, 15 instances, 10 shared in backend, 2 common vectors, 8 common hashes, load time 0.776 seconds 
+mkiv lua stats  > metapost: 0.004 seconds, loading: 0.025, execution: 0.004, n: 1, average: 0.034, instances: 1, luacalls: 8, memory: 2.635 M
+mkiv lua stats  > used platform: linux-64, type: unix, binary subtree: texmf-linux-64
+mkiv lua stats  > used engine: luatex version 1.09 with functionality level 6980, banner: this is luatex, version 1.09.0 (tex live 2019/dev)
+mkiv lua stats  > control sequences: 47738 of 65536 + 100000
+mkiv lua stats  > lua properties: engine: lua 5.3, used memory: 126 MB (ctx: 126 MB), hash type: lua, hash chars: min(64,40), symbol mask: utf (τεχ)
+mkiv lua stats  > runtime: 1.322 seconds, 1 processed pages, 1 shipped pages, 0.756 pages/second
+
