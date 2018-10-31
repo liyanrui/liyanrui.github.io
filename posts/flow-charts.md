@@ -9,6 +9,8 @@
 .. type: text
 -->
 
+![](/images/flow-charts/sketch.jpg)
+
 ![](/images/flow-charts/demo.png)
 
 ```MetaPost
