@@ -102,12 +102,14 @@ pre {line-height: 1.6em; max-height: 40em;}
 .orez-code-fragment-name, .orez-symbol {font-weight:bold; color: #cc3333;}
 .orez-source-label {font-weight:bold; color:#008000;}
 
+
+
 /* pygments */
+.err { border : 0 !important; }
 .orez-code-fragment .err { border : 0 !important; }
 .orez-code-fragment .hll { background-color: #ffffcc }
 .orez-code-fragment  { background: #f8f8f8; }
 .orez-code-fragment .c { color: #408080;} /* Comment */
-.orez-code-fragment .err { border: 1px solid #FF0000 } /* Error */
 .orez-code-fragment .k { color: #008000;} /* Keyword */
 .orez-code-fragment .o { color: #666666;} /* Operator */
 .orez-code-fragment .ch { color: #408080;} /* Comment.Hashbang */

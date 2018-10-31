@@ -107,115 +107,115 @@ a.out ==&gt; c.a.in; b.out ==&gt; c.b.in; c.out ==&gt; d.in; d.out ==&gt; e.in; 
 
 
 <p>chart.mp:</p>
-<pre class="code literal-block"><span></span><span class="n">tertiarydef</span> <span class="n">a</span> <span class="o">==&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="n">drawarrowpath</span> <span class="n">a</span> <span class="o">--</span> <span class="n">b</span><span class="o">;</span> <span class="n">enddef</span><span class="o">;</span>
-<span class="n">tertiarydef</span> <span class="n">a</span> <span class="o">+++</span> <span class="n">b</span> <span class="o">=</span> <span class="n">image</span><span class="p">(</span><span class="n">draw</span> <span class="n">a</span><span class="o">;</span> <span class="n">draw</span> <span class="n">b</span><span class="o">;</span><span class="p">)</span> <span class="n">enddef</span><span class="o">;</span>
+<pre class="code literal-block"><span></span>tertiarydef a ==&gt; b = drawarrowpath a -- b; enddef;
+tertiarydef a +++ b = image(draw a; draw b;) enddef;
 
-<span class="n">vardef</span> <span class="n">like</span><span class="p">(</span><span class="n">expr</span> <span class="n">box</span><span class="p">)</span> <span class="o">=</span>
-  <span class="n">save</span> <span class="n">p</span><span class="o">;</span> <span class="n">path</span> <span class="n">p</span><span class="o">;</span>
-  <span class="n">p</span> <span class="o">:=</span> <span class="p">(</span><span class="n">llcorner</span> <span class="n">box</span><span class="p">)</span> <span class="o">--</span> <span class="p">(</span><span class="n">ulcorner</span> <span class="n">box</span><span class="p">)</span> <span class="o">--</span> <span class="p">(</span><span class="n">urcorner</span> <span class="n">box</span><span class="p">)</span> <span class="o">--</span> <span class="p">(</span><span class="n">lrcorner</span> <span class="n">box</span><span class="p">)</span> <span class="o">--</span> <span class="n">cycle</span><span class="o">;</span>
-  <span class="n">p</span> <span class="o">:=</span> <span class="n">p</span> <span class="n">shifted</span> <span class="o">-</span><span class="p">(</span><span class="n">center</span> <span class="n">box</span><span class="p">)</span><span class="o">;</span>
-  <span class="n">p</span>
-<span class="n">enddef</span><span class="o">;</span>
+vardef like(expr box) =
+  save p; path p;
+  p := (llcorner box) -- (ulcorner box) -- (urcorner box) -- (lrcorner box) -- cycle;
+  p := p shifted -(center box);
+  p
+enddef;
 
-<span class="n">vardef</span> <span class="n">data</span><span class="p">(</span><span class="n">expr</span> <span class="n">s</span><span class="p">)</span> <span class="o">=</span>
-  <span class="n">image</span><span class="p">(</span><span class="n">draw</span> <span class="n">textext</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">withcolor</span> <span class="n">datacolor</span><span class="o">;</span><span class="p">)</span>
-<span class="n">enddef</span><span class="o">;</span>
+vardef data(expr s) =
+  image(draw textext(s) withcolor datacolor;)
+enddef;
 
-<span class="n">vardef</span> <span class="k">procedure</span><span class="p">(</span><span class="n">expr</span> <span class="n">s</span><span class="o">,</span> <span class="n">canvas</span><span class="p">)</span> <span class="o">=</span>
-  <span class="n">image</span><span class="p">(</span><span class="n">fill</span> <span class="n">canvas</span> <span class="n">withcolor</span> <span class="n">backgroundcolor</span><span class="o">;</span>
-        <span class="n">drawpath</span> <span class="n">canvas</span> <span class="n">withcolor</span> <span class="n">linecolor</span><span class="o">;</span>
-        <span class="n">draw</span> <span class="n">textext</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">withcolor</span> <span class="n">procedurecolor</span><span class="o">;</span>
-  <span class="p">)</span>
-<span class="n">enddef</span><span class="o">;</span>
+vardef procedure(expr s, canvas) =
+  image(fill canvas withcolor backgroundcolor;
+        drawpath canvas withcolor linecolor;
+        draw textext(s) withcolor procedurecolor;
+  )
+enddef;
 
-<span class="n">vardef</span> <span class="n">put</span><span class="p">(</span><span class="n">expr</span> <span class="n">p</span><span class="o">,</span> <span class="n">ref</span><span class="o">,</span> <span class="n">toward</span><span class="o">,</span> <span class="n">offset</span><span class="p">)</span> <span class="o">=</span>
-  <span class="n">save</span> <span class="n">center_of_ref</span><span class="o">,</span> <span class="n">center_of_p</span><span class="o">,</span> <span class="n">d</span><span class="o">;</span>
-  <span class="n">pair</span> <span class="n">center_of_ref</span><span class="o">,</span> <span class="n">center_of_p</span><span class="o">;</span> <span class="n">numeric</span> <span class="n">d</span><span class="o">;</span>
-  <span class="n">center_of_ref</span> <span class="o">:=</span> <span class="n">center</span> <span class="n">ref</span><span class="o">;</span>
-  <span class="k">if</span> <span class="n">toward</span> <span class="o">=</span> <span class="err">"</span><span class="n">left</span><span class="err">"</span><span class="o">:</span>
-    <span class="n">d</span> <span class="o">:=</span> <span class="n">xpart</span> <span class="n">center_of_ref</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">(</span><span class="n">bbwidth</span> <span class="n">ref</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">(</span><span class="n">bbwidth</span> <span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">offset</span><span class="o">;</span>
-    <span class="n">center_of_p</span> <span class="o">:=</span> <span class="p">(</span><span class="n">d</span><span class="o">,</span> <span class="n">ypart</span> <span class="n">center_of_ref</span><span class="p">)</span><span class="o">;</span>
-  <span class="n">elseif</span> <span class="n">toward</span> <span class="o">=</span> <span class="err">"</span><span class="n">right</span><span class="err">"</span><span class="o">:</span>
-    <span class="n">d</span> <span class="o">:=</span> <span class="n">xpart</span> <span class="n">center_of_ref</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">(</span><span class="n">bbwidth</span> <span class="n">ref</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">(</span><span class="n">bbwidth</span> <span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="o">;</span>
-    <span class="n">center_of_p</span> <span class="o">:=</span> <span class="p">(</span><span class="n">d</span><span class="o">,</span> <span class="n">ypart</span> <span class="n">center_of_ref</span><span class="p">)</span><span class="o">;</span>
-  <span class="n">elseif</span> <span class="n">toward</span> <span class="o">=</span> <span class="err">"</span><span class="n">top</span><span class="err">"</span><span class="o">:</span>
-    <span class="n">d</span> <span class="o">:=</span> <span class="n">ypart</span> <span class="n">center_of_ref</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">(</span><span class="n">bbheight</span> <span class="n">ref</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">(</span><span class="n">bbheight</span> <span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="o">;</span>
-    <span class="n">center_of_p</span> <span class="o">:=</span> <span class="p">(</span><span class="n">xpart</span> <span class="n">center_of_ref</span><span class="o">,</span> <span class="n">d</span><span class="p">)</span><span class="o">;</span>
-  <span class="n">elseif</span> <span class="n">toward</span> <span class="o">=</span> <span class="err">"</span><span class="n">bottom</span><span class="err">"</span><span class="o">:</span>
-    <span class="n">d</span> <span class="o">:=</span> <span class="n">ypart</span> <span class="n">center_of_ref</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">(</span><span class="n">bbheight</span> <span class="n">ref</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">(</span><span class="n">bbheight</span> <span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">offset</span><span class="o">;</span>
-    <span class="n">center_of_p</span> <span class="o">:=</span> <span class="p">(</span><span class="n">xpart</span> <span class="n">center_of_ref</span><span class="o">,</span> <span class="n">d</span><span class="p">)</span><span class="o">;</span>
-  <span class="n">fi</span><span class="o">;</span>
-  <span class="n">p</span> <span class="n">shifted</span> <span class="n">center_of_p</span>
-<span class="n">enddef</span><span class="o">;</span>
+vardef put(expr p, ref, toward, offset) =
+  save center_of_ref, center_of_p, d;
+  pair center_of_ref, center_of_p; numeric d;
+  center_of_ref := center ref;
+  if toward = "left":
+    d := xpart center_of_ref - 0.5(bbwidth ref) - 0.5(bbwidth p) - offset;
+    center_of_p := (d, ypart center_of_ref);
+  elseif toward = "right":
+    d := xpart center_of_ref + 0.5(bbwidth ref) + 0.5(bbwidth p) + offset;
+    center_of_p := (d, ypart center_of_ref);
+  elseif toward = "top":
+    d := ypart center_of_ref + 0.5(bbheight ref) + 0.5(bbheight p) + offset;
+    center_of_p := (xpart center_of_ref, d);
+  elseif toward = "bottom":
+    d := ypart center_of_ref - 0.5(bbheight ref) - 0.5(bbheight p) - offset;
+    center_of_p := (xpart center_of_ref, d);
+  fi;
+  p shifted center_of_p
+enddef;
 
-<span class="n">vardef</span> <span class="n">out</span><span class="p">(</span><span class="n">expr</span> <span class="n">p</span><span class="o">,</span> <span class="n">base</span><span class="o">,</span> <span class="n">location</span><span class="o">,</span> <span class="n">margin</span><span class="p">)</span> <span class="o">=</span>
-  <span class="n">save</span> <span class="n">edge_origin</span><span class="o">,</span> <span class="n">anchor</span><span class="o">,</span> <span class="n">ll</span><span class="o">,</span> <span class="n">ul</span><span class="o">,</span> <span class="n">ur</span><span class="o">,</span> <span class="n">lr</span><span class="o">;</span>
-  <span class="n">pair</span> <span class="n">edge_origin</span><span class="o">,</span> <span class="n">anchor</span><span class="o">,</span> <span class="n">ll</span><span class="o">,</span> <span class="n">ul</span><span class="o">,</span> <span class="n">ur</span><span class="o">,</span> <span class="n">lr</span><span class="o">;</span>
-  <span class="n">ll</span> <span class="o">:=</span> <span class="n">llcorner</span> <span class="n">p</span><span class="o">;</span> <span class="n">ul</span> <span class="o">:=</span> <span class="n">ulcorner</span> <span class="n">p</span><span class="o">;</span> <span class="n">ur</span> <span class="o">:=</span> <span class="n">urcorner</span> <span class="n">p</span><span class="o">;</span> <span class="n">lr</span> <span class="o">:=</span> <span class="n">lrcorner</span> <span class="n">p</span><span class="o">;</span>
-  <span class="k">if</span> <span class="n">base</span> <span class="o">=</span> <span class="err">"</span><span class="n">left</span><span class="err">"</span><span class="o">:</span>
-    <span class="n">edge_origin</span> <span class="o">:=</span> <span class="mf">0.5</span><span class="p">[</span><span class="n">ll</span><span class="o">,</span> <span class="n">ul</span><span class="p">]</span><span class="o">;</span>
-    <span class="k">if</span> <span class="n">location</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">:</span>
-      <span class="n">anchor</span> <span class="o">:=</span> <span class="n">location</span><span class="p">[</span><span class="n">edge_origin</span><span class="o">,</span> <span class="n">ul</span><span class="p">]</span><span class="o">;</span>
-    <span class="k">else</span><span class="o">:</span>
-      <span class="n">anchor</span> <span class="o">:=</span> <span class="n">location</span><span class="p">[</span><span class="n">ll</span><span class="o">,</span> <span class="n">edge_origin</span><span class="p">]</span><span class="o">;</span>
-    <span class="n">fi</span><span class="o">;</span>
-    <span class="n">anchor</span> <span class="o">:=</span> <span class="p">(</span><span class="n">xpart</span> <span class="n">anchor</span> <span class="o">-</span> <span class="n">margin</span><span class="o">,</span> <span class="n">ypart</span> <span class="n">anchor</span><span class="p">)</span><span class="o">;</span>
-  <span class="n">elseif</span> <span class="n">base</span> <span class="o">=</span> <span class="err">"</span><span class="n">right</span><span class="err">"</span><span class="o">:</span>
-    <span class="n">edge_origin</span> <span class="o">:=</span> <span class="mf">0.5</span><span class="p">[</span><span class="n">lr</span><span class="o">,</span> <span class="n">ur</span><span class="p">]</span><span class="o">;</span>
-    <span class="k">if</span> <span class="n">location</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">:</span>
-      <span class="n">anchor</span> <span class="o">:=</span> <span class="n">location</span><span class="p">[</span><span class="n">edge_origin</span><span class="o">,</span> <span class="n">ur</span><span class="p">]</span><span class="o">;</span>
-    <span class="k">else</span><span class="o">:</span>
-      <span class="n">anchor</span> <span class="o">:=</span> <span class="n">location</span><span class="p">[</span><span class="n">lr</span><span class="o">,</span> <span class="n">edge_origin</span><span class="p">]</span><span class="o">;</span>
-    <span class="n">fi</span><span class="o">;</span>
-    <span class="n">anchor</span> <span class="o">:=</span> <span class="p">(</span><span class="n">xpart</span> <span class="n">anchor</span> <span class="o">+</span> <span class="n">margin</span><span class="o">,</span> <span class="n">ypart</span> <span class="n">anchor</span><span class="p">)</span><span class="o">;</span>
-  <span class="n">elseif</span> <span class="n">base</span> <span class="o">=</span> <span class="err">"</span><span class="n">top</span><span class="err">"</span><span class="o">:</span>
-    <span class="n">edge_origin</span> <span class="o">:=</span> <span class="mf">0.5</span><span class="p">[</span><span class="n">ul</span><span class="o">,</span> <span class="n">ur</span><span class="p">]</span><span class="o">;</span>
-    <span class="k">if</span> <span class="n">location</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">:</span>
-      <span class="n">anchor</span> <span class="o">:=</span> <span class="n">location</span><span class="p">[</span><span class="n">edge_origin</span><span class="o">,</span> <span class="n">ur</span><span class="p">]</span><span class="o">;</span>
-    <span class="k">else</span><span class="o">:</span>
-      <span class="n">anchor</span> <span class="o">:=</span> <span class="n">location</span><span class="p">[</span><span class="n">ul</span><span class="o">,</span> <span class="n">edge_origin</span><span class="p">]</span><span class="o">;</span>
-    <span class="n">fi</span><span class="o">;</span>
-    <span class="n">anchor</span> <span class="o">:=</span> <span class="p">(</span><span class="n">xpart</span> <span class="n">anchor</span><span class="o">,</span> <span class="n">ypart</span> <span class="n">anchor</span> <span class="o">+</span> <span class="n">margin</span><span class="p">)</span><span class="o">;</span>
-  <span class="n">elseif</span> <span class="n">base</span> <span class="o">=</span> <span class="err">"</span><span class="n">bottom</span><span class="err">"</span><span class="o">:</span>
-    <span class="n">edge_origin</span> <span class="o">:=</span> <span class="mf">0.5</span><span class="p">[</span><span class="n">ll</span><span class="o">,</span> <span class="n">lr</span><span class="p">]</span><span class="o">;</span>
-    <span class="k">if</span> <span class="n">location</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">:</span>
-      <span class="n">anchor</span> <span class="o">:=</span> <span class="n">location</span><span class="p">[</span><span class="n">edge_origin</span><span class="o">,</span> <span class="n">lr</span><span class="p">]</span><span class="o">;</span>
-    <span class="k">else</span><span class="o">:</span>
-      <span class="n">anchor</span> <span class="o">:=</span> <span class="n">location</span><span class="p">[</span><span class="n">ll</span><span class="o">,</span> <span class="n">edge_origin</span><span class="p">]</span><span class="o">;</span>
-    <span class="n">fi</span><span class="o">;</span>
-    <span class="n">anchor</span> <span class="o">:=</span> <span class="p">(</span><span class="n">xpart</span> <span class="n">anchor</span><span class="o">,</span> <span class="n">ypart</span> <span class="n">anchor</span> <span class="o">-</span> <span class="n">margin</span><span class="p">)</span><span class="o">;</span>
-  <span class="n">fi</span><span class="o">;</span>
-  <span class="n">anchor</span>
-<span class="n">enddef</span><span class="o">;</span>
+vardef out(expr p, base, location, margin) =
+  save edge_origin, anchor, ll, ul, ur, lr;
+  pair edge_origin, anchor, ll, ul, ur, lr;
+  ll := llcorner p; ul := ulcorner p; ur := urcorner p; lr := lrcorner p;
+  if base = "left":
+    edge_origin := 0.5[ll, ul];
+    if location &gt;= 0:
+      anchor := location[edge_origin, ul];
+    else:
+      anchor := location[ll, edge_origin];
+    fi;
+    anchor := (xpart anchor - margin, ypart anchor);
+  elseif base = "right":
+    edge_origin := 0.5[lr, ur];
+    if location &gt;= 0:
+      anchor := location[edge_origin, ur];
+    else:
+      anchor := location[lr, edge_origin];
+    fi;
+    anchor := (xpart anchor + margin, ypart anchor);
+  elseif base = "top":
+    edge_origin := 0.5[ul, ur];
+    if location &gt;= 0:
+      anchor := location[edge_origin, ur];
+    else:
+      anchor := location[ul, edge_origin];
+    fi;
+    anchor := (xpart anchor, ypart anchor + margin);
+  elseif base = "bottom":
+    edge_origin := 0.5[ll, lr];
+    if location &gt;= 0:
+      anchor := location[edge_origin, lr];
+    else:
+      anchor := location[ll, edge_origin];
+    fi;
+    anchor := (xpart anchor, ypart anchor - margin);
+  fi;
+  anchor
+enddef;
 
-<span class="n">vardef</span> <span class="k">in</span><span class="p">(</span><span class="n">expr</span> <span class="n">p</span><span class="o">,</span> <span class="n">base</span><span class="o">,</span> <span class="n">mate</span><span class="o">,</span> <span class="n">margin</span><span class="p">)</span> <span class="o">=</span>
-  <span class="n">save</span> <span class="n">anchor</span><span class="o">,</span> <span class="n">ll</span><span class="o">,</span> <span class="n">ul</span><span class="o">,</span> <span class="n">ur</span><span class="o">,</span> <span class="n">lr</span><span class="o">;</span>
-  <span class="n">pair</span> <span class="n">anchor</span><span class="o">,</span> <span class="n">ll</span><span class="o">,</span> <span class="n">ul</span><span class="o">,</span> <span class="n">ur</span><span class="o">,</span> <span class="n">lr</span><span class="o">;</span>
-  <span class="n">ll</span> <span class="o">:=</span> <span class="n">llcorner</span> <span class="n">p</span><span class="o">;</span> <span class="n">ul</span> <span class="o">:=</span> <span class="n">ulcorner</span> <span class="n">p</span><span class="o">;</span> <span class="n">ur</span> <span class="o">:=</span> <span class="n">urcorner</span> <span class="n">p</span><span class="o">;</span> <span class="n">lr</span> <span class="o">:=</span> <span class="n">lrcorner</span> <span class="n">p</span><span class="o">;</span>
-  <span class="k">if</span> <span class="n">base</span> <span class="o">=</span> <span class="err">"</span><span class="n">left</span><span class="err">"</span><span class="o">:</span>
-    <span class="n">anchor</span> <span class="o">:=</span> <span class="p">(</span><span class="n">xpart</span> <span class="n">ll</span> <span class="o">-</span> <span class="n">margin</span><span class="o">,</span> <span class="n">ypart</span> <span class="n">mate</span><span class="p">)</span><span class="o">;</span>
-  <span class="n">elseif</span> <span class="n">base</span> <span class="o">=</span> <span class="err">"</span><span class="n">right</span><span class="err">"</span><span class="o">:</span>
-    <span class="n">anchor</span> <span class="o">:=</span> <span class="p">(</span><span class="n">xpart</span> <span class="n">lr</span> <span class="o">+</span> <span class="n">margin</span><span class="o">,</span> <span class="n">ypart</span> <span class="n">mate</span><span class="p">)</span><span class="o">;</span>
-  <span class="n">elseif</span> <span class="n">base</span> <span class="o">=</span> <span class="err">"</span><span class="n">top</span><span class="err">"</span><span class="o">:</span>
-    <span class="n">anchor</span> <span class="o">:=</span> <span class="p">(</span><span class="n">xpart</span> <span class="n">mate</span><span class="o">,</span> <span class="n">ypart</span> <span class="n">ul</span> <span class="o">+</span> <span class="n">margin</span><span class="p">)</span><span class="o">;</span>
-  <span class="n">elseif</span> <span class="n">base</span> <span class="o">=</span> <span class="err">"</span><span class="n">bottom</span><span class="err">"</span><span class="o">:</span>
-    <span class="n">anchor</span> <span class="o">:=</span> <span class="p">(</span><span class="n">xpart</span> <span class="n">mate</span><span class="o">,</span> <span class="n">ypart</span> <span class="n">ll</span> <span class="o">-</span> <span class="n">margin</span><span class="p">)</span><span class="o">;</span>
-  <span class="n">fi</span><span class="o">;</span>
-  <span class="n">anchor</span>
-<span class="n">enddef</span><span class="o">;</span>
+vardef in(expr p, base, mate, margin) =
+  save anchor, ll, ul, ur, lr;
+  pair anchor, ll, ul, ur, lr;
+  ll := llcorner p; ul := ulcorner p; ur := urcorner p; lr := lrcorner p;
+  if base = "left":
+    anchor := (xpart ll - margin, ypart mate);
+  elseif base = "right":
+    anchor := (xpart lr + margin, ypart mate);
+  elseif base = "top":
+    anchor := (xpart mate, ypart ul + margin);
+  elseif base = "bottom":
+    anchor := (xpart mate, ypart ll - margin);
+  fi;
+  anchor
+enddef;
 
-<span class="err">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-<span class="err">%</span> <span class="err">样式</span>
-<span class="n">color</span> <span class="n">datacolor</span><span class="o">,</span> <span class="n">procedurecolor</span><span class="o">,</span> <span class="n">linecolor</span><span class="o">,</span> <span class="n">backgroundcolor</span><span class="o">;</span>
-<span class="n">datacolor</span> <span class="o">:=</span> <span class="o">.</span><span class="mi">375</span><span class="n">darkgray</span><span class="o">;</span>
-<span class="n">procedurecolor</span> <span class="o">:=</span> <span class="n">darkred</span><span class="o">;</span>
-<span class="n">linecolor</span> <span class="o">:=</span> <span class="o">.</span><span class="mi">8</span><span class="n">darkgray</span><span class="o">;</span>
-<span class="n">backgroundcolor</span> <span class="o">:=</span> <span class="o">.</span><span class="mi">8</span><span class="n">white</span><span class="o">;</span>
-<span class="n">drawpathoptions</span><span class="p">(</span><span class="n">withpen</span> <span class="n">pencircle</span> <span class="n">scaled</span> <span class="mf">1.5</span> <span class="n">withcolor</span> <span class="n">linecolor</span><span class="p">)</span><span class="o">;</span>
-<span class="err">%</span> <span class="err">留白与间距尺寸</span>
-<span class="n">numeric</span> <span class="n">margin</span><span class="o">,</span> <span class="n">hgap</span><span class="o">,</span> <span class="n">vgap</span><span class="o">;</span>
-<span class="n">margin</span> <span class="o">:=</span> <span class="mi">4</span><span class="o">;</span> <span class="n">hgap</span> <span class="o">:=</span> <span class="mf">1.5</span><span class="n">cm</span><span class="o">;</span> <span class="n">vgap</span> <span class="o">:=</span> <span class="mf">0.75</span><span class="n">cm</span><span class="o">;</span>
-<span class="err">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 样式
+color datacolor, procedurecolor, linecolor, backgroundcolor;
+datacolor := .375darkgray;
+procedurecolor := darkred;
+linecolor := .8darkgray;
+backgroundcolor := .8white;
+drawpathoptions(withpen pencircle scaled 1.5 withcolor linecolor);
+% 留白与间距尺寸
+numeric margin, hgap, vgap;
+margin := 4; hgap := 1.5cm; vgap := 0.75cm;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 </pre>
 </div>
     </div>
