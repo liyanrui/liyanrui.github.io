@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Wed, 31 Oct 2018 09:54:01 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>流程图</title><link>/posts/flow-charts.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;img alt="" src="/images/flow-charts/sketch.jpg"&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Wed, 31 Oct 2018 10:37:48 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>流程图</title><link>/posts/flow-charts.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;img alt="" src="/images/flow-charts/sketch.jpg"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="/images/flow-charts/demo.png"&gt;&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\usemodule&lt;/span&gt;&lt;span class="na"&gt;[zhfonts]&lt;/span&gt;
 &lt;span class="k"&gt;\defineframed&lt;/span&gt;
@@ -44,115 +44,115 @@ a.out ==&amp;gt; c.a.in; b.out ==&amp;gt; c.b.in; c.out ==&amp;gt; d.in; d.out =
 
 
 &lt;p&gt;chart.mp:&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;tertiarydef a ==&amp;gt; b = drawarrowpath a -- b; enddef;
-tertiarydef a +++ b = image(draw a; draw b;) enddef;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;tertiarydef&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;==&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;drawarrowpath&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;enddef&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;tertiarydef&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;+++&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;draw&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;draw&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;enddef&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
-vardef like(expr box) =
-  save p; path p;
-  p := (llcorner box) -- (ulcorner box) -- (urcorner box) -- (lrcorner box) -- cycle;
-  p := p shifted -(center box);
-  p
-enddef;
+&lt;span class="n"&gt;vardef&lt;/span&gt; &lt;span class="n"&gt;like&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;expr&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+  &lt;span class="n"&gt;save&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;llcorner&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ulcorner&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;urcorner&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lrcorner&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;cycle&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;shifted&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;center&lt;/span&gt; &lt;span class="n"&gt;box&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;p&lt;/span&gt;
+&lt;span class="n"&gt;enddef&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
-vardef data(expr s) =
-  image(draw textext(s) withcolor datacolor;)
-enddef;
+&lt;span class="n"&gt;vardef&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;expr&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+  &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;draw&lt;/span&gt; &lt;span class="n"&gt;textext&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;withcolor&lt;/span&gt; &lt;span class="n"&gt;datacolor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;enddef&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
-vardef procedure(expr s, canvas) =
-  image(fill canvas withcolor backgroundcolor;
-        drawpath canvas withcolor linecolor;
-        draw textext(s) withcolor procedurecolor;
-  )
-enddef;
+&lt;span class="n"&gt;vardef&lt;/span&gt; &lt;span class="k"&gt;procedure&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;expr&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;canvas&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+  &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fill&lt;/span&gt; &lt;span class="n"&gt;canvas&lt;/span&gt; &lt;span class="n"&gt;withcolor&lt;/span&gt; &lt;span class="n"&gt;backgroundcolor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;drawpath&lt;/span&gt; &lt;span class="n"&gt;canvas&lt;/span&gt; &lt;span class="n"&gt;withcolor&lt;/span&gt; &lt;span class="n"&gt;linecolor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+        &lt;span class="n"&gt;draw&lt;/span&gt; &lt;span class="n"&gt;textext&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="n"&gt;withcolor&lt;/span&gt; &lt;span class="n"&gt;procedurecolor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;enddef&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
-vardef put(expr p, ref, toward, offset) =
-  save center_of_ref, center_of_p, d;
-  pair center_of_ref, center_of_p; numeric d;
-  center_of_ref := center ref;
-  if toward = "left":
-    d := xpart center_of_ref - 0.5(bbwidth ref) - 0.5(bbwidth p) - offset;
-    center_of_p := (d, ypart center_of_ref);
-  elseif toward = "right":
-    d := xpart center_of_ref + 0.5(bbwidth ref) + 0.5(bbwidth p) + offset;
-    center_of_p := (d, ypart center_of_ref);
-  elseif toward = "top":
-    d := ypart center_of_ref + 0.5(bbheight ref) + 0.5(bbheight p) + offset;
-    center_of_p := (xpart center_of_ref, d);
-  elseif toward = "bottom":
-    d := ypart center_of_ref - 0.5(bbheight ref) - 0.5(bbheight p) - offset;
-    center_of_p := (xpart center_of_ref, d);
-  fi;
-  p shifted center_of_p
-enddef;
+&lt;span class="n"&gt;vardef&lt;/span&gt; &lt;span class="n"&gt;put&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;expr&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ref&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;toward&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;offset&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+  &lt;span class="n"&gt;save&lt;/span&gt; &lt;span class="n"&gt;center_of_ref&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;center_of_p&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;pair&lt;/span&gt; &lt;span class="n"&gt;center_of_ref&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;center_of_p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;numeric&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;center_of_ref&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;center&lt;/span&gt; &lt;span class="n"&gt;ref&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;toward&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;xpart&lt;/span&gt; &lt;span class="n"&gt;center_of_ref&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bbwidth&lt;/span&gt; &lt;span class="n"&gt;ref&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bbwidth&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;offset&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;center_of_p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ypart&lt;/span&gt; &lt;span class="n"&gt;center_of_ref&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;elseif&lt;/span&gt; &lt;span class="n"&gt;toward&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;xpart&lt;/span&gt; &lt;span class="n"&gt;center_of_ref&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bbwidth&lt;/span&gt; &lt;span class="n"&gt;ref&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bbwidth&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;offset&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;center_of_p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ypart&lt;/span&gt; &lt;span class="n"&gt;center_of_ref&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;elseif&lt;/span&gt; &lt;span class="n"&gt;toward&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="n"&gt;top&lt;/span&gt;&lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;ypart&lt;/span&gt; &lt;span class="n"&gt;center_of_ref&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bbheight&lt;/span&gt; &lt;span class="n"&gt;ref&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bbheight&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;offset&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;center_of_p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;xpart&lt;/span&gt; &lt;span class="n"&gt;center_of_ref&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;elseif&lt;/span&gt; &lt;span class="n"&gt;toward&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="n"&gt;bottom&lt;/span&gt;&lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;ypart&lt;/span&gt; &lt;span class="n"&gt;center_of_ref&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bbheight&lt;/span&gt; &lt;span class="n"&gt;ref&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bbheight&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;offset&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;center_of_p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;xpart&lt;/span&gt; &lt;span class="n"&gt;center_of_ref&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;fi&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;shifted&lt;/span&gt; &lt;span class="n"&gt;center_of_p&lt;/span&gt;
+&lt;span class="n"&gt;enddef&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
-vardef out(expr p, base, location, margin) =
-  save edge_origin, anchor, ll, ul, ur, lr;
-  pair edge_origin, anchor, ll, ul, ur, lr;
-  ll := llcorner p; ul := ulcorner p; ur := urcorner p; lr := lrcorner p;
-  if base = "left":
-    edge_origin := 0.5[ll, ul];
-    if location &amp;gt;= 0:
-      anchor := location[edge_origin, ul];
-    else:
-      anchor := location[ll, edge_origin];
-    fi;
-    anchor := (xpart anchor - margin, ypart anchor);
-  elseif base = "right":
-    edge_origin := 0.5[lr, ur];
-    if location &amp;gt;= 0:
-      anchor := location[edge_origin, ur];
-    else:
-      anchor := location[lr, edge_origin];
-    fi;
-    anchor := (xpart anchor + margin, ypart anchor);
-  elseif base = "top":
-    edge_origin := 0.5[ul, ur];
-    if location &amp;gt;= 0:
-      anchor := location[edge_origin, ur];
-    else:
-      anchor := location[ul, edge_origin];
-    fi;
-    anchor := (xpart anchor, ypart anchor + margin);
-  elseif base = "bottom":
-    edge_origin := 0.5[ll, lr];
-    if location &amp;gt;= 0:
-      anchor := location[edge_origin, lr];
-    else:
-      anchor := location[ll, edge_origin];
-    fi;
-    anchor := (xpart anchor, ypart anchor - margin);
-  fi;
-  anchor
-enddef;
+&lt;span class="n"&gt;vardef&lt;/span&gt; &lt;span class="n"&gt;out&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;expr&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;base&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;margin&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+  &lt;span class="n"&gt;save&lt;/span&gt; &lt;span class="n"&gt;edge_origin&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;anchor&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ll&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ul&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ur&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lr&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;pair&lt;/span&gt; &lt;span class="n"&gt;edge_origin&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;anchor&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ll&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ul&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ur&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lr&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;ll&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;llcorner&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;ul&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;ulcorner&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;ur&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;urcorner&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;lr&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;lrcorner&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;base&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;edge_origin&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;ll&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ul&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;edge_origin&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ul&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;ll&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;edge_origin&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;fi&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;xpart&lt;/span&gt; &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;margin&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ypart&lt;/span&gt; &lt;span class="n"&gt;anchor&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;elseif&lt;/span&gt; &lt;span class="n"&gt;base&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;edge_origin&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;lr&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ur&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;edge_origin&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ur&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;lr&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;edge_origin&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;fi&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;xpart&lt;/span&gt; &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;margin&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ypart&lt;/span&gt; &lt;span class="n"&gt;anchor&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;elseif&lt;/span&gt; &lt;span class="n"&gt;base&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="n"&gt;top&lt;/span&gt;&lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;edge_origin&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;ul&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ur&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;edge_origin&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ur&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;ul&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;edge_origin&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;fi&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;xpart&lt;/span&gt; &lt;span class="n"&gt;anchor&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ypart&lt;/span&gt; &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;margin&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;elseif&lt;/span&gt; &lt;span class="n"&gt;base&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="n"&gt;bottom&lt;/span&gt;&lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;edge_origin&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;ll&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lr&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;edge_origin&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lr&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;ll&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;edge_origin&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;fi&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;xpart&lt;/span&gt; &lt;span class="n"&gt;anchor&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ypart&lt;/span&gt; &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;margin&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;fi&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;anchor&lt;/span&gt;
+&lt;span class="n"&gt;enddef&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
-vardef in(expr p, base, mate, margin) =
-  save anchor, ll, ul, ur, lr;
-  pair anchor, ll, ul, ur, lr;
-  ll := llcorner p; ul := ulcorner p; ur := urcorner p; lr := lrcorner p;
-  if base = "left":
-    anchor := (xpart ll - margin, ypart mate);
-  elseif base = "right":
-    anchor := (xpart lr + margin, ypart mate);
-  elseif base = "top":
-    anchor := (xpart mate, ypart ul + margin);
-  elseif base = "bottom":
-    anchor := (xpart mate, ypart ll - margin);
-  fi;
-  anchor
-enddef;
+&lt;span class="n"&gt;vardef&lt;/span&gt; &lt;span class="k"&gt;in&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;expr&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;base&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mate&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;margin&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+  &lt;span class="n"&gt;save&lt;/span&gt; &lt;span class="n"&gt;anchor&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ll&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ul&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ur&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lr&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;pair&lt;/span&gt; &lt;span class="n"&gt;anchor&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ll&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ul&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ur&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lr&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;ll&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;llcorner&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;ul&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;ulcorner&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;ur&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;urcorner&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;lr&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;lrcorner&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;base&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;xpart&lt;/span&gt; &lt;span class="n"&gt;ll&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;margin&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ypart&lt;/span&gt; &lt;span class="n"&gt;mate&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;elseif&lt;/span&gt; &lt;span class="n"&gt;base&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;xpart&lt;/span&gt; &lt;span class="n"&gt;lr&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;margin&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ypart&lt;/span&gt; &lt;span class="n"&gt;mate&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;elseif&lt;/span&gt; &lt;span class="n"&gt;base&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="n"&gt;top&lt;/span&gt;&lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;xpart&lt;/span&gt; &lt;span class="n"&gt;mate&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ypart&lt;/span&gt; &lt;span class="n"&gt;ul&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;margin&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;elseif&lt;/span&gt; &lt;span class="n"&gt;base&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="n"&gt;bottom&lt;/span&gt;&lt;span class="err"&gt;"&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;anchor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;xpart&lt;/span&gt; &lt;span class="n"&gt;mate&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ypart&lt;/span&gt; &lt;span class="n"&gt;ll&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;margin&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;fi&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;anchor&lt;/span&gt;
+&lt;span class="n"&gt;enddef&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 样式
-color datacolor, procedurecolor, linecolor, backgroundcolor;
-datacolor := .375darkgray;
-procedurecolor := darkred;
-linecolor := .8darkgray;
-backgroundcolor := .8white;
-drawpathoptions(withpen pencircle scaled 1.5 withcolor linecolor);
-% 留白与间距尺寸
-numeric margin, hgap, vgap;
-margin := 4; hgap := 1.5cm; vgap := 0.75cm;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+&lt;span class="err"&gt;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&lt;/span&gt;
+&lt;span class="err"&gt;%&lt;/span&gt; &lt;span class="err"&gt;样式&lt;/span&gt;
+&lt;span class="n"&gt;color&lt;/span&gt; &lt;span class="n"&gt;datacolor&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;procedurecolor&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;linecolor&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;backgroundcolor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;datacolor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;375&lt;/span&gt;&lt;span class="n"&gt;darkgray&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;procedurecolor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="n"&gt;darkred&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;linecolor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="n"&gt;darkgray&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;backgroundcolor&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="n"&gt;white&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;drawpathoptions&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;withpen&lt;/span&gt; &lt;span class="n"&gt;pencircle&lt;/span&gt; &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="mf"&gt;1.5&lt;/span&gt; &lt;span class="n"&gt;withcolor&lt;/span&gt; &lt;span class="n"&gt;linecolor&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="err"&gt;%&lt;/span&gt; &lt;span class="err"&gt;留白与间距尺寸&lt;/span&gt;
+&lt;span class="n"&gt;numeric&lt;/span&gt; &lt;span class="n"&gt;margin&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;hgap&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;vgap&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;margin&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;hgap&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="mf"&gt;1.5&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="n"&gt;vgap&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="mf"&gt;0.75&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;span class="err"&gt;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;</description><guid>/posts/flow-charts.html</guid><pubDate>Wed, 31 Oct 2018 09:42:15 GMT</pubDate></item><item><title>安装 Cygwin</title><link>/posts/cygwin-installation.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;我：键盘，最近这几天，要在一台装有微软 Windows 7 的机器上工作，也就是说，这段时间没有 Linux 可用。&lt;/p&gt;
 &lt;p&gt;键盘：Windows 7 里有终端么？&lt;/p&gt;
 &lt;p&gt;我：有一个，但是不叫终端，而叫控制台，是那个通常被称为命令提示符或 cmd 的命令行窗口。不过，从 Windows 7 开始，微软提供了 PowerShell，在功能与 Bash 较为接近，可视为同类。由于我每年在 Windows 系统里呆的时间很短，所以 PowerShell 的好坏，和我没有关系。&lt;/p&gt;
