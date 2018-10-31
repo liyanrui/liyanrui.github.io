@@ -64,45 +64,45 @@
     <div>
 <p><img alt="" src="../images/flow-charts/sketch.jpg"></p>
 <p><img alt="" src="../images/flow-charts/demo.png"></p>
-<pre class="code literal-block"><span></span><span class="err">\</span><span class="nt">usemodule</span><span class="cp">[</span><span class="nx">zhfonts</span><span class="cp">]</span>
-<span class="err">\</span><span class="nt">defineframed</span>
-  <span class="cp">[</span><span class="nx">myframe</span><span class="cp">]</span>
-  <span class="cp">[</span><span class="n">frame</span><span class="o">=</span><span class="nx">off</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="nx">overlay</span><span class="p">,</span>
-    <span class="n">width</span><span class="o">=</span><span class="mf">2.5</span><span class="nx">cm</span><span class="p">,</span> <span class="n">autowidth</span><span class="o">=</span><span class="nx">force</span><span class="p">,</span>
-    <span class="n">align</span><span class="o">=</span><span class="p">{</span><span class="nx">middle</span><span class="p">,</span> <span class="nx">lohi</span><span class="p">,</span> <span class="nx">broad</span><span class="p">}</span><span class="cp">]</span>
+<pre class="code literal-block"><span></span><span class="k">\usemodule</span><span class="na">[zhfonts]</span>
+<span class="k">\defineframed</span>
+  [myframe]
+  [frame=off, offset=overlay,
+    width=2.5cm, autowidth=force,
+    align=<span class="nb">{</span>middle, lohi, broad<span class="nb">}</span>]
 
-<span class="err">\</span><span class="nt">startMPpage</span>
-<span class="nt">input</span> <span class="nt">chart</span><span class="p">.</span><span class="nc">mp</span><span class="o">;</span>
+<span class="k">\startMPpage</span>
+input chart.mp;
 
-<span class="o">%</span> <span class="nt">结点</span>
-<span class="nt">picture</span> <span class="nt">a</span><span class="o">,</span> <span class="nt">b</span><span class="o">,</span> <span class="nt">c</span><span class="o">,</span> <span class="nt">d</span><span class="o">,</span> <span class="nt">e</span><span class="o">,</span> <span class="nt">f</span><span class="o">;</span> 
-<span class="nt">a</span> <span class="o">:=</span> <span class="nt">data</span><span class="o">(</span><span class="s2">"元文档"</span><span class="o">);</span>
-<span class="nt">b</span> <span class="o">:=</span> <span class="nt">put</span><span class="o">(</span><span class="nt">data</span><span class="o">(</span><span class="s2">"文献数据库"</span><span class="o">),</span> <span class="nt">a</span><span class="o">,</span> <span class="s2">"bottom"</span><span class="o">,</span> <span class="nt">0</span><span class="p">.</span><span class="nc">3cm</span><span class="o">);</span>
-<span class="nt">c</span> <span class="o">:=</span> <span class="nt">put</span><span class="o">(</span><span class="nt">procedure</span><span class="o">(</span><span class="s2">"nar"</span><span class="o">,</span> <span class="nt">like</span><span class="o">(</span><span class="nt">a</span> <span class="o">+++</span> <span class="nt">b</span><span class="o">)),</span> <span class="nt">a</span> <span class="o">+++</span> <span class="nt">b</span><span class="o">,</span> <span class="s2">"right"</span><span class="o">,</span> <span class="nt">hgap</span><span class="o">);</span>
-<span class="nt">d</span> <span class="o">:=</span> <span class="nt">put</span><span class="o">(</span><span class="nt">data</span><span class="o">(</span><span class="s2">"\myframe{含文献引用的元文档}"</span><span class="o">),</span> <span class="nt">c</span><span class="o">,</span> <span class="s2">"right"</span><span class="o">,</span> <span class="nt">hgap</span><span class="o">);</span>
-<span class="nt">e</span> <span class="o">:=</span> <span class="nt">put</span><span class="o">(</span><span class="nt">procedure</span><span class="o">(</span><span class="s2">"排版引擎"</span><span class="o">,</span> <span class="nt">like</span><span class="o">(</span><span class="nt">c</span><span class="o">)),</span> <span class="nt">d</span><span class="o">,</span> <span class="s2">"bottom"</span><span class="o">,</span> <span class="nt">vgap</span><span class="o">);</span> 
-<span class="nt">f</span> <span class="o">:=</span> <span class="nt">put</span><span class="o">(</span><span class="nt">data</span><span class="o">(</span><span class="s2">"格式化文档"</span><span class="o">),</span> <span class="nt">e</span><span class="o">,</span> <span class="s2">"right"</span><span class="o">,</span> <span class="nt">hgap</span><span class="o">);</span>
+<span class="c">% 结点</span>
+picture a, b, c, d, e, f; 
+a := data("元文档");
+b := put(data("文献数据库"), a, "bottom", 0.3cm);
+c := put(procedure("nar", like(a +++ b)), a +++ b, "right", hgap);
+d := put(data("<span class="k">\myframe</span><span class="nb">{</span>含文献引用的元文档<span class="nb">}</span>"), c, "right", hgap);
+e := put(procedure("排版引擎", like(c)), d, "bottom", vgap); 
+f := put(data("格式化文档"), e, "right", hgap);
 
-<span class="o">%</span> <span class="nt">出射锚点</span>
-<span class="nt">pair</span> <span class="nt">a</span><span class="p">.</span><span class="nc">out</span><span class="o">,</span> <span class="nt">b</span><span class="p">.</span><span class="nc">out</span><span class="o">,</span> <span class="nt">c</span><span class="p">.</span><span class="nc">out</span><span class="o">,</span> <span class="nt">d</span><span class="p">.</span><span class="nc">out</span><span class="o">,</span> <span class="nt">e</span><span class="p">.</span><span class="nc">out</span><span class="o">;</span>
-<span class="nt">a</span><span class="p">.</span><span class="nc">out</span> <span class="o">:=</span> <span class="nt">out</span><span class="o">(</span><span class="nt">a</span><span class="o">,</span> <span class="s2">"right"</span><span class="o">,</span> <span class="nt">0</span><span class="o">,</span> <span class="nt">margin</span><span class="o">);</span>
-<span class="nt">b</span><span class="p">.</span><span class="nc">out</span> <span class="o">:=</span> <span class="nt">out</span><span class="o">(</span><span class="nt">b</span><span class="o">,</span> <span class="s2">"right"</span><span class="o">,</span> <span class="nt">0</span><span class="o">,</span> <span class="nt">margin</span><span class="o">);</span>
-<span class="nt">c</span><span class="p">.</span><span class="nc">out</span> <span class="o">:=</span> <span class="nt">out</span><span class="o">(</span><span class="nt">c</span><span class="o">,</span> <span class="s2">"right"</span><span class="o">,</span> <span class="nt">0</span><span class="o">,</span> <span class="nt">0</span><span class="o">);</span>
-<span class="nt">d</span><span class="p">.</span><span class="nc">out</span> <span class="o">:=</span> <span class="nt">out</span><span class="o">(</span><span class="nt">d</span><span class="o">,</span> <span class="s2">"bottom"</span><span class="o">,</span> <span class="nt">0</span><span class="o">,</span> <span class="nt">margin</span><span class="o">);</span>
-<span class="nt">e</span><span class="p">.</span><span class="nc">out</span> <span class="o">:=</span> <span class="nt">out</span><span class="o">(</span><span class="nt">e</span><span class="o">,</span> <span class="s2">"right"</span><span class="o">,</span> <span class="nt">0</span><span class="o">,</span> <span class="nt">0</span><span class="o">);</span>
+<span class="c">% 出射锚点</span>
+pair a.out, b.out, c.out, d.out, e.out;
+a.out := out(a, "right", 0, margin);
+b.out := out(b, "right", 0, margin);
+c.out := out(c, "right", 0, 0);
+d.out := out(d, "bottom", 0, margin);
+e.out := out(e, "right", 0, 0);
 
-<span class="o">%</span> <span class="nt">入射锚点</span>
-<span class="nt">pair</span> <span class="nt">c</span><span class="p">.</span><span class="nc">a</span><span class="p">.</span><span class="nc">in</span><span class="o">,</span> <span class="nt">c</span><span class="p">.</span><span class="nc">b</span><span class="p">.</span><span class="nc">in</span><span class="o">,</span> <span class="nt">d</span><span class="p">.</span><span class="nc">in</span><span class="o">,</span> <span class="nt">e</span><span class="p">.</span><span class="nc">in</span><span class="o">,</span> <span class="nt">f</span><span class="p">.</span><span class="nc">in</span><span class="o">;</span>
-<span class="nt">c</span><span class="p">.</span><span class="nc">a</span><span class="p">.</span><span class="nc">in</span> <span class="o">:=</span> <span class="nt">in</span><span class="o">(</span><span class="nt">c</span><span class="o">,</span> <span class="s2">"left"</span><span class="o">,</span> <span class="nt">a</span><span class="p">.</span><span class="nc">out</span><span class="o">,</span> <span class="nt">0</span><span class="o">);</span>
-<span class="nt">c</span><span class="p">.</span><span class="nc">b</span><span class="p">.</span><span class="nc">in</span> <span class="o">:=</span> <span class="nt">in</span><span class="o">(</span><span class="nt">c</span><span class="o">,</span> <span class="s2">"left"</span><span class="o">,</span> <span class="nt">b</span><span class="p">.</span><span class="nc">out</span><span class="o">,</span> <span class="nt">0</span><span class="o">);</span>
-<span class="nt">d</span><span class="p">.</span><span class="nc">in</span> <span class="o">:=</span> <span class="nt">in</span><span class="o">(</span><span class="nt">d</span><span class="o">,</span> <span class="s2">"left"</span><span class="o">,</span> <span class="nt">c</span><span class="p">.</span><span class="nc">out</span><span class="o">,</span> <span class="nt">margin</span><span class="o">);</span>
-<span class="nt">e</span><span class="p">.</span><span class="nc">in</span> <span class="o">:=</span> <span class="nt">in</span><span class="o">(</span><span class="nt">e</span><span class="o">,</span> <span class="s2">"top"</span><span class="o">,</span> <span class="nt">d</span><span class="p">.</span><span class="nc">out</span><span class="o">,</span> <span class="nt">0</span><span class="o">);</span>
-<span class="nt">f</span><span class="p">.</span><span class="nc">in</span> <span class="o">:=</span> <span class="nt">in</span><span class="o">(</span><span class="nt">f</span><span class="o">,</span> <span class="s2">"left"</span><span class="o">,</span> <span class="nt">e</span><span class="p">.</span><span class="nc">out</span><span class="o">,</span> <span class="nt">margin</span><span class="o">);</span>
+<span class="c">% 入射锚点</span>
+pair c.a.in, c.b.in, d.in, e.in, f.in;
+c.a.in := in(c, "left", a.out, 0);
+c.b.in := in(c, "left", b.out, 0);
+d.in := in(d, "left", c.out, margin);
+e.in := in(e, "top", d.out, 0);
+f.in := in(f, "left", e.out, margin);
 
-<span class="o">%</span> <span class="nt">绘制流程图</span>
-<span class="nt">for</span> <span class="nt">i</span> <span class="o">=</span> <span class="nt">a</span><span class="o">,</span> <span class="nt">b</span><span class="o">,</span> <span class="nt">c</span><span class="o">,</span> <span class="nt">d</span><span class="o">,</span> <span class="nt">e</span><span class="o">,</span> <span class="nt">f</span><span class="o">:</span> <span class="nt">draw</span> <span class="nt">i</span><span class="o">;</span> <span class="nt">endfor</span><span class="o">;</span>
-<span class="nt">a</span><span class="p">.</span><span class="nc">out</span> <span class="o">==&gt;</span> <span class="nt">c</span><span class="p">.</span><span class="nc">a</span><span class="p">.</span><span class="nc">in</span><span class="o">;</span> <span class="nt">b</span><span class="p">.</span><span class="nc">out</span> <span class="o">==&gt;</span> <span class="nt">c</span><span class="p">.</span><span class="nc">b</span><span class="p">.</span><span class="nc">in</span><span class="o">;</span> <span class="nt">c</span><span class="p">.</span><span class="nc">out</span> <span class="o">==&gt;</span> <span class="nt">d</span><span class="p">.</span><span class="nc">in</span><span class="o">;</span> <span class="nt">d</span><span class="p">.</span><span class="nc">out</span> <span class="o">==&gt;</span> <span class="nt">e</span><span class="p">.</span><span class="nc">in</span><span class="o">;</span> <span class="nt">e</span><span class="p">.</span><span class="nc">out</span> <span class="o">==&gt;</span> <span class="nt">f</span><span class="p">.</span><span class="nc">in</span><span class="o">;</span>
-<span class="err">\</span><span class="nt">stopMPpage</span>
+<span class="c">% 绘制流程图</span>
+for i = a, b, c, d, e, f: draw i; endfor;
+a.out ==&gt; c.a.in; b.out ==&gt; c.b.in; c.out ==&gt; d.in; d.out ==&gt; e.in; e.out ==&gt; f.in;
+<span class="k">\stopMPpage</span>
 </pre>
 
 

@@ -7,7 +7,7 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-10-31T09:53:00Z</lastmod>
+  <lastmod>2018-10-31T09:54:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
@@ -55,7 +55,7 @@
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-10-31T09:53:00Z</lastmod>
+  <lastmod>2018-10-31T09:54:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/cygwin-installation.html</loc>
@@ -63,7 +63,7 @@
  </url>
  <url>
   <loc>/posts/flow-charts.html</loc>
-  <lastmod>2018-10-31T09:53:00Z</lastmod>
+  <lastmod>2018-10-31T09:54:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/nikola-tips.html</loc>
