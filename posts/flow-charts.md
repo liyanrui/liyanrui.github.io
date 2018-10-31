@@ -13,7 +13,7 @@
 
 ![](/images/flow-charts/demo.png)
 
-```
+```TeX
 \usemodule[zhfonts]
 \defineframed
   [myframe]
@@ -57,7 +57,7 @@ a.out ==> c.a.in; b.out ==> c.b.in; c.out ==> d.in; d.out ==> e.in; e.out ==> f.
 
 chart.mp:
 
-```
+```MetaPost
 tertiarydef a ==> b = drawarrowpath a -- b; enddef;
 tertiarydef a +++ b = image(draw a; draw b;) enddef;
 
