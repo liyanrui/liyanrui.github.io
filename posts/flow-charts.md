@@ -9,9 +9,7 @@
 .. type: text
 -->
 
-![](/images/flow-charts/sketch.jpg)
-
-![](/images/flow-charts/demo.png)
+![自出入](/images/flow-charts/demo-2.png)
 
 ```TeX
 \usemodule[zhfonts]
@@ -20,46 +18,15 @@
   [frame=off, offset=overlay,
     width=2.5cm, autowidth=force,
     align={middle, lohi, broad}]
-
 \startMPpage
 input chart.mp;
+picture a; pair a.out, a.in; path a.self;
+a := procedure("nar", like(fullsquare xysized (2cm,1cm)));
+a.out := anchor(a, "right", 0); a.in  := anchor(a, "top", 0);
+a.self := a.out && right * 0.3hgap && up * 1.3vgap && left * (H a.in) -- a.in;
 
-% 结点
-picture a, b, c, d, e, f;
-a := data("元文档");
-b := put(data("文献数据库"), a, "bottom", 0.3cm);
-c := put(procedure("nar", like(a +++ b)), a +++ b, "right", hgap);
-d := put(data("\myframe{含文献引用的元文档}"), c, "right", hgap);
-e := put(procedure("排版引擎", like(d) yscaled 1.5), d, "bottom", vgap);
-f := put(data("格式化文档"), e, "right", hgap);
-
-% 出射锚点
-pair a.out, b.out, c.out, d.out, e.out;
-a.out := out(a, "right", 0);
-b.out := out(b, "right", 0);
-c.out := out(c, "right", 0);
-d.out := out(d, "bottom", 0);
-e.out := out(e, "right", 0);
-
-% 入射锚点
-pair c.a.in, c.b.in, d.in, e.in, f.in;
-c.a.in := in(c, "left", a.out);
-c.b.in := in(c, "left", b.out);
-d.in := in(d, "left", c.out);
-e.in := in(e, "top", d.out);
-f.in := in(f, "left", e.out);
-
-% 绘制流程图
-for i = a, b, c, d, e, f: draw i; endfor;
-%a.out ==> c.a.in; b.out ==> c.b.in; c.out ==> d.in; d.out ==> e.in; e.out ==> f.in;
-
-path a.border, b.border;
-a.border := border(a, margin);
-b.border := border(b, margin);
-drawpath a.border; drawpath b.border;
-
-a.border ==> c;
-
+draw a;
+tagged_flow ("\tfx 标注", "top", 0.6) a.self;
 \stopMPpage
 ```
 
@@ -67,22 +34,6 @@ chart.mp:
 
 ```metapost
 tertiarydef a +++ b = image(draw a; draw b;) enddef;
-
-tertiarydef a ==> b =
-  begingroup
-    if (pair a) and (pair b):
-      drawarrowpath a -- b;
-    elseif ((path a) or (picture a)) and ((path b) or (picture b)):
-      save out, in; pair out, in;
-      if xpart ca < xpart cb:
-        out := 0.5[lrcorner a, urcorner a];
-        in  := (xpart (llcorner b), ypart out);
-      else
-      fi;
-      drawarrowpath out -- in;
-    fi;
-  endgroup;
-enddef;
 
 % 生成中心位于原点的矩形，矩形的宽高与参数给定的图形或路径 p 的宽高相同。
 vardef like(expr p) =
@@ -93,7 +44,7 @@ vardef like(expr p) =
 enddef;
 
 % 为给定的路径或图形 p 构造一个四周比 p 略大的矩形
-vardef border(expr p, margin) =
+vardef border(expr p) =
   save w; numeric w;
   w := bbwidth p;
   like(p) scaled ((w + margin) / w) shifted (center p)
@@ -110,27 +61,27 @@ vardef procedure(expr s, canvas) =
   )
 enddef;
 
-vardef put(expr p, ref, toward, offset) =
+vardef put(expr p, ref, toward) =
   save center_of_ref, center_of_p, d;
   pair center_of_ref, center_of_p; numeric d;
   center_of_ref := center ref;
   if toward = "left":
-    d := xpart center_of_ref - 0.5(bbwidth ref) - 0.5(bbwidth p) - offset;
+    d := xpart center_of_ref - 0.5(bbwidth ref) - 0.5(bbwidth p) - hgap;
     center_of_p := (d, ypart center_of_ref);
   elseif toward = "right":
-    d := xpart center_of_ref + 0.5(bbwidth ref) + 0.5(bbwidth p) + offset;
+    d := xpart center_of_ref + 0.5(bbwidth ref) + 0.5(bbwidth p) + hgap;
     center_of_p := (d, ypart center_of_ref);
   elseif toward = "top":
-    d := ypart center_of_ref + 0.5(bbheight ref) + 0.5(bbheight p) + offset;
+    d := ypart center_of_ref + 0.5(bbheight ref) + 0.5(bbheight p) + vgap;
     center_of_p := (xpart center_of_ref, d);
   elseif toward = "bottom":
-    d := ypart center_of_ref - 0.5(bbheight ref) - 0.5(bbheight p) - offset;
+    d := ypart center_of_ref - 0.5(bbheight ref) - 0.5(bbheight p) - vgap;
     center_of_p := (xpart center_of_ref, d);
   fi;
   p shifted center_of_p
 enddef;
 
-vardef out(expr p, base, location) =
+vardef anchor(expr p, base, location) =
   save edge_origin, anchor, ll, ul, ur, lr;
   pair edge_origin, anchor, ll, ul, ur, lr;
   ll := llcorner p; ul := ulcorner p; ur := urcorner p; lr := lrcorner p;
@@ -166,7 +117,7 @@ vardef out(expr p, base, location) =
   anchor
 enddef;
 
-vardef in(expr p, base, mate) =
+vardef mate_in(expr p, base, mate) =
   save anchor, ll, ul, ur, lr;
   pair anchor, ll, ul, ur, lr;
   ll := llcorner p; ul := ulcorner p; ur := urcorner p; lr := lrcorner p;
@@ -182,6 +133,62 @@ vardef in(expr p, base, mate) =
   anchor
 enddef;
 
+tertiarydef a ==> b =
+  begingroup
+    if (pair a) and (pair b):
+      drawarrowpath a -- b;
+    elseif ((path a) or (picture a)) and ((path b) or (picture b)):
+      save out, in, va, vb; pair out, in, va[], vb[];
+      va[1] := llcorner a; va[2] := urcorner a;
+      vb[1] := llcorner b; vb[2] := urcorner b;
+      if xpart va[2] < xpart vb[1]: % a 在 b 的左侧
+        out := 0.5[lrcorner a, urcorner a];
+        in  := (xpart vb[1], ypart out);
+      elseif xpart va[1] > xpart vb[2]: % a 在 b 的右侧
+        out := 0.5[llcorner a, ulcorner a];
+        in  := (xpart vb[2], ypart out);
+      elseif ypart va[1] > ypart vb[2]: % a 在 b 的上方
+        out := 0.5[llcorner a, lrcorner a];
+        in  := (xpart out, ypart vb[2]);
+      elseif ypart va[2] < ypart vb[1]: % a 在 b 的下方
+        out := 0.5[ulcorner a, urcorner a];
+        in  := (xpart out, ypart vb[1]);        
+      fi;
+      drawarrowpath out -- in;
+    fi;
+  endgroup;
+enddef;
+
+def flow = drawarrowpath enddef;
+def tagged_flow(expr tag, anchor, c) text p =
+  begingroup
+    save pos, offset; pair pos; numeric offset;
+    pos := point c along (p); offset := .5margin;
+    if anchor = "top":
+      pos := pos shifted (0, offset);
+    elseif anchor = "right":
+      pos := pos shifted (offset, 0);
+    elseif anchor = "bottom":
+      pos := pos shifted (0, -offset);
+    elseif anchor = "left":
+      pos := pos shifted (-offset, 0);
+    fi;
+    drawarrowpath (p);
+    draw scantokens("thetextext" & "." & anchor)(tag, pos);
+enddef;
+
+pair __site__; 
+tertiarydef a && b =
+  if pair a:
+    hide(__site__ := b shifted a) a -- __site__
+  elseif path a:
+    hide(__site__ := b shifted __site__) a -- __site__
+  fi
+enddef;
+
+def H expr a = abs(xpart a - xpart __site__) enddef;
+def V expr a = abs(ypart a - ypart __site__) enddef;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 样式
 color datacolor, procedurecolor, linecolor, backgroundcolor;
@@ -193,5 +200,4 @@ drawpathoptions(withpen pencircle scaled 1.5 withcolor linecolor);
 % 留白与间距尺寸
 numeric margin, hgap, vgap;
 margin := 4; hgap := 1.5cm; vgap := 0.75cm;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ```
