@@ -9,7 +9,7 @@
 .. type: text
 -->
 
-![自出入](/images/flow-charts/demo-2.png)
+![自出入](/images/flow-charts/demo.png)
 
 ```TeX
 \usemodule[zhfonts]
@@ -20,13 +20,36 @@
     align={middle, lohi, broad}]
 \startMPpage
 input chart.mp;
-picture a; pair a.out, a.in; path a.self;
-a := procedure("nar", like(fullsquare xysized (2cm,1cm)));
-a.out := anchor(a, "right", 0); a.in  := anchor(a, "top", 0);
-a.self := a.out && right * 0.3hgap && up * 1.3vgap && left * (H a.in) -- a.in;
+picture t; pair t.out, t.in;
+t := procedure("foo", like(fullsquare xysized (2cm,1cm))) shifted (10cm, 0);
+t.out := anchor(t, "right", 0);
+t.in  := anchor(t, "top", 0);
 
-draw a;
-tagged_flow ("\tfx 标注", "top", 0.6) a.self;
+path t.self;
+t.self := t.out
+          && right * margin
+          && up * (margin + ypart t.in)
+          && left * (H t.in)
+          -- t.in;
+
+draw t; tagged_flow ("bar", "top", 0.6) t.self;
+
+% 结点
+picture a, b, c, d, e, f;
+a := data("元文档");
+b := put(data("文献数据库"), a, "bottom") shifted (0, 0.5vgap);
+c := put(procedure("nar", like(a +++ b)), a +++ b, "right");
+d := put(data("\myframe{含文献引用的元文档}"), c, "right");
+e := put(procedure("排版引擎", like(d) yscaled 1.5), d, "bottom");
+f := put(data("格式化文档"), e, "right");
+
+path a.border, b.border, d.border, f.border;
+forsuffixes i = a, b, d, f: i.border := border(i); endfor; 
+
+% 绘制流程图
+for i = a, b, c, d, e, f: draw i; endfor;
+a.border ==> c; b.border ==> c; c ==> d.border; d.border ==> e; e ==> f.border;
+
 \stopMPpage
 ```
 
@@ -35,7 +58,6 @@ chart.mp:
 ```metapost
 tertiarydef a +++ b = image(draw a; draw b;) enddef;
 
-% 生成中心位于原点的矩形，矩形的宽高与参数给定的图形或路径 p 的宽高相同。
 vardef like(expr p) =
   save q; path q;
   q := (llcorner p) -- (ulcorner p) -- (urcorner p) -- (lrcorner p) -- cycle;
@@ -43,20 +65,19 @@ vardef like(expr p) =
   q
 enddef;
 
-% 为给定的路径或图形 p 构造一个四周比 p 略大的矩形
 vardef border(expr p) =
   save w; numeric w;
   w := bbwidth p;
-  like(p) scaled ((w + margin) / w) shifted (center p)
+  like(p) scaled ((w + padding) / w) shifted (center p)
 enddef;
 
 vardef data(expr s) =
   image(draw textext(s) withcolor datacolor; )
 enddef;
 
-vardef procedure(expr s, canvas) =
-  image(fill canvas withcolor backgroundcolor;
-        drawpath canvas withcolor linecolor;
+vardef procedure(expr s, frame) =
+  image(fill frame withcolor backgroundcolor;
+        drawpath frame withcolor framecolor;
         draw textext(s) withcolor procedurecolor;
   )
 enddef;
@@ -163,7 +184,7 @@ def flow = drawarrowpath enddef;
 def tagged_flow(expr tag, anchor, c) text p =
   begingroup
     save pos, offset; pair pos; numeric offset;
-    pos := point c along (p); offset := .5margin;
+    pos := point c along (p); offset := .5padding;
     if anchor = "top":
       pos := pos shifted (0, offset);
     elseif anchor = "right":
@@ -189,15 +210,19 @@ enddef;
 def H expr a = abs(xpart a - xpart __site__) enddef;
 def V expr a = abs(ypart a - ypart __site__) enddef;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%
 % 样式
-color datacolor, procedurecolor, linecolor, backgroundcolor;
+color datacolor, procedurecolor, flowcolor, framecolor, backgroundcolor;
 datacolor := .375darkgray;
 procedurecolor := darkred;
-linecolor := .8darkgray;
-backgroundcolor := .8white;
-drawpathoptions(withpen pencircle scaled 1.5 withcolor linecolor);
+flowcolor := .9darkgray;
+framecolor := .7white;
+backgroundcolor := .9white;
+drawpathoptions(withpen pencircle scaled 1.5 withcolor flowcolor);
+
 % 留白与间距尺寸
-numeric margin, hgap, vgap;
-margin := 4; hgap := 1.5cm; vgap := 0.75cm;
+numeric gap, hgap, vgap, margin, padding;
+gap := 1.5cm;
+hgap := gap; vgap := 0.5gap;
+margin := 0.3gap; padding := 4;
 ```
