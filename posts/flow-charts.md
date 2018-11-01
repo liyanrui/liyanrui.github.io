@@ -20,36 +20,32 @@
     align={middle, lohi, broad}]
 \startMPpage
 input chart.mp;
-picture t; pair t.out, t.in;
-t := procedure("foo", like(fullsquare xysized (2cm,1cm))) shifted (10cm, 0);
-t.out := anchor(t, "right", 0);
-t.in  := anchor(t, "top", 0);
-
-path t.self;
-t.self := t.out
-          && right * margin
-          && up * (margin + ypart t.in)
-          && left * (H t.in)
-          -- t.in;
-
-draw t; tagged_flow ("bar", "top", 0.6) t.self;
-
+path defaultframe;
+defaultframe := fullsquare xysized (3cm, 1.5cm);
 % 结点
-picture a, b, c, d, e, f;
-a := data("元文档");
-b := put(data("文献数据库"), a, "bottom") shifted (0, 0.5vgap);
-c := put(procedure("nar", like(a +++ b)), a +++ b, "right");
-d := put(data("\myframe{含文献引用的元文档}"), c, "right");
-e := put(procedure("排版引擎", like(d) yscaled 1.5), d, "bottom");
-f := put(data("格式化文档"), e, "right");
+picture a, b, c, d, e, f, g;
 
-path a.border, b.border, d.border, f.border;
-forsuffixes i = a, b, d, f: i.border := border(i); endfor; 
+a := procedure("nar", defaultframe);
+b := put(io("模板"), a, "top");
+c := put(io("文献数据库"), a, "left");
+d := put(colored_io("元文档", .625darkgreen), a, "bottom");
+e := put(colored_io("\myframe{含文献引用的元文档}", .625darkgreen), a, "right");
+f := put(procedure("排版引擎", like(a)), e, "bottom");
+g := put(colored_io("格式化文档", .625darkgreen), f, "right");
+
+path b.frm, c.frm, d.frm, e.frm, g.frm;
+forsuffixes i = b, c, d, e, g: i.frm := frame(i); endfor;
 
 % 绘制流程图
-for i = a, b, c, d, e, f: draw i; endfor;
-a.border ==> c; b.border ==> c; c ==> d.border; d.border ==> e; e ==> f.border;
+for i = a, b, c, d, e, f, g: draw i; endfor;
+b.frm ==> a; c.frm ==> a; d.frm ==> a; d.frm ==> f; a ==> e.frm; e.frm ==> f; f ==> g.frm;
+flow a_to_f;
 
+picture t; pair t.out, t.in; path t.self;
+t := put(procedure("打酱油", like(fullsquare xysized (2cm,1cm))), e, "right");
+t.out := anchor(t, "right", 0); t.in  := anchor(t, "top", 0);
+t.self := t.out && right * margin && up * (margin + dv(t.in, t.out)) && left * (H t.in) -- t.in;
+draw t; tagged_flow ("foo", "top", 0.6) t.self;
 \stopMPpage
 ```
 
@@ -65,14 +61,21 @@ vardef like(expr p) =
   q
 enddef;
 
-vardef border(expr p) =
-  save w; numeric w;
-  w := bbwidth p;
-  like(p) scaled ((w + padding) / w) shifted (center p)
+vardef frame(expr p) =
+  save w, h, q; numeric w, h; path q;
+  w := bbwidth p; h := bbheight p;
+  q := like(p);
+  q := q xscaled ((w + 2padding) / w);
+  q := q yscaled ((h + 2padding) / h);
+  q shifted (center p)
 enddef;
 
-vardef data(expr s) =
-  image(draw textext(s) withcolor datacolor; )
+vardef io(expr s) =
+  image(draw textext(s) withcolor iocolor; )
+enddef;
+
+vardef colored_io(expr s, c) =
+  image(draw textext(s) withcolor c; )
 enddef;
 
 vardef procedure(expr s, frame) =
@@ -207,13 +210,15 @@ tertiarydef a && b =
   fi
 enddef;
 
-def H expr a = abs(xpart a - xpart __site__) enddef;
-def V expr a = abs(ypart a - ypart __site__) enddef;
+def dh(expr a, b) = abs(xpart a - xpart b) enddef;
+def dv(expr a, b) = abs(ypart a - ypart b) enddef;
+def H expr a = dh(a, __site__) enddef;
+def V expr a = dv(a, __site__) enddef;
 
 %%%%%%%%
 % 样式
-color datacolor, procedurecolor, flowcolor, framecolor, backgroundcolor;
-datacolor := .375darkgray;
+color iocolor, procedurecolor, flowcolor, framecolor, backgroundcolor;
+iocolor := .375darkgray;
 procedurecolor := darkred;
 flowcolor := .9darkgray;
 framecolor := .7white;
