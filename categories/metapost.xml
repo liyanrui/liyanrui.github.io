@@ -1,39 +1,26 @@
-<!--
-.. title: 流程图
-.. slug: flow-charts
-.. date: 2018-10-31 17:42:15 UTC+08:00
-.. tags: MetaFun, MetaPost
-.. category: 技术
-.. link: 
-.. description: 
-.. type: text
--->
-
-![自出入](/images/flow-charts/demo-2.png)
-
-```TeX
-\usemodule[zhfonts]
-\defineframed
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 MetaPost)</title><link>/</link><description></description><atom:link href="/categories/metapost.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Thu, 01 Nov 2018 04:37:47 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>流程图</title><link>/posts/flow-charts.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;img alt="自出入" src="/images/flow-charts/demo-2.png"&gt;&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\usemodule&lt;/span&gt;&lt;span class="na"&gt;[zhfonts]&lt;/span&gt;
+&lt;span class="k"&gt;\defineframed&lt;/span&gt;
   [myframe]
   [frame=off, offset=overlay,
     width=2.5cm, autowidth=force,
-    align={middle, lohi, broad}]
-\startMPpage
+    align=&lt;span class="nb"&gt;{&lt;/span&gt;middle, lohi, broad&lt;span class="nb"&gt;}&lt;/span&gt;]
+&lt;span class="k"&gt;\startMPpage&lt;/span&gt;
 input chart.mp;
 picture a; pair a.out, a.in; path a.self;
 a := procedure("nar", like(fullsquare xysized (2cm,1cm)));
 a.out := anchor(a, "right", 0); a.in  := anchor(a, "top", 0);
-a.self := a.out && right * 0.3hgap && up * 1.3vgap && left * (H a.in) -- a.in;
+a.self := a.out &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; right * 0.3hgap &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; up * 1.3vgap &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; left * (H a.in) -- a.in;
 
 draw a;
-tagged_flow ("\tfx 标注", "top", 0.6) a.self;
-\stopMPpage
-```
+tagged&lt;span class="nb"&gt;_&lt;/span&gt;flow ("&lt;span class="k"&gt;\tfx&lt;/span&gt; 标注", "top", 0.6) a.self;
+&lt;span class="k"&gt;\stopMPpage&lt;/span&gt;
+&lt;/pre&gt;
 
-chart.mp:
 
-```metapost
-tertiarydef a +++ b = image(draw a; draw b;) enddef;
+&lt;p&gt;chart.mp:&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;tertiarydef a +++ b = image(draw a; draw b;) enddef;
 
 % 生成中心位于原点的矩形，矩形的宽高与参数给定的图形或路径 p 的宽高相同。
 vardef like(expr p) =
@@ -87,28 +74,28 @@ vardef anchor(expr p, base, location) =
   ll := llcorner p; ul := ulcorner p; ur := urcorner p; lr := lrcorner p;
   if base = "left":
     edge_origin := 0.5[ll, ul];
-    if location >= 0:
+    if location &amp;gt;= 0:
       anchor := location[edge_origin, ul];
     else:
       anchor := location[ll, edge_origin];
     fi;
   elseif base = "right":
     edge_origin := 0.5[lr, ur];
-    if location >= 0:
+    if location &amp;gt;= 0:
       anchor := location[edge_origin, ur];
     else:
       anchor := location[lr, edge_origin];
     fi;
   elseif base = "top":
     edge_origin := 0.5[ul, ur];
-    if location >= 0:
+    if location &amp;gt;= 0:
       anchor := location[edge_origin, ur];
     else:
       anchor := location[ul, edge_origin];
     fi;
   elseif base = "bottom":
     edge_origin := 0.5[ll, lr];
-    if location >= 0:
+    if location &amp;gt;= 0:
       anchor := location[edge_origin, lr];
     else:
       anchor := location[ll, edge_origin];
@@ -133,7 +120,7 @@ vardef mate_in(expr p, base, mate) =
   anchor
 enddef;
 
-tertiarydef a ==> b =
+tertiarydef a ==&amp;gt; b =
   begingroup
     if (pair a) and (pair b):
       drawarrowpath a -- b;
@@ -141,16 +128,16 @@ tertiarydef a ==> b =
       save out, in, va, vb; pair out, in, va[], vb[];
       va[1] := llcorner a; va[2] := urcorner a;
       vb[1] := llcorner b; vb[2] := urcorner b;
-      if xpart va[2] < xpart vb[1]: % a 在 b 的左侧
+      if xpart va[2] &amp;lt; xpart vb[1]: % a 在 b 的左侧
         out := 0.5[lrcorner a, urcorner a];
         in  := (xpart vb[1], ypart out);
-      elseif xpart va[1] > xpart vb[2]: % a 在 b 的右侧
+      elseif xpart va[1] &amp;gt; xpart vb[2]: % a 在 b 的右侧
         out := 0.5[llcorner a, ulcorner a];
         in  := (xpart vb[2], ypart out);
-      elseif ypart va[1] > ypart vb[2]: % a 在 b 的上方
+      elseif ypart va[1] &amp;gt; ypart vb[2]: % a 在 b 的上方
         out := 0.5[llcorner a, lrcorner a];
         in  := (xpart out, ypart vb[2]);
-      elseif ypart va[2] < ypart vb[1]: % a 在 b 的下方
+      elseif ypart va[2] &amp;lt; ypart vb[1]: % a 在 b 的下方
         out := 0.5[ulcorner a, urcorner a];
         in  := (xpart out, ypart vb[1]);        
       fi;
@@ -174,11 +161,11 @@ def tagged_flow(expr tag, anchor, c) text p =
       pos := pos shifted (-offset, 0);
     fi;
     drawarrowpath (p);
-    draw scantokens("thetextext" & "." & anchor)(tag, pos);
+    draw scantokens("thetextext" &amp;amp; "." &amp;amp; anchor)(tag, pos);
 enddef;
 
 pair __site__; 
-tertiarydef a && b =
+tertiarydef a &amp;amp;&amp;amp; b =
   if pair a:
     hide(__site__ := b shifted a) a -- __site__
   elseif path a:
@@ -200,4 +187,4 @@ drawpathoptions(withpen pencircle scaled 1.5 withcolor linecolor);
 % 留白与间距尺寸
 numeric margin, hgap, vgap;
 margin := 4; hgap := 1.5cm; vgap := 0.75cm;
-```
+&lt;/pre&gt;&lt;/div&gt;</description><category>MetaFun</category><category>MetaPost</category><guid>/posts/flow-charts.html</guid><pubDate>Wed, 31 Oct 2018 09:42:15 GMT</pubDate></item></channel></rss>
