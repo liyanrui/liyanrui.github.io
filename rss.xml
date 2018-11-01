@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Thu, 01 Nov 2018 08:26:18 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>流程图</title><link>/posts/flow-charts.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;img alt="自出入" src="/images/flow-charts/demo.png"&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Thu, 01 Nov 2018 09:35:37 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>流程图</title><link>/posts/flow-charts.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;用 MetaFun 制作了一个用于绘制简单的流程图的模块。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="/images/flow-charts/demo.png"&gt;&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\usemodule&lt;/span&gt;&lt;span class="na"&gt;[zhfonts]&lt;/span&gt;
 &lt;span class="k"&gt;\defineframed&lt;/span&gt;
   [myframe]
@@ -16,9 +17,10 @@ picture a, b, c, d, e, f, g;
 a := procedure("nar", defaultframe);
 b := put(io("模板"), a, "top");
 c := put(io("文献数据库"), a, "left");
-d := put(colored&lt;span class="nb"&gt;_&lt;/span&gt;io("元文档", .625darkgreen), a, "bottom");
+d := colored&lt;span class="nb"&gt;_&lt;/span&gt;io("元文档", .625darkgreen);
 e := put(colored&lt;span class="nb"&gt;_&lt;/span&gt;io("&lt;span class="k"&gt;\myframe&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;含文献引用的元文档&lt;span class="nb"&gt;}&lt;/span&gt;", .625darkgreen), a, "right");
 f := put(procedure("排版引擎", like(a)), e, "bottom");
+d := put(d, f, "left");
 g := put(colored&lt;span class="nb"&gt;_&lt;/span&gt;io("格式化文档", .625darkgreen), f, "right");
 
 path b.frm, c.frm, d.frm, e.frm, g.frm;
@@ -27,13 +29,12 @@ forsuffixes i = b, c, d, e, g: i.frm := frame(i); endfor;
 &lt;span class="c"&gt;% 绘制流程图&lt;/span&gt;
 for i = a, b, c, d, e, f, g: draw i; endfor;
 b.frm ==&amp;gt; a; c.frm ==&amp;gt; a; d.frm ==&amp;gt; a; d.frm ==&amp;gt; f; a ==&amp;gt; e.frm; e.frm ==&amp;gt; f; f ==&amp;gt; g.frm;
-flow a&lt;span class="nb"&gt;_&lt;/span&gt;to&lt;span class="nb"&gt;_&lt;/span&gt;f;
 
 picture t; pair t.out, t.in; path t.self;
-t := put(procedure("打酱油", like(fullsquare xysized (2cm,1cm))), e, "right");
+t := put(procedure("打酱油", defaultframe scaled 0.7), e, "right");
 t.out := anchor(t, "right", 0); t.in  := anchor(t, "top", 0);
 t.self := t.out &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; right * margin &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; up * (margin + dv(t.in, t.out)) &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; left * (H t.in) -- t.in;
-draw t; tagged&lt;span class="nb"&gt;_&lt;/span&gt;flow ("foo", "top", 0.6) t.self;
+draw t; tagged&lt;span class="nb"&gt;_&lt;/span&gt;flow ("foo", "top", 0.625) t.self;
 &lt;span class="k"&gt;\stopMPpage&lt;/span&gt;
 &lt;/pre&gt;
 
@@ -73,23 +74,18 @@ vardef procedure(expr s, frame) =
 enddef;
 
 vardef put(expr p, ref, toward) =
-  save center_of_ref, center_of_p, d;
-  pair center_of_ref, center_of_p; numeric d;
-  center_of_ref := center ref;
+  save offset; pair  offset;
+  offset := center ref - center p;
   if toward = "left":
-    d := xpart center_of_ref - 0.5(bbwidth ref) - 0.5(bbwidth p) - hgap;
-    center_of_p := (d, ypart center_of_ref);
+    offset := offset - (hgap, 0);
   elseif toward = "right":
-    d := xpart center_of_ref + 0.5(bbwidth ref) + 0.5(bbwidth p) + hgap;
-    center_of_p := (d, ypart center_of_ref);
+    offset := offset + (hgap, 0);
   elseif toward = "top":
-    d := ypart center_of_ref + 0.5(bbheight ref) + 0.5(bbheight p) + vgap;
-    center_of_p := (xpart center_of_ref, d);
+    offset := offset + (0, vgap);
   elseif toward = "bottom":
-    d := ypart center_of_ref - 0.5(bbheight ref) - 0.5(bbheight p) - vgap;
-    center_of_p := (xpart center_of_ref, d);
+    offset := offset - (0, vgap);
   fi;
-  p shifted center_of_p
+  p shifted offset
 enddef;
 
 vardef anchor(expr p, base, location) =
@@ -214,9 +210,9 @@ drawpathoptions(withpen pencircle scaled 1.5 withcolor flowcolor);
 
 % 留白与间距尺寸
 numeric gap, hgap, vgap, margin, padding;
-gap := 1.5cm;
+gap := 4cm;
 hgap := gap; vgap := 0.5gap;
-margin := 0.3gap; padding := 4;
+margin := 0.2gap; padding := 4;
 &lt;/pre&gt;&lt;/div&gt;</description><category>MetaFun</category><guid>/posts/flow-charts.html</guid><pubDate>Wed, 31 Oct 2018 09:42:15 GMT</pubDate></item><item><title>安装 Cygwin</title><link>/posts/cygwin-installation.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;我：键盘，最近这几天，要在一台装有微软 Windows 7 的机器上工作，也就是说，这段时间没有 Linux 可用。&lt;/p&gt;
 &lt;p&gt;键盘：Windows 7 里有终端么？&lt;/p&gt;
 &lt;p&gt;我：有一个，但是不叫终端，而叫控制台，是那个通常被称为命令提示符或 cmd 的命令行窗口。不过，从 Windows 7 开始，微软提供了 PowerShell，在功能与 Bash 较为接近，可视为同类。由于我每年在 Windows 系统里呆的时间很短，所以 PowerShell 的好坏，和我没有关系。&lt;/p&gt;

@@ -9,7 +9,9 @@
 .. type: text
 -->
 
-![自出入](/images/flow-charts/demo.png)
+用 MetaFun 制作了一个用于绘制简单的流程图的模块。
+
+![](/images/flow-charts/demo.png)
 
 ```TeX
 \usemodule[zhfonts]
@@ -28,9 +30,10 @@ picture a, b, c, d, e, f, g;
 a := procedure("nar", defaultframe);
 b := put(io("模板"), a, "top");
 c := put(io("文献数据库"), a, "left");
-d := put(colored_io("元文档", .625darkgreen), a, "bottom");
+d := colored_io("元文档", .625darkgreen);
 e := put(colored_io("\myframe{含文献引用的元文档}", .625darkgreen), a, "right");
 f := put(procedure("排版引擎", like(a)), e, "bottom");
+d := put(d, f, "left");
 g := put(colored_io("格式化文档", .625darkgreen), f, "right");
 
 path b.frm, c.frm, d.frm, e.frm, g.frm;
@@ -39,13 +42,12 @@ forsuffixes i = b, c, d, e, g: i.frm := frame(i); endfor;
 % 绘制流程图
 for i = a, b, c, d, e, f, g: draw i; endfor;
 b.frm ==> a; c.frm ==> a; d.frm ==> a; d.frm ==> f; a ==> e.frm; e.frm ==> f; f ==> g.frm;
-flow a_to_f;
 
 picture t; pair t.out, t.in; path t.self;
-t := put(procedure("打酱油", like(fullsquare xysized (2cm,1cm))), e, "right");
+t := put(procedure("打酱油", defaultframe scaled 0.7), e, "right");
 t.out := anchor(t, "right", 0); t.in  := anchor(t, "top", 0);
 t.self := t.out && right * margin && up * (margin + dv(t.in, t.out)) && left * (H t.in) -- t.in;
-draw t; tagged_flow ("foo", "top", 0.6) t.self;
+draw t; tagged_flow ("foo", "top", 0.625) t.self;
 \stopMPpage
 ```
 
@@ -86,23 +88,18 @@ vardef procedure(expr s, frame) =
 enddef;
 
 vardef put(expr p, ref, toward) =
-  save center_of_ref, center_of_p, d;
-  pair center_of_ref, center_of_p; numeric d;
-  center_of_ref := center ref;
+  save offset; pair  offset;
+  offset := center ref - center p;
   if toward = "left":
-    d := xpart center_of_ref - 0.5(bbwidth ref) - 0.5(bbwidth p) - hgap;
-    center_of_p := (d, ypart center_of_ref);
+    offset := offset - (hgap, 0);
   elseif toward = "right":
-    d := xpart center_of_ref + 0.5(bbwidth ref) + 0.5(bbwidth p) + hgap;
-    center_of_p := (d, ypart center_of_ref);
+    offset := offset + (hgap, 0);
   elseif toward = "top":
-    d := ypart center_of_ref + 0.5(bbheight ref) + 0.5(bbheight p) + vgap;
-    center_of_p := (xpart center_of_ref, d);
+    offset := offset + (0, vgap);
   elseif toward = "bottom":
-    d := ypart center_of_ref - 0.5(bbheight ref) - 0.5(bbheight p) - vgap;
-    center_of_p := (xpart center_of_ref, d);
+    offset := offset - (0, vgap);
   fi;
-  p shifted center_of_p
+  p shifted offset
 enddef;
 
 vardef anchor(expr p, base, location) =
@@ -227,7 +224,7 @@ drawpathoptions(withpen pencircle scaled 1.5 withcolor flowcolor);
 
 % 留白与间距尺寸
 numeric gap, hgap, vgap, margin, padding;
-gap := 1.5cm;
+gap := 4cm;
 hgap := gap; vgap := 0.5gap;
-margin := 0.3gap; padding := 4;
+margin := 0.2gap; padding := 4;
 ```
