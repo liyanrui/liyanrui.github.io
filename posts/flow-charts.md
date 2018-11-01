@@ -2,8 +2,8 @@
 .. title: 流程图
 .. slug: flow-charts
 .. date: 2018-10-31 17:42:15 UTC+08:00
-.. tags: 
-.. category: 
+.. tags: MetaFun, MetaPost
+.. category: 技术
 .. link: 
 .. description: 
 .. type: text
