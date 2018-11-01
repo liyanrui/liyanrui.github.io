@@ -9,7 +9,7 @@
 .. type: text
 -->
 
-用 MetaFun 制作了一个用于绘制简单的流程图的模块。
+用 MetaFun 制作了一个可用于绘制简单的流程图的模块。
 
 ![](/images/flow-charts/demo.svg)
 
@@ -23,18 +23,18 @@
 \startMPpage
 input chart.mp;
 path defaultframe;
-defaultframe := fullsquare xysized (3cm, 1.5cm);
+defaultframe := fullsquare xysized (2cm, 1cm);
 % 结点
 picture a, b, c, d, e, f, g;
 
 a := procedure("nar", defaultframe);
-b := put(io("模板"), a, "top");
-c := put(io("文献数据库"), a, "left");
+b := as_planet(io("模板"), a, "top");
+c := as_planet(io("文献数据库"), a, "left");
 d := colored_io("元文档", .625darkgreen);
-e := put(colored_io("\myframe{含文献引用的元文档}", .625darkgreen), a, "right");
-f := put(procedure("排版引擎", like(a)), e, "bottom");
-d := put(d, f, "left");
-g := put(colored_io("格式化文档", .625darkgreen), f, "right");
+e := as_star(colored_io("\myframe{含文献引用的元文档}", .625darkgreen), a, "right");
+f := as_star(procedure("排版引擎", like(e) scaled 1.5), e, "bottom");
+d := as_star(d, f, "left");
+g := as_planet(colored_io("格式化文档", .625darkgreen), f, "right");
 
 path b.frm, c.frm, d.frm, e.frm, g.frm;
 forsuffixes i = b, c, d, e, g: i.frm := frame(i); endfor;
@@ -44,9 +44,19 @@ for i = a, b, c, d, e, f, g: draw i; endfor;
 b.frm ==> a; c.frm ==> a; d.frm ==> a; d.frm ==> f; a ==> e.frm; e.frm ==> f; f ==> g.frm;
 
 picture t; pair t.out, t.in; path t.self;
-t := put(procedure("打酱油", defaultframe scaled 0.7), e, "right");
+t := as_star(procedure("打酱油", defaultframe scaled .85), e, "right");
 t.out := anchor(t, "right", 0); t.in  := anchor(t, "top", 0);
 t.self := t.out && right * margin && up * (margin + dv(t.in, t.out)) && left * (H t.in) -- t.in;
+draw t; tagged_flow ("foo", "top", 0.625) t.self;
+
+t := as_star(t, c, "bottom"); t.out := anchor(t, "bottom", 0); t.in := anchor(t, "right", 0);
+t.self := t.out
+          && down * margin
+          && left * (margin + .5(bbwidth t))
+          && up * (2margin + bbheight t)
+          && right * (2margin + bbwidth t)
+          && down *(margin + .5(bbheight t))
+          -- t.in;
 draw t; tagged_flow ("foo", "top", 0.625) t.self;
 \stopMPpage
 ```
@@ -55,6 +65,20 @@ chart.mp:
 
 ```metapost
 tertiarydef a +++ b = image(draw a; draw b;) enddef;
+
+pair __site__; 
+tertiarydef a && b =
+  if pair a:
+    hide(__site__ := b shifted a) a -- __site__
+  elseif path a:
+    hide(__site__ := b shifted __site__) a -- __site__
+  fi
+enddef;
+
+def dh(expr a, b) = abs(xpart a - xpart b) enddef;
+def dv(expr a, b) = abs(ypart a - ypart b) enddef;
+def H expr a = dh(a, __site__) enddef;
+def V expr a = dv(a, __site__) enddef;
 
 vardef like(expr p) =
   save q; path q;
@@ -87,19 +111,42 @@ vardef procedure(expr s, frame) =
   )
 enddef;
 
-vardef put(expr p, ref, toward) =
-  save offset; pair  offset;
-  offset := center ref - center p;
-  if toward = "left":
-    offset := offset - (hgap, 0);
-  elseif toward = "right":
-    offset := offset + (hgap, 0);
-  elseif toward = "top":
-    offset := offset + (0, vgap);
-  elseif toward = "bottom":
-    offset := offset - (0, vgap);
+vardef as_star(expr p, ref, location) =
+  save s; pair  s;
+  s := center ref - center p;
+  if location = "left":
+    s := s - (star.sx, 0);
+  elseif location = "right":
+    s := s + (star.sx, 0);
+  elseif location = "top":
+    s := s + (0, star.sy);
+  elseif location = "bottom":
+    s := s - (0, star.sy);
   fi;
-  p shifted offset
+  p shifted s
+enddef;
+
+vardef as_planet(expr p, ref, location) =
+  save q, s, d; picture q; pair s; numeric d;
+  q := as_star(p, ref, location);
+  if location = "left":
+    d := dh(0.5[lrcorner q, urcorner q], 0.5[llcorner ref, ulcorner ref]);
+    d := d - planet.sx;
+    s := (d, 0);
+  elseif location = "right":
+    d := dh(0.5[llcorner q, ulcorner q], 0.5[lrcorner ref, urcorner ref]);
+    d := planet.sx - d;
+    s := (d, 0);
+  elseif location = "top":
+    d := dv(0.5[llcorner q, lrcorner q], 0.5[ulcorner ref, urcorner ref]);
+    d := planet.sy - d;
+    s := (0, d);
+  elseif location = "bottom":
+    d := dv(0.5[ulcorner q, urcorner q], 0.5[llcorner ref, lrcorner ref]);
+    d := d - planet.sy;
+    s := (0, d);
+  fi;
+  q shifted s
 enddef;
 
 vardef anchor(expr p, base, location) =
@@ -198,19 +245,6 @@ def tagged_flow(expr tag, anchor, c) text p =
     draw scantokens("thetextext" & "." & anchor)(tag, pos);
 enddef;
 
-pair __site__; 
-tertiarydef a && b =
-  if pair a:
-    hide(__site__ := b shifted a) a -- __site__
-  elseif path a:
-    hide(__site__ := b shifted __site__) a -- __site__
-  fi
-enddef;
-
-def dh(expr a, b) = abs(xpart a - xpart b) enddef;
-def dv(expr a, b) = abs(ypart a - ypart b) enddef;
-def H expr a = dh(a, __site__) enddef;
-def V expr a = dv(a, __site__) enddef;
 
 %%%%%%%%
 % 样式
@@ -223,8 +257,9 @@ backgroundcolor := .9white;
 drawpathoptions(withpen pencircle scaled 1.5 withcolor flowcolor);
 
 % 留白与间距尺寸
-numeric gap, hgap, vgap, margin, padding;
-gap := 4cm;
-hgap := gap; vgap := 0.5gap;
-margin := 0.2gap; padding := 4;
+numeric star[], planet[];
+numeric margin, padding;
+star.s := 4cm; star.sx := star.s; star.sy := .5star.sx;
+planet.s := .2star.s; planet.sx := planet.s; planet.sy := .7planet.sx;
+margin := .5planet.s; padding := 4;
 ```
