@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 MetaFun)</title><link>/</link><description></description><atom:link href="/categories/metafun.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Thu, 01 Nov 2018 07:08:34 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>流程图</title><link>/posts/flow-charts.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;img alt="自出入" src="/images/flow-charts/demo.png"&gt;&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 MetaFun)</title><link>/</link><description></description><atom:link href="/categories/metafun.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Thu, 01 Nov 2018 08:26:18 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>流程图</title><link>/posts/flow-charts.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;&lt;img alt="自出入" src="/images/flow-charts/demo.png"&gt;&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\usemodule&lt;/span&gt;&lt;span class="na"&gt;[zhfonts]&lt;/span&gt;
 &lt;span class="k"&gt;\defineframed&lt;/span&gt;
   [myframe]
@@ -8,36 +8,32 @@
     align=&lt;span class="nb"&gt;{&lt;/span&gt;middle, lohi, broad&lt;span class="nb"&gt;}&lt;/span&gt;]
 &lt;span class="k"&gt;\startMPpage&lt;/span&gt;
 input chart.mp;
-picture t; pair t.out, t.in;
-t := procedure("foo", like(fullsquare xysized (2cm,1cm))) shifted (10cm, 0);
-t.out := anchor(t, "right", 0);
-t.in  := anchor(t, "top", 0);
-
-path t.self;
-t.self := t.out
-          &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; right * margin
-          &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; up * (margin + ypart t.in)
-          &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; left * (H t.in)
-          -- t.in;
-
-draw t; tagged&lt;span class="nb"&gt;_&lt;/span&gt;flow ("bar", "top", 0.6) t.self;
-
+path defaultframe;
+defaultframe := fullsquare xysized (3cm, 1.5cm);
 &lt;span class="c"&gt;% 结点&lt;/span&gt;
-picture a, b, c, d, e, f;
-a := data("元文档");
-b := put(data("文献数据库"), a, "bottom") shifted (0, 0.5vgap);
-c := put(procedure("nar", like(a +++ b)), a +++ b, "right");
-d := put(data("&lt;span class="k"&gt;\myframe&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;含文献引用的元文档&lt;span class="nb"&gt;}&lt;/span&gt;"), c, "right");
-e := put(procedure("排版引擎", like(d) yscaled 1.5), d, "bottom");
-f := put(data("格式化文档"), e, "right");
+picture a, b, c, d, e, f, g;
 
-path a.border, b.border, d.border, f.border;
-forsuffixes i = a, b, d, f: i.border := border(i); endfor; 
+a := procedure("nar", defaultframe);
+b := put(io("模板"), a, "top");
+c := put(io("文献数据库"), a, "left");
+d := put(colored&lt;span class="nb"&gt;_&lt;/span&gt;io("元文档", .625darkgreen), a, "bottom");
+e := put(colored&lt;span class="nb"&gt;_&lt;/span&gt;io("&lt;span class="k"&gt;\myframe&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;含文献引用的元文档&lt;span class="nb"&gt;}&lt;/span&gt;", .625darkgreen), a, "right");
+f := put(procedure("排版引擎", like(a)), e, "bottom");
+g := put(colored&lt;span class="nb"&gt;_&lt;/span&gt;io("格式化文档", .625darkgreen), f, "right");
+
+path b.frm, c.frm, d.frm, e.frm, g.frm;
+forsuffixes i = b, c, d, e, g: i.frm := frame(i); endfor;
 
 &lt;span class="c"&gt;% 绘制流程图&lt;/span&gt;
-for i = a, b, c, d, e, f: draw i; endfor;
-a.border ==&amp;gt; c; b.border ==&amp;gt; c; c ==&amp;gt; d.border; d.border ==&amp;gt; e; e ==&amp;gt; f.border;
+for i = a, b, c, d, e, f, g: draw i; endfor;
+b.frm ==&amp;gt; a; c.frm ==&amp;gt; a; d.frm ==&amp;gt; a; d.frm ==&amp;gt; f; a ==&amp;gt; e.frm; e.frm ==&amp;gt; f; f ==&amp;gt; g.frm;
+flow a&lt;span class="nb"&gt;_&lt;/span&gt;to&lt;span class="nb"&gt;_&lt;/span&gt;f;
 
+picture t; pair t.out, t.in; path t.self;
+t := put(procedure("打酱油", like(fullsquare xysized (2cm,1cm))), e, "right");
+t.out := anchor(t, "right", 0); t.in  := anchor(t, "top", 0);
+t.self := t.out &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; right * margin &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; up * (margin + dv(t.in, t.out)) &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; left * (H t.in) -- t.in;
+draw t; tagged&lt;span class="nb"&gt;_&lt;/span&gt;flow ("foo", "top", 0.6) t.self;
 &lt;span class="k"&gt;\stopMPpage&lt;/span&gt;
 &lt;/pre&gt;
 
@@ -52,14 +48,21 @@ vardef like(expr p) =
   q
 enddef;
 
-vardef border(expr p) =
-  save w; numeric w;
-  w := bbwidth p;
-  like(p) scaled ((w + padding) / w) shifted (center p)
+vardef frame(expr p) =
+  save w, h, q; numeric w, h; path q;
+  w := bbwidth p; h := bbheight p;
+  q := like(p);
+  q := q xscaled ((w + 2padding) / w);
+  q := q yscaled ((h + 2padding) / h);
+  q shifted (center p)
 enddef;
 
-vardef data(expr s) =
-  image(draw textext(s) withcolor datacolor; )
+vardef io(expr s) =
+  image(draw textext(s) withcolor iocolor; )
+enddef;
+
+vardef colored_io(expr s, c) =
+  image(draw textext(s) withcolor c; )
 enddef;
 
 vardef procedure(expr s, frame) =
@@ -194,13 +197,15 @@ tertiarydef a &amp;amp;&amp;amp; b =
   fi
 enddef;
 
-def H expr a = abs(xpart a - xpart __site__) enddef;
-def V expr a = abs(ypart a - ypart __site__) enddef;
+def dh(expr a, b) = abs(xpart a - xpart b) enddef;
+def dv(expr a, b) = abs(ypart a - ypart b) enddef;
+def H expr a = dh(a, __site__) enddef;
+def V expr a = dv(a, __site__) enddef;
 
 %%%%%%%%
 % 样式
-color datacolor, procedurecolor, flowcolor, framecolor, backgroundcolor;
-datacolor := .375darkgray;
+color iocolor, procedurecolor, flowcolor, framecolor, backgroundcolor;
+iocolor := .375darkgray;
 procedurecolor := darkred;
 flowcolor := .9darkgray;
 framecolor := .7white;
