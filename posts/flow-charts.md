@@ -11,7 +11,7 @@
 
 用 MetaFun 制作了一个用于绘制简单的流程图的模块。
 
-![](/images/flow-charts/demo.png)
+![](/images/flow-charts/demo.svg)
 
 ```TeX
 \usemodule[zhfonts]
