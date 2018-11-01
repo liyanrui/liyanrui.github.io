@@ -7,7 +7,7 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
   <loc>/categories/cat_ji-zhu.xml</loc>
-  <lastmod>2018-11-01T09:37:00Z</lastmod>
+  <lastmod>2018-11-01T11:14:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/linux.xml</loc>
@@ -15,7 +15,7 @@
  </sitemap>
  <sitemap>
   <loc>/categories/metafun.xml</loc>
-  <lastmod>2018-11-01T09:37:00Z</lastmod>
+  <lastmod>2018-11-01T11:14:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/nikola.xml</loc>
@@ -31,10 +31,10 @@
  </sitemap>
  <sitemap>
   <loc>/rss.xml</loc>
-  <lastmod>2018-11-01T09:37:00Z</lastmod>
+  <lastmod>2018-11-01T11:14:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/sitemap.xml</loc>
-  <lastmod>2018-11-01T09:37:00Z</lastmod>
+  <lastmod>2018-11-01T11:14:00Z</lastmod>
  </sitemap>
 </sitemapindex>

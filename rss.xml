@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Thu, 01 Nov 2018 09:37:08 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>流程图</title><link>/posts/flow-charts.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;用 MetaFun 制作了一个用于绘制简单的流程图的模块。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:liyanrui.m2@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Thu, 01 Nov 2018 11:14:07 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>流程图</title><link>/posts/flow-charts.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;用 MetaFun 制作了一个可用于绘制简单的流程图的模块。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="/images/flow-charts/demo.svg"&gt;&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\usemodule&lt;/span&gt;&lt;span class="na"&gt;[zhfonts]&lt;/span&gt;
 &lt;span class="k"&gt;\defineframed&lt;/span&gt;
@@ -10,18 +10,18 @@
 &lt;span class="k"&gt;\startMPpage&lt;/span&gt;
 input chart.mp;
 path defaultframe;
-defaultframe := fullsquare xysized (3cm, 1.5cm);
+defaultframe := fullsquare xysized (2cm, 1cm);
 &lt;span class="c"&gt;% 结点&lt;/span&gt;
 picture a, b, c, d, e, f, g;
 
 a := procedure("nar", defaultframe);
-b := put(io("模板"), a, "top");
-c := put(io("文献数据库"), a, "left");
+b := as&lt;span class="nb"&gt;_&lt;/span&gt;planet(io("模板"), a, "top");
+c := as&lt;span class="nb"&gt;_&lt;/span&gt;planet(io("文献数据库"), a, "left");
 d := colored&lt;span class="nb"&gt;_&lt;/span&gt;io("元文档", .625darkgreen);
-e := put(colored&lt;span class="nb"&gt;_&lt;/span&gt;io("&lt;span class="k"&gt;\myframe&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;含文献引用的元文档&lt;span class="nb"&gt;}&lt;/span&gt;", .625darkgreen), a, "right");
-f := put(procedure("排版引擎", like(a)), e, "bottom");
-d := put(d, f, "left");
-g := put(colored&lt;span class="nb"&gt;_&lt;/span&gt;io("格式化文档", .625darkgreen), f, "right");
+e := as&lt;span class="nb"&gt;_&lt;/span&gt;star(colored&lt;span class="nb"&gt;_&lt;/span&gt;io("&lt;span class="k"&gt;\myframe&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;含文献引用的元文档&lt;span class="nb"&gt;}&lt;/span&gt;", .625darkgreen), a, "right");
+f := as&lt;span class="nb"&gt;_&lt;/span&gt;star(procedure("排版引擎", like(e) scaled 1.5), e, "bottom");
+d := as&lt;span class="nb"&gt;_&lt;/span&gt;star(d, f, "left");
+g := as&lt;span class="nb"&gt;_&lt;/span&gt;planet(colored&lt;span class="nb"&gt;_&lt;/span&gt;io("格式化文档", .625darkgreen), f, "right");
 
 path b.frm, c.frm, d.frm, e.frm, g.frm;
 forsuffixes i = b, c, d, e, g: i.frm := frame(i); endfor;
@@ -31,9 +31,19 @@ for i = a, b, c, d, e, f, g: draw i; endfor;
 b.frm ==&amp;gt; a; c.frm ==&amp;gt; a; d.frm ==&amp;gt; a; d.frm ==&amp;gt; f; a ==&amp;gt; e.frm; e.frm ==&amp;gt; f; f ==&amp;gt; g.frm;
 
 picture t; pair t.out, t.in; path t.self;
-t := put(procedure("打酱油", defaultframe scaled 0.7), e, "right");
+t := as&lt;span class="nb"&gt;_&lt;/span&gt;star(procedure("打酱油", defaultframe scaled .85), e, "right");
 t.out := anchor(t, "right", 0); t.in  := anchor(t, "top", 0);
 t.self := t.out &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; right * margin &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; up * (margin + dv(t.in, t.out)) &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; left * (H t.in) -- t.in;
+draw t; tagged&lt;span class="nb"&gt;_&lt;/span&gt;flow ("foo", "top", 0.625) t.self;
+
+t := as&lt;span class="nb"&gt;_&lt;/span&gt;star(t, c, "bottom"); t.out := anchor(t, "bottom", 0); t.in := anchor(t, "right", 0);
+t.self := t.out
+          &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; down * margin
+          &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; left * (margin + .5(bbwidth t))
+          &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; up * (2margin + bbheight t)
+          &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; right * (2margin + bbwidth t)
+          &lt;span class="nb"&gt;&amp;amp;&amp;amp;&lt;/span&gt; down *(margin + .5(bbheight t))
+          -- t.in;
 draw t; tagged&lt;span class="nb"&gt;_&lt;/span&gt;flow ("foo", "top", 0.625) t.self;
 &lt;span class="k"&gt;\stopMPpage&lt;/span&gt;
 &lt;/pre&gt;
@@ -41,6 +51,20 @@ draw t; tagged&lt;span class="nb"&gt;_&lt;/span&gt;flow ("foo", "top", 0.625) t.
 
 &lt;p&gt;chart.mp:&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;tertiarydef a +++ b = image(draw a; draw b;) enddef;
+
+pair __site__; 
+tertiarydef a &amp;amp;&amp;amp; b =
+  if pair a:
+    hide(__site__ := b shifted a) a -- __site__
+  elseif path a:
+    hide(__site__ := b shifted __site__) a -- __site__
+  fi
+enddef;
+
+def dh(expr a, b) = abs(xpart a - xpart b) enddef;
+def dv(expr a, b) = abs(ypart a - ypart b) enddef;
+def H expr a = dh(a, __site__) enddef;
+def V expr a = dv(a, __site__) enddef;
 
 vardef like(expr p) =
   save q; path q;
@@ -73,19 +97,42 @@ vardef procedure(expr s, frame) =
   )
 enddef;
 
-vardef put(expr p, ref, toward) =
-  save offset; pair  offset;
-  offset := center ref - center p;
-  if toward = "left":
-    offset := offset - (hgap, 0);
-  elseif toward = "right":
-    offset := offset + (hgap, 0);
-  elseif toward = "top":
-    offset := offset + (0, vgap);
-  elseif toward = "bottom":
-    offset := offset - (0, vgap);
+vardef as_star(expr p, ref, location) =
+  save s; pair  s;
+  s := center ref - center p;
+  if location = "left":
+    s := s - (star.sx, 0);
+  elseif location = "right":
+    s := s + (star.sx, 0);
+  elseif location = "top":
+    s := s + (0, star.sy);
+  elseif location = "bottom":
+    s := s - (0, star.sy);
   fi;
-  p shifted offset
+  p shifted s
+enddef;
+
+vardef as_planet(expr p, ref, location) =
+  save q, s, d; picture q; pair s; numeric d;
+  q := as_star(p, ref, location);
+  if location = "left":
+    d := dh(0.5[lrcorner q, urcorner q], 0.5[llcorner ref, ulcorner ref]);
+    d := d - planet.sx;
+    s := (d, 0);
+  elseif location = "right":
+    d := dh(0.5[llcorner q, ulcorner q], 0.5[lrcorner ref, urcorner ref]);
+    d := planet.sx - d;
+    s := (d, 0);
+  elseif location = "top":
+    d := dv(0.5[llcorner q, lrcorner q], 0.5[ulcorner ref, urcorner ref]);
+    d := planet.sy - d;
+    s := (0, d);
+  elseif location = "bottom":
+    d := dv(0.5[ulcorner q, urcorner q], 0.5[llcorner ref, lrcorner ref]);
+    d := d - planet.sy;
+    s := (0, d);
+  fi;
+  q shifted s
 enddef;
 
 vardef anchor(expr p, base, location) =
@@ -184,19 +231,6 @@ def tagged_flow(expr tag, anchor, c) text p =
     draw scantokens("thetextext" &amp;amp; "." &amp;amp; anchor)(tag, pos);
 enddef;
 
-pair __site__; 
-tertiarydef a &amp;amp;&amp;amp; b =
-  if pair a:
-    hide(__site__ := b shifted a) a -- __site__
-  elseif path a:
-    hide(__site__ := b shifted __site__) a -- __site__
-  fi
-enddef;
-
-def dh(expr a, b) = abs(xpart a - xpart b) enddef;
-def dv(expr a, b) = abs(ypart a - ypart b) enddef;
-def H expr a = dh(a, __site__) enddef;
-def V expr a = dv(a, __site__) enddef;
 
 %%%%%%%%
 % 样式
@@ -209,10 +243,11 @@ backgroundcolor := .9white;
 drawpathoptions(withpen pencircle scaled 1.5 withcolor flowcolor);
 
 % 留白与间距尺寸
-numeric gap, hgap, vgap, margin, padding;
-gap := 4cm;
-hgap := gap; vgap := 0.5gap;
-margin := 0.2gap; padding := 4;
+numeric star[], planet[];
+numeric margin, padding;
+star.s := 4cm; star.sx := star.s; star.sy := .5star.sx;
+planet.s := .2star.s; planet.sx := planet.s; planet.sy := .7planet.sx;
+margin := .5planet.s; padding := 4;
 &lt;/pre&gt;&lt;/div&gt;</description><category>MetaFun</category><guid>/posts/flow-charts.html</guid><pubDate>Wed, 31 Oct 2018 09:42:15 GMT</pubDate></item><item><title>安装 Cygwin</title><link>/posts/cygwin-installation.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;我：键盘，最近这几天，要在一台装有微软 Windows 7 的机器上工作，也就是说，这段时间没有 Linux 可用。&lt;/p&gt;
 &lt;p&gt;键盘：Windows 7 里有终端么？&lt;/p&gt;
 &lt;p&gt;我：有一个，但是不叫终端，而叫控制台，是那个通常被称为命令提示符或 cmd 的命令行窗口。不过，从 Windows 7 开始，微软提供了 PowerShell，在功能与 Bash 较为接近，可视为同类。由于我每年在 Windows 系统里呆的时间很短，所以 PowerShell 的好坏，和我没有关系。&lt;/p&gt;
