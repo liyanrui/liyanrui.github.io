@@ -9,7 +9,7 @@
 .. type: text
 -->
 
-最近用 MetaFun **<sup>[1]</sup>** 制作了一个小模块 [snail.mp](https://github.com/liyanrui/snail/blob/master/snail.mp) **<sup>[2]</sup>** ，用于绘制矢量图格式的简单流程图。
+最近用 MetaFun [1]  制作了一个小模块 [snail.mp](https://github.com/liyanrui/snail/blob/master/snail.mp) [2] ，用于绘制矢量图格式的简单流程图。
 
 此事纯属无心之举。原本是要用 awk 写一个能够自动编排文档中的参考文献和注释的工具。在酝酿情绪的过程中，打算用 MetaFun 画一幅简单的示意图。在绘图过程中，因不断嫌弃所用代码的繁琐，最终有了十余行简短的绘图代码以及能够让这些代码工作的一个小模块。
 
