@@ -6,8 +6,12 @@
     xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
+  <loc>/categories/awk.xml</loc>
+  <lastmod>2018-11-05T10:23:00Z</lastmod>
+ </sitemap>
+ <sitemap>
   <loc>/categories/cat_ji-zhu.xml</loc>
-  <lastmod>2018-11-05T10:21:00Z</lastmod>
+  <lastmod>2018-11-05T10:23:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/linux.xml</loc>
@@ -31,10 +35,10 @@
  </sitemap>
  <sitemap>
   <loc>/rss.xml</loc>
-  <lastmod>2018-11-05T10:21:00Z</lastmod>
+  <lastmod>2018-11-05T10:23:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/sitemap.xml</loc>
-  <lastmod>2018-11-05T10:21:00Z</lastmod>
+  <lastmod>2018-11-05T10:23:00Z</lastmod>
  </sitemap>
 </sitemapindex>
