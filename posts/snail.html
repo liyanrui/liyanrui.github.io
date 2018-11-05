@@ -28,7 +28,7 @@
 </script><script type="text/javascript" src="../MathJax/MathJax.js?config=TeX-AMS_HTML-full"></script><link href="../mycss/tweak.css" rel="stylesheet" type="text/css">
 <base target="_parent">
 <meta name="author" content="Garfileo">
-<link rel="prev" href="flow-charts.html" title="流程图" type="text/html">
+<link rel="prev" href="cygwin-installation.html" title="安装 Cygwin" type="text/html">
 <meta property="og:site_name" content="NULL">
 <meta property="og:title" content="蜗牛">
 <meta property="og:url" content="/posts/snail.html">
@@ -77,16 +77,16 @@
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
     <div>
-<p>最近用 MetaFun <strong><sup><a href="../images/01.png">1</a></sup></strong> 制作了一个小模块 <a href="https://github.com/liyanrui/snail/blob/master/snail.mp">snail.mp</a> <strong><sup><a href="../images/02.png">2</a></sup></strong> ，用于绘制矢量图格式的简单流程图。</p>
+<p>最近用 MetaFun <strong><sup><a href="../images/snail/01.png">1</a></sup></strong> 制作了一个小模块 <a href="https://github.com/liyanrui/snail/blob/master/snail.mp">snail.mp</a> <strong><sup><a href="../images/snail/02.png">2</a></sup></strong> ，用于绘制矢量图格式的简单流程图。</p>
 <p>此事纯属无心之举。原本是要用 awk 写一个能够自动编排文档中的参考文献和注释的工具。在酝酿情绪的过程中，打算用 MetaFun 画一幅简单的示意图。在绘图过程中，因不断嫌弃所用代码的繁琐，最终有了十余行简短的绘图代码以及能够让这些代码工作的一个小模块。</p>
-<p><img alt="" src="../images/01.png"></p>
+<p><img alt="" src="../images/snail/01.png"></p>
 <p>我将这个模块命名为 Snail（蜗牛）。之所以如此命名，一方面是因为以语言描述的方式绘制流程图，效率太低了；另一方面，绘图过程也的确像蜗牛的爬动。</p>
 <h2>简单的例子</h2>
 <p>为求和运算 1 + 2 + 3 + ... + 100 绘制流程图，以此建立对 Snail 的喜欢、讨厌或者不以为然的初步印象。</p>
 <p>首先应该用铅笔在纸上绘制草图。不过，我没找到铅笔，好不容易找到了一支中性笔客串一番。</p>
-<p><img alt="" src="../images/02.png"></p>
+<p><img alt="" src="../images/snail/02.png"></p>
 <p>基于以上草图，用 Snail 绘制流程图，结果为</p>
-<p><img alt="" src="../images/03.png"></p>
+<p><img alt="" src="../images/snail/03.png"></p>
 <p>所用的绘图代码为</p>
 <pre class="code literal-block"><span></span><span class="x">\usemodule[zhfonts]</span>
 <span class="x">\defineframed</span>
@@ -128,7 +128,7 @@ input snail;
 </pre>
 
 
-<p>若基于 zhfonts 模块 <strong><sup><a href="../images/03.png">3</a></sup></strong> 实现中文支持，只需在导言区添加 <code>\usemodule[zhfonts]</code>，即</p>
+<p>若基于 zhfonts 模块 <strong><sup><a href="../images/snail/03.png">3</a></sup></strong> 实现中文支持，只需在导言区添加 <code>\usemodule[zhfonts]</code>，即</p>
 <pre class="code literal-block"><span></span><span class="k">\usemodule</span><span class="na">[zhfonts]</span>
 <span class="k">\startMPpage</span>
 input snail;
@@ -145,7 +145,7 @@ input snail;
 
 
 <p><code>context</code> 命令隐含了许多细节。在 ConTeXt MkIV 环境里，这个命令会将 foo.tex 文档交由 TeX 引擎 LuaTeX 处理，最后生成 PDF 格式文件 foo.pdf。foo.tex 所包含的 MetaPost 代码由嵌入在 LuaTeX 中的 MPLIB 转化为 PDF 格式的图形文件，然后再由 LuaTeX 将图形文件嵌入 foo.pdf。这一过程，使用 Snail 可将其描绘为</p>
-<p><img alt="" src="../images/04.png"></p>
+<p><img alt="" src="../images/snail/04.png"></p>
 <h2>结点</h2>
 <p>一幅流程图由结点、结点间的连线以及连线上的标注等元素构成。在 Snail 看来，结点只有两类，一类是 I/O（输入/输出）结点，另一类是过程（Procedure）结点。在 Snail 的默认绘图设定中，I/O 结点是无边框的文本，而过程结点是有边框的文本。</p>
 <p>Snail 模块的 <code>io</code> 宏用于构造 I/O 结点，只需将 I/O 结点的内容以字串的形式作为参数传给 <code>io</code> 宏，例如</p>
@@ -154,20 +154,20 @@ a := io("I/O 结点的内容");
 </pre>
 
 
-<p><img alt="" src="../images/05.png"></p>
+<p><img alt="" src="../images/snail/05.png"></p>
 <p>I/O 结点的文本颜色默认为黑色，若让它呈彩色，例如深绿色，只需</p>
 <pre class="code literal-block"><span></span>Node a;
 a := io("I/O 结点的内容") withcolor darkgreen;
 </pre>
 
 
-<p><img alt="" src="../images/06.png"></p>
+<p><img alt="" src="../images/snail/06.png"></p>
 <p><code>proc</code> 宏用于构造过程结点。它会根据过程结点的文本自适应确定一个矩形边框，文本到边框的距离（留白）默认是 12 bp，约为 4.233 mm。例如，</p>
 <pre class="code literal-block"><span></span>Node d; d := proc("\CONTEXT");
 </pre>
 
 
-<p><img alt="" src="../images/07.png"></p>
+<p><img alt="" src="../images/snail/07.png"></p>
 <p><code>proc</code> 也能想 <code>io</code> 宏那样通过 <code>withcoloor</code> 语句修改结点文本的颜色。</p>
 <p>人只是人，人际关系却多变。数据只是数据，过程亦却多变。对于流程图而言，过程的多变对应的不过是过程结点的形状和颜色的变化而已。以矩形为边框的过程结点可用于表示一般的过程。其他形式的过程，其结点可通过 <code>other</code> 宏构造，例如</p>
 <pre class="code literal-block"><span></span>Node b, c, d; string d.txt;
@@ -178,7 +178,7 @@ d := other(d.txt, diamond(like d));
 </pre>
 
 
-<p><img alt="" src="../images/08.png"></p>
+<p><img alt="" src="../images/snail/08.png"></p>
 <p><code>b</code> 的边框是长 3 cm、宽 1.5 cm 的矩形。<code>c</code> 的边框是椭圆。在默认情况下，<code>c</code> 边框的长轴与短轴的尺寸分别是 <code>b</code> 的边框长度和宽度的 1.25 倍。<code>like</code> 是 Snail 的宏，其作用是根据基于给定图形的最小包围盒确定一个矩形，因而 <code>eillpse(like b)</code> 的含义是基于像 <code>b</code> 的包围盒那样的矩形构造椭圆。同理，<code>diamond(like d)</code> 的含义是基于像 <code>d</code> 的包围盒那样的矩形构造菱形，只不过在上述代码中，先构造了普通的过程结点 <code>d</code>，然后基于它的边框构造菱形，再将新构造的结点赋予 <code>d</code> 这个变量，从而实现了 <code>d</code> 由普通过程结点向菱形过程结点的「进化」。注意，上述代码也展现了 <code>other</code> 宏可以像 <code>io</code> 和 <code>proc</code> 那样以 <code>withcolor</code> 语句设置结点文本的颜色。</p>
 <p>无论是 I/O 结点还是过程结点，其类型皆为 <code>Node</code>，该类型是 Snail 为 MetaPost 的 <code>picture</code> 类型而取的「别名」。因此，I/O 结点与过程结点可直接用 MetaPost 的 <code>draw</code> 命令绘制出来，例如：</p>
 <pre class="code literal-block"><span></span>draw a; draw b; draw c; draw d;
@@ -191,7 +191,7 @@ d := other(d.txt, diamond(like d));
 
 
 <p>上述两条绘图语句等价。不过，Snail 所构造的结点，皆以坐标原点为中心，因此上述两条语句绘制的结果是一组堆叠起来图形：</p>
-<p><img alt="" src="../images/09.png"></p>
+<p><img alt="" src="../images/snail/09.png"></p>
 <p>因此，结点的绘制必须在流程图中的具体位置确定之后方可进行。</p>
 <h2>恒星与行星</h2>
 <p>可直接使用 MetaPost 的平移变换命令 <code>shifted</code> 对结点进行定位。例如，对于上一节定义的四个结点，采用以下语句进行绘制：</p>
@@ -200,7 +200,7 @@ d := other(d.txt, diamond(like d));
 
 
 <p>结果为：</p>
-<p><img alt="" src="../images/10.png"></p>
+<p><img alt="" src="../images/snail/10.png"></p>
 <p>采用平移变换命令对结点进行定位，可将任一结点放在图中的任一位置，这样做虽然自由，但是随着结点的增多，这个工作便会变得非常乏味。在绘制流程图的过程中，一个结点的位置通常是以它相对于另一个结点的位置而确定，而且二者的间距通常应当是定值。</p>
 <p>Snail 是个心怀宇宙的 MetaFun 模块，它绝对不会满足于牛顿式的绝对空间。如果真的存在绝对的空间，那么谁能告诉我太阳中心的三维坐标呢？倘若以上帝的视角去安排流程图中各个结点的绝对位置或者各个结点的绝对间距，只要用心，也是能够绘制出非常美观的流程图，然而这样的流程图没有生命，对结点的形状与位置略作一些修改，图的结构便会被破坏。上帝是不会去创造没有生命的物体，否则它就太愚蠢了，不值得我们敬仰。</p>
 <p>在 Snail 看来，结点的相对位置分为两类，恒星定位和行星定位。这两种定位决定了流程图结点分布的舒密。</p>
@@ -217,10 +217,10 @@ as_planet(d, c, "right");
 </pre>
 
 
-<p><img alt="" src="../images/11.png"></p>
+<p><img alt="" src="../images/snail/11.png"></p>
 <h2>组合</h2>
 <p>结点的恒星和行星定位还是太过于严格，以致一些特殊的结点定位需求难以满足，例如</p>
-<p><img alt="" src="../images/12.png"></p>
+<p><img alt="" src="../images/snail/12.png"></p>
 <p>结点 d 的宽度与 a、b 和 c 相同，高度则是从 c 的底端到 a 的顶端。为了满足诸如此类的定位需求，Snail 提供了 <code>+++</code> 运算符，用它可以将任意两个结点绑定起来，从而获得一个新的结点，而且新的结点所占据的区域恰好包含这两个结点。重复使用 <code>+++</code> 便可以实现多个结点的绑定。</p>
 <p>对于形如上图所示的四个结点，可采用以下代码予以定位：</p>
 <pre class="code literal-block"><span></span>Node a, b, c, abc, d;
@@ -236,7 +236,7 @@ draw_each a, b, c, d;
 </pre>
 
 
-<p><img alt="" src="../images/13.png"></p>
+<p><img alt="" src="../images/snail/13.png"></p>
 <h2>水平 / 竖直对齐</h2>
 <p>若将一个结点的中心与另一个结点的中心在水平或竖直方向上对齐，可相应采用 Snail 的<code>halign</code> 或 <code>valign</code> 宏。例如，若将结点 <code>a</code> 的中心与结点 <code>b</code> 的中心在水平方向上对齐，即 <code>b</code> 的位置固定，调整 <code>a</code> 的位置，使得二者的中心在同一水平线上，只需</p>
 <pre class="code literal-block"><span></span>halign(a, b);
@@ -266,7 +266,7 @@ flow a =&gt; b;
 </pre>
 
 
-<p><img alt="" src="../images/14.png"></p>
+<p><img alt="" src="../images/snail/14.png"></p>
 <p>Snail 的 <code>flow</code> 宏是 MetaFun 的 <code>drawarrowpath</code> 宏的替代，用于绘制有向路径。</p>
 <p>再看一个例子：</p>
 <pre class="code literal-block"><span></span>Node a, b, c, abc, d;
@@ -284,7 +284,7 @@ flow_each a =&gt; d, b =&gt; d, c =&gt; d;
 </pre>
 
 
-<p><img alt="" src="../images/15.png"></p>
+<p><img alt="" src="../images/snail/15.png"></p>
 <p><code>flow_each</code> 与 <code>draw_each</code> 类似，只不过它绘制的是一组有向路径。</p>
 <p>当两个结点既不水平排列也不在竖直排列时，二者的连接是折线。能够像 <code>=&gt;</code> 那样自动确定连接路径是一件很美好的事。然而，Snail 决定不要这种美好。</p>
 <p>对于弯曲的路径，Snail 会沿着我们小心谨慎地构造的路径，从出射结点爬到入射结点。该基于出射锚点、前进的方向、前行的距离以及入射锚点而确定。构造该路径的过程就是模拟蜗牛的爬行或人的行走。例如，从一个确定的地点，向东走 100 米，向北走 100 米，向西走 500 米，就这样转来转去，直至抵达目标地点为止。Snail 的 <code>walk</code> 宏可用于构造这种路径。</p>
@@ -298,7 +298,7 @@ anchor(a, "bottom", 0);
 
 
 <p><code>anchor</code> 前两个参数的作用已经很明显了，它的第三个参数是矩形边框上的参数坐标。对于矩形的每条边框，参数坐标的取值范围为 [-0.5, 0.5]，中点的参数坐标为 0。</p>
-<p><img alt="" src="../images/16.png"></p>
+<p><img alt="" src="../images/snail/16.png"></p>
 <p>现在 <code>walk</code> 宏的第二个参数描述的是路径的起点与终点之间的部分，但是只能由行进方向和距离构成。例如 </p>
 <pre class="code literal-block"><span></span>path p;
 p := (0, 0) &gt;&gt;&gt; right * 1cm &gt;&gt;&gt; up * 3cm &gt;&gt;&gt; left * 8cm &gt;&gt;&gt; down * 5cm &gt;&gt;&gt; right * 4cm;
@@ -306,7 +306,7 @@ p := (0, 0) &gt;&gt;&gt; right * 1cm &gt;&gt;&gt; up * 3cm &gt;&gt;&gt; left * 8
 
 
 <p>表示从原点开始，向右走 1 cm，再向上走 3 cm，再向左走 8 cm，再向下走 6 cm，再向右走 6 cm。</p>
-<p><img alt="" src="../images/17.png"></p>
+<p><img alt="" src="../images/snail/17.png"></p>
 <p><code>&gt;&gt;&gt;</code> 是 Snail 实现的运算符，用于衔接各段行进方向及距离的「积」。由于模拟的是行走，以左右上下作为行进的方向不够自然，因而 Snail 定义了一组可以沿地理方向行进的宏：</p>
 <ul>
 <li>
@@ -333,7 +333,7 @@ endfor;
 </pre>
 
 
-<p><img alt="" src="../images/18.png"></p>
+<p><img alt="" src="../images/snail/18.png"></p>
 <p>现在，可以为结点构造折线形式的连接了。例如，对于一个结点，以其左边框的中点为起点，以其下边框的中点为终点，让路径自结点上方绕行，</p>
 <pre class="code literal-block"><span></span>Node a; pair a.out, a.in; path a.self, a.self.go; numeric a.w, a.h;
 a := proc("打酱油");
@@ -346,7 +346,7 @@ draw a; flow a.self;
 </pre>
 
 
-<p><img alt="" src="../images/19.png"></p>
+<p><img alt="" src="../images/snail/19.png"></p>
 <p>Snail 的宏 <code>_bw_</code> 与 <code>_bh_</code> 只是 MetaFun 宏 <code>bbwidth</code> 与 <code>bbheight</code> 的替代，分别用于获取结点的宽度与高度。宏 <code>flow</code> 是 MetaFun 宏 <code>drawarrowpath</code> 的替代，用于绘制带箭头的路径。</p>
 <p>绘制这样一条简单的折线路径，需要这么多的代码，这就是 Snail 绘制流程图的效率瓶颈。所幸之处在于，对于简单的流程图而言，折线路径并不会太多。偶尔这样模拟一下蜗牛式的爬行，在诸多以恒星和行星方式定位的结点分布空间中以折线的方式行走，很像乘坐太空飞船作星际旅行。</p>
 <p>倘若能够自动为结点构造一些常规锚点，例如每个结点边框上的中点，构造弯曲路径的代码便可以得到一些简化。Snail 的 <code>enrich</code> 宏可基于给定的结点构造 8 个位于边框上的锚点，它们皆为 <code>pair</code> 类型，以给定结点的变量名的后缀形式表示，分别位于这个结点的东（E）、东南（SE）、南（S）、西南（SW）、西（W）、西北（NW）、北（N）、东北（NE）位置。例如，</p>
@@ -372,13 +372,13 @@ flow a.self;
 </pre>
 
 
-<p><img alt="" src="../images/20.png"></p>
+<p><img alt="" src="../images/snail/20.png"></p>
 <p>若需要对路径的标注文本进行旋转变换，使之与所标注位置的路径更为贴合，可利用 ConTeXt 的排版予以实现，MetaFun 的价值由此也得以体现。例如，</p>
 <pre class="code literal-block"><span></span>tagged_flow("\rotate[90]{路过}", "left", .65) a.self;
 </pre>
 
 
-<p><img alt="" src="../images/21.png"></p>
+<p><img alt="" src="../images/snail/21.png"></p>
 <h2>全局参数</h2>
 <p>Snail 预定义了一些全局变量，用于控制流程图的整体样式——文本颜色、边框颜色、边框背景以及留白等参数。</p>
 <p>流程图各个元素的颜色默认为：</p>
@@ -419,9 +419,9 @@ _planet.s := .2_star.s; _planet.sx := _planet.s; _planet.sy := _planet.sx;
 <p><code>_expansion_</code> 用于基于矩形构造与之外接的菱形和椭圆等图形时，后者的长轴与短轴在矩形的宽度与高度的基础上放大的倍数，默认值为 1.25。</p>
 <hr>
 <p><strong>引用的文献：</strong></p>
-<p><a href="../images/01.png">1</a> <a href="https://segmentfault.com/a/1190000016832302">MetaFun 列传</a>
-<a href="../images/02.png">2</a> Snail 模块：https://github.com/liyanrui/snail
-<a href="../images/03.png">3</a> <a href="https://segmentfault.com/a/1190000003795931">zhfonts：ConTeXt MkIV 的中文支持模块</a></p>
+<p><a href="../images/snail/01.png">1</a> <a href="https://segmentfault.com/a/1190000016832302">MetaFun 列传</a>
+<a href="../images/snail/02.png">2</a> Snail 模块：https://github.com/liyanrui/snail
+<a href="../images/snail/03.png">3</a> <a href="https://segmentfault.com/a/1190000003795931">zhfonts：ConTeXt MkIV 的中文支持模块</a></p>
 </div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
@@ -429,7 +429,7 @@ _planet.s := .2_star.s; _planet.sx := _planet.s; _planet.sy := _planet.sx;
         </ul>
 <ul class="pager hidden-print">
 <li class="previous">
-                <a href="flow-charts.html" rel="prev" title="流程图">上一篇文章</a>
+                <a href="cygwin-installation.html" rel="prev" title="安装 Cygwin">上一篇文章</a>
             </li>
         </ul></nav></aside></article></main><footer id="footer"><p>我的邮箱：liyanrui.m2@gmail.com</p>
             
