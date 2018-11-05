@@ -481,7 +481,7 @@ drawpath q[3]; drawpoints q[3];
 
 ![][17]
 
-在 MetaPost 中，类似`q` 这样的变量称为带有后缀的变量。可以用此类变量模拟数组。
+在 MetaPost 中，类似 `q` 这样的变量称为带有后缀的变量。可以用此类变量模拟数组。
 
 # 从简单到复杂
 
@@ -489,7 +489,7 @@ drawpath q[3]; drawpoints q[3];
  
  首先，回顾路径 `p`：
  
- ```MetaPost
+```MetaPost
 numeric sidelength, u;
 sidelength := 8cm; u := 0.5sidelength;
 drawpath fullsquare scaled 2s dashed (evenly scaled 1mm);
