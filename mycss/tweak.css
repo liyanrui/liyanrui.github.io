@@ -21,7 +21,7 @@ html {font-size: 62.5%; /*10 ÷ 16 × 100% = 62.5%*/}
     html { font-size:25px }
 }
 
-body { background:white !important; }
+body { background:white !important; font-size: 14px !important;}
 
 .storypage .entry-title, .listpage header, .tagindex header h1 { display:none; }
 .tagpage header { display:none }
