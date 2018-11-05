@@ -426,9 +426,9 @@ _planet.s := .2_star.s; _planet.sx := _planet.s; _planet.sy := _planet.sx;
 <h2>MetaPost</h2>
 <p>MetaPost 是一种编程语言 <strong><sup>注 1</sup></strong> ，其编译器为 mpost。用该语言编写的程序，其输出结果为 PostScript 格式的矢量图形文件 <strong><sup>注 2</sup></strong> 。<code>MPpage</code> 环境中的 MetaPost 语句即 MetaPost 程序。在使用 context 命令生成单页面图形文件的过程中，context 命令会调用 mpost，由后者处理 MetaPost 程序，生成 PostScript 图形文件。继而 context 命令调用 TeX 引擎 <strong><sup>注 3</sup></strong> 会将 mpost 生成的图形文件嵌入至单页面文档中，并将图形的宽高作为页面宽高。</p>
 <blockquote>
-<p><strong>注 1</strong>：确切地说，MetaPost 是一种宏编程语言。
-<strong>注 2</strong>：PostScript 文件可转化为 PDF、SVG 等格式的矢量图形文件。
-<strong>注 3</strong>：TeX 引擎即 TeX 文档的编译器。ConTeXt 文档本质上也是 TeX 文档，因此要通过 TeX 引擎对其其进行编译，输出排版结果。ConTeXt MkIV 的 TeX 引擎为 LuaTeX，其输出的排版结果为 PDF 格式文档。</p>
+<p><strong>注 1</strong>：确切地说，MetaPost 是一种宏编程语言。</p>
+<p><strong>注 2</strong>：PostScript 文件可转化为 PDF、SVG 等格式的矢量图形文件。</p>
+<p><strong>注 3</strong>：TeX 引擎即 TeX 文档的编译器。ConTeXt 文档本质上也是 TeX 文档，因此要通过 TeX 引擎对其其进行编译，输出排版结果。ConTeXt MkIV 的 TeX 引擎为 LuaTeX，其输出的排版结果为 PDF 格式文档。</p>
 </blockquote>
 <h2>画笔</h2>
 <p>画笔即 MetaPost 的内置变量 <code>pen</code>。MetaPost 提供了两种画笔类型，<code>pencircle</code> 和 <code>pensquare</code>，前者为 MetaPost 默认，「笔尖」为圆形，后者「笔尖」为方形。MetaPost 允许用户自行定义画笔类型。</p>
@@ -516,7 +516,7 @@ drawpoints p;
 
 
 <p>结果得到的 foo.pdf 为单页文档，其页面只包含着一个边线被随机扰动的矩形：</p>
-<p><img alt="" src="https://upload-images.jianshu.io/upload_images/11203728-724311e004ab068f.png"></p>
+<p><img alt="" src="../images/metafun/02.png"></p>
 <h2>线条</h2>
 <p>线条即画笔所走的路径。最简单的路径是点。MetaPost 用序对表示点，例如</p>
 <pre class="code literal-block"><span></span>pair a;
@@ -1301,16 +1301,16 @@ drawpoints z4;
 <p>绘图是一门艺术。排版也是一门艺术。艺术的重要性在于它能够开拓人类的思维空间。使用 MetaPost 绘图，使用 ConTeXt 对文档进行排版则是技术。艺术的空间需要借助技术去探索或开拓。MetaFun 贯通了 MetaPost 和 ConTeXt，意味着具备了探索或开拓计算机绘图与排版相融合的艺术空间的一种工具。</p>
 <hr>
 <p><strong>引用的文献：</strong></p>
-<p><a href="../images/metafun/01.png">1</a>  <a href="https://segmentfault.com/a/1190000003779240">序幕有些长</a>
-<a href="../images/metafun/02.png">2</a>  <a href="https://segmentfault.com/a/1190000003786283">睦邻友好的 ConTeXt Standalone</a>
-<a href="../images/metafun/03.png">3</a>  <a href="https://segmentfault.com/a/1190000003790820">先写作，后排版</a>
-<a href="../images/metafun/04.png">4</a>  <a href="https://segmentfault.com/a/1190000003795931">ConTeXt MkIV 中文支持</a>
-<a href="../images/metafun/05.png">5</a>  <a href="http://segmentfault.com/a/1190000003797764">文稿的物理结构</a>
-<a href="../images/metafun/06.png">6</a>  <a href="http://segmentfault.com/a/1190000003798231">文稿的逻辑结构</a>
-<a href="../images/metafun/07.png">7</a>  <a href="http://segmentfault.com/a/1190000003803997">页面布局</a>
-<a href="../images/metafun/08.png">8</a>  <a href="http://www.pragma-ade.nl/general/manuals/ma-cb-en.pdf">ConTeXt Mark IV an excursion</a>
-<a href="../images/metafun/09.png">9</a>  <a href="http://pmrb.free.fr/contextref.pdf">ConTeXt Reference</a>
-<a href="../images/metafun/10.png">10</a>  <a href="http://www.pragma-ade.com/general/manuals/metafun-p.pdf">MetaFun Manual</a></p>
+<p>[1]  <a href="https://segmentfault.com/a/1190000003779240">序幕有些长</a></p>
+<p>[2]  <a href="https://segmentfault.com/a/1190000003786283">睦邻友好的 ConTeXt Standalone</a></p>
+<p>[3]  <a href="https://segmentfault.com/a/1190000003790820">先写作，后排版</a></p>
+<p>[4]  <a href="https://segmentfault.com/a/1190000003795931">ConTeXt MkIV 中文支持</a></p>
+<p>[5]  <a href="http://segmentfault.com/a/1190000003797764">文稿的物理结构</a></p>
+<p>[6]  <a href="http://segmentfault.com/a/1190000003798231">文稿的逻辑结构</a></p>
+<p>[7]  <a href="http://segmentfault.com/a/1190000003803997">页面布局</a></p>
+<p>[8]  <a href="http://www.pragma-ade.nl/general/manuals/ma-cb-en.pdf">ConTeXt Mark IV an excursion</a></p>
+<p>[9]  <a href="http://pmrb.free.fr/contextref.pdf">ConTeXt Reference</a></p>
+<p>[10]  <a href="http://www.pragma-ade.com/general/manuals/metafun-p.pdf">MetaFun Manual</a></p>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/awk.html" class="u-url">AWK 列传</a></h1>
