@@ -91,7 +91,7 @@ pre.literal-block, pre.doctest-block, pre.math, pre.code {
     margin-right: 0em;
     padding:0.5em;
     padding:0.5em;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 pre.code .cm, pre.code .c1, p.caption {font-style: normal;}
