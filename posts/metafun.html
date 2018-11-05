@@ -314,11 +314,11 @@ $$</p>
 <p>$$
 q = (t_{xx}p_x + t_{xy}p_y + t_x, t_{yx}p_x + t_{yy}p_y + t_y)
 $$</p>
-<p>实质上，若以仿射坐标的形式看待 $p$，并采用列向量 $\left[\begin{matrix}p_x \ p_y \ 1\end{matrix}\right]$ 表示其坐标，则 $T$ 的 6 个分量可形成坐标变换矩阵</p>
+<p>实质上，若以仿射坐标的形式看待 $p$，并采用列向量 $\left[\begin{matrix}p_x \\ p_y \\ 1\end{matrix}\right]$ 表示其坐标，则 $T$ 的 6 个分量可形成坐标变换矩阵</p>
 <p>$$
 M = \left[\begin{matrix}
-t_{xx} &amp; t_{xy} &amp; t_x \
-t_{yx} &amp; t_{yy} &amp; t_y \
+t_{xx} &amp; t_{xy} &amp; t_x \\
+t_{yx} &amp; t_{yy} &amp; t_y \\
 0 &amp; 0 &amp; 1\end{matrix}\right]
 $$</p>
 <p>此时，<code>p transform T</code> 语句所描述的坐标变换，便可表示为 $q = Mp$。坐标变换矩阵 $M$ 所描述的是平移、旋转、缩放以及错切等变换的组合，亦即这些特定的变换皆为 $M$ 的特例。因此，在应用 <code>transform</code> 宏的时候，通常并不直接提供六元组形式的变换，而是以 <code>scaled</code>、<code>shifted</code> 以及 <code>rotated</code> 等宏的组合构造一个变换。</p>
@@ -355,15 +355,15 @@ T := identity scaled 0.5;
 <p><code>identity</code> 是 MetaPost 内置的恒等变换，其值为向量 <code>(0, 0, 1, 0, 0, 1)</code>，将其写为齐次坐标变换矩阵，可得</p>
 <p>$$
 \left[\begin{matrix}
-1 &amp; 0  &amp; 0 \
-0 &amp; 1 &amp; 0 \
+1 &amp; 0  &amp; 0 \\
+0 &amp; 1 &amp; 0 \\
 0 &amp; 0 &amp; 1\end{matrix}\right]
 $$</p>
 <p>因此，实际上 <code>identity</code> 表示的是单位矩阵。因此 <code>identity scaled 0.5</code> 所构造的变换，本质上是以一个单位矩阵乘以由 <code>scaled 0.5</code> 构造的缩放变换矩阵</p>
 <p>$$
 \left[\begin{matrix}
-0.5 &amp; 0 &amp; 0 \
-0 &amp; 0.5 &amp; 0 \
+0.5 &amp; 0 &amp; 0 \\
+0 &amp; 0.5 &amp; 0 \\
 0 &amp; 0 &amp; 1\end{matrix}\right]
 $$</p>
 <p>在这里，<code>identity</code> 的唯一作用是喂给 <code>scaled</code> 宏，令其得以工作。因为 MetaPost 所有的特定坐标变换宏在工作时要求它的前面必须存在一个表达式，这个表达式可以是一个变换，也可以是一条路径。因此 <code>identity</code> 能够满足这些宏的需要，而且不影响它们的行为。</p>
