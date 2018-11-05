@@ -11,9 +11,9 @@
 
 MetaFun 是 ConTeXt 的一部分，主要用于 MetaPost 的绘图功能与 ConTeXt 的排版功能的衔接。
 
-ConTeXt 专事文字排版，功能匹于 LaTeX，但更易于使用，二者皆为 TeX 宏包，即二者皆基于 TeX 提供的宏编程功能，对 TeX 语言予以封装，建立更利于文字排版工作的高级语言。TeX 是一种计算机排版语言，供编排科技手稿以及著作出版印刷之用 **<sup>[1]</sup>** 。MetaPost 是用于绘制矢量绘图的计算机语言。
+ConTeXt 专事文字排版，功能匹于 LaTeX，但更易于使用，二者皆为 TeX 宏包，即二者皆基于 TeX 提供的宏编程功能，对 TeX 语言予以封装，建立更利于文字排版工作的高级语言。TeX 是一种计算机排版语言，供编排科技手稿以及著作出版印刷之用 **<sup>\[1\]</sup>** 。MetaPost 是用于绘制矢量绘图的计算机语言。
 
-目前最新的 ConTeXt 版本为 MkIV，安装 ConTeXt Standalone 可得 **<sup>[2]</sup>** 。ConTeXt MkIV 的基本用法可参考之前我写的几篇文章 **<sup>[3–7]</sup>** ，或阅读 ConTeXt 官方文档 **<sup>[8, 9]</sup>** 。
+目前最新的 ConTeXt 版本为 MkIV，安装 ConTeXt Standalone 可得 **<sup>\[2\]</sup>** 。ConTeXt MkIV 的基本用法可参考之前我写的几篇文章 **<sup>\[3–7\]</sup>** ，或阅读 ConTeXt 官方文档 **<sup>\[8, 9\]</sup>** 。
 
 MetaFun 以 MetaPost 生成的矢量图形作为页面特定区域的背景，而后基于 ConTeXt 的排版功能在该背景上实现编排文字。
 

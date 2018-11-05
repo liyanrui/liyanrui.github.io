@@ -150,7 +150,7 @@ a := io("I/O 结点的内容") withcolor darkgreen;
 
 
 <p><img alt="" src="../images/snail/07.png"></p>
-<p><code>proc</code> 也能想 <code>io</code> 宏那样通过 <code>withcoloor</code> 语句修改结点文本的颜色。</p>
+<p><code>proc</code> 也能像 <code>io</code> 宏那样通过 <code>withcoloor</code> 语句修改结点文本的颜色。</p>
 <p>人只是人，人际关系却多变。数据只是数据，过程亦却多变。对于流程图而言，过程的多变对应的不过是过程结点的形状和颜色的变化而已。以矩形为边框的过程结点可用于表示一般的过程。其他形式的过程，其结点可通过 <code>other</code> 宏构造，例如</p>
 <pre class="code literal-block"><span></span>Node b, c, d; string d.txt;
 b := other("\CONTEXT", fullsquare xysized (3cm, 1.5cm));
@@ -419,8 +419,8 @@ _planet.s := .2_star.s; _planet.sx := _planet.s; _planet.sy := _planet.sx;
     </header><div class="e-content entry-content">
     <div>
 <p>MetaFun 是 ConTeXt 的一部分，主要用于 MetaPost 的绘图功能与 ConTeXt 的排版功能的衔接。</p>
-<p>ConTeXt 专事文字排版，功能匹于 LaTeX，但更易于使用，二者皆为 TeX 宏包，即二者皆基于 TeX 提供的宏编程功能，对 TeX 语言予以封装，建立更利于文字排版工作的高级语言。TeX 是一种计算机排版语言，供编排科技手稿以及著作出版印刷之用 <strong><sup><a href="../images/metafun/01.png">1</a></sup></strong> 。MetaPost 是用于绘制矢量绘图的计算机语言。</p>
-<p>目前最新的 ConTeXt 版本为 MkIV，安装 ConTeXt Standalone 可得 <strong><sup><a href="../images/metafun/02.png">2</a></sup></strong> 。ConTeXt MkIV 的基本用法可参考之前我写的几篇文章 <strong><sup>[3–7]</sup></strong> ，或阅读 ConTeXt 官方文档 <strong><sup>[8, 9]</sup></strong> 。</p>
+<p>ConTeXt 专事文字排版，功能匹于 LaTeX，但更易于使用，二者皆为 TeX 宏包，即二者皆基于 TeX 提供的宏编程功能，对 TeX 语言予以封装，建立更利于文字排版工作的高级语言。TeX 是一种计算机排版语言，供编排科技手稿以及著作出版印刷之用 <strong><sup>[1]</sup></strong> 。MetaPost 是用于绘制矢量绘图的计算机语言。</p>
+<p>目前最新的 ConTeXt 版本为 MkIV，安装 ConTeXt Standalone 可得 <strong><sup>[2]</sup></strong> 。ConTeXt MkIV 的基本用法可参考之前我写的几篇文章 <strong><sup>[3–7]</sup></strong> ，或阅读 ConTeXt 官方文档 <strong><sup>[8, 9]</sup></strong> 。</p>
 <p>MetaFun 以 MetaPost 生成的矢量图形作为页面特定区域的背景，而后基于 ConTeXt 的排版功能在该背景上实现编排文字。</p>
 <p><img alt="" src="../images/metafun/01.png"></p>
 <h2>MetaPost</h2>
