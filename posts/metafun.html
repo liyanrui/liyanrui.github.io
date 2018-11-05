@@ -456,30 +456,30 @@ drawpath q[3]; drawpoints q[3];
 
 
 <p><img alt="" src="../images/metafun/17.png"></p>
-<p>在 MetaPost 中，类似<code>q</code> 这样的变量称为带有后缀的变量。可以用此类变量模拟数组。</p>
+<p>在 MetaPost 中，类似 <code>q</code> 这样的变量称为带有后缀的变量。可以用此类变量模拟数组。</p>
 <h2>从简单到复杂</h2>
 <p>通过图形变换和路径合成，可基于简单图形，构造复杂图形。下面以 Hilbert 曲线的绘制为例，在实践中感受 MetaPost 的魅力。</p>
 <p>首先，回顾路径 <code>p</code>：</p>
-<p>```MetaPost
-numeric sidelength, u;
+<pre class="code literal-block"><span></span>numeric sidelength, u;
 sidelength := 8cm; u := 0.5sidelength;
-drawpath fullsquare scaled 2s dashed (evenly scaled 1mm);</p>
-<p>pair a, b, c, d;
+drawpath fullsquare scaled 2s dashed (evenly scaled 1mm);
+
+pair a, b, c, d;
 a := (-0.5, -0.5) * u;
 b := (-0.5, 0.5) * u;
 c := (0.5, 0.5) * u;
-d := (0.5, -0.5) * u;</p>
-<p>path p; 
+d := (0.5, -0.5) * u;
+
+path p; 
 p := a -- b -- c -- d;
-drawpath p; drawpoints p;</p>
-<pre class="code literal-block"><span></span>![][18]
+drawpath p; drawpoints p;
+</pre>
 
-此时的 `p`，称为 1 阶 Hilbert 曲线。
 
-接下来，构造四个变换：
-
-```MetaPost
-  transform sw, nw, ne, se;
+<p><img alt="" src="../images/metafun/18.png"></p>
+<p>此时的 <code>p</code>，称为 1 阶 Hilbert 曲线。</p>
+<p>接下来，构造四个变换：</p>
+<pre class="code literal-block"><span></span>  transform sw, nw, ne, se;
   sw := identity
         scaled 0.5
         reflectedabout ((0, 0), (1, 1))
