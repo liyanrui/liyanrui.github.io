@@ -245,7 +245,7 @@ JS_DATE_FORMAT = 'YYYY-MM-DD HH:mm'
 FILES_FOLDERS = {'files': 'files',
                  'meta-doc': 'meta-doc',
                  'mycss': 'mycss',
-                 'MathJax': 'MathJax',
+                 'katex': 'katex',
                  'images': 'images'}
 
 
@@ -1227,24 +1227,8 @@ COPY_SOURCES = True
 # BODY_END = ""
 
 EXTRA_HEAD_DATA = """
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [['$','$'], ["\\\(","\\\)"]],
-            displayMath: [['$$','$$'], ["\\\[","\\\]"]],
-            processEscapes: true,
-        },
-        TeX: {
-             equationNumbers: {autoNumber: "AMS"},
-             Macros: {
-                    RR: '{\\bf R}',
-                    bold: ['{\\bf #1}', 1],
-             }
-        },
-        "HTML-CSS": {imageFont: null, scale: 85}
-    });
-</script>
-<script type="text/javascript" src="../MathJax/MathJax.js?config=TeX-AMS_HTML-full"></script>
+<link rel="stylesheet" href="/katex/katex.css" integrity="sha384-xNwWFq3SIvM4dq/1RUyWumk8nj/0KFg4TOnNcfzUU4X2gNn3WoRML69gO7waf3xh" crossorigin="anonymous">
+<script defer src="/katex/katex.js" integrity="sha384-UP7zD+aGyuDvxWQEDSRYcvoTxJSD82C6VvuEBktJZGo25CVhDstY9sCDHvyceo9L" crossorigin="anonymous"></script>
 <link href="/mycss/tweak.css" rel="stylesheet" type="text/css">
 <base target="_parent" />
 """
