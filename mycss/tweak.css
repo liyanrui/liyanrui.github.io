@@ -94,7 +94,9 @@ pre.literal-block, pre.doctest-block, pre.math, pre.code {
     font-size: 14px;
 }
 
-pre.code .cm, pre.code .c1, p.caption {font-style: normal;}
+code { color:#aa0000; }
+
+pre.code .c, .cm, pre.code .c1, p.caption {font-style: normal;}
 .clear-float {clear: both;}
 .label {color: #337ab7;}
 li {line-height: 1.7;}
