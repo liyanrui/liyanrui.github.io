@@ -1066,18 +1066,10 @@ PRETTY_URLS = False
 
 # Want to use KaTeX instead of MathJax? While KaTeX may not support every
 # feature yet, it's faster and the output looks better.
-# USE_KATEX = False
 
 # KaTeX auto-render settings. If you want support for the $.$ syntax (wihch may
 # conflict with running text!), just use this config:
-# KATEX_AUTO_RENDER = """
-# delimiters: [
-#     {left: "$$", right: "$$", display: true},
-#     {left: "\\\[", right: "\\\]", display: true},
-#     {left: "$", right: "$", display: false},
-#     {left: "\\\(", right: "\\\)", display: false}
-# ]
-# """
+USE_KATEX = True
 
 # Do you want to customize the nbconversion of your IPython notebook?
 # IPYNB_CONFIG = {}
@@ -1227,11 +1219,25 @@ COPY_SOURCES = True
 # BODY_END = ""
 
 EXTRA_HEAD_DATA = """
-<link rel="stylesheet" href="/katex/katex.css" integrity="sha384-xNwWFq3SIvM4dq/1RUyWumk8nj/0KFg4TOnNcfzUU4X2gNn3WoRML69gO7waf3xh" crossorigin="anonymous">
-<script defer src="/katex/katex.js" integrity="sha384-UP7zD+aGyuDvxWQEDSRYcvoTxJSD82C6VvuEBktJZGo25CVhDstY9sCDHvyceo9L" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/katex/katex.min.css">
+<script defer src="/katex/katex.min.js"></script>
+<script defer src="/katex/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            // ...options...
+            delimiters: [
+                         {left: "$$", right: "$$", display: true},
+                         {left: "\\\[", right: "\\\]", display: true},
+                         {left: "$", right: "$", display: false},
+                         {left: "\\\(", right: "\\\)", display: false}
+                        ]
+        });
+    });
+</script>
+
 <link href="/mycss/tweak.css" rel="stylesheet" type="text/css">
-<base target="_parent" />
-"""
+<base target="_parent" />"""
 
 # The possibility to extract metadata from the filename by using a
 # regular expression.
