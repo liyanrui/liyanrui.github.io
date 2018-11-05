@@ -305,12 +305,12 @@ $$
 q = (t_{xx}p_x + t_{xy}p_y + t_x, t_{yx}p_x + t_{yy}p_y + t_y)
 $$
 
-实质上，若以仿射坐标的形式看待 $p$，并采用列向量 $\left[\begin{matrix}p_x \\ p_y \\ 1\end{matrix}\right]$ 表示其坐标，则 $T$ 的 6 个分量可形成坐标变换矩阵
+实质上，若以仿射坐标的形式看待 $p$，并采用列向量 $\left[\begin{matrix}p_x \\\\ p_y \\\\ 1\end{matrix}\right]$ 表示其坐标，则 $T$ 的 6 个分量可形成坐标变换矩阵
 
 $$
 M = \left[\begin{matrix}
-t_{xx} & t_{xy} & t_x \\
-t_{yx} & t_{yy} & t_y \\
+t_{xx} & t_{xy} & t_x \\\\
+t_{yx} & t_{yy} & t_y \\\\
 0 & 0 & 1\end{matrix}\right]
 $$
 
@@ -356,8 +356,8 @@ T := identity scaled 0.5;
 
 $$
 \left[\begin{matrix}
-1 & 0  & 0 \\
-0 & 1 & 0 \\
+1 & 0  & 0 \\\\
+0 & 1 & 0 \\\\
 0 & 0 & 1\end{matrix}\right]
 $$
 
@@ -365,8 +365,8 @@ $$
 
 $$
 \left[\begin{matrix}
-0.5 & 0 & 0 \\
-0 & 0.5 & 0 \\
+0.5 & 0 & 0 \\\\
+0 & 0.5 & 0 \\\\
 0 & 0 & 1\end{matrix}\right]
 $$
 
