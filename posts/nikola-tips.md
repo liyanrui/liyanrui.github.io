@@ -64,10 +64,31 @@ FILES_FOLDERS = {'files': 'files',
 
 但是 Nikola 有个自动缩放图片的功能，它会将自动缩放的图片也存放在一个名为 images 的目录，这样就与我设定的目录发生了冲突，而且 Nikola 在生成网页文件的时候会罢工。
 
-解决这个问题的最简单的办法是金庸它的自动缩放图片功能，即注释掉 conf.py 文件中的下面几行：
+解决这个问题的最简单的办法是禁用自动缩放图片功能，即注释掉 conf.py 文件中的下面几行：
 
 ```
 # IMAGE_FOLDERS = {'images': 'images'}
 # IMAGE_THUMBNAIL_SIZE = 400
 # IMAGE_THUMBNAIL_FORMAT = '{name}.thumbnail{ext}'
 ```
+
+# 数学公式支持
+
+在文章的 Markdown 头部，增加
+
+```
+.. has_math: true
+```
+
+若所使用的 Nikola 主题的模板提供了数学公式支持<sup>注 1</sup>，那么 Nikola 默认会通过 MathJax 的 CDN 实现数学公式的渲染。倘若在 conf.py 文件中，开启 KaTeX，即
+
+```
+USE_KATEX = True
+```
+
+那么，Nikola 便会通过 KaTeX 的 CDN 实现数学公式的渲染。
+
+> 注 1：lib/python-版本号/site-packages/nikola/data/theme/主题/templates/math_helper.tmpl 文件。
+
+若想部署本地的 MathJax 或 KaTeX 数学公式渲染支持，只需下载它们的包，放在站点根目录，然后在 conf.py 的 `FILES_FOLDERS` 中增加相应的目录名，最后修改 Nikola 主题模板中的数学支持语句，将 CDN 换成本地的 MathJax 或 KaTeX 目录。
+

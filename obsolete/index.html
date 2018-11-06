@@ -10,21 +10,9 @@
 <meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" hreflang="zh_cn" href="../rss.xml">
 <link rel="canonical" href="#">
-<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link rel="stylesheet" href="../katex/katex.min.css">
-<script defer src="../katex/katex.min.js"></script><script defer src="../katex/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script><script>
-    document.addEventListener("DOMContentLoaded", function() {
-        renderMathInElement(document.body, {
-            // ...options...
-            delimiters: [
-                         {left: "$$", right: "$$", display: true},
-                         {left: "\\[", right: "\\]", display: true},
-                         {left: "$", right: "$", display: false},
-                         {left: "\\(", right: "\\)", display: false}
-                        ]
-        });
-    });
-</script><link href="../mycss/tweak.css" rel="stylesheet" type="text/css">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link href="../mycss/tweak.css" rel="stylesheet" type="text/css">
 <base target="_parent">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
 </head>
 <body>
     <a href="#content" class="sr-only sr-only-focusable">跳到主内容</a>
@@ -652,18 +640,18 @@ drawcontrollines p; drawcontrolpoints p;
 <p>$$
 T = (t_x, t_y, t_{xx}, t_{xy}, t_{yx}, t_{yy})
 $$</p>
-<p>对于任意一点　$p=(p_x, p_y)$，MetaPost 的 <code>transform</code> 宏可将 $T$ 作用于 $p$，即 <code>p transform T</code>，可将 $p$ 变换为</p>
+<p>对于任意一点　\(p=(p_x, p_y)\)，MetaPost 的 <code>transform</code> 宏可将 \(T\) 作用于 \(p\)，即 <code>p transform T</code>，可将 \(p\) 变换为</p>
 <p>$$
 q = (t_{xx}p_x + t_{xy}p_y + t_x, t_{yx}p_x + t_{yy}p_y + t_y)
 $$</p>
-<p>实质上，若以仿射坐标的形式看待 $p$，并采用列向量 $\left[\begin{matrix}p_x \\ p_y \\ 1\end{matrix}\right]$ 表示其坐标，则 $T$ 的 6 个分量可形成坐标变换矩阵</p>
+<p>实质上，若以仿射坐标的形式看待 \(p\)，并采用列向量 \(\left[\begin{matrix}p_x \\ p_y \\ 1\end{matrix}\right]\) 表示其坐标，则 \(T\) 的 6 个分量可形成坐标变换矩阵</p>
 <p>$$
 M = \left[\begin{matrix}
 t_{xx} &amp; t_{xy} &amp; t_x \\
 t_{yx} &amp; t_{yy} &amp; t_y \\
 0 &amp; 0 &amp; 1\end{matrix}\right]
 $$</p>
-<p>此时，<code>p transform T</code> 语句所描述的坐标变换，便可表示为 $q = Mp$。坐标变换矩阵 $M$ 所描述的是平移、旋转、缩放以及错切等变换的组合，亦即这些特定的变换皆为 $M$ 的特例。因此，在应用 <code>transform</code> 宏的时候，通常并不直接提供六元组形式的变换，而是以 <code>scaled</code>、<code>shifted</code> 以及 <code>rotated</code> 等宏的组合构造一个变换。</p>
+<p>此时，<code>p transform T</code> 语句所描述的坐标变换，便可表示为 \(q = Mp\)。坐标变换矩阵 \(M\) 所描述的是平移、旋转、缩放以及错切等变换的组合，亦即这些特定的变换皆为 \(M\) 的特例。因此，在应用 <code>transform</code> 宏的时候，通常并不直接提供六元组形式的变换，而是以 <code>scaled</code>、<code>shifted</code> 以及 <code>rotated</code> 等宏的组合构造一个变换。</p>
 <p>假设在边长为 8cm 的正方形区域</p>
 <pre class="code literal-block"><span></span>numeric sidelength, u; 
 sidelength := 8cm; u := 0.5sidelength;
@@ -1917,11 +1905,29 @@ world!
 
 
 <p>但是 Nikola 有个自动缩放图片的功能，它会将自动缩放的图片也存放在一个名为 images 的目录，这样就与我设定的目录发生了冲突，而且 Nikola 在生成网页文件的时候会罢工。</p>
-<p>解决这个问题的最简单的办法是金庸它的自动缩放图片功能，即注释掉 conf.py 文件中的下面几行：</p>
+<p>解决这个问题的最简单的办法是禁用自动缩放图片功能，即注释掉 conf.py 文件中的下面几行：</p>
 <pre class="code literal-block"><span></span># IMAGE_FOLDERS = {'images': 'images'}
 # IMAGE_THUMBNAIL_SIZE = 400
 # IMAGE_THUMBNAIL_FORMAT = '{name}.thumbnail{ext}'
 </pre>
+
+
+<h2>数学公式支持</h2>
+<p>在文章的 Markdown 头部，增加</p>
+<pre class="code literal-block"><span></span><span class="cp">.. has_math: true</span>
+</pre>
+
+
+<p>若所使用的 Nikola 主题的模板提供了数学公式支持<sup>注 1</sup>，那么 Nikola 默认会通过 MathJax 的 CDN 实现数学公式的渲染。倘若在 conf.py 文件中，开启 KaTeX，即</p>
+<pre class="code literal-block"><span></span>USE_KATEX = True
+</pre>
+
+
+<p>那么，Nikola 便会通过 KaTeX 的 CDN 实现数学公式的渲染。</p>
+<blockquote>
+<p>注 1：lib/python-版本号/site-packages/nikola/data/theme/主题/templates/math_helper.tmpl 文件。</p>
+</blockquote>
+<p>若想部署本地的 MathJax 或 KaTeX 数学公式渲染支持，只需下载它们的包，放在站点根目录，然后在 conf.py 的 <code>FILES_FOLDERS</code> 中增加相应的目录名，最后修改 Nikola 主题模板中的数学支持语句，将 CDN 换成本地的 MathJax 或 KaTeX 目录。</p>
 </div>
     </div>
     </article>
@@ -1931,9 +1937,20 @@ world!
 
 
 
-
-
-         </main><footer id="footer"><p>我的邮箱：liyanrui.m2@gmail.com</p>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha256-ExtbCSBuYA7kq1Pz362ibde9nnsHYPt6JxuxYeZbU+c=" crossorigin="anonymous"></script><script>
+                renderMathInElement(document.body,
+                    {
+                        delimiters: [
+                            {left: "$$", right: "$$", display: true},
+                            {left: "\\[", right: "\\]", display: true},
+                            {left: "\\begin{equation*}", right: "\\end{equation*}", display: true},
+                            {left: "$", right: "$", display: false},
+                            {left: "\\(", right: "\\)", display: false}
+                        ]
+                    }
+                );
+            </script></main><footer id="footer"><p>我的邮箱：liyanrui.m2@gmail.com</p>
             
         </footer>
 </div>
