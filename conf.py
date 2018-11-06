@@ -245,7 +245,6 @@ JS_DATE_FORMAT = 'YYYY-MM-DD HH:mm'
 FILES_FOLDERS = {'files': 'files',
                  'meta-doc': 'meta-doc',
                  'mycss': 'mycss',
-                 'katex': 'katex',
                  'images': 'images'}
 
 
@@ -1201,7 +1200,7 @@ COPY_SOURCES = True
 # Bootstrap is served from BootstrapCDN (provided by MaxCDN)
 # Set this to False if you want to host your site without requiring access to
 # external resources.
-# USE_CDN = False
+USE_CDN = False
 
 # Check for USE_CDN compatibility.
 # If you are using custom themes, have configured the CSS properly and are
@@ -1219,23 +1218,6 @@ COPY_SOURCES = True
 # BODY_END = ""
 
 EXTRA_HEAD_DATA = """
-<link rel="stylesheet" href="/katex/katex.min.css">
-<script defer src="/katex/katex.min.js"></script>
-<script defer src="/katex/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        renderMathInElement(document.body, {
-            // ...options...
-            delimiters: [
-                         {left: "$$", right: "$$", display: true},
-                         {left: "\\\[", right: "\\\]", display: true},
-                         {left: "$", right: "$", display: false},
-                         {left: "\\\(", right: "\\\)", display: false}
-                        ]
-        });
-    });
-</script>
-
 <link href="/mycss/tweak.css" rel="stylesheet" type="text/css">
 <base target="_parent" />"""
 
