@@ -87,7 +87,7 @@ dd = 1.06601
 </pre>
 
 
-<p><code>pickup</code> 宏可设定画笔，从而影响随后的绘图语句所绘制线条的粗细，这一影响直至 <code>pickup</code> 宏的调用。例如，</p>
+<p><code>pickup</code> 命令可用于设定画笔，从而影响随后的绘图语句所绘制线条的粗细，这一影响直至 <code>pickup</code> 命令的再次出现为止。例如，</p>
 <pre class="code literal-block"><span></span>pickup pencircle scaled 1mm;
 一系列绘图语句;
 pickup pencircle scaled 2mm;
@@ -95,11 +95,11 @@ pickup pencircle scaled 2mm;
 </pre>
 
 
-<p>定义了两个画笔，笔尖粗度分别为 1mm 和 2mm，分别会影响位于其后的绘图过程。<code>scaled</code> 宏用于数值大小的缩放变换；其他数值变换宏还有 <code>shifted</code>、<code>rotated</code> 以及 <code>slant</code>，分别用于平移、旋转以及错切等变换。在画笔的设定中，<code>scaled 1mm</code> 意味着将线条粗细程序由 MetaPost 默认的 1 bp 在水平和竖直方向上同等放大为 1 mm <strong><sup>注 4</sup></strong> 。可以使用 <code>xscaled</code> 或 <code>yscaled</code> 对画笔的水平或竖直方向的粗细进行调整，对于 <code>pencircle</code> 类型的画笔而言，此举意味着将笔尖由默认的圆形转化为椭圆，而对于 <code>pensquare</code>，则意味着将笔尖由正方形转化为矩形。</p>
+<p>定义了两个画笔，笔尖粗度分别为 1mm 和 2mm，分别会影响位于其后的绘图过程。<code>scaled</code> 用于数值大小的缩放变换；其他变换还有 <code>shifted</code>、<code>rotated</code> 以及 <code>slant</code>，分别为平移、旋转以及错切变换。在画笔的设定中，<code>scaled 1mm</code> 意味着将线条粗细程序由 MetaPost 默认的 1 bp 在水平和竖直方向上同等放大为 1 mm <strong><sup>注 4</sup></strong> 。可以使用 <code>xscaled</code> 或 <code>yscaled</code> 对画笔的水平或竖直方向的粗细进行调整，对于 <code>pencircle</code> 类型的画笔而言，此举意味着将笔尖由默认的圆形转化为椭圆，而对于 <code>pensquare</code>，则意味着将笔尖由正方形转化为矩形。</p>
 <blockquote>
 <p><strong>注 4</strong>：在 MetaPost 程序中，数字与单位之间不能出现空格。事实上，在 MetaPost 中，诸如 <code>1mm</code>、<code>2cm</code> 此类的长度描述本质上是 <code>mm</code> 或 <code>cm</code> 等变量的倍数，即 <code>1 * mm</code>、<code>2 * cm</code>。</p>
 </blockquote>
-<p>在 <code>pickup</code> 的影响范围内，绘图语句可以通过 <code>withpen</code> 宏局部调整线条的粗细，例如</p>
+<p>在 <code>pickup</code> 的影响范围内，绘图语句可以通过 <code>withpen</code> 命令局部调整线条的粗细，例如</p>
 <pre class="code literal-block"><span></span>withpen pencircle scaled 1mm
 </pre>
 
@@ -123,16 +123,17 @@ darkred := 0.625 * red;
 </pre>
 
 
-<p>若绘图语句未使用 <code>withcolor</code> 宏，则默认颜色为黑色。由于颜色的倍数不可能大于 1，因此整数部分必定为 <code>0</code>，在 MetaPost 语句中可以省略，例如</p>
+<p>在绘图语句中可以通过 <code>withcolor</code> 命令设定所绘线条或区域填充的颜色，例如</p>
+<pre class="code literal-block"><span></span>withcolor 0.625red
+</pre>
+
+
+<p>由于颜色的倍数不可能大于 1，因此整数部分必定为 <code>0</code>，在 MetaPost 语句中可以省略，例如</p>
 <pre class="code literal-block"><span></span>darkred := .625red;
 </pre>
 
 
-<p>在绘图语句中可以通过 <code>withcolor</code> 宏设定所绘线条或区域填充的颜色，例如</p>
-<pre class="code literal-block"><span></span>withcolor .625red
-</pre>
-
-
+<p>若绘图语句未通过 <code>withcolor</code> 命令设定颜色，则默认颜色为黑色。</p>
 <h2>单页图</h2>
 <p>在排版空间中，可安置 MetaPost 图形之处大致有插图、单页图、页面元素背景以及页面背景等类别。若以先习得 MetaPost 的基本用法为目的，则单页图最为合用，并且生成的图形易于转化为位图以作他用。</p>
 <p>所谓 MetaPost 单页图，本质上是 ConTeXt 输出的排版结果——PDF 文档，只是文档页面的大小恰好容得下图形。ConTeXt 为 MetaPost 单页面提供了 <code>MPpage</code> 环境：</p>
@@ -167,7 +168,7 @@ a := (2cm, 3.5cm)
 </pre>
 
 
-<p>表示在直接坐标系中，横坐标 <code>x</code> 为 <code>2cm</code> 而纵坐标 <code>y</code> 为 <code>3.5cm</code> 之处有一个点 <code>a</code>。<code>draw</code> 宏用于路径的绘制，通过它可将点 <code>a</code> 绘制出来，即</p>
+<p>表示在直接坐标系中，横坐标 <code>x</code> 为 <code>2cm</code> 而纵坐标 <code>y</code> 为 <code>3.5cm</code> 之处有一个点 <code>a</code>。<code>draw</code> 命令用于路径的绘制，通过它可将点 <code>a</code> 绘制出来，即</p>
 <pre class="code literal-block"><span></span>draw a;
 </pre>
 
@@ -187,7 +188,7 @@ p := a -- b;
 
 
 <p>即可绘制这条线段。在该条语句中，线条颜色被设为暗绿色 <code>0.625green</code>。</p>
-<p>由于 MetaPost 允许在 <code>draw</code> 宏语句中直接给出点的坐标的形式构造路径，因此上述 MetaPost 程序可缩减为一行语句：</p>
+<p>由于 MetaPost 允许在 <code>draw</code> 语句中直接给出点的坐标的形式构造路径，因此上述 MetaPost 程序可缩减为一行语句：</p>
 <pre class="code literal-block"><span></span>draw (2cm, 3.5cm) -- (5cm, 5cm) withcolor .625green;
 </pre>
 
@@ -233,13 +234,13 @@ drawpath p; drawpoints p;
 </pre>
 
 
-<p>显然，上述路径 <code>p</code> 是一条闭合路径，但 MetaPost 对此并不知情，需要通过 <code>cycle</code> 宏告诉它，即</p>
+<p>显然，上述路径 <code>p</code> 是一条闭合路径，但 MetaPost 对此并不知情，需要通过 <code>cycle</code> 命令告诉它，即</p>
 <pre class="code literal-block"><span></span>p := a -- b -- c -- cycle;
 </pre>
 
 
-<p>否则，虽然我们认为 <code>p</code> 是闭合路径，但 MetaPost 并不苟同，以致在使用 <code>fill</code> 宏对该路径包围的区域填充颜色时，会导致 MetaPost 报错并罢工。</p>
-<p><code>fill</code> 宏可闭合路径所包围的区域着色。例如</p>
+<p>否则，虽然我们认为 <code>p</code> 是闭合路径，但 MetaPost 并不苟同，以致在使用 <code>fill</code> 命令对该路径包围的区域填充颜色时，会导致 MetaPost 报错并罢工。</p>
+<p><code>fill</code> 命令可对闭合路径所包围的区域着色。例如</p>
 <pre class="code literal-block"><span></span>pair a, b, c; path p;
 a := (0, 0); b := (4cm, 0); c := (4cm, 3cm);
 p := a -- b -- c -- cycle;
@@ -261,7 +262,7 @@ fill p withcolor .8blue;
 
 
 <p><img alt="" src="../images/metafun/07.png"></p>
-<p><code>controls</code> 宏可将路径中的某些结点转化为控制点，从而可构造 Bézier 曲线。例如</p>
+<p><code>controls</code> 命令可将路径中的某些结点转化为控制点，从而可构造 Bézier 曲线。例如</p>
 <pre class="code literal-block"><span></span>p := a .. controls b ..c; draw p;
 </pre>
 
@@ -295,7 +296,7 @@ drawcontrollines p; drawcontrolpoints p;
 <p>$$
 T = (t_x, t_y, t_{xx}, t_{xy}, t_{yx}, t_{yy})
 $$</p>
-<p>对于任意一点　\(p=(p_x, p_y)\)，MetaPost 的 <code>transform</code> 宏可将 \(T\) 作用于 \(p\)，即 <code>p transform T</code>，可将 \(p\) 变换为</p>
+<p>对于任意一点　\(p=(p_x, p_y)\)，MetaPost 的 <code>transform</code> 命令可将 \(T\) 作用于 \(p\)，即 <code>p transform T</code>，可将 \(p\) 变换为</p>
 <p>$$
 q = (t_{xx}p_x + t_{xy}p_y + t_x, t_{yx}p_x + t_{yy}p_y + t_y)
 $$</p>
@@ -306,7 +307,7 @@ t_{xx} &amp; t_{xy} &amp; t_x \\
 t_{yx} &amp; t_{yy} &amp; t_y \\
 0 &amp; 0 &amp; 1\end{matrix}\right]
 $$</p>
-<p>此时，<code>p transform T</code> 语句所描述的坐标变换，便可表示为 \(q = Mp\)。坐标变换矩阵 \(M\) 所描述的是平移、旋转、缩放以及错切等变换的组合，亦即这些特定的变换皆为 \(M\) 的特例。因此，在应用 <code>transform</code> 宏的时候，通常并不直接提供六元组形式的变换，而是以 <code>scaled</code>、<code>shifted</code> 以及 <code>rotated</code> 等宏的组合构造一个变换。</p>
+<p>此时，<code>p transform T</code> 语句所描述的坐标变换，便可表示为 \(q = Mp\)。坐标变换矩阵 \(M\) 所描述的是平移、旋转、缩放以及错切等变换的组合，亦即这些特定的变换皆为 \(M\) 的特例。因此，在应用 <code>transform</code> 的时候，通常并不直接提供六元组形式的变换，而是以 <code>scaled</code>、<code>shifted</code> 以及 <code>rotated</code> 等变换的组合构造一个变换。</p>
 <p>假设在边长为 8cm 的正方形区域</p>
 <pre class="code literal-block"><span></span>numeric sidelength, u; 
 sidelength := 8cm; u := 0.5sidelength;
@@ -351,8 +352,8 @@ $$</p>
 0 &amp; 0.5 &amp; 0 \\
 0 &amp; 0 &amp; 1\end{matrix}\right]
 $$</p>
-<p>在这里，<code>identity</code> 的唯一作用是喂给 <code>scaled</code> 宏，令其得以工作。因为 MetaPost 所有的特定坐标变换宏在工作时要求它的前面必须存在一个表达式，这个表达式可以是一个变换，也可以是一条路径。因此 <code>identity</code> 能够满足这些宏的需要，而且不影响它们的行为。</p>
-<p>使用 <code>transformed</code> 宏可将 <code>T</code> 作用于路径 <code>p</code>，</p>
+<p>在这里，<code>identity</code> 的唯一作用是喂给 <code>scaled</code> 命令，令其得以工作。因为 MetaPost 所有的特定坐标变换命令在工作时要求它的前面必须存在一个表达式，这个表达式可以是一个变换，也可以是一条路径。因此 <code>identity</code> 能够满足这些命令的需要，而且不影响它们的行为。</p>
+<p>使用 <code>transformed</code> 可将 <code>T</code> 作用于路径 <code>p</code>，</p>
 <pre class="code literal-block"><span></span>path q; q := p transformed T;
 drawpath q withcolor .7green;
 drawpoints q withcolor .7red;
@@ -360,7 +361,7 @@ drawpoints q withcolor .7red;
 
 
 <p><img alt="" src="../images/metafun/13.png"></p>
-<p>在 <code>T</code> 的基础上可以继续增加变换。例如，通过 <code>shifted</code> 宏让经过了缩放变换的 <code>p</code> 向左平移 <code>0.7 * u</code>：</p>
+<p>在 <code>T</code> 的基础上可以继续增加变换。例如，通过 <code>shifted</code> 让经过了缩放变换的 <code>p</code> 向左平移 <code>0.7 * u</code>：</p>
 <pre class="code literal-block"><span></span>T := T shifted (-0.7 * u, 0);
 q := p transformed T;
 drawpath  q withcolor .7blue; drawpoints q withcolor .7yellow;
@@ -368,7 +369,7 @@ drawpath  q withcolor .7blue; drawpoints q withcolor .7yellow;
 
 
 <p><img alt="" src="../images/metafun/14.png"></p>
-<p>接下来，在 <code>T</code> 的基础上，再增加一个旋转变换，令经过了缩放和平移变换后的 <code>p</code>，即 <code>p transformed T</code>，绕其中心点逆时针转动 90 度。通过 <code>rotated</code> 宏可构造旋转变换，但是该宏是以原点为中心对路径进行旋转。若对经过了缩放和平移变换后的 <code>p</code> 绕其中心作旋转变换，首先需要确定 <code>p</code> 在经过缩放和平移之后的中心点。由于 <code>p</code> 的初始中心点可根据它的 4 个节点计算出来，结果为 <code>(0, 0)</code>，亦即原点，因此只需对 <code>p</code> 的初始中心点予以 <code>T</code> 变换，便可得到变换后的 <code>p</code> 的中心点，即</p>
+<p>接下来，在 <code>T</code> 的基础上，再增加一个旋转变换，令经过了缩放和平移变换后的 <code>p</code>，即 <code>p transformed T</code>，绕其中心点逆时针转动 90 度。通过 <code>rotated</code> 命令可构造旋转变换，但是该命令是以原点为中心对路径进行旋转。若对经过了缩放和平移变换后的 <code>p</code> 绕其中心作旋转变换，首先需要确定 <code>p</code> 在经过缩放和平移之后的中心点。由于 <code>p</code> 的初始中心点可根据它的 4 个节点计算出来，结果为 <code>(0, 0)</code>，亦即原点，因此只需对 <code>p</code> 的初始中心点予以 <code>T</code> 变换，便可得到变换后的 <code>p</code> 的中心点，即</p>
 <pre class="code literal-block"><span></span>pair pcenter;
 pcenter := (0, 0) transformed T;
 </pre>
@@ -379,12 +380,12 @@ pcenter := (0, 0) transformed T;
 </pre>
 
 
-<p>宏 <code>xpart</code> 和 <code>ypart</code> 分别用于提取任意一点的横坐标与纵坐标分量。然后，对此刻的 <code>p</code> 逆时针旋转 90 度角，即</p>
+<p><code>xpart</code> 和 <code>ypart</code> 分别用于提取任意一点的横坐标与纵坐标分量。然后，对此刻的 <code>p</code> 逆时针旋转 90 度角，即</p>
 <pre class="code literal-block"><span></span>p transofmed T shifted (-(xpart pcenter), -(ypart pcenter)) rotated 90
 </pre>
 
 
-<p>接下来，通过 <code>shifted</code> 宏将此刻的 <code>p</code> 移回原位，即</p>
+<p>接下来，通过 <code>shifted</code> 将此刻的 <code>p</code> 移回原位，即</p>
 <pre class="code literal-block"><span></span>p transofmed T shifted (-(xpart pcenter), -(ypart pcenter)) 
                rotated 90 
                shifted ((xpart pcenter), (ypart pcenter))
@@ -404,7 +405,7 @@ drawpoints p transformed T withcolor .7cyan;
 </pre>
 
 
-<p>不过，MetaPost 的 <code>rotatedaround</code> 宏已经实现了上述的围绕指定点对路径进行旋转的功能，因此上述的 <code>T</code> 可简写为</p>
+<p>不过，MetaPost 的 <code>rotatedaround</code> 变换已经实现了上述的围绕指定点对路径进行旋转的功能，因此上述的 <code>T</code> 可简写为</p>
 <pre class="code literal-block"><span></span>T := T rotatedaround (pcenter, 90);
 </pre>
 
@@ -715,14 +716,14 @@ drawpath p; drawpoints p;
 </pre>
 
 
-<p>使用 <code>randomized</code> 宏对 <code>p</code> 作轻微的随机扰动，可使得 Hilbert 曲线具备一丝艺术气息，</p>
+<p>使用 <code>randomized</code> 命令对 <code>p</code> 作轻微的随机扰动，可使得 Hilbert 曲线具备一丝艺术气息，</p>
 <pre class="code literal-block"><span></span>path p; p := hilbert(8cm, 3) randomized 5mm;
 drawpath p; drawpoints p;
 </pre>
 
 
 <p><img alt="" src="../images/metafun/22.png"></p>
-<p><code>randomized</code> 宏能够对出现在它之前的对象按指定幅度予以随机扰动。路径出现于 <code>randomized</code> 之前，则路径中的所有节点的位置会被随机扰动。</p>
+<p><code>randomized</code> 能够对出现在它之前的对象按指定幅度予以随机扰动。路径出现于 <code>randomized</code> 之前，则路径中的所有节点的位置会被随机扰动。</p>
 <h2>变量的作用域</h2>
 <p>调用 <code>hilbert</code> 宏，即使将其将其返回的路径赋予变量 <code>q</code>，但依然可以用 <code>p</code> 访问 <code>hilbert</code> 所生成的路径：</p>
 <pre class="code literal-block"><span></span>path q; q := hilbert(5cm, 3);
@@ -840,7 +841,7 @@ drawpoints z4;
 
 <p><img alt="" src="../images/metafun/24.png"></p>
 <p>若直接以 hilbert-3.pdf 文件所包含的图形作为文本框（即 <code>\framed</code>）的背景，那么背景图片的尺寸默认是 hilbert-3.pdf 文件所包含的图形的尺寸。显然，这个尺寸太大了，背景图片超出了文本框。</p>
-<p>理想的文本框背景应该与文本框的尺寸相等。可通过变量（宏） <code>\overlaywidth</code> 和 <code>\overlayheight</code> 获得当前的文本框的宽度和高度，并基于这两个尺寸，对背景图片的尺寸进行调整，使之适应文本框，即</p>
+<p>理想的文本框背景应该与文本框的尺寸相等。可通过变量（TeX 宏） <code>\overlaywidth</code> 和 <code>\overlayheight</code> 获得当前的文本框的宽度和高度，并基于这两个尺寸，对背景图片的尺寸进行调整，使之适应文本框，即</p>
 <pre class="code literal-block"><span></span><span class="k">\usemodule</span><span class="na">[zhfonts]</span>
 
 <span class="k">\defineoverlay</span>
@@ -973,7 +974,6 @@ drawpoints z4;
                             {left: "$$", right: "$$", display: true},
                             {left: "\\[", right: "\\]", display: true},
                             {left: "\\begin{equation*}", right: "\\end{equation*}", display: true},
-                            {left: "$", right: "$", display: false},
                             {left: "\\(", right: "\\)", display: false}
                         ]
                     }
