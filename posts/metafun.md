@@ -3,7 +3,7 @@
 .. slug: metafun
 .. date: 2018-10-29 18:10:38 UTC+08:00
 .. tags: MetaFun
-.. category: 技术
+.. category: 绘图
 .. link: 
 .. description: 
 .. type: text

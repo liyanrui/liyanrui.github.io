@@ -3,7 +3,7 @@
 .. slug: awk
 .. date: 2018-10-20 18:22:36 UTC+08:00
 .. tags: AWK
-.. category: 技术 
+.. category: 文本处理
 .. link: 
 .. description: 
 .. type: text

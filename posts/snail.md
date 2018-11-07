@@ -3,7 +3,7 @@
 .. slug: snail
 .. date: 2018-11-05 12:20:20 UTC+08:00
 .. tags: MetaFun
-.. category: 技术
+.. category: 绘图
 .. link: 
 .. description: 
 .. type: text
