@@ -7,7 +7,7 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-07T07:07:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
@@ -26,12 +26,8 @@
   <lastmod>2018-11-07T01:39:00Z</lastmod>
  </url>
  <url>
-  <loc>/categories/cat_ji-zhu.html</loc>
-  <lastmod>2018-11-06T04:34:00Z</lastmod>
- </url>
- <url>
   <loc>/categories/cat_pai-ban.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-07T07:07:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_wen-ben-chu-li.html</loc>
@@ -43,7 +39,7 @@
  </url>
  <url>
   <loc>/categories/context-mkiv.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-07T07:07:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/index.html</loc>
@@ -87,7 +83,7 @@
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-07T07:07:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/awk.html</loc>
@@ -95,7 +91,7 @@
  </url>
  <url>
   <loc>/posts/context-programming.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-07T07:07:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/cygwin-installation.html</loc>
