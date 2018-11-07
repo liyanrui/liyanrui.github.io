@@ -3,7 +3,7 @@
 .. slug: cygwin-installation
 .. date: 2018-10-20 11:20:12 UTC+08:00
 .. tags: Linux
-.. category: 技术
+.. category: 操作系统
 .. link: 
 .. description: 
 .. type: text

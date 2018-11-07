@@ -2,8 +2,8 @@
 .. title: Nikola 琐事
 .. slug: nikola-tips
 .. date: 2018-04-26 10:03:25 UTC+08:00
-.. tags: nikola
-.. category: 技术
+.. tags: Nikola
+.. category: 文档管理
 .. link: 
 .. description: 
 .. type: text
