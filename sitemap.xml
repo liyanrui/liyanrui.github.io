@@ -7,7 +7,7 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-11-08T10:28:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
@@ -23,7 +23,15 @@
  </url>
  <url>
   <loc>/categories/cat_hui-tu.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
+ </url>
+ <url>
+  <loc>/categories/cat_linux.html</loc>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
+ </url>
+ <url>
+  <loc>/categories/cat_pai-ban.html</loc>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_wen-ben-chu-li.html</loc>
@@ -34,8 +42,16 @@
   <lastmod>2018-11-08T10:28:00Z</lastmod>
  </url>
  <url>
+  <loc>/categories/context-mkiv.html</loc>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
+ </url>
+ <url>
+  <loc>/categories/cygwin.html</loc>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
+ </url>
+ <url>
   <loc>/categories/index.html</loc>
-  <lastmod>2018-11-08T01:10:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/linux.html</loc>
@@ -43,11 +59,11 @@
  </url>
  <url>
   <loc>/categories/metafun.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/nikola.html</loc>
-  <lastmod>2018-11-08T10:28:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </url>
  <url>
   <loc>/galleries/demo/index.html</loc>
@@ -75,7 +91,7 @@
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-11-08T10:28:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/Tex-Programming.html</loc>
@@ -87,18 +103,18 @@
  </url>
  <url>
   <loc>/posts/cygwin-installation.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/metafun.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/nikola-tips.html</loc>
-  <lastmod>2018-11-08T10:28:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/snail.html</loc>
-  <lastmod>2018-11-08T04:31:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </url>
 </urlset>
