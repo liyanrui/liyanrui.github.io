@@ -2,7 +2,7 @@
 .. title: 蜗牛
 .. slug: snail
 .. date: 2018-11-05 12:20:20 UTC+08:00
-.. tags: MetaFun, ConTeXt MkIV
+.. tags: MetaFun
 .. category: 绘图
 .. link: 
 .. description: 

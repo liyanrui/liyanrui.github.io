@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Thu, 08 Nov 2018 05:59:35 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>TeX 编程</title><link>/posts/Tex-Programming.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;TeX 是一种面向文档排版的编程语言，适用于处理科技文献的排版任务。本文几乎不关心 TeX 的排版功能，只是从一门完备的编程语言应当具备的要素的角度去认识它。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL</title><link>/</link><description>LiYanrui's homepage.</description><atom:link href="/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Thu, 08 Nov 2018 10:28:55 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>TeX 编程</title><link>/posts/Tex-Programming.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;TeX 是一种面向文档排版的编程语言，适用于处理科技文献的排版任务。本文几乎不关心 TeX 的排版功能，只是从一门完备的编程语言应当具备的要素的角度去认识它。&lt;/p&gt;
 &lt;h2&gt;常量&lt;/h2&gt;
 &lt;p&gt;最基本的常量是单个字符，TeX 解释器会照实对其予以解释。例如&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;Hello world!
@@ -13,7 +13,7 @@
 
 
 &lt;h2&gt;变量&lt;/h2&gt;
-&lt;p&gt;变量即无参数的宏。可通过 &lt;code&gt;\def&lt;/code&gt; 构造一个变量并赋值，例如&lt;/p&gt;
+&lt;p&gt;变量可通过无参数的宏予以构造，例如通过 &lt;code&gt;\def&lt;/code&gt; 构造一个变量并赋值：&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\myvar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello world!&lt;span class="nb"&gt;}&lt;/span&gt;
 &lt;/pre&gt;
 
@@ -63,10 +63,10 @@
 &lt;/pre&gt;
 
 
-&lt;p&gt;在 TeX 的世界里，它可以永动，然而它却什么都不能做了。&lt;/p&gt;
-&lt;h2&gt;条件&lt;/h2&gt;
+&lt;p&gt;在 TeX 的世界里，它可以永动，然而它却什么都不能做了。像 &lt;code&gt;\foobar&lt;/code&gt; 这样的宏，在 TeX 中称为递归宏。&lt;/p&gt;
+&lt;h2&gt;寄存器和条件&lt;/h2&gt;
 &lt;p&gt;永动机虽然造不出来，让一个函数自身与其所吸收的量进行组合，这种形式可以产生循环形式的动力。在现实世界，利用这种动力所取得的上天入地效果，我们都有所见识。在 TeX 世界里也能如此，否则就不会有 LaTeX 和 ConTeX 的出现。但是，要利用这种动力，就需要通过一些开关对其进行控制，否则这种动力便会摧毁整个 TeX 世界。&lt;/p&gt;
-&lt;p&gt;最简单的开关是控制循环的次数，即控制一个函数自身与其所吸收的量进行组合的次数。这需要使用 TeX 的计数器。使用 &lt;code&gt;\newcount&lt;/code&gt; 可以获得一个计数器，例如&lt;/p&gt;
+&lt;p&gt;最简单的开关是控制循环的次数，即控制一个函数自身与其所吸收的量进行组合的次数。这需要使用 TeX 的计数器。使用 &lt;code&gt;\newcount&lt;/code&gt; 可以向 TeX 申请一个计数寄存器作为计数器，例如&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\newcount\mycount&lt;/span&gt;
 &lt;/pre&gt;
 
@@ -84,20 +84,71 @@
 
 
 &lt;p&gt;例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\newcount\mycount&lt;/span&gt;
-&lt;span class="k"&gt;\def\foobar&lt;/span&gt;#1&lt;span class="nb"&gt;{&lt;/span&gt;#1
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\foobar&lt;/span&gt;#1&lt;span class="nb"&gt;{&lt;/span&gt;
   &lt;span class="k"&gt;\ifnum\number\mycount&lt;/span&gt;=10
-  &lt;span class="k"&gt;\else\advance\mycount&lt;/span&gt; by 1&lt;span class="k"&gt;\foobar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;#1&lt;span class="nb"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;\else&lt;/span&gt; #1&lt;span class="k"&gt;\advance\mycount&lt;/span&gt; by 1&lt;span class="k"&gt;\foobar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;#1&lt;span class="nb"&gt;}&lt;/span&gt;
   &lt;span class="k"&gt;\fi&lt;/span&gt;
 &lt;span class="nb"&gt;}&lt;/span&gt;
 
+&lt;span class="k"&gt;\newcount\mycount&lt;/span&gt;
 &lt;span class="k"&gt;\mycount&lt;/span&gt;=0
 &lt;span class="k"&gt;\foobar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello world!&lt;span class="nb"&gt;}&lt;/span&gt;
 &lt;/pre&gt;
 
 
-&lt;p&gt;可将「&lt;code&gt;Hello world!&lt;/code&gt;」连续输出 10 次。&lt;/p&gt;
-&lt;p&gt;在 TeX 中，&lt;code&gt;\newcount&lt;/code&gt; 构造的计数器称为计数寄存器。但是从编程的角度来看，所谓技术寄存器，不过是整型变量罢了。不过，TeX 最多只能同时支持 256 个这样的整型变量，&lt;code&gt;\count0&lt;/code&gt;，&lt;code&gt;\count1&lt;/code&gt;，……，&lt;code&gt;\count255&lt;/code&gt;。通过 &lt;code&gt;\count&lt;/code&gt; + 数字可以直接使用这些变量，但是很容易引起混乱。&lt;code&gt;\newcount&lt;/code&gt; 可从这些变量中选出当前尚未启用的一个，并将我们指定的名字赋予它，例如上述的 &lt;code&gt;\mycount&lt;/code&gt;。显然，使用 &lt;code&gt;\newcount&lt;/code&gt; 这种迂回的方式会更舒适一些。&lt;/p&gt;&lt;/div&gt;</description><category>TeX</category><guid>/posts/Tex-Programming.html</guid><pubDate>Thu, 08 Nov 2018 02:40:06 GMT</pubDate></item><item><title>蜗牛</title><link>/posts/snail.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;最近用 MetaFun &lt;sup&gt;[1]&lt;/sup&gt; 制作了一个小模块 &lt;a href="https://github.com/liyanrui/snail/blob/master/snail.mp"&gt;snail.mp&lt;/a&gt; &lt;sup&gt;[2]&lt;/sup&gt; ，用于绘制矢量图格式的简单流程图。&lt;/p&gt;
+&lt;p&gt;可将 &lt;code&gt;Hello world!&lt;/code&gt; 分段输出十次。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;\newcount&lt;/code&gt; 的作用是分配一个未使用的计数寄存器，并赋予它一个名字。通过这个名字便可以使用这个计数寄存器中存储的数值。Knuth 的 TeX 最多支持 256 个计数寄存器，现代的 TeX 对此进行了扩展，例如 LuaTeX 可支持 65536 个。可直接以数字为后缀的 &lt;code&gt;\count&lt;/code&gt; 使用计数寄存器，例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\foobar&lt;/span&gt;#1&lt;span class="nb"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;\ifnum\number\count&lt;/span&gt;65534=10
+  &lt;span class="k"&gt;\else&lt;/span&gt; #1&lt;span class="k"&gt;\par\advance\count&lt;/span&gt;65535 by 1&lt;span class="k"&gt;\foobar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;#1&lt;span class="nb"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;\fi&lt;/span&gt;
+&lt;span class="nb"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;\count&lt;/span&gt;65535=0
+&lt;span class="k"&gt;\foobar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello world!&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;但是这样做，很容易引起混乱。例如，倘若某种 TeX 格式将 &lt;code&gt;\count65535&lt;/code&gt; 用于存储某个重要的排版数据，这里使用了这个寄存器，那么这个寄存器中原有的值就会被覆盖，可能会导致排版结果出现难以预测的结果。因此，通常推荐使用 &lt;code&gt;\newcount&lt;/code&gt; 申请一个尚未被使用的寄存器。这里需要纠正一下前文中的一个说法，TeX 的变量的类型只有，即文本类型。通过 &lt;code&gt;\newcount&lt;/code&gt; 构造的计数寄存器本质上是整数类型的变量。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;\advance&lt;/code&gt; 用于整型变量的加减运算，例如对一个整型变量加 10,再减 30，再增加 1 倍：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\newcount\abc&lt;/span&gt;
+&lt;span class="k"&gt;\abc&lt;/span&gt;=0
+&lt;span class="k"&gt;\advance\abc&lt;/span&gt; by 10
+&lt;span class="k"&gt;\advance\abc&lt;/span&gt; by -30
+&lt;span class="k"&gt;\advance\abc&lt;/span&gt; by&lt;span class="k"&gt;\abc&lt;/span&gt;
+&lt;span class="k"&gt;\the\abc&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;结果为 -40。&lt;code&gt;\the&lt;/code&gt; 用于攫取整型变量的值。&lt;/p&gt;
+&lt;p&gt;事实上，TeX 变量的类型还有更多。除了计数寄存器，还有盒子（box）寄存器、维度（dimen）寄存器、skip 寄存器、musikip 寄存器以及 toks 寄存器，这些变量的值皆能用 &lt;code&gt;\the&lt;/code&gt; 获取。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;\ifnum&lt;/code&gt; 用于比较两个数值的关系，即大于、小于和等于。类似的条件语句还有&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;\iftrue&lt;/code&gt; 永远为真，&lt;code&gt;\iffalse&lt;/code&gt; 永远为假；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;\if&lt;/code&gt;：测试两个字符是否相同；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;\ifx&lt;/code&gt;：测试两个记号（Token）是否相同；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;\ifcat&lt;/code&gt;：测试两个记号的类别码是否相同；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;\ifdim&lt;/code&gt;：比较两个尺寸的关系；&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;\ifodd&lt;/code&gt;：测试一个数值是否为奇数；&lt;/li&gt;
+&lt;li&gt;……更多的，见《The TeXbook》第 20 章 ……&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这些条件语句，待需要使用它们之时再作细究。&lt;/p&gt;
+&lt;h2&gt;尾递归&lt;/h2&gt;
+&lt;p&gt;利用递归函数可以制作通用的循环语句，例如若制作类似于 TeX 的 &lt;code&gt;\loop ...\repeat&lt;/code&gt; 的结构，只需&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\myloop&lt;/span&gt;#1&lt;span class="k"&gt;\repeat&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;&lt;span class="k"&gt;\def\body&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;#1&lt;span class="nb"&gt;}&lt;/span&gt;&lt;span class="k"&gt;\myiterate&lt;/span&gt;&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;\def\myiterate&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;&lt;span class="k"&gt;\body\myiterate\else\relax\fi&lt;/span&gt;&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;&lt;code&gt;\relax&lt;/code&gt; 是个什么都不做的控制序列，将其删除，对 &lt;code&gt;\myloop&lt;/code&gt; 毫无影响，但是使用它可以让 &lt;code&gt;\myiterate&lt;/code&gt; 的定义更清晰。&lt;/p&gt;
+&lt;p&gt;现在，用 &lt;code&gt;\myloop ...\repeat&lt;/code&gt; 结构将 &lt;code&gt;Hello world!&lt;/code&gt; 输出 10 次：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\newcount\mycount&lt;/span&gt;
+&lt;span class="k"&gt;\mycount&lt;/span&gt;=0
+&lt;span class="k"&gt;\myloop&lt;/span&gt; Hello world!&lt;span class="k"&gt;\advance\mycount&lt;/span&gt; by 1&lt;span class="k"&gt;\ifnum\mycount&lt;/span&gt;&amp;lt;9&lt;span class="k"&gt;\repeat&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;现在来看 &lt;code&gt;\myiterate&lt;/code&gt; 的定义……&lt;/p&gt;&lt;/div&gt;</description><guid>/posts/Tex-Programming.html</guid><pubDate>Thu, 08 Nov 2018 02:40:06 GMT</pubDate></item><item><title>蜗牛</title><link>/posts/snail.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;最近用 MetaFun &lt;sup&gt;[1]&lt;/sup&gt; 制作了一个小模块 &lt;a href="https://github.com/liyanrui/snail/blob/master/snail.mp"&gt;snail.mp&lt;/a&gt; &lt;sup&gt;[2]&lt;/sup&gt; ，用于绘制矢量图格式的简单流程图。&lt;/p&gt;
 &lt;p&gt;此事纯属无心之举。原本是要用 awk 写一个能够自动编排文档中的参考文献和注释的工具。在酝酿情绪的过程中，打算用 MetaFun 画一幅简单的示意图。在绘图过程中，因不断嫌弃所用代码的繁琐，最终有了十余行简短的绘图代码以及能够让这些代码工作的一个小模块。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="/images/snail/01.png"&gt;&lt;/p&gt;
 &lt;p&gt;我将这个模块命名为 Snail（蜗牛）。之所以如此命名，一方面是因为以语言描述的方式绘制流程图，效率太低了；另一方面，绘图过程也的确像蜗牛的爬动。&lt;/p&gt;
@@ -433,7 +484,7 @@ _planet.s := .2_star.s; _planet.sx := _planet.s; _planet.sy := _planet.sx;
 &lt;p&gt;&lt;strong&gt;引用的文献：&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;[1] &lt;a href="https://segmentfault.com/a/1190000016832302"&gt;MetaFun 列传&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;[2] Snail 模块：https://github.com/liyanrui/snail&lt;/p&gt;
-&lt;p&gt;[3] &lt;a href="https://segmentfault.com/a/1190000003795931"&gt;zhfonts：ConTeXt MkIV 的中文支持模块&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</description><category>ConTeXt MkIV</category><category>MetaFun</category><guid>/posts/snail.html</guid><pubDate>Mon, 05 Nov 2018 04:20:20 GMT</pubDate></item><item><title>MetaFun 列传</title><link>/posts/metafun.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;MetaFun 是 ConTeXt 的一部分，主要用于 MetaPost 的绘图功能与 ConTeXt 的排版功能的衔接。&lt;/p&gt;
+&lt;p&gt;[3] &lt;a href="https://segmentfault.com/a/1190000003795931"&gt;zhfonts：ConTeXt MkIV 的中文支持模块&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</description><category>MetaFun</category><guid>/posts/snail.html</guid><pubDate>Mon, 05 Nov 2018 04:20:20 GMT</pubDate></item><item><title>MetaFun 列传</title><link>/posts/metafun.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;MetaFun 是 ConTeXt 的一部分，主要用于 MetaPost 的绘图功能与 ConTeXt 的排版功能的衔接。&lt;/p&gt;
 &lt;p&gt;ConTeXt 专事文字排版，功能匹于 LaTeX，但更易于使用，二者皆为 TeX 宏包，即二者皆基于 TeX 提供的宏编程功能，对 TeX 语言予以封装，建立更利于文字排版工作的高级语言。TeX 是一种计算机排版语言，供编排科技手稿以及著作出版印刷之用 &lt;strong&gt;&lt;sup&gt;[1]&lt;/sup&gt;&lt;/strong&gt; 。MetaPost 是用于绘制矢量绘图的计算机语言。&lt;/p&gt;
 &lt;p&gt;目前最新的 ConTeXt 版本为 MkIV，安装 ConTeXt Standalone 可得 &lt;strong&gt;&lt;sup&gt;[2]&lt;/sup&gt;&lt;/strong&gt; 。ConTeXt MkIV 的基本用法可参考之前我写的几篇文章 &lt;strong&gt;&lt;sup&gt;[3–7]&lt;/sup&gt;&lt;/strong&gt; ，或阅读 ConTeXt 官方文档 &lt;strong&gt;&lt;sup&gt;[8, 9]&lt;/sup&gt;&lt;/strong&gt; 。&lt;/p&gt;
 &lt;p&gt;MetaFun 以 MetaPost 生成的矢量图形作为页面特定区域的背景，而后基于 ConTeXt 的排版功能在该背景上实现编排文字。&lt;/p&gt;
@@ -1326,7 +1377,7 @@ drawpoints z4;
 &lt;p&gt;[7]  &lt;a href="http://segmentfault.com/a/1190000003803997"&gt;页面布局&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;[8]  &lt;a href="http://www.pragma-ade.nl/general/manuals/ma-cb-en.pdf"&gt;ConTeXt Mark IV an excursion&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;[9]  &lt;a href="http://pmrb.free.fr/contextref.pdf"&gt;ConTeXt Reference&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;[10]  &lt;a href="http://www.pragma-ade.com/general/manuals/metafun-p.pdf"&gt;MetaFun Manual&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</description><category>ConTeXt MkIV</category><category>MetaFun</category><guid>/posts/metafun.html</guid><pubDate>Mon, 29 Oct 2018 10:10:38 GMT</pubDate></item><item><title>AWK 列传</title><link>/posts/awk.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;awk 是一种专事文本解析与处理的解释型编程语言，其解释器与其同名&lt;strong&gt;&lt;sup&gt;注 1&lt;/sup&gt;&lt;/strong&gt;。awk 原始版本发布于 1977 年，后于 1985 年发布第一个增强版本。在这一时期，awk 羽翼渐丰，随后成为 Unix 系统的一个标准（POSIX 标准）组件。目前 Linux 系统配备的 awk 皆为 gawk，隶属 GNU 项目，伊始于 1986 年。&lt;/p&gt;
+&lt;p&gt;[10]  &lt;a href="http://www.pragma-ade.com/general/manuals/metafun-p.pdf"&gt;MetaFun Manual&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</description><category>MetaFun</category><guid>/posts/metafun.html</guid><pubDate>Mon, 29 Oct 2018 10:10:38 GMT</pubDate></item><item><title>AWK 列传</title><link>/posts/awk.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;awk 是一种专事文本解析与处理的解释型编程语言，其解释器与其同名&lt;strong&gt;&lt;sup&gt;注 1&lt;/sup&gt;&lt;/strong&gt;。awk 原始版本发布于 1977 年，后于 1985 年发布第一个增强版本。在这一时期，awk 羽翼渐丰，随后成为 Unix 系统的一个标准（POSIX 标准）组件。目前 Linux 系统配备的 awk 皆为 gawk，隶属 GNU 项目，伊始于 1986 年。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;注 1&lt;/strong&gt;：awk 得名于它的三位开发者 Alfred V. Aho、Peter J. Weinberger 以及 Brian W. Kernighan 名字的首字母。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1843,7 +1894,7 @@ world!
 
 &lt;p&gt;source：看我施展法力，让上述在 .bashrc 中的设定在当前终端中生效，&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;source&lt;/span&gt; ~/.bashrc
-&lt;/pre&gt;&lt;/div&gt;</description><category>Cygwin</category><guid>/posts/cygwin-installation.html</guid><pubDate>Sat, 20 Oct 2018 03:20:12 GMT</pubDate></item><item><title>Nikola 琐事</title><link>/posts/nikola-tips.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;Nikola 是我用了 3 年的静态网页生成工具，这个 Github 主页上的所有页面皆由它生成。它的安装与基本用法可参考《&lt;a href="https://www.getnikola.com/getting-started.html"&gt;Nikola 入门文档&lt;/a&gt;》，对于 Linux 环境，建议在 virtualenv + python 3 环境中安装它。它的更详细的用法，见《&lt;a href="https://www.getnikola.com/handbook.html"&gt;Nikola 手册&lt;/a&gt;》。本文仅记录我在使用 Nikola 过程中遇到的一些小问题以及不甚高明的对策，仅作备忘之用。&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</description><category>Linux</category><guid>/posts/cygwin-installation.html</guid><pubDate>Sat, 20 Oct 2018 03:20:12 GMT</pubDate></item><item><title>Nikola 琐事</title><link>/posts/nikola-tips.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;Nikola 是我用了 3 年的静态网页生成工具，这个 Github 主页上的所有页面皆由它生成。它的安装与基本用法可参考《&lt;a href="https://www.getnikola.com/getting-started.html"&gt;Nikola 入门文档&lt;/a&gt;》，对于 Linux 环境，建议在 virtualenv + python 3 环境中安装它。它的更详细的用法，见《&lt;a href="https://www.getnikola.com/handbook.html"&gt;Nikola 手册&lt;/a&gt;》。本文仅记录我在使用 Nikola 过程中遇到的一些小问题以及不甚高明的对策，仅作备忘之用。&lt;/p&gt;
 &lt;h2&gt;自定义首页&lt;/h2&gt;
 &lt;p&gt;Nikola 会自动生成首页，将近期的文章内容收集到一个页面，该页面对应的文件为 index.html。这份文件默认会被放到站点的根目录里，所以，它就成了站点的首页。我觉得 Nikola 这个功能很鸡肋，因为我想自己定义首页，而不是这种自动生成的东西。该怎么办呢？&lt;/p&gt;
 &lt;p&gt;首先，在 conf.py 文件里，将 &lt;code&gt;INDEX_PATH&lt;/code&gt; 设为&lt;/p&gt;
@@ -1908,4 +1959,8 @@ world!
 &lt;blockquote&gt;
 &lt;p&gt;注 1：lib/python-版本号/site-packages/nikola/data/theme/主题/templates/math_helper.tmpl 文件。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;若想部署本地的 MathJax 或 KaTeX 数学公式渲染支持，只需下载它们的包，放在站点根目录，然后在 conf.py 的 &lt;code&gt;FILES_FOLDERS&lt;/code&gt; 中增加相应的目录名，最后修改 Nikola 主题模板中的数学支持语句，将 CDN 换成本地的 MathJax 或 KaTeX 目录。&lt;/p&gt;&lt;/div&gt;</description><category>Nikola</category><guid>/posts/nikola-tips.html</guid><pubDate>Thu, 26 Apr 2018 02:03:25 GMT</pubDate></item></channel></rss>
+&lt;p&gt;若想部署本地的 MathJax 或 KaTeX 数学公式渲染支持，只需下载它们的包，放在站点根目录，然后在 conf.py 的 &lt;code&gt;FILES_FOLDERS&lt;/code&gt; 中增加相应的目录名，最后修改 Nikola 主题模板中的数学支持语句，将 CDN 换成本地的 MathJax 或 KaTeX 目录。&lt;/p&gt;
+&lt;h2&gt;发布到 Github&lt;/h2&gt;
+&lt;p&gt;若通过 ssh key 发布，记得将 .git/config 中的 &lt;code&gt;url&lt;/code&gt; 的值设为&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;git@github.com:liyanrui/liyanrui.github.io.git
+&lt;/pre&gt;&lt;/div&gt;</description><category>Nikola</category><guid>/posts/nikola-tips.html</guid><pubDate>Thu, 26 Apr 2018 02:03:25 GMT</pubDate></item></channel></rss>

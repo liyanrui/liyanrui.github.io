@@ -61,7 +61,7 @@
 
 
 <h2>变量</h2>
-<p>变量即无参数的宏。可通过 <code>\def</code> 构造一个变量并赋值，例如</p>
+<p>变量可通过无参数的宏予以构造，例如通过 <code>\def</code> 构造一个变量并赋值：</p>
 <pre class="code literal-block"><span></span><span class="k">\def\myvar</span><span class="nb">{</span>Hello world!<span class="nb">}</span>
 </pre>
 
@@ -111,10 +111,10 @@
 </pre>
 
 
-<p>在 TeX 的世界里，它可以永动，然而它却什么都不能做了。</p>
-<h2>条件</h2>
+<p>在 TeX 的世界里，它可以永动，然而它却什么都不能做了。像 <code>\foobar</code> 这样的宏，在 TeX 中称为递归宏。</p>
+<h2>寄存器和条件</h2>
 <p>永动机虽然造不出来，让一个函数自身与其所吸收的量进行组合，这种形式可以产生循环形式的动力。在现实世界，利用这种动力所取得的上天入地效果，我们都有所见识。在 TeX 世界里也能如此，否则就不会有 LaTeX 和 ConTeX 的出现。但是，要利用这种动力，就需要通过一些开关对其进行控制，否则这种动力便会摧毁整个 TeX 世界。</p>
-<p>最简单的开关是控制循环的次数，即控制一个函数自身与其所吸收的量进行组合的次数。这需要使用 TeX 的计数器。使用 <code>\newcount</code> 可以获得一个计数器，例如</p>
+<p>最简单的开关是控制循环的次数，即控制一个函数自身与其所吸收的量进行组合的次数。这需要使用 TeX 的计数器。使用 <code>\newcount</code> 可以向 TeX 申请一个计数寄存器作为计数器，例如</p>
 <pre class="code literal-block"><span></span><span class="k">\newcount\mycount</span>
 </pre>
 
@@ -132,20 +132,77 @@
 
 
 <p>例如</p>
-<pre class="code literal-block"><span></span><span class="k">\newcount\mycount</span>
-<span class="k">\def\foobar</span>#1<span class="nb">{</span>#1
+<pre class="code literal-block"><span></span><span class="k">\def\foobar</span>#1<span class="nb">{</span>
   <span class="k">\ifnum\number\mycount</span>=10
-  <span class="k">\else\advance\mycount</span> by 1<span class="k">\foobar</span><span class="nb">{</span>#1<span class="nb">}</span>
+  <span class="k">\else</span> #1<span class="k">\advance\mycount</span> by 1<span class="k">\foobar</span><span class="nb">{</span>#1<span class="nb">}</span>
   <span class="k">\fi</span>
 <span class="nb">}</span>
 
+<span class="k">\newcount\mycount</span>
 <span class="k">\mycount</span>=0
 <span class="k">\foobar</span><span class="nb">{</span>Hello world!<span class="nb">}</span>
 </pre>
 
 
-<p>可将「<code>Hello world!</code>」连续输出 10 次。</p>
-<p>在 TeX 中，<code>\newcount</code> 构造的计数器称为计数寄存器。但是从编程的角度来看，所谓技术寄存器，不过是整型变量罢了。不过，TeX 最多只能同时支持 256 个这样的整型变量，<code>\count0</code>，<code>\count1</code>，……，<code>\count255</code>。通过 <code>\count</code> + 数字可以直接使用这些变量，但是很容易引起混乱。<code>\newcount</code> 可从这些变量中选出当前尚未启用的一个，并将我们指定的名字赋予它，例如上述的 <code>\mycount</code>。显然，使用 <code>\newcount</code> 这种迂回的方式会更舒适一些。</p>
+<p>可将 <code>Hello world!</code> 分段输出十次。</p>
+<p><code>\newcount</code> 的作用是分配一个未使用的计数寄存器，并赋予它一个名字。通过这个名字便可以使用这个计数寄存器中存储的数值。Knuth 的 TeX 最多支持 256 个计数寄存器，现代的 TeX 对此进行了扩展，例如 LuaTeX 可支持 65536 个。可直接以数字为后缀的 <code>\count</code> 使用计数寄存器，例如</p>
+<pre class="code literal-block"><span></span><span class="k">\def\foobar</span>#1<span class="nb">{</span>
+  <span class="k">\ifnum\number\count</span>65534=10
+  <span class="k">\else</span> #1<span class="k">\par\advance\count</span>65535 by 1<span class="k">\foobar</span><span class="nb">{</span>#1<span class="nb">}</span>
+  <span class="k">\fi</span>
+<span class="nb">}</span>
+
+<span class="k">\count</span>65535=0
+<span class="k">\foobar</span><span class="nb">{</span>Hello world!<span class="nb">}</span>
+</pre>
+
+
+<p>但是这样做，很容易引起混乱。例如，倘若某种 TeX 格式将 <code>\count65535</code> 用于存储某个重要的排版数据，这里使用了这个寄存器，那么这个寄存器中原有的值就会被覆盖，可能会导致排版结果出现难以预测的结果。因此，通常推荐使用 <code>\newcount</code> 申请一个尚未被使用的寄存器。这里需要纠正一下前文中的一个说法，TeX 的变量的类型只有，即文本类型。通过 <code>\newcount</code> 构造的计数寄存器本质上是整数类型的变量。</p>
+<p><code>\advance</code> 用于整型变量的加减运算，例如对一个整型变量加 10,再减 30，再增加 1 倍：</p>
+<pre class="code literal-block"><span></span><span class="k">\newcount\abc</span>
+<span class="k">\abc</span>=0
+<span class="k">\advance\abc</span> by 10
+<span class="k">\advance\abc</span> by -30
+<span class="k">\advance\abc</span> by<span class="k">\abc</span>
+<span class="k">\the\abc</span>
+</pre>
+
+
+<p>结果为 -40。<code>\the</code> 用于攫取整型变量的值。</p>
+<p>事实上，TeX 变量的类型还有更多。除了计数寄存器，还有盒子（box）寄存器、维度（dimen）寄存器、skip 寄存器、musikip 寄存器以及 toks 寄存器，这些变量的值皆能用 <code>\the</code> 获取。</p>
+<p><code>\ifnum</code> 用于比较两个数值的关系，即大于、小于和等于。类似的条件语句还有</p>
+<ul>
+<li>
+<code>\iftrue</code> 永远为真，<code>\iffalse</code> 永远为假；</li>
+<li>
+<code>\if</code>：测试两个字符是否相同；</li>
+<li>
+<code>\ifx</code>：测试两个记号（Token）是否相同；</li>
+<li>
+<code>\ifcat</code>：测试两个记号的类别码是否相同；</li>
+<li>
+<code>\ifdim</code>：比较两个尺寸的关系；</li>
+<li>
+<code>\ifodd</code>：测试一个数值是否为奇数；</li>
+<li>……更多的，见《The TeXbook》第 20 章 ……</li>
+</ul>
+<p>这些条件语句，待需要使用它们之时再作细究。</p>
+<h2>尾递归</h2>
+<p>利用递归函数可以制作通用的循环语句，例如若制作类似于 TeX 的 <code>\loop ...\repeat</code> 的结构，只需</p>
+<pre class="code literal-block"><span></span><span class="k">\def\myloop</span>#1<span class="k">\repeat</span><span class="nb">{</span><span class="k">\def\body</span><span class="nb">{</span>#1<span class="nb">}</span><span class="k">\myiterate</span><span class="nb">}</span>
+<span class="k">\def\myiterate</span><span class="nb">{</span><span class="k">\body\myiterate\else\relax\fi</span><span class="nb">}</span>
+</pre>
+
+
+<p><code>\relax</code> 是个什么都不做的控制序列，将其删除，对 <code>\myloop</code> 毫无影响，但是使用它可以让 <code>\myiterate</code> 的定义更清晰。</p>
+<p>现在，用 <code>\myloop ...\repeat</code> 结构将 <code>Hello world!</code> 输出 10 次：</p>
+<pre class="code literal-block"><span></span><span class="k">\newcount\mycount</span>
+<span class="k">\mycount</span>=0
+<span class="k">\myloop</span> Hello world!<span class="k">\advance\mycount</span> by 1<span class="k">\ifnum\mycount</span>&lt;9<span class="k">\repeat</span>
+</pre>
+
+
+<p>现在来看 <code>\myiterate</code> 的定义……</p>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/snail.html" class="u-url">蜗牛</a></h1>
@@ -2042,6 +2099,10 @@ world!
 <p>注 1：lib/python-版本号/site-packages/nikola/data/theme/主题/templates/math_helper.tmpl 文件。</p>
 </blockquote>
 <p>若想部署本地的 MathJax 或 KaTeX 数学公式渲染支持，只需下载它们的包，放在站点根目录，然后在 conf.py 的 <code>FILES_FOLDERS</code> 中增加相应的目录名，最后修改 Nikola 主题模板中的数学支持语句，将 CDN 换成本地的 MathJax 或 KaTeX 目录。</p>
+<h2>发布到 Github</h2>
+<p>若通过 ssh key 发布，记得将 .git/config 中的 <code>url</code> 的值设为</p>
+<pre class="code literal-block"><span></span>git@github.com:liyanrui/liyanrui.github.io.git
+</pre>
 </div>
     </div>
     </article>
@@ -2059,6 +2120,7 @@ world!
                             {left: "$$", right: "$$", display: true},
                             {left: "\\[", right: "\\]", display: true},
                             {left: "\\begin{equation*}", right: "\\end{equation*}", display: true},
+                            {left: "$", right: "$", display: false},
                             {left: "\\(", right: "\\)", display: false}
                         ]
                     }

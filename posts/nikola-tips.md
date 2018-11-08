@@ -3,7 +3,7 @@
 .. slug: nikola-tips
 .. date: 2018-04-26 10:03:25 UTC+08:00
 .. tags: Nikola
-.. category: 排版
+.. category: 文档管理
 .. link: 
 .. description: 
 .. type: text
@@ -92,3 +92,10 @@ USE_KATEX = True
 
 若想部署本地的 MathJax 或 KaTeX 数学公式渲染支持，只需下载它们的包，放在站点根目录，然后在 conf.py 的 `FILES_FOLDERS` 中增加相应的目录名，最后修改 Nikola 主题模板中的数学支持语句，将 CDN 换成本地的 MathJax 或 KaTeX 目录。
 
+# 发布到 Github
+
+若通过 ssh key 发布，记得将 .git/config 中的 `url` 的值设为
+
+```
+git@github.com:liyanrui/liyanrui.github.io.git
+```

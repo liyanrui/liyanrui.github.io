@@ -2,7 +2,7 @@
 .. title: MetaFun 列传
 .. slug: metafun
 .. date: 2018-10-29 18:10:38 UTC+08:00
-.. tags: MetaFun, ConTeXt MkIV
+.. tags: MetaFun
 .. category: 绘图
 .. link: 
 .. description: 
