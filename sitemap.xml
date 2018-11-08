@@ -7,18 +7,14 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-11-08T10:31:00Z</lastmod>
+  <lastmod>2018-11-08T11:27:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
-  <lastmod>2018-11-08T04:31:00Z</lastmod>
+  <lastmod>2018-11-08T11:27:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/awk.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
- </url>
- <url>
-  <loc>/categories/cat_cao-zuo-xi-tong.html</loc>
   <lastmod>2018-11-07T01:39:00Z</lastmod>
  </url>
  <url>
@@ -38,10 +34,6 @@
   <lastmod>2018-11-07T01:39:00Z</lastmod>
  </url>
  <url>
-  <loc>/categories/cat_wen-dang-guan-li.html</loc>
-  <lastmod>2018-11-08T10:28:00Z</lastmod>
- </url>
- <url>
   <loc>/categories/context-mkiv.html</loc>
   <lastmod>2018-11-08T10:31:00Z</lastmod>
  </url>
@@ -52,10 +44,6 @@
  <url>
   <loc>/categories/index.html</loc>
   <lastmod>2018-11-08T10:31:00Z</lastmod>
- </url>
- <url>
-  <loc>/categories/linux.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/metafun.html</loc>
@@ -91,7 +79,7 @@
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-11-08T10:31:00Z</lastmod>
+  <lastmod>2018-11-08T11:27:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/Tex-Programming.html</loc>
@@ -115,6 +103,6 @@
  </url>
  <url>
   <loc>/posts/snail.html</loc>
-  <lastmod>2018-11-08T10:31:00Z</lastmod>
+  <lastmod>2018-11-08T11:27:00Z</lastmod>
  </url>
 </urlset>
