@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 排版)</title><link>/</link><description></description><atom:link href="/categories/cat_pai-ban.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Thu, 08 Nov 2018 05:59:34 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>TeX 编程</title><link>/posts/Tex-Programming.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;TeX 是一种面向文档排版的编程语言，适用于处理科技文献的排版任务。本文几乎不关心 TeX 的排版功能，只是从一门完备的编程语言应当具备的要素的角度去认识它。&lt;/p&gt;
+&lt;h2&gt;常量&lt;/h2&gt;
+&lt;p&gt;最基本的常量是单个字符，TeX 解释器会照实对其予以解释。例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;Hello world!
+&lt;/pre&gt;
+
+
+&lt;p&gt;TeX 解释器逐字照实输出。输出到何处？现代的 TeX 解释器，诸如 pdftex、xetex、luatex 等，会将其输出至 PDF 格式的文档。&lt;/p&gt;
+&lt;p&gt;常量之间只有一种运算，即连接。我们在输入文本时，便已经实施了该运算——将一组字符连成文本。若将一组字符合成为一个常量，可以用 &lt;code&gt;{...}&lt;/code&gt;，例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello world!&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;h2&gt;变量&lt;/h2&gt;
+&lt;p&gt;变量即无参数的宏。可通过 &lt;code&gt;\def&lt;/code&gt; 构造一个变量并赋值，例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\myvar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello world!&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;&lt;code&gt;\myvar&lt;/code&gt; 便是一个变量，它的值为 &lt;code&gt;Hello world!&lt;/code&gt;。在 TeX 中，变量只有一种类型，即文本类型。&lt;/p&gt;
+&lt;h2&gt;函数&lt;/h2&gt;
+&lt;p&gt;函数即有参数的宏。函数与变量并没有本质上的区别。所以，在数学中，变量也会被称为常函数。&lt;/p&gt;
+&lt;p&gt;函数可以吸收常量或变量，将它们与其他常量或变量进行组合。例如，&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\myfunc&lt;/span&gt;#1&lt;span class="nb"&gt;{&lt;/span&gt;#1 world!&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;若 &lt;code&gt;\myfunc&lt;/code&gt; 吸收了常量 &lt;code&gt;Hello&lt;/code&gt;，&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\myfunc&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;之后，就会将 &lt;code&gt;Hello&lt;/code&gt; 与 &lt;code&gt;world!&lt;/code&gt; 连接为 &lt;code&gt;Hello world!&lt;/code&gt;。&lt;code&gt;{...}&lt;/code&gt; 可将一组字符常量合并为一个常量。在上例中，若不用 &lt;code&gt;{...}&lt;/code&gt;，而是直接&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\myfunc&lt;/span&gt; Hello
+&lt;/pre&gt;
+
+
+&lt;p&gt;结果得到的是「&lt;code&gt;H world!ello&lt;/code&gt;」，因此 &lt;code&gt;\myfunc&lt;/code&gt; 此时只吸收常量 &lt;code&gt;H&lt;/code&gt;，剩下的 &lt;code&gt;ello&lt;/code&gt; 只能等待与 &lt;code&gt;\myfunc&lt;/code&gt; 的结果连接。&lt;/p&gt;
+&lt;p&gt;若将 &lt;code&gt;Hello&lt;/code&gt; 作为值赋予一个变量，&lt;code&gt;\myfunc&lt;/code&gt; 也能吸收这个变量：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\hello&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;\myfunc\hello&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;由于函数与变量并没有本质区别，所以函数也能吸收函数，例如：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\foobar&lt;/span&gt;#1&lt;span class="nb"&gt;{&lt;/span&gt;#1 &lt;span class="nb"&gt;{&lt;/span&gt;Hello&lt;span class="nb"&gt;}}&lt;/span&gt;
+&lt;span class="k"&gt;\foobar\myfunc&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;结果为「&lt;code&gt;Hello world!&lt;/code&gt;」。&lt;/p&gt;
+&lt;p&gt;若一个函数将吸收到的量与这个函数自身进行组合，结果会导致 TeX 解释器陷入到不停地解释这个函数的过程，直至崩溃。例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\foobar&lt;/span&gt;#1&lt;span class="nb"&gt;{&lt;/span&gt;#1&lt;span class="k"&gt;\myfunc&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;#1&lt;span class="nb"&gt;}}&lt;/span&gt;
+&lt;span class="k"&gt;\foobar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello world!&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;在现实世界，类似这种形式的机器叫永动机。与 TeX 世界一样，现实世界也造不出永动机。换言之，若现实世界能造出永动机，那么在 TeX 世界一定也能。&lt;/p&gt;
+&lt;p&gt;若 &lt;code&gt;\foobar&lt;/code&gt; 不吸收任何量，也不与任何量组合，即&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\foobar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;&lt;span class="k"&gt;\foobar&lt;/span&gt;&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;\foobar&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;在 TeX 的世界里，它可以永动，然而它却什么都不能做了。&lt;/p&gt;
+&lt;h2&gt;条件&lt;/h2&gt;
+&lt;p&gt;永动机虽然造不出来，让一个函数自身与其所吸收的量进行组合，这种形式可以产生循环形式的动力。在现实世界，利用这种动力所取得的上天入地效果，我们都有所见识。在 TeX 世界里也能如此，否则就不会有 LaTeX 和 ConTeX 的出现。但是，要利用这种动力，就需要通过一些开关对其进行控制，否则这种动力便会摧毁整个 TeX 世界。&lt;/p&gt;
+&lt;p&gt;最简单的开关是控制循环的次数，即控制一个函数自身与其所吸收的量进行组合的次数。这需要使用 TeX 的计数器。使用 &lt;code&gt;\newcount&lt;/code&gt; 可以获得一个计数器，例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\newcount\mycount&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;若让这个计数器从 0 开始，只需&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\mycount&lt;/span&gt;=0
+&lt;/pre&gt;
+
+
+&lt;p&gt;若要控制函数自身与其所吸收的量进行组合的次数不大于 10 次，只需在该过程中增加控制语句&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\ifnum\mycount&lt;/span&gt;=10
+&lt;span class="k"&gt;\else&lt;/span&gt; 函数自身与其所吸收的量的组合&lt;span class="k"&gt;\advance\mycount&lt;/span&gt; by 1
+&lt;span class="k"&gt;\fi&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\newcount\mycount&lt;/span&gt;
+&lt;span class="k"&gt;\def\foobar&lt;/span&gt;#1&lt;span class="nb"&gt;{&lt;/span&gt;#1
+  &lt;span class="k"&gt;\ifnum\number\mycount&lt;/span&gt;=10
+  &lt;span class="k"&gt;\else\advance\mycount&lt;/span&gt; by 1&lt;span class="k"&gt;\foobar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;#1&lt;span class="nb"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;\fi&lt;/span&gt;
+&lt;span class="nb"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;\mycount&lt;/span&gt;=0
+&lt;span class="k"&gt;\foobar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello world!&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;可将「&lt;code&gt;Hello world!&lt;/code&gt;」连续输出 10 次。&lt;/p&gt;
+&lt;p&gt;在 TeX 中，&lt;code&gt;\newcount&lt;/code&gt; 构造的计数器称为计数寄存器。但是从编程的角度来看，所谓技术寄存器，不过是整型变量罢了。不过，TeX 最多只能同时支持 256 个这样的整型变量，&lt;code&gt;\count0&lt;/code&gt;，&lt;code&gt;\count1&lt;/code&gt;，……，&lt;code&gt;\count255&lt;/code&gt;。通过 &lt;code&gt;\count&lt;/code&gt; + 数字可以直接使用这些变量，但是很容易引起混乱。&lt;code&gt;\newcount&lt;/code&gt; 可从这些变量中选出当前尚未启用的一个，并将我们指定的名字赋予它，例如上述的 &lt;code&gt;\mycount&lt;/code&gt;。显然，使用 &lt;code&gt;\newcount&lt;/code&gt; 这种迂回的方式会更舒适一些。&lt;/p&gt;&lt;/div&gt;</description><category>TeX</category><guid>/posts/Tex-Programming.html</guid><pubDate>Thu, 08 Nov 2018 02:40:06 GMT</pubDate></item><item><title>Nikola 琐事</title><link>/posts/nikola-tips.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;Nikola 是我用了 3 年的静态网页生成工具，这个 Github 主页上的所有页面皆由它生成。它的安装与基本用法可参考《&lt;a href="https://www.getnikola.com/getting-started.html"&gt;Nikola 入门文档&lt;/a&gt;》，对于 Linux 环境，建议在 virtualenv + python 3 环境中安装它。它的更详细的用法，见《&lt;a href="https://www.getnikola.com/handbook.html"&gt;Nikola 手册&lt;/a&gt;》。本文仅记录我在使用 Nikola 过程中遇到的一些小问题以及不甚高明的对策，仅作备忘之用。&lt;/p&gt;
+&lt;h2&gt;自定义首页&lt;/h2&gt;
+&lt;p&gt;Nikola 会自动生成首页，将近期的文章内容收集到一个页面，该页面对应的文件为 index.html。这份文件默认会被放到站点的根目录里，所以，它就成了站点的首页。我觉得 Nikola 这个功能很鸡肋，因为我想自己定义首页，而不是这种自动生成的东西。该怎么办呢？&lt;/p&gt;
+&lt;p&gt;首先，在 conf.py 文件里，将 &lt;code&gt;INDEX_PATH&lt;/code&gt; 设为&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;INDEX_PATH = "blog"
+&lt;/pre&gt;
+
+
+&lt;p&gt;这样，Nikola 就会将这个自动生成的 index.html 文件放到 &lt;code&gt;站点根目录/blog&lt;/code&gt; 目录里，从而令它失去了担当站点首页的资格。理论上，也可以随便取个目录名来用，例如
+·&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;INDEX_PATH = "obsolete"
+&lt;/pre&gt;
+
+
+&lt;p&gt;用这种乾坤大挪移的办法，算是将这个鸡肋的站点首页「消灭」了。接下来，就是建立一个自定义的首页，以后手工来维护它。方法很简单，只需要在 &lt;code&gt;PAGES&lt;/code&gt; 目录，任意建立一份源文件，将其 &lt;code&gt;slug&lt;/code&gt; 设为 &lt;code&gt;index.html&lt;/code&gt; 即可。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;PAGES&lt;/code&gt; 目录，就是在 conf.py 文件中设定的目录。例如，我的设定是：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;PAGES = (
+    ("stories/*.md", "", "story.tmpl"),
+)
+&lt;/pre&gt;
+
+
+&lt;p&gt;这就意味着，我可以在 &lt;code&gt;stories&lt;/code&gt; 目录建立 &lt;code&gt;slug&lt;/code&gt; 设为 &lt;code&gt;index.html&lt;/code&gt; 的源文件（至于它对应的文件名是什么，并不重要）。假设这份源文件是 Markdown 格式，那么所谓 &lt;code&gt;slug&lt;/code&gt; 就是文件头中的 &lt;code&gt;slug&lt;/code&gt; 条目，例如：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;!-- 
+.. title: 
+.. slug: index
+--&amp;gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;剩下的内容可自由定义。&lt;/p&gt;
+&lt;p&gt;当网站内容重新发布时，这份源文件就会被转化为网站根目录中的 index.html 文件。因为 Nikola 就是这样对待 &lt;code&gt;PAGES&lt;/code&gt; 目录中的源文件的，会把它们「平铺」在网站的根目录里。&lt;/p&gt;
+&lt;h2&gt;图片目录冲突&lt;/h2&gt;
+&lt;p&gt;在 conf.py 文件中，我设定了专门用于放图片的目录 images：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;FILES_FOLDERS = {'files': 'files',
+                 'meta-doc': 'meta-doc',
+                 'mycss': 'mycss',
+                 'MathJax': 'MathJax',
+                 'images': 'images'} # &amp;lt;&amp;lt;&amp;lt;----- here ----------
+&lt;/pre&gt;
+
+
+&lt;p&gt;但是 Nikola 有个自动缩放图片的功能，它会将自动缩放的图片也存放在一个名为 images 的目录，这样就与我设定的目录发生了冲突，而且 Nikola 在生成网页文件的时候会罢工。&lt;/p&gt;
+&lt;p&gt;解决这个问题的最简单的办法是禁用自动缩放图片功能，即注释掉 conf.py 文件中的下面几行：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;# IMAGE_FOLDERS = {'images': 'images'}
+# IMAGE_THUMBNAIL_SIZE = 400
+# IMAGE_THUMBNAIL_FORMAT = '{name}.thumbnail{ext}'
+&lt;/pre&gt;
+
+
+&lt;h2&gt;数学公式支持&lt;/h2&gt;
+&lt;p&gt;在文章的 Markdown 头部，增加&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;.. has_math: true&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;若所使用的 Nikola 主题的模板提供了数学公式支持&lt;sup&gt;注 1&lt;/sup&gt;，那么 Nikola 默认会通过 MathJax 的 CDN 实现数学公式的渲染。倘若在 conf.py 文件中，开启 KaTeX，即&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;USE_KATEX = True
+&lt;/pre&gt;
+
+
+&lt;p&gt;那么，Nikola 便会通过 KaTeX 的 CDN 实现数学公式的渲染。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;注 1：lib/python-版本号/site-packages/nikola/data/theme/主题/templates/math_helper.tmpl 文件。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;若想部署本地的 MathJax 或 KaTeX 数学公式渲染支持，只需下载它们的包，放在站点根目录，然后在 conf.py 的 &lt;code&gt;FILES_FOLDERS&lt;/code&gt; 中增加相应的目录名，最后修改 Nikola 主题模板中的数学支持语句，将 CDN 换成本地的 MathJax 或 KaTeX 目录。&lt;/p&gt;&lt;/div&gt;</description><category>Nikola</category><guid>/posts/nikola-tips.html</guid><pubDate>Thu, 26 Apr 2018 02:03:25 GMT</pubDate></item></channel></rss>

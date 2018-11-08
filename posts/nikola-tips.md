@@ -3,7 +3,7 @@
 .. slug: nikola-tips
 .. date: 2018-04-26 10:03:25 UTC+08:00
 .. tags: Nikola
-.. category: 文档管理
+.. category: 排版
 .. link: 
 .. description: 
 .. type: text

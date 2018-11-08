@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 TeX)</title><link>/</link><description></description><atom:link href="/categories/tex.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Thu, 08 Nov 2018 05:59:35 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>TeX 编程</title><link>/posts/Tex-Programming.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;TeX 是一种面向文档排版的编程语言，适用于处理科技文献的排版任务。本文几乎不关心 TeX 的排版功能，只是从一门完备的编程语言应当具备的要素的角度去认识它。&lt;/p&gt;
+&lt;h2&gt;常量&lt;/h2&gt;
+&lt;p&gt;最基本的常量是单个字符，TeX 解释器会照实对其予以解释。例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;Hello world!
+&lt;/pre&gt;
+
+
+&lt;p&gt;TeX 解释器逐字照实输出。输出到何处？现代的 TeX 解释器，诸如 pdftex、xetex、luatex 等，会将其输出至 PDF 格式的文档。&lt;/p&gt;
+&lt;p&gt;常量之间只有一种运算，即连接。我们在输入文本时，便已经实施了该运算——将一组字符连成文本。若将一组字符合成为一个常量，可以用 &lt;code&gt;{...}&lt;/code&gt;，例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello world!&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;h2&gt;变量&lt;/h2&gt;
+&lt;p&gt;变量即无参数的宏。可通过 &lt;code&gt;\def&lt;/code&gt; 构造一个变量并赋值，例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\myvar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello world!&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;&lt;code&gt;\myvar&lt;/code&gt; 便是一个变量，它的值为 &lt;code&gt;Hello world!&lt;/code&gt;。在 TeX 中，变量只有一种类型，即文本类型。&lt;/p&gt;
+&lt;h2&gt;函数&lt;/h2&gt;
+&lt;p&gt;函数即有参数的宏。函数与变量并没有本质上的区别。所以，在数学中，变量也会被称为常函数。&lt;/p&gt;
+&lt;p&gt;函数可以吸收常量或变量，将它们与其他常量或变量进行组合。例如，&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\myfunc&lt;/span&gt;#1&lt;span class="nb"&gt;{&lt;/span&gt;#1 world!&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;若 &lt;code&gt;\myfunc&lt;/code&gt; 吸收了常量 &lt;code&gt;Hello&lt;/code&gt;，&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\myfunc&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;之后，就会将 &lt;code&gt;Hello&lt;/code&gt; 与 &lt;code&gt;world!&lt;/code&gt; 连接为 &lt;code&gt;Hello world!&lt;/code&gt;。&lt;code&gt;{...}&lt;/code&gt; 可将一组字符常量合并为一个常量。在上例中，若不用 &lt;code&gt;{...}&lt;/code&gt;，而是直接&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\myfunc&lt;/span&gt; Hello
+&lt;/pre&gt;
+
+
+&lt;p&gt;结果得到的是「&lt;code&gt;H world!ello&lt;/code&gt;」，因此 &lt;code&gt;\myfunc&lt;/code&gt; 此时只吸收常量 &lt;code&gt;H&lt;/code&gt;，剩下的 &lt;code&gt;ello&lt;/code&gt; 只能等待与 &lt;code&gt;\myfunc&lt;/code&gt; 的结果连接。&lt;/p&gt;
+&lt;p&gt;若将 &lt;code&gt;Hello&lt;/code&gt; 作为值赋予一个变量，&lt;code&gt;\myfunc&lt;/code&gt; 也能吸收这个变量：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\hello&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;\myfunc\hello&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;由于函数与变量并没有本质区别，所以函数也能吸收函数，例如：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\foobar&lt;/span&gt;#1&lt;span class="nb"&gt;{&lt;/span&gt;#1 &lt;span class="nb"&gt;{&lt;/span&gt;Hello&lt;span class="nb"&gt;}}&lt;/span&gt;
+&lt;span class="k"&gt;\foobar\myfunc&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;结果为「&lt;code&gt;Hello world!&lt;/code&gt;」。&lt;/p&gt;
+&lt;p&gt;若一个函数将吸收到的量与这个函数自身进行组合，结果会导致 TeX 解释器陷入到不停地解释这个函数的过程，直至崩溃。例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\foobar&lt;/span&gt;#1&lt;span class="nb"&gt;{&lt;/span&gt;#1&lt;span class="k"&gt;\myfunc&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;#1&lt;span class="nb"&gt;}}&lt;/span&gt;
+&lt;span class="k"&gt;\foobar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello world!&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;在现实世界，类似这种形式的机器叫永动机。与 TeX 世界一样，现实世界也造不出永动机。换言之，若现实世界能造出永动机，那么在 TeX 世界一定也能。&lt;/p&gt;
+&lt;p&gt;若 &lt;code&gt;\foobar&lt;/code&gt; 不吸收任何量，也不与任何量组合，即&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\def\foobar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;&lt;span class="k"&gt;\foobar&lt;/span&gt;&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;\foobar&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;在 TeX 的世界里，它可以永动，然而它却什么都不能做了。&lt;/p&gt;
+&lt;h2&gt;条件&lt;/h2&gt;
+&lt;p&gt;永动机虽然造不出来，让一个函数自身与其所吸收的量进行组合，这种形式可以产生循环形式的动力。在现实世界，利用这种动力所取得的上天入地效果，我们都有所见识。在 TeX 世界里也能如此，否则就不会有 LaTeX 和 ConTeX 的出现。但是，要利用这种动力，就需要通过一些开关对其进行控制，否则这种动力便会摧毁整个 TeX 世界。&lt;/p&gt;
+&lt;p&gt;最简单的开关是控制循环的次数，即控制一个函数自身与其所吸收的量进行组合的次数。这需要使用 TeX 的计数器。使用 &lt;code&gt;\newcount&lt;/code&gt; 可以获得一个计数器，例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\newcount\mycount&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;若让这个计数器从 0 开始，只需&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\mycount&lt;/span&gt;=0
+&lt;/pre&gt;
+
+
+&lt;p&gt;若要控制函数自身与其所吸收的量进行组合的次数不大于 10 次，只需在该过程中增加控制语句&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\ifnum\mycount&lt;/span&gt;=10
+&lt;span class="k"&gt;\else&lt;/span&gt; 函数自身与其所吸收的量的组合&lt;span class="k"&gt;\advance\mycount&lt;/span&gt; by 1
+&lt;span class="k"&gt;\fi&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\newcount\mycount&lt;/span&gt;
+&lt;span class="k"&gt;\def\foobar&lt;/span&gt;#1&lt;span class="nb"&gt;{&lt;/span&gt;#1
+  &lt;span class="k"&gt;\ifnum\number\mycount&lt;/span&gt;=10
+  &lt;span class="k"&gt;\else\advance\mycount&lt;/span&gt; by 1&lt;span class="k"&gt;\foobar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;#1&lt;span class="nb"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;\fi&lt;/span&gt;
+&lt;span class="nb"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;\mycount&lt;/span&gt;=0
+&lt;span class="k"&gt;\foobar&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;Hello world!&lt;span class="nb"&gt;}&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;可将「&lt;code&gt;Hello world!&lt;/code&gt;」连续输出 10 次。&lt;/p&gt;
+&lt;p&gt;在 TeX 中，&lt;code&gt;\newcount&lt;/code&gt; 构造的计数器称为计数寄存器。但是从编程的角度来看，所谓技术寄存器，不过是整型变量罢了。不过，TeX 最多只能同时支持 256 个这样的整型变量，&lt;code&gt;\count0&lt;/code&gt;，&lt;code&gt;\count1&lt;/code&gt;，……，&lt;code&gt;\count255&lt;/code&gt;。通过 &lt;code&gt;\count&lt;/code&gt; + 数字可以直接使用这些变量，但是很容易引起混乱。&lt;code&gt;\newcount&lt;/code&gt; 可从这些变量中选出当前尚未启用的一个，并将我们指定的名字赋予它，例如上述的 &lt;code&gt;\mycount&lt;/code&gt;。显然，使用 &lt;code&gt;\newcount&lt;/code&gt; 这种迂回的方式会更舒适一些。&lt;/p&gt;&lt;/div&gt;</description><category>TeX</category><guid>/posts/Tex-Programming.html</guid><pubDate>Thu, 08 Nov 2018 02:40:06 GMT</pubDate></item></channel></rss>

@@ -133,15 +133,19 @@
 
 <p>例如</p>
 <pre class="code literal-block"><span></span><span class="k">\newcount\mycount</span>
-<span class="k">\def\foobar</span>#1<span class="nb">{</span>#1<span class="c">%</span>
-  <span class="k">\ifnum\number\mycount</span>=10<span class="c">%</span>
-  <span class="k">\else\advance\mycount</span> by 1<span class="k">\foobar</span><span class="nb">{</span>#1<span class="nb">}</span><span class="c">%</span>
-  <span class="k">\fi</span><span class="c">%</span>
+<span class="k">\def\foobar</span>#1<span class="nb">{</span>#1
+  <span class="k">\ifnum\number\mycount</span>=10
+  <span class="k">\else\advance\mycount</span> by 1<span class="k">\foobar</span><span class="nb">{</span>#1<span class="nb">}</span>
+  <span class="k">\fi</span>
 <span class="nb">}</span>
 
 <span class="k">\mycount</span>=0
 <span class="k">\foobar</span><span class="nb">{</span>Hello world!<span class="nb">}</span>
 </pre>
+
+
+<p>可将「<code>Hello world!</code>」连续输出 10 次。</p>
+<p>在 TeX 中，<code>\newcount</code> 构造的计数器称为计数寄存器。但是从编程的角度来看，所谓技术寄存器，不过是整型变量罢了。不过，TeX 最多只能同时支持 256 个这样的整型变量，<code>\count0</code>，<code>\count1</code>，……，<code>\count255</code>。通过 <code>\count</code> + 数字可以直接使用这些变量，但是很容易引起混乱。<code>\newcount</code> 可从这些变量中选出当前尚未启用的一个，并将我们指定的名字赋予它，例如上述的 <code>\mycount</code>。显然，使用 <code>\newcount</code> 这种迂回的方式会更舒适一些。</p>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/snail.html" class="u-url">蜗牛</a></h1>
@@ -2055,7 +2059,6 @@ world!
                             {left: "$$", right: "$$", display: true},
                             {left: "\\[", right: "\\]", display: true},
                             {left: "\\begin{equation*}", right: "\\end{equation*}", display: true},
-                            {left: "$", right: "$", display: false},
                             {left: "\\(", right: "\\)", display: false}
                         ]
                     }
