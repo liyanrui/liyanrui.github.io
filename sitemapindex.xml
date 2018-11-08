@@ -18,20 +18,12 @@
   <lastmod>2018-11-07T01:39:00Z</lastmod>
  </sitemap>
  <sitemap>
-  <loc>/categories/cat_pai-ban.xml</loc>
-  <lastmod>2018-11-07T07:07:00Z</lastmod>
- </sitemap>
- <sitemap>
   <loc>/categories/cat_wen-ben-chu-li.xml</loc>
   <lastmod>2018-11-07T01:39:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/cat_wen-dang-guan-li.xml</loc>
   <lastmod>2018-11-07T01:39:00Z</lastmod>
- </sitemap>
- <sitemap>
-  <loc>/categories/context-mkiv.xml</loc>
-  <lastmod>2018-11-07T07:07:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/linux.xml</loc>
@@ -55,10 +47,10 @@
  </sitemap>
  <sitemap>
   <loc>/rss.xml</loc>
-  <lastmod>2018-11-08T01:10:00Z</lastmod>
+  <lastmod>2018-11-08T04:31:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/sitemap.xml</loc>
-  <lastmod>2018-11-08T01:10:00Z</lastmod>
+  <lastmod>2018-11-08T04:31:00Z</lastmod>
  </sitemap>
 </sitemapindex>
