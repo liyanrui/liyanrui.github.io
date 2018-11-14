@@ -36,7 +36,7 @@ $ ffplay -i input.mp4 \
 #!/bin/bash
 
 clip_all() {
-    for i in ./*
+    for i in *
     do
         if [ -d $i ]
         then
