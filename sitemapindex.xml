@@ -15,7 +15,7 @@
  </sitemap>
  <sitemap>
   <loc>/categories/cat_linux.xml</loc>
-  <lastmod>2018-11-08T10:31:00Z</lastmod>
+  <lastmod>2018-11-14T04:07:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/cat_pai-ban.xml</loc>
@@ -32,6 +32,10 @@
  <sitemap>
   <loc>/categories/cygwin.xml</loc>
   <lastmod>2018-11-08T10:31:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>/categories/ffmpeg.xml</loc>
+  <lastmod>2018-11-14T04:07:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/metafun.xml</loc>
@@ -51,10 +55,10 @@
  </sitemap>
  <sitemap>
   <loc>/rss.xml</loc>
-  <lastmod>2018-11-08T11:27:00Z</lastmod>
+  <lastmod>2018-11-14T04:07:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/sitemap.xml</loc>
-  <lastmod>2018-11-08T11:27:00Z</lastmod>
+  <lastmod>2018-11-14T04:07:00Z</lastmod>
  </sitemap>
 </sitemapindex>

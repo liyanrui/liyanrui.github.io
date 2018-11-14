@@ -35,7 +35,78 @@
     
     
     </ul></nav></header><main id="content"><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/snail.html" class="u-url">蜗牛</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/ffmpeg.html" class="u-url">FFmpeg 笔记</a></h1>
+        <div class="metadata">
+            <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
+                Garfileo
+            </span></p>
+            <p class="dateline">
+            <a href="../posts/ffmpeg.html" rel="bookmark">
+            <time class="published dt-published" datetime="2018-11-14T10:34:36+08:00" itemprop="datePublished" title="2018-11-14 10:34">2018-11-14 10:34</time></a>
+            </p>
+        </div>
+    </header><div class="e-content entry-content">
+    <div>
+<h2>去水印</h2>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -threads <span class="m">4</span> -i input.mp4 -filter_complex <span class="s2">"delogo=x=5:y=320:w=110:h=75, delogo=x=625:y=350:w=90:h=45"</span> -qscale <span class="m">2</span>.5 output.mp4
+</pre>
+
+
+<p><code>qscale</code> 用于设定输出视频的画面质量，取值范围为 [0.01,255]，此值越小，画面质量越好。</p>
+<p><code>delogo</code> 参数用于设定过滤水印的矩形区域，<code>x</code> 和 <code>y</code> 为矩形的左上角坐标，<code>w</code> 和 <code>h</code> 分别为矩形的宽度和高度。可以通过视频播放软件提供的截屏功能，再用 GIMP 对所截图像确定这个矩形范围。</p>
+<p>使用 ffplay 可预览硬盘中的水印过滤区域：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffplay -i input.mp4 -vf <span class="s2">"delogo=x=5:y=320:w=110:h=75:show=1, delogo=x=625:y=350:w=90:h=45:show=1"</span>
+</pre>
+
+
+<h2>时间裁剪</h2>
+<p>下面这个脚本，可以按给定时间点去除当前目录内所有视频的片头：</p>
+<table class="codehilitetable"><tr>
+<td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td>
+<td class="code">
+<pre class="code literal-block"><span></span><span class="ch">#!/bin/bash</span>
+
+clip_all<span class="o">()</span> <span class="o">{</span>
+    <span class="k">for</span> i in ./*
+    <span class="k">do</span>
+        <span class="k">if</span> <span class="o">[</span> -d <span class="nv">$i</span> <span class="o">]</span>
+        <span class="k">then</span>
+            <span class="nb">cd</span> <span class="nv">$i</span>
+            clip_all <span class="nv">$1</span>
+        <span class="k">else</span>
+            ffmpeg -ss <span class="nv">$1</span> -accurate_seek -i <span class="nv">$i</span> <span class="se">\</span>
+                   -vcodec copy -acodec copy -avoid_negative_ts <span class="m">1</span> new-<span class="si">${</span><span class="nv">i</span><span class="si">}</span>
+            rm <span class="nv">$i</span>
+            mv new-<span class="si">${</span><span class="nv">i</span><span class="si">}</span> <span class="nv">$i</span>
+        <span class="k">fi</span>
+    <span class="k">done</span>
+<span class="o">}</span>
+
+clip_all <span class="nv">$1</span>
+</pre>
+</td>
+</tr></table>
+</div>
+    </div>
+    </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/snail.html" class="u-url">蜗牛</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Garfileo
