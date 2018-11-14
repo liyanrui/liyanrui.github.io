@@ -12,7 +12,9 @@
 # 去水印
 
 ```console
-$ ffmpeg -threads 4 -i input.mp4 -filter_complex "delogo=x=5:y=320:w=110:h=75, delogo=x=625:y=350:w=90:h=45" -qscale 2.5 output.mp4
+$ ffmpeg -threads 4 -i input.mp4 \
+    -filter_complex "delogo=x=5:y=320:w=110:h=75, delogo=x=625:y=350:w=90:h=45" \
+    -qscale 2.5 output.mp4
 ```
 
 `qscale` 用于设定输出视频的画面质量，取值范围为 [0.01,255]，此值越小，画面质量越好。
@@ -22,14 +24,15 @@ $ ffmpeg -threads 4 -i input.mp4 -filter_complex "delogo=x=5:y=320:w=110:h=75, d
 使用 ffplay 可预览硬盘中的水印过滤区域：
 
 ```console
-$ ffplay -i input.mp4 -vf "delogo=x=5:y=320:w=110:h=75:show=1, delogo=x=625:y=350:w=90:h=45:show=1"
+$ ffplay -i input.mp4 \
+  -vf "delogo=x=5:y=320:w=110:h=75:show=1, delogo=x=625:y=350:w=90:h=45:show=1"
 ```
 
 # 时间裁剪
 
 下面这个脚本，可以按给定时间点去除当前目录内所有视频的片头：
 
-```
+```Bash
 #!/bin/bash
 
 clip_all() {
