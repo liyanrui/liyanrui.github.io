@@ -14,11 +14,11 @@
 下面这个脚本，可以按给定时间点去除当前目录内所有视频的片头：
 
 ```console
-$ ffmpeg -ss 起始时间 -accurate_seek -i input.mp4 \
-  -vcodec copy -acodec copy -avoid_negative_ts 1 output.mp4
+$ ffmpeg -ss 起始时间点 -accurate_seek -i input.mp4 \
+  -c:v copy -c:a copy -avoid_negative_ts 1 output.mp4
 ```
 
-起始时间按`小时:分钟:秒`格式给出。
+起始时间按「`小时:分钟:秒`」格式给出。在给定起始时间点的情况下，通过 `-t` 选项可设定截取时长，也可以用 `-to` 指定视频截取的终止时间点。
 
 # 去静态水印
 
