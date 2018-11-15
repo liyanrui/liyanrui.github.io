@@ -48,7 +48,7 @@
     </header><div class="e-content entry-content">
     <div>
 <h2>按时间裁剪</h2>
-<p>下面这个脚本，可以按给定时间点去除当前目录内所有视频的片头：</p>
+<p>按给定时间点去除视频片头：</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss 起始时间点 -accurate_seek -i input.mp4 <span class="se">\</span>
   -c:v copy -c:a copy -avoid_negative_ts <span class="m">1</span> output.mp4
 </pre>
@@ -1999,7 +1999,6 @@ world!
                             {left: "$$", right: "$$", display: true},
                             {left: "\\[", right: "\\]", display: true},
                             {left: "\\begin{equation*}", right: "\\end{equation*}", display: true},
-                            {left: "$", right: "$", display: false},
                             {left: "\\(", right: "\\)", display: false}
                         ]
                     }

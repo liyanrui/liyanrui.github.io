@@ -17,13 +17,14 @@
 <meta property="og:title" content="FFmpeg 笔记">
 <meta property="og:url" content="/posts/ffmpeg.html">
 <meta property="og:description" content="按时间裁剪
-下面这个脚本，可以按给定时间点去除当前目录内所有视频的片头：
+按给定时间点去除视频片头：
 $ ffmpeg -ss 起始时间点 -accurate_seek -i input.mp4 \
   -c:v copy -c:a copy -avoid_negative_ts 1 output.mp4
 
 
 
-起始时间按「小时:分钟:秒」格式给出。在给定起始时间点的情况下，通过 -t 选项可设定截取时长，也可以用 -to ">
+起始时间按「小时:分钟:秒」格式给出。在给定起始时间点的情况下，通过 -t 选项可设定截取时长，也可以用 -to 指定视频截取的终止时间点。
+去静态">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2018-11-14T10:34:36+08:00">
 <meta property="article:tag" content="FFmpeg">
@@ -66,7 +67,7 @@ $ ffmpeg -ss 起始时间点 -accurate_seek -i input.mp4 \
     </header><div class="e-content entry-content" itemprop="articleBody text">
     <div>
 <h2>按时间裁剪</h2>
-<p>下面这个脚本，可以按给定时间点去除当前目录内所有视频的片头：</p>
+<p>按给定时间点去除视频片头：</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss 起始时间点 -accurate_seek -i input.mp4 <span class="se">\</span>
   -c:v copy -c:a copy -avoid_negative_ts <span class="m">1</span> output.mp4
 </pre>
