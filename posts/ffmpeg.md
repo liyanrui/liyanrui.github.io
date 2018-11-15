@@ -43,11 +43,13 @@ $ ffplay -i input.mp4 \
 
 有些视频会按一定的时间规律在视频中插入水印，例如，在 1、3、5、7……奇数分钟时插入水印，并且水印每次停留时间为 1 分钟。对于此类水印，可事先通过程序生成一组 `delogo` 语句，再将这些语句嵌入 ffmpeg 命令。例如
 
-```
-$ ffmpeg -i input.mp4 -vf "$(for ((i = 1; i < 60; i++)); \
-  do if [ $((i%2)) -eq 1 ]; \
-  then echo -n "delogo=x=1:y=7:w=718:h=23:enable='between(t, ${i}*60-8, (${i} + 1)*60 - 8)', ";\
-  fi;  done | sed 's/, $//g')" -c:a copy output.mp4
+```console
+$ ffmpeg -i input.mp4 -vf \
+ "$(for ((i = 1; i < 60; i++)); do \
+  if [ $((i%2)) -eq 1 ]; then \
+  start=$((i*60-8)); stop=$((start + 60));\
+  echo -n "delogo=x=1:y=7:w=718:h=23:enable='between(t, $start, $stop)', ";\
+  fi; done | sed 's/, $//g')" \-c:a copy output.mp4
 ```
 
 可以去除在 52 秒、2 分 52 秒、4 分 52 秒、6 分 52 秒……出现并停留一分钟的水印。
