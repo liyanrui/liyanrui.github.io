@@ -47,14 +47,22 @@
         </div>
     </header><div class="e-content entry-content">
     <div>
-<h2>去水印</h2>
-<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -threads <span class="m">4</span> -i input.mp4 <span class="se">\</span>
-    -filter_complex <span class="s2">"delogo=x=5:y=320:w=110:h=75, delogo=x=625:y=350:w=90:h=45"</span> <span class="se">\</span>
-    -qscale <span class="m">2</span>.5 output.mp4
+<h2>按时间裁剪</h2>
+<p>下面这个脚本，可以按给定时间点去除当前目录内所有视频的片头：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss 起始时间 -accurate_seek -i input.mp4 <span class="se">\</span>
+  -vcodec copy -acodec copy -avoid_negative_ts <span class="m">1</span> output.mp4
 </pre>
 
 
-<p><code>qscale</code> 用于设定输出视频的画面质量，取值范围为 [0.01,255]，此值越小，画面质量越好。</p>
+<p>起始时间按<code>小时:分钟:秒</code>格式给出。</p>
+<h2>去静态水印</h2>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -threads <span class="m">4</span> -i input.mp4 <span class="se">\</span>
+    -vf <span class="s2">"delogo=x=5:y=320:w=110:h=75, delogo=x=625:y=350:w=90:h=45"</span> <span class="se">\</span>
+    -qscale <span class="m">2</span>.5 -c:a copy output.mp4
+</pre>
+
+
+<p><code>qscale</code> 用于设定输出视频的画面质量，取值范围为 [0.01,255]，此值越小，画面质量越好。在 Gentoo 中，在编译安装 ffmpeg 时，若开启了 <code>x264</code> USE 标志，可无需设定 <code>qscale</code>，ffmpeg 似乎会将源 MP4 文件转化为 H264 格式，待视频处理完毕后，在输出时再由 H264 转换为 MP4 格式。</p>
 <p><code>delogo</code> 参数用于设定过滤水印的矩形区域，<code>x</code> 和 <code>y</code> 为矩形的左上角坐标，<code>w</code> 和 <code>h</code> 分别为矩形的宽度和高度。可以通过视频播放软件提供的截屏功能，再用 GIMP 对所截图像确定这个矩形范围。</p>
 <p>使用 ffplay 可预览硬盘中的水印过滤区域：</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> ffplay -i input.mp4 <span class="se">\</span>
@@ -62,28 +70,16 @@
 </pre>
 
 
-<h2>时间裁剪</h2>
-<p>下面这个脚本，可以按给定时间点去除当前目录内所有视频的片头：</p>
-<pre class="code literal-block"><span></span><span class="ch">#!/bin/bash</span>
-
-clip_all<span class="o">()</span> <span class="o">{</span>
-    <span class="k">for</span> i in *
-    <span class="k">do</span>
-        <span class="k">if</span> <span class="o">[</span> -d <span class="nv">$i</span> <span class="o">]</span>
-        <span class="k">then</span>
-            <span class="nb">cd</span> <span class="nv">$i</span>
-            clip_all <span class="nv">$1</span>
-        <span class="k">else</span>
-            ffmpeg -ss <span class="nv">$1</span> -accurate_seek -i <span class="nv">$i</span> <span class="se">\</span>
-                   -vcodec copy -acodec copy -avoid_negative_ts <span class="m">1</span> new-<span class="si">${</span><span class="nv">i</span><span class="si">}</span>
-            rm <span class="nv">$i</span>
-            mv new-<span class="si">${</span><span class="nv">i</span><span class="si">}</span> <span class="nv">$i</span>
-        <span class="k">fi</span>
-    <span class="k">done</span>
-<span class="o">}</span>
-
-clip_all <span class="nv">$1</span>
+<h2>去动态水印</h2>
+<p>有些视频会按一定的时间规律在视频中插入水印，例如，在 1、3、5、7……奇数分钟时插入水印，并且水印每次停留时间为 1 分钟。对于此类水印，可事先通过程序生成一组 <code>delogo</code> 语句，再将这些语句嵌入 ffmpeg 命令。例如</p>
+<pre class="code literal-block"><span></span>$ ffmpeg -i input.mp4 -vf <span class="s2">"</span><span class="k">$(for</span> <span class="o">((</span><span class="nv">i</span> <span class="o">=</span> <span class="m">1</span><span class="p">;</span> i &lt; <span class="m">60</span><span class="p">;</span> i++<span class="k">)</span><span class="s2">); \</span>
+<span class="s2">  do if [ </span><span class="k">$((</span>i%2<span class="k">))</span><span class="s2"> -eq 1 ]; \</span>
+<span class="s2">  then echo -n "</span><span class="nv">delogo</span><span class="o">=</span><span class="nv">x</span><span class="o">=</span><span class="m">1</span>:y<span class="o">=</span><span class="m">7</span>:w<span class="o">=</span><span class="m">718</span>:h<span class="o">=</span><span class="m">23</span>:enable<span class="o">=</span><span class="s1">'between(t, ${i}*60-8, (${i} + 1)*60 - 8)'</span>, <span class="s2">";\</span>
+<span class="s2">  fi;  done | sed 's/, </span>$<span class="s2">//g')"</span> -c:a copy output.mp4
 </pre>
+
+
+<p>可以去除在 52 秒、2 分 52 秒、4 分 52 秒、6 分 52 秒……出现并停留一分钟的水印。</p>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/snail.html" class="u-url">蜗牛</a></h1>
