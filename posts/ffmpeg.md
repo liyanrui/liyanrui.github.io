@@ -56,6 +56,8 @@ $ ffmpeg -i input.mp4 -vf \
 
 # 用 awk 生成去水印的脚本
 
+若视频中的水印出现的时间缺乏规律，只好手动查看各处水印的起止时间，给出暴力的 ffmpeg 命令。利用 awk 可对构造 ffmpeg 命令的过程有所简化。
+
 gnrt-delogo-scrpt:
 
 ```awk

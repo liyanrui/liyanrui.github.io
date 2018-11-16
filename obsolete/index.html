@@ -83,6 +83,7 @@
 
 <p>可以去除在 52 秒、2 分 52 秒、4 分 52 秒、6 分 52 秒……出现并停留一分钟的水印。</p>
 <h2>用 awk 生成去水印的脚本</h2>
+<p>若视频中的水印出现的时间缺乏规律，只好手动查看各处水印的起止时间，给出暴力的 ffmpeg 命令。利用 awk 可对构造 ffmpeg 命令的过程有所简化。</p>
 <p>gnrt-delogo-scrpt:</p>
 <pre class="code literal-block"><span></span><span class="nb">BEGIN</span> <span class="p">{</span>
     <span class="kr">print</span> <span class="s2">"#!/bin/bash"</span>
