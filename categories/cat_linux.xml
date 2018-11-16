@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 Linux)</title><link>/</link><description></description><atom:link href="/categories/cat_linux.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Fri, 16 Nov 2018 09:57:14 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>FFmpeg 笔记</title><link>/posts/ffmpeg.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;h2&gt;按时间裁剪&lt;/h2&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 Linux)</title><link>/</link><description></description><atom:link href="/categories/cat_linux.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Fri, 16 Nov 2018 09:58:26 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>FFmpeg 笔记</title><link>/posts/ffmpeg.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;h2&gt;按时间裁剪&lt;/h2&gt;
 &lt;p&gt;按给定时间点去除视频片头：&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -ss 起始时间点 -accurate_seek -i input.mp4 &lt;span class="se"&gt;\&lt;/span&gt;
   -c:v copy -c:a copy -avoid_negative_ts &lt;span class="m"&gt;1&lt;/span&gt; output.mp4
@@ -77,7 +77,7 @@
 
 
 &lt;p&gt;注意，起止时间是以秒为单位。然后，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; awk -f gnrt-delogo-scrpt &amp;gt; delogo.sh
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; awk -f gnrt-delogo-scrpt logos.dat &amp;gt; delogo.sh
 &lt;/pre&gt;
 
 
