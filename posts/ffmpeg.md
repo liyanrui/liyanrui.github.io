@@ -105,7 +105,9 @@ END {
 $ awk -f gnrt-delogo-scrpt > delogo.sh
 ```
 
-便可生成 Bash 脚本 delogo.sh。使用这份脚本抹除视频中的水印，
+便可在当前目录生成 Bash 脚本 delogo.sh。
+
+使用 delogo.sh 抹除视频中的水印：
 
 ```console
 $ bash delogo.sh input.mp4 output.mp4
