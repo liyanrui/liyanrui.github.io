@@ -82,6 +82,56 @@
 
 
 <p>可以去除在 52 秒、2 分 52 秒、4 分 52 秒、6 分 52 秒……出现并停留一分钟的水印。</p>
+<h2>用 awk 生成去水印的脚本</h2>
+<p>gnrt-delogo-scrpt:</p>
+<pre class="code literal-block"><span></span><span class="nb">BEGIN</span> <span class="p">{</span>
+    <span class="kr">print</span> <span class="s2">"#!/bin/bash"</span>
+<span class="p">}</span>
+<span class="p">{</span>
+    <span class="nx">x</span><span class="p">[</span><span class="nb">NR</span><span class="p">]</span> <span class="o">=</span> <span class="o">$</span><span class="mi">1</span><span class="p">;</span> <span class="nx">y</span><span class="p">[</span><span class="nb">NR</span><span class="p">]</span> <span class="o">=</span> <span class="o">$</span><span class="mi">2</span><span class="p">;</span> <span class="nx">w</span><span class="p">[</span><span class="nb">NR</span><span class="p">]</span> <span class="o">=</span> <span class="o">$</span><span class="mi">3</span><span class="p">;</span> <span class="nx">h</span><span class="p">[</span><span class="nb">NR</span><span class="p">]</span> <span class="o">=</span> <span class="o">$</span><span class="mi">4</span>
+    <span class="nx">b</span><span class="p">[</span><span class="nb">NR</span><span class="p">]</span> <span class="o">=</span> <span class="o">$</span><span class="mi">5</span><span class="p">;</span> <span class="nx">e</span><span class="p">[</span><span class="nb">NR</span><span class="p">]</span> <span class="o">=</span> <span class="o">$</span><span class="mi">6</span>
+<span class="p">}</span>
+<span class="nb">END</span> <span class="p">{</span>
+    <span class="kr">printf</span><span class="p">(</span><span class="s2">"ffmpeg -i $1 -vf \""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nb">NR</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">printf</span><span class="p">(</span><span class="s2">"delogo=x=%d:y=%d:w=%d:h=%d"</span><span class="p">,</span> <span class="nx">x</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">y</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">w</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="p">{</span>
+            <span class="kr">printf</span><span class="p">(</span><span class="s2">":enable='between(t, %s, %s)'"</span><span class="p">,</span> <span class="nx">b</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">e</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+        <span class="p">}</span>
+        <span class="kr">printf</span><span class="p">(</span><span class="s2">", "</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="kr">printf</span><span class="p">(</span><span class="s2">"delogo=x=%d:y=%d:w=%d:h=%d"</span><span class="p">,</span> <span class="nx">x</span><span class="p">[</span><span class="nb">NR</span><span class="p">],</span> <span class="nx">y</span><span class="p">[</span><span class="nb">NR</span><span class="p">],</span> <span class="nx">w</span><span class="p">[</span><span class="nb">NR</span><span class="p">],</span> <span class="nx">h</span><span class="p">[</span><span class="nb">NR</span><span class="p">]);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="nb">NR</span><span class="p">])</span> <span class="kr">printf</span><span class="p">(</span><span class="s2">":enable='between(t, %s, %s)'"</span><span class="p">,</span> <span class="nx">b</span><span class="p">[</span><span class="nb">NR</span><span class="p">],</span> <span class="nx">e</span><span class="p">[</span><span class="nb">NR</span><span class="p">]);</span>
+    <span class="kr">printf</span><span class="p">(</span><span class="s2">"\" -threads 0 -b:v 1750k -c:a copy $2\n"</span><span class="p">)</span>
+<span class="p">}</span>
+</pre>
+
+
+<p><strong>用法</strong>：将水印的位置、尺寸以及起止时间组织成一份数据文件，例如 logos.dat：</p>
+<pre class="code literal-block"><span></span>12 444 152 35
+673 458 136 21
+109 2 550 22 0 3*60+57
+109 2 584 22 3*60+58 8*60+57
+198 2 464 22 8*60+58 13*60+57
+248 2 407 22 13*60+58 18*60+57
+109 2 547 22 18*60+58 23*60+57
+109 2 587 22 23*60+58 28*60+57
+198 2 464 22 28*60+58 33*60+57
+248 2 407 22 33*60+58 38*60+57
+12 2 180 22 38*60+58 43*60+57
+597 2 122 22 38*60+58 43*60+57
+248 2 357 22 43*60+58 71*60+58
+</pre>
+
+
+<p>注意，起止时间是以秒为单位。然后，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> awk -f gnrt-delogo-scrpt &gt; delogo.sh
+</pre>
+
+
+<p>便可生成 Bash 脚本 delogo.sh。使用这份脚本抹除视频中的水印，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> bash delogo.sh input.mp4 output.mp4
+</pre>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/snail.html" class="u-url">蜗牛</a></h1>
