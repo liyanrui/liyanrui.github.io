@@ -54,3 +54,59 @@ $ ffmpeg -i input.mp4 -vf \
 
 可以去除在 52 秒、2 分 52 秒、4 分 52 秒、6 分 52 秒……出现并停留一分钟的水印。
 
+# 用 awk 生成去水印的脚本
+
+gnrt-delogo-scrpt:
+
+```awk
+BEGIN {
+    print "#!/bin/bash"
+}
+{
+    x[NR] = $1; y[NR] = $2; w[NR] = $3; h[NR] = $4
+    b[NR] = $5; e[NR] = $6
+}
+END {
+    printf("ffmpeg -i $1 -vf \"")
+    for (i = 1; i < NR; i++) {
+        printf("delogo=x=%d:y=%d:w=%d:h=%d", x[i], y[i], w[i], h[i])
+        if (e[i]) {
+            printf(":enable='between(t, %s, %s)'", b[i], e[i]);
+        }
+        printf(", ")
+    }
+    printf("delogo=x=%d:y=%d:w=%d:h=%d", x[NR], y[NR], w[NR], h[NR]);
+    if (e[NR]) printf(":enable='between(t, %s, %s)'", b[NR], e[NR]);
+    printf("\" -threads 0 -b:v 1750k -c:a copy $2\n")
+}
+```
+
+**用法**：将水印的位置、尺寸以及起止时间组织成一份数据文件，例如 logos.dat：
+
+```
+12 444 152 35
+673 458 136 21
+109 2 550 22 0 3*60+57
+109 2 584 22 3*60+58 8*60+57
+198 2 464 22 8*60+58 13*60+57
+248 2 407 22 13*60+58 18*60+57
+109 2 547 22 18*60+58 23*60+57
+109 2 587 22 23*60+58 28*60+57
+198 2 464 22 28*60+58 33*60+57
+248 2 407 22 33*60+58 38*60+57
+12 2 180 22 38*60+58 43*60+57
+597 2 122 22 38*60+58 43*60+57
+248 2 357 22 43*60+58 71*60+58
+```
+
+注意，起止时间是以秒为单位。然后，
+
+```console
+$ awk -f gnrt-delogo-scrpt > delogo.sh
+```
+
+便可生成 Bash 脚本 delogo.sh。使用这份脚本抹除视频中的水印，
+
+```console
+$ bash delogo.sh input.mp4 output.mp4
+```
