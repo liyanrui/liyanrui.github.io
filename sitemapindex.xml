@@ -7,62 +7,58 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
   <loc>/categories/awk.xml</loc>
-  <lastmod>2018-11-08T05:59:00Z</lastmod>
+  <lastmod>2018-11-07T01:39:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/cat_hui-tu.xml</loc>
-  <lastmod>2018-11-08T05:59:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/cat_linux.xml</loc>
-  <lastmod>2018-11-15T15:11:00Z</lastmod>
+  <lastmod>2018-11-16T03:26:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/cat_pai-ban.xml</loc>
-  <lastmod>2018-11-15T15:11:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/cat_wen-ben-chu-li.xml</loc>
-  <lastmod>2018-11-08T05:59:00Z</lastmod>
+  <lastmod>2018-11-07T01:39:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/context-mkiv.xml</loc>
-  <lastmod>2018-11-08T05:59:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/cygwin.xml</loc>
-  <lastmod>2018-11-08T05:59:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/ffmpeg.xml</loc>
-  <lastmod>2018-11-15T15:11:00Z</lastmod>
+  <lastmod>2018-11-16T03:26:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/metafun.xml</loc>
-  <lastmod>2018-11-08T05:59:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/nikola.xml</loc>
-  <lastmod>2018-11-15T15:11:00Z</lastmod>
- </sitemap>
- <sitemap>
-  <loc>/categories/tex.xml</loc>
-  <lastmod>2018-11-08T05:59:00Z</lastmod>
+  <lastmod>2018-11-08T10:31:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/galleries/demo/rss.xml</loc>
-  <lastmod>2018-11-06T08:36:00Z</lastmod>
+  <lastmod>2018-11-06T04:34:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/galleries/rss.xml</loc>
-  <lastmod>2018-11-06T08:36:00Z</lastmod>
+  <lastmod>2018-11-06T04:34:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/rss.xml</loc>
-  <lastmod>2018-11-15T15:11:00Z</lastmod>
+  <lastmod>2018-11-16T03:26:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/sitemap.xml</loc>
-  <lastmod>2018-11-15T15:11:00Z</lastmod>
+  <lastmod>2018-11-16T03:26:00Z</lastmod>
  </sitemap>
 </sitemapindex>

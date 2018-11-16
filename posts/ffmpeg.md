@@ -28,7 +28,7 @@ $ ffmpeg -threads 4 -i input.mp4 \
     -qscale 2.5 -c:a copy output.mp4
 ```
 
-`qscale` 用于设定输出视频的画面质量，取值范围为 [0.01,255]，此值越小，画面质量越好。在 Gentoo 中，在编译安装 ffmpeg 时，若开启了 `x264` USE 标志，可无需设定 `qscale`，ffmpeg 似乎会将源 MP4 文件转化为 H264 格式，待视频处理完毕后，在输出时再由 H264 转换为 MP4 格式。
+`qscale` 用于设定输出视频的画面质量，取值范围为 [0.01,255]，此值越小，画面质量越好。在 Gentoo 中，在编译安装 ffmpeg 时，若开启了 `x264` USE 标志，可无需设定 `qscale`，ffmpeg 似乎会将源 MP4 文件转化为 H264 格式，待视频处理完毕后，在输出时再由 H264 转换为 MP4 格式。若 `qscale` 参数无效，可以通过 `-b:v 1500k` 设置码率，从而保证画面质量。
 
 `delogo` 参数用于设定过滤水印的矩形区域，`x` 和 `y` 为矩形的左上角坐标，`w` 和 `h` 分别为矩形的宽度和高度。可以通过视频播放软件提供的截屏功能，再用 GIMP 对所截图像确定这个矩形范围。
 
@@ -36,7 +36,7 @@ $ ffmpeg -threads 4 -i input.mp4 \
 
 ```console
 $ ffplay -i input.mp4 \
-  -vf "delogo=x=5:y=320:w=110:h=75:show=1, delogo=x=625:y=350:w=90:h=45:show=1"
+    -vf "delogo=x=5:y=320:w=110:h=75:show=1, delogo=x=625:y=350:w=90:h=45:show=1"
 ```
 
 # 去动态水印
@@ -45,11 +45,11 @@ $ ffplay -i input.mp4 \
 
 ```console
 $ ffmpeg -i input.mp4 -vf \
- "$(for ((i = 1; i < 60; i++)); do \
-  if [ $((i%2)) -eq 1 ]; then \
-  start=$((i*60-8)); stop=$((start + 60));\
-  echo -n "delogo=x=1:y=7:w=718:h=23:enable='between(t, $start, $stop)', ";\
-  fi; done | sed 's/, $//g')" \-c:a copy output.mp4
+  "$(for ((i = 1; i < 60; i++)); do \
+   if [ $((i%2)) -eq 1 ]; then \
+     start=$((i*60-8)); stop=$((start + 60));\
+     echo -n "delogo=x=1:y=7:w=718:h=23:enable='between(t, $start, $stop)', ";\
+   fi; done | sed 's/, $//g')" \-c:a copy output.mp4
 ```
 
 可以去除在 52 秒、2 分 52 秒、4 分 52 秒、6 分 52 秒……出现并停留一分钟的水印。
