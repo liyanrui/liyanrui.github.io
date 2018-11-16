@@ -102,7 +102,7 @@ END {
 注意，起止时间是以秒为单位。然后，
 
 ```console
-$ awk -f gnrt-delogo-scrpt > delogo.sh
+$ awk -f gnrt-delogo-scrpt logos.dat > delogo.sh
 ```
 
 便可在当前目录生成 Bash 脚本 delogo.sh。
