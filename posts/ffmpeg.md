@@ -49,7 +49,8 @@ $ ffmpeg -i input.mp4 -vf \
    if [ $((i%2)) -eq 1 ]; then \
      start=$((i*60-8)); stop=$((start + 60));\
      echo -n "delogo=x=1:y=7:w=718:h=23:enable='between(t, $start, $stop)', ";\
-   fi; done | sed 's/, $//g')" \-c:a copy output.mp4
+   fi; done | sed 's/, $//g')" \
+   -c:a copy output.mp4
 ```
 
 可以去除在 52 秒、2 分 52 秒、4 分 52 秒、6 分 52 秒……出现并停留一分钟的水印。
