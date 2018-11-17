@@ -77,7 +77,8 @@
 <span class="s2">   if [ </span><span class="k">$((</span>i%2<span class="k">))</span><span class="s2"> -eq 1 ]; then \</span>
 <span class="s2">     start=</span><span class="k">$((</span>i*60-8<span class="k">))</span><span class="s2">; stop=</span><span class="k">$((</span>start <span class="o">+</span> <span class="m">60</span><span class="k">))</span><span class="s2">;\</span>
 <span class="s2">     echo -n "</span><span class="nv">delogo</span><span class="o">=</span><span class="nv">x</span><span class="o">=</span><span class="m">1</span>:y<span class="o">=</span><span class="m">7</span>:w<span class="o">=</span><span class="m">718</span>:h<span class="o">=</span><span class="m">23</span>:enable<span class="o">=</span><span class="s1">'between(t, $start, $stop)'</span>, <span class="s2">";\</span>
-<span class="s2">   fi; done | sed 's/, </span>$<span class="s2">//g')"</span> <span class="se">\-</span>c:a copy output.mp4
+<span class="s2">   fi; done | sed 's/, </span>$<span class="s2">//g')"</span> <span class="se">\</span>
+   -c:a copy output.mp4
 </pre>
 
 
