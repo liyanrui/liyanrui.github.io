@@ -88,12 +88,16 @@ $ ffmpeg -i input.mp4 -ss 00:10:25 -to 00:20:25 -c copy output.mp4
 不过，在截取视频时，若使用 `-c copy` 选项，并且截取的视频要与其他视频拼接，那么应当再加上 `-avoid_negative_ts 1` 选项，例如
 
 ```console
-ffmpeg -ss 00:10:25 -t 600 -i input.mp4 -c copy -avoid_negative_ts 1 output.mp4
+$ ffmpeg -ss 00:10:25 -t 600 -i input.mp4 -c copy -avoid_negative_ts 1 output.mp4
 ```
 
 原因不明，未作深究。推测是，若将截取视频拼接到其他视频的尾部，`-avoid_negative_ts 1` 可以避免前者的第 1 帧覆盖后者的最后一帧。
 
+
+
 **引用的文档**
 --------
 
-\[1\]　https://trac.ffmpeg.org/wiki/Capture/Desktop
+**\[1\]**　[https://trac.ffmpeg.org/wiki/Capture/Desktop](https://trac.ffmpeg.org/wiki/Capture/Desktop)
+
+**\[2\]**　[https://trac.ffmpeg.org/wiki/Seeking](https://trac.ffmpeg.org/wiki/Seeking)
