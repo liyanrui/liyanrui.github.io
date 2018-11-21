@@ -106,13 +106,14 @@
 
 <p>即复制输入视频的视频编码和音频编码。</p>
 <p>不过，在截取视频时，若使用 <code>-c copy</code> 选项，并且截取的视频要与其他视频拼接，那么应当再加上 <code>-avoid_negative_ts 1</code> 选项，例如</p>
-<pre class="code literal-block"><span></span><span class="go">ffmpeg -ss 00:10:25 -t 600 -i input.mp4 -c copy -avoid_negative_ts 1 output.mp4</span>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss <span class="m">00</span>:10:25 -t <span class="m">600</span> -i input.mp4 -c copy -avoid_negative_ts <span class="m">1</span> output.mp4
 </pre>
 
 
 <p>原因不明，未作深究。推测是，若将截取视频拼接到其他视频的尾部，<code>-avoid_negative_ts 1</code> 可以避免前者的第 1 帧覆盖后者的最后一帧。</p>
 <h3><strong>引用的文档</strong></h3>
-<p>[1]　https://trac.ffmpeg.org/wiki/Capture/Desktop</p>
+<p><strong>[1]</strong>　<a href="https://trac.ffmpeg.org/wiki/Capture/Desktop">https://trac.ffmpeg.org/wiki/Capture/Desktop</a></p>
+<p><strong>[2]</strong>　<a href="https://trac.ffmpeg.org/wiki/Seeking">https://trac.ffmpeg.org/wiki/Seeking</a></p>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/snail.html" class="u-url">蜗牛</a></h1>

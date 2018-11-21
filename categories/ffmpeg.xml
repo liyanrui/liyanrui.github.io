@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 FFmpeg)</title><link>/</link><description></description><atom:link href="/categories/ffmpeg.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Wed, 21 Nov 2018 09:34:10 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>用 FFmpeg 为视频做点小手术</title><link>/posts/some-minor-operation-for-videos-with-ffmpeg.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;h2&gt;屏幕录制&lt;/h2&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 FFmpeg)</title><link>/</link><description></description><atom:link href="/categories/ffmpeg.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Wed, 21 Nov 2018 09:41:04 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>用 FFmpeg 为视频做点小手术</title><link>/posts/some-minor-operation-for-videos-with-ffmpeg.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;h2&gt;屏幕录制&lt;/h2&gt;
 &lt;p&gt;在 Linux 中，我的桌面屏幕分辨率是 (1920\times 1080)，使用命令&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -video_size 1920x1080 -framerate &lt;span class="m"&gt;25&lt;/span&gt; -f x11grab -i :0.0 output.mp4
 &lt;/pre&gt;
@@ -58,10 +58,11 @@
 
 &lt;p&gt;即复制输入视频的视频编码和音频编码。&lt;/p&gt;
 &lt;p&gt;不过，在截取视频时，若使用 &lt;code&gt;-c copy&lt;/code&gt; 选项，并且截取的视频要与其他视频拼接，那么应当再加上 &lt;code&gt;-avoid_negative_ts 1&lt;/code&gt; 选项，例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="go"&gt;ffmpeg -ss 00:10:25 -t 600 -i input.mp4 -c copy -avoid_negative_ts 1 output.mp4&lt;/span&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -ss &lt;span class="m"&gt;00&lt;/span&gt;:10:25 -t &lt;span class="m"&gt;600&lt;/span&gt; -i input.mp4 -c copy -avoid_negative_ts &lt;span class="m"&gt;1&lt;/span&gt; output.mp4
 &lt;/pre&gt;
 
 
 &lt;p&gt;原因不明，未作深究。推测是，若将截取视频拼接到其他视频的尾部，&lt;code&gt;-avoid_negative_ts 1&lt;/code&gt; 可以避免前者的第 1 帧覆盖后者的最后一帧。&lt;/p&gt;
 &lt;h3&gt;&lt;strong&gt;引用的文档&lt;/strong&gt;&lt;/h3&gt;
-&lt;p&gt;[1]　https://trac.ffmpeg.org/wiki/Capture/Desktop&lt;/p&gt;&lt;/div&gt;</description><category>FFmpeg</category><guid>/posts/some-minor-operation-for-videos-with-ffmpeg.html</guid><pubDate>Wed, 14 Nov 2018 02:34:36 GMT</pubDate></item></channel></rss>
+&lt;p&gt;&lt;strong&gt;[1]&lt;/strong&gt;　&lt;a href="https://trac.ffmpeg.org/wiki/Capture/Desktop"&gt;https://trac.ffmpeg.org/wiki/Capture/Desktop&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;[2]&lt;/strong&gt;　&lt;a href="https://trac.ffmpeg.org/wiki/Seeking"&gt;https://trac.ffmpeg.org/wiki/Seeking&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</description><category>FFmpeg</category><guid>/posts/some-minor-operation-for-videos-with-ffmpeg.html</guid><pubDate>Wed, 14 Nov 2018 02:34:36 GMT</pubDate></item></channel></rss>
