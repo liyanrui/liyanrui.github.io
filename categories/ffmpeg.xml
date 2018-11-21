@@ -1,89 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 FFmpeg)</title><link>/</link><description></description><atom:link href="/categories/ffmpeg.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Sat, 17 Nov 2018 01:45:20 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>FFmpeg 笔记</title><link>/posts/ffmpeg.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;h2&gt;按时间裁剪&lt;/h2&gt;
-&lt;p&gt;按给定时间点去除视频片头：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -ss 起始时间点 -accurate_seek -i input.mp4 &lt;span class="se"&gt;\&lt;/span&gt;
-  -c:v copy -c:a copy -avoid_negative_ts &lt;span class="m"&gt;1&lt;/span&gt; output.mp4
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 FFmpeg)</title><link>/</link><description></description><atom:link href="/categories/ffmpeg.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Wed, 21 Nov 2018 03:32:27 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>用 FFmpeg 为视频做点小手术</title><link>/posts/do-some-minor-operation-for-videos-with-ffmpeg.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;h2&gt;屏幕录制&lt;/h2&gt;
+&lt;p&gt;在 Linux 中，我的桌面屏幕分辨率是 (1920\time 1080)，命令&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -video_size 1920x1080 -framerate &lt;span class="m"&gt;25&lt;/span&gt; -f x11grab -i :0.0 output.mp4
 &lt;/pre&gt;
 
 
-&lt;p&gt;起始时间按「&lt;code&gt;小时:分钟:秒&lt;/code&gt;」格式给出。在给定起始时间点的情况下，通过 &lt;code&gt;-t&lt;/code&gt; 选项可设定截取时长，也可以用 &lt;code&gt;-to&lt;/code&gt; 指定视频截取的终止时间点。&lt;/p&gt;
-&lt;h2&gt;去静态水印&lt;/h2&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -threads &lt;span class="m"&gt;4&lt;/span&gt; -i input.mp4 &lt;span class="se"&gt;\&lt;/span&gt;
-    -vf &lt;span class="s2"&gt;"delogo=x=5:y=320:w=110:h=75, delogo=x=625:y=350:w=90:h=45"&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
-    -qscale &lt;span class="m"&gt;2&lt;/span&gt;.5 -c:a copy output.mp4
+&lt;p&gt;可将录制整个屏幕。若想录制屏幕中的指定区域，例如录制左上角点坐标为 (300, 100)、宽 500、高 200 的区域，只需&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -video_size 500x200 -framerate &lt;span class="m"&gt;25&lt;/span&gt; -f x11grab -i :0.0+300,100 output.mp4
 &lt;/pre&gt;
 
 
-&lt;p&gt;&lt;code&gt;qscale&lt;/code&gt; 用于设定输出视频的画面质量，取值范围为 [0.01,255]，此值越小，画面质量越好。在 Gentoo 中，在编译安装 ffmpeg 时，若开启了 &lt;code&gt;x264&lt;/code&gt; USE 标志，可无需设定 &lt;code&gt;qscale&lt;/code&gt;，ffmpeg 似乎会将源 MP4 文件转化为 H264 格式，待视频处理完毕后，在输出时再由 H264 转换为 MP4 格式。若 &lt;code&gt;qscale&lt;/code&gt; 参数无效，可以通过 &lt;code&gt;-b:v 1500k&lt;/code&gt; 设置码率，从而保证画面质量。&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;delogo&lt;/code&gt; 参数用于设定过滤水印的矩形区域，&lt;code&gt;x&lt;/code&gt; 和 &lt;code&gt;y&lt;/code&gt; 为矩形的左上角坐标，&lt;code&gt;w&lt;/code&gt; 和 &lt;code&gt;h&lt;/code&gt; 分别为矩形的宽度和高度。可以通过视频播放软件提供的截屏功能，再用 GIMP 对所截图像确定这个矩形范围。&lt;/p&gt;
-&lt;p&gt;使用 ffplay 可预览硬盘中的水印过滤区域：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffplay -i input.mp4 &lt;span class="se"&gt;\&lt;/span&gt;
-    -vf &lt;span class="s2"&gt;"delogo=x=5:y=320:w=110:h=75:show=1, delogo=x=625:y=350:w=90:h=45:show=1"&lt;/span&gt;
-&lt;/pre&gt;
-
-
-&lt;h2&gt;去动态水印&lt;/h2&gt;
-&lt;p&gt;有些视频会按一定的时间规律在视频中插入水印，例如，在 1、3、5、7……奇数分钟时插入水印，并且水印每次停留时间为 1 分钟。对于此类水印，可事先通过程序生成一组 &lt;code&gt;delogo&lt;/code&gt; 语句，再将这些语句嵌入 ffmpeg 命令。例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -i input.mp4 -vf &lt;span class="se"&gt;\&lt;/span&gt;
-  &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="k"&gt;$(for&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="nv"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; i &amp;lt; &lt;span class="m"&gt;60&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; i++&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;); do \&lt;/span&gt;
-&lt;span class="s2"&gt;   if [ &lt;/span&gt;&lt;span class="k"&gt;$((&lt;/span&gt;i%2&lt;span class="k"&gt;))&lt;/span&gt;&lt;span class="s2"&gt; -eq 1 ]; then \&lt;/span&gt;
-&lt;span class="s2"&gt;     start=&lt;/span&gt;&lt;span class="k"&gt;$((&lt;/span&gt;i*60-8&lt;span class="k"&gt;))&lt;/span&gt;&lt;span class="s2"&gt;; stop=&lt;/span&gt;&lt;span class="k"&gt;$((&lt;/span&gt;start &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="m"&gt;60&lt;/span&gt;&lt;span class="k"&gt;))&lt;/span&gt;&lt;span class="s2"&gt;;\&lt;/span&gt;
-&lt;span class="s2"&gt;     echo -n "&lt;/span&gt;&lt;span class="nv"&gt;delogo&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;x&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;:y&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;7&lt;/span&gt;:w&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;718&lt;/span&gt;:h&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;23&lt;/span&gt;:enable&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'between(t, $start, $stop)'&lt;/span&gt;, &lt;span class="s2"&gt;";\&lt;/span&gt;
-&lt;span class="s2"&gt;   fi; done | sed 's/, &lt;/span&gt;$&lt;span class="s2"&gt;//g')"&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
-   -c:a copy output.mp4
-&lt;/pre&gt;
-
-
-&lt;p&gt;可以去除在 52 秒、2 分 52 秒、4 分 52 秒、6 分 52 秒……出现并停留一分钟的水印。&lt;/p&gt;
-&lt;h2&gt;用 awk 生成去水印的脚本&lt;/h2&gt;
-&lt;p&gt;若视频中的水印出现的时间缺乏规律，只好手动查看各处水印的起止时间，给出暴力的 ffmpeg 命令。利用 awk 可对构造 ffmpeg 命令的过程有所简化。&lt;/p&gt;
-&lt;p&gt;gnrt-delogo-scrpt:&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;BEGIN&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="kr"&gt;print&lt;/span&gt; &lt;span class="s2"&gt;"#!/bin/bash"&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="nx"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;y&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;w&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;h&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;
-    &lt;span class="nx"&gt;b&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;e&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;$&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;span class="nb"&gt;END&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="kr"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"ffmpeg -i $1 -vf \""&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-        &lt;span class="kr"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"delogo=x=%d:y=%d:w=%d:h=%d"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="nx"&gt;y&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="nx"&gt;w&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="nx"&gt;h&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
-        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;e&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-            &lt;span class="kr"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;":enable='between(t, %s, %s)'"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;b&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="nx"&gt;e&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;i&lt;/span&gt;&lt;span class="p"&gt;]);&lt;/span&gt;
-        &lt;span class="p"&gt;}&lt;/span&gt;
-        &lt;span class="kr"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;", "&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-    &lt;span class="p"&gt;}&lt;/span&gt;
-    &lt;span class="kr"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"delogo=x=%d:y=%d:w=%d:h=%d"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="nx"&gt;y&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="nx"&gt;w&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="nx"&gt;h&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;]);&lt;/span&gt;
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;e&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="kr"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;":enable='between(t, %s, %s)'"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;b&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="nx"&gt;e&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;NR&lt;/span&gt;&lt;span class="p"&gt;]);&lt;/span&gt;
-    &lt;span class="kr"&gt;printf&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"\" -threads 0 -b:v 1750k -c:a copy $2\n"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;
-
-
-&lt;p&gt;&lt;strong&gt;用法&lt;/strong&gt;：将水印的位置、尺寸以及起止时间组织成一份数据文件，例如 logos.dat：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;12 444 152 35
-673 458 136 21
-109 2 550 22 0 3*60+57
-109 2 584 22 3*60+58 8*60+57
-198 2 464 22 8*60+58 13*60+57
-248 2 407 22 13*60+58 18*60+57
-109 2 547 22 18*60+58 23*60+57
-109 2 587 22 23*60+58 28*60+57
-198 2 464 22 28*60+58 33*60+57
-248 2 407 22 33*60+58 38*60+57
-12 2 180 22 38*60+58 43*60+57
-597 2 122 22 38*60+58 43*60+57
-248 2 357 22 43*60+58 71*60+58
-&lt;/pre&gt;
-
-
-&lt;p&gt;注意，起止时间是以秒为单位。然后，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; awk -f gnrt-delogo-scrpt logos.dat &amp;gt; delogo.sh
-&lt;/pre&gt;
-
-
-&lt;p&gt;便可在当前目录生成 Bash 脚本 delogo.sh。&lt;/p&gt;
-&lt;p&gt;使用 delogo.sh 抹除视频中的水印：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; bash delogo.sh input.mp4 output.mp4
-&lt;/pre&gt;&lt;/div&gt;</description><category>FFmpeg</category><guid>/posts/ffmpeg.html</guid><pubDate>Wed, 14 Nov 2018 02:34:36 GMT</pubDate></item></channel></rss>
+&lt;p&gt;摁 &lt;code&gt;q&lt;/code&gt; 键可退出屏幕录制过程。&lt;/p&gt;
+&lt;p&gt;FFmpeg 的 Wiki 页面[1]给出了 Windows、Mac OS X 中的屏幕录制命令。&lt;/p&gt;
+&lt;h2&gt;从时间轴上裁剪&lt;/h2&gt;
+&lt;p&gt;从时间轴上截取某一秒
+ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 output.mp4&lt;/p&gt;
+&lt;p&gt;[1]：https://trac.ffmpeg.org/wiki/Capture/Desktop&lt;/p&gt;&lt;/div&gt;</description><category>FFmpeg</category><guid>/posts/do-some-minor-operation-for-videos-with-ffmpeg.html</guid><pubDate>Wed, 14 Nov 2018 02:34:36 GMT</pubDate></item></channel></rss>
