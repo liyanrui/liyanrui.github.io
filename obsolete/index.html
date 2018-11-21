@@ -35,25 +35,26 @@
     
     
     </ul></nav></header><main id="content"><div class="postindex">
-    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/do-some-minor-operation-for-videos-with-ffmpeg.html" class="u-url">用 FFmpeg 为视频做点小手术</a></h1>
+    <article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/some-minor-operation-for-videos-with-ffmpeg.html" class="u-url">用 FFmpeg 为视频做点小手术</a></h1>
         <div class="metadata">
             <p class="byline author vcard"><span class="byline-name fn" itemprop="author">
                 Garfileo
             </span></p>
             <p class="dateline">
-            <a href="../posts/do-some-minor-operation-for-videos-with-ffmpeg.html" rel="bookmark">
+            <a href="../posts/some-minor-operation-for-videos-with-ffmpeg.html" rel="bookmark">
             <time class="published dt-published" datetime="2018-11-14T10:34:36+08:00" itemprop="datePublished" title="2018-11-14 10:34">2018-11-14 10:34</time></a>
             </p>
         </div>
     </header><div class="e-content entry-content">
     <div>
 <h2>屏幕录制</h2>
-<p>在 Linux 中，我的桌面屏幕分辨率是 (1920\times 1080)，命令</p>
+<p>在 Linux 中，我的桌面屏幕分辨率是 (1920\times 1080)，使用命令</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -video_size 1920x1080 -framerate <span class="m">25</span> -f x11grab -i :0.0 output.mp4
 </pre>
 
 
-<p>可将录制整个屏幕。若想录制屏幕中的指定区域，例如录制左上角点坐标为 (300, 100)、宽 500、高 200 的区域，只需</p>
+<p>可将录制整个屏幕。<code>-i ：0.0</code> 表示将当前的屏幕作为 ffmpeg 的输入。</p>
+<p>若想录制屏幕中的指定区域，例如录制左上角点坐标为 (300, 100)、宽 500、高 200 的区域，只需</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -video_size 500x200 -framerate <span class="m">25</span> -f x11grab -i :0.0+300,100 output.mp4
 </pre>
 
@@ -61,8 +62,56 @@
 <p>摁 <code>q</code> 键可退出屏幕录制过程。</p>
 <p>FFmpeg 的 Wiki 页面[1]给出了 Windows、Mac OS X 中的屏幕录制命令。</p>
 <h2>从时间轴上裁剪</h2>
-<p>从时间轴上截取某一秒
-ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 output.mp4</p>
+<p>使用命令</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss <span class="m">00</span>:10:25 -i input.mp4 -frames:v <span class="m">1</span> output.png
+</pre>
+
+
+<p>可从视频的时间轴上截取时间戳为 00:10:25 时的画面。<code>-i</code> 表输入。<code>-ss</code> 位于 <code>-i</code> 之前，意味着跳到所输入的视频文件的给定的时间戳对应的位置。至于 <code>-i</code> 之后的设定，作用于输出。<code>-frames:v 1</code> 的意思是获取视频的 1 帧，亦即图片；若给定的帧数大于 1，那么输出的文件应当是视频，因此可以用这个参数截取一段视频。</p>
+<p>若给定起始时间戳和持续时长，截取输入的视频里的一段，可以用 <code>-t</code> 选项与 <code>-ss</code> 选项相配合而实现。<code>-ss</code> 选项放在 <code>-i</code> 选项之前，用于确定所截取视频的起始帧。<code>-t</code> 选项尾随 <code>-ss</code>。例如，从输入的视频中截取从时间戳 00:10:25 开始，持续 10 分钟的一段，只需</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss <span class="m">00</span>:10:25 -t <span class="m">600</span> -i input.mp4 output.mp4
+</pre>
+
+
+<p>或</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss <span class="m">00</span>:10:25 -t <span class="m">00</span>:10:00 -i input.mp4 output.mp4
+</pre>
+
+
+<p>若想按给定起始和终止时间戳截取视频，需要用 <code>-to</code> 选项，但这个选项只能作用于视频的输出，亦即它必须位于 <code>-i</code> 选项之后。例如，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -i input.mp4 -ss <span class="m">00</span>:10:25 -to <span class="m">00</span>:20:25 output.mp4
+</pre>
+
+
+<p>也能实现从时间戳 00:10:25 开始并持续 10 分钟的一段视频的截取，但是与上述将 <code>-ss</code> 选项放在 <code>-i</code> 选项之前的命令相比，这个命令通常较为低效。因为 ffmpeg 会逐帧对输入视频进行解码，这个过程结束后，进入输出阶段时，再按照给定的起止时间戳截取视频。<code>-ss</code> 选项放在 <code>-i</code> 之前，ffmpeg 不会对 <code>-ss</code> 给定的时间戳之前的帧进行解码。</p>
+<p>在 <code>-ss</code> 和 <code>-to</code> 配合使用时，将 <code>-ss</code> 放在 <code>-i</code> 选项之前，并非不可以，但是 <code>-to</code> 的含义就变了，它不再表示视频截取的终止点。因为 <code>-to</code> 原本的起点被 <code>-ss</code> 篡改了。例如</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss <span class="m">00</span>:10:25 -i input.mp4 -to <span class="m">00</span>:20:25 output.mp4
+</pre>
+
+
+<p>实际上截取的是输入视频中的从 00:10:25 到 00:30:25 这一段，而非从 00:10:25 到 00:20:25 这一段。在这种情况下，可以通过 <code>-copyts</code> 选项进行修正，例如</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss <span class="m">00</span>:10:25 -i input.mp4 -to <span class="m">00</span>:20:25 -copyts output.mp4
+</pre>
+
+
+<p>在上述命令中，输出视频是经过 ffmpeg 重新编码的，因此与输入视频的编码不相同。若希望输入视频的编码格式与输入视频相同，需要用 <code>-c</code> 选项将输出视频的编码格式设为 <code>copy</code>，例如</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -i input.mp4 -ss <span class="m">00</span>:10:25 -to <span class="m">00</span>:20:25 -c copy output.mp4
+</pre>
+
+
+<p>实际上，<code>-c copy</code> 选项可分解为</p>
+<pre class="code literal-block"><span></span>-c:v copy -c:a copy
+</pre>
+
+
+<p>即复制输入视频的视频编码和音频编码。</p>
+<p>不过，在截取视频时，若使用 <code>-c copy</code> 选项，并且截取的视频要与其他视频拼接，那么应当再加上 <code>-avoid_negative_ts 1</code> 选项，例如</p>
+<pre class="code literal-block"><span></span><span class="go">ffmpeg -ss 00:10:25 -t 600 -i input.mp4 -c copy -avoid_negative_ts 1 output.mp4</span>
+</pre>
+
+
+<p>原因不明，未作深究。推测是，若将截取视频拼接到其他视频的尾部，<code>-avoid_negative_ts 1</code> 可以避免前者的第 1 帧覆盖后者的最后一帧。</p>
+<h3><strong>引用的文档</strong></h3>
 <p>[1]　https://trac.ffmpeg.org/wiki/Capture/Desktop</p>
 </div>
     </div>
