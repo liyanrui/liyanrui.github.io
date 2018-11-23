@@ -9,6 +9,12 @@
 .. type: text
 -->
 
+# FFmpeg 命令的一般格式
+
+```console
+$ ffmpeg [全局选项] [输入选项] -i input.mp4 [输出选项] output.mp4
+```
+
 # 屏幕录制
 
 在 Linux 中，我的桌面屏幕分辨率是 \(1920\times 1080\)，使用命令
@@ -93,7 +99,9 @@ $ ffmpeg -ss 00:10:25 -t 600 -i input.mp4 -c copy -avoid_negative_ts 1 output.mp
 
 原因不明，未作深究。推测是，若将截取视频拼接到其他视频的尾部，`-avoid_negative_ts 1` 可以避免前者的第 1 帧覆盖后者的最后一帧。
 
+# 去除视频水印
 
+ffmpeg 具有类似于图像处理软件那样的滤镜（Filter）功能。滤镜有很多种。delogo 滤镜可用于消除视频上的水印。
 
 **引用的文档**
 --------
