@@ -9,7 +9,7 @@
 .. type: text
 -->
 
-# FFmpeg 命令的一般格式
+FFmpeg 命令的一般格式为：
 
 ```console
 $ ffmpeg [全局选项] [输入选项] -i input.mp4 [输出选项] output.mp4
@@ -150,7 +150,7 @@ $ ffmpeg -i input.mp4 -i logo1.png -i logo2.png \
   -filter_complex "overlay=a:b, overlay=c:d" -c:a copy -b:v 1600k output.mp4
 ```
 
-需要注意每个 `-i` 输入的图片文件与 `overlay` 的对应关系。
+需要注意每个 `-i` 输入的图片文件与 `overlay` 的对应关系。`-vf` 用于设定单输入文件的滤镜，对于多份输入，需要用 `-filter_complex` 选项。
 
 overlay 滤镜也支持 `enable` 参数。
 
