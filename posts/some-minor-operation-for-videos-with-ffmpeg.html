@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="NULL">
 <meta property="og:title" content="用 FFmpeg 为视频做点小手术">
 <meta property="og:url" content="/posts/some-minor-operation-for-videos-with-ffmpeg.html">
-<meta property="og:description" content="FFmpeg 命令的一般格式
+<meta property="og:description" content="FFmpeg 命令的一般格式为：
 $ ffmpeg [全局选项] [输入选项] -i input.mp4 [输出选项] output.mp4
 
 
@@ -26,8 +26,7 @@ $ ffmpeg [全局选项] [输入选项] -i input.mp4 [输出选项] output.mp4
 $ ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 output.mp4
 
 
-
-可">
+">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2018-11-14T10:34:36+08:00">
 <meta property="article:tag" content="FFmpeg">
@@ -69,7 +68,7 @@ $ ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 output.mp4
 
     </header><div class="e-content entry-content" itemprop="articleBody text">
     <div>
-<h2>FFmpeg 命令的一般格式</h2>
+<p>FFmpeg 命令的一般格式为：</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg <span class="o">[</span>全局选项<span class="o">]</span> <span class="o">[</span>输入选项<span class="o">]</span> -i input.mp4 <span class="o">[</span>输出选项<span class="o">]</span> output.mp4
 </pre>
 
@@ -176,7 +175,7 @@ $ ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 output.mp4
 </pre>
 
 
-<p>需要注意每个 <code>-i</code> 输入的图片文件与 <code>overlay</code> 的对应关系。</p>
+<p>需要注意每个 <code>-i</code> 输入的图片文件与 <code>overlay</code> 的对应关系。<code>-vf</code> 用于设定单输入文件的滤镜，对于多份输入，需要用 <code>-filter_complex</code> 选项。</p>
 <p>overlay 滤镜也支持 <code>enable</code> 参数。</p>
 <h3><strong>引用的文档</strong></h3>
 <p><strong>[1]</strong>　<a href="https://trac.ffmpeg.org/wiki/Capture/Desktop">https://trac.ffmpeg.org/wiki/Capture/Desktop</a></p>
