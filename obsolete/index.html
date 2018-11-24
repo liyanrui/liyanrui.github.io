@@ -94,11 +94,7 @@
 </pre>
 
 
-<p>实际上截取的是输入视频中的从 00:10:25 到 00:30:25 这一段，而非从 00:10:25 到 00:20:25 这一段。在这种情况下，可以通过 <code>-copyts</code> 选项进行修正，例如</p>
-<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss <span class="m">00</span>:10:25 -i input.mp4 -to <span class="m">00</span>:20:25 -copyts output.mp4
-</pre>
-
-
+<p>实际上截取的是输入视频中的从 00:10:25 到 00:30:25 这一段，而非从 00:10:25 到 00:20:25 这一段。</p>
 <p>在上述命令中，输出视频是经过 ffmpeg 重新编码的，因此与输入视频的编码不相同。若希望输入视频的编码格式与输入视频相同，需要用 <code>-c</code> 选项将输出视频的编码格式设为 <code>copy</code>，例如</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -i input.mp4 -ss <span class="m">00</span>:10:25 -to <span class="m">00</span>:20:25 -c copy output.mp4
 </pre>
