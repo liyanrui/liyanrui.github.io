@@ -1,6 +1,6 @@
 <!--
 .. title: 为视频做小手术
-.. slug: some-minor-operation-for-videos-with-ffmpeg
+.. slug: some-minor-operation-for-videos
 .. date: 2018-11-14 10:34:36 UTC+08:00
 .. tags: FFmpeg
 .. category: Linux
