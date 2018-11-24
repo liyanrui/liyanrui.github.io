@@ -1,5 +1,5 @@
 <!--
-.. title: 用 FFmpeg 为视频做点小手术
+.. title: 为视频做小手术
 .. slug: some-minor-operation-for-videos-with-ffmpeg
 .. date: 2018-11-14 10:34:36 UTC+08:00
 .. tags: FFmpeg
