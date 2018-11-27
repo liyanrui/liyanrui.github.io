@@ -7,23 +7,27 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-11-24T01:12:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
-  <lastmod>2018-11-14T04:07:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/awk.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
+ </url>
+ <url>
+  <loc>/categories/bash.html</loc>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_hui-tu.html</loc>
-  <lastmod>2018-11-08T10:31:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_linux.html</loc>
-  <lastmod>2018-11-24T01:12:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_pai-ban.html</loc>
@@ -31,11 +35,11 @@
  </url>
  <url>
   <loc>/categories/cat_wen-ben-chu-li.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/context-mkiv.html</loc>
-  <lastmod>2018-11-08T10:31:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cygwin.html</loc>
@@ -47,11 +51,11 @@
  </url>
  <url>
   <loc>/categories/index.html</loc>
-  <lastmod>2018-11-14T04:07:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/metafun.html</loc>
-  <lastmod>2018-11-08T10:31:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/nikola.html</loc>
@@ -83,11 +87,15 @@
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-11-24T01:12:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/awk.html</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
+ </url>
+ <url>
+  <loc>/posts/bash.html</loc>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/cygwin-installation.html</loc>
@@ -95,7 +103,7 @@
  </url>
  <url>
   <loc>/posts/metafun.html</loc>
-  <lastmod>2018-11-08T10:31:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/nikola-tips.html</loc>
@@ -106,11 +114,7 @@
   <lastmod>2018-11-24T01:12:00Z</lastmod>
  </url>
  <url>
-  <loc>/posts/some-minor-operation-for-videos-with-ffmpeg.html</loc>
-  <lastmod>2018-11-24T01:11:00Z</lastmod>
- </url>
- <url>
   <loc>/posts/some-minor-operation-for-videos.html</loc>
-  <lastmod>2018-11-24T01:12:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </url>
 </urlset>

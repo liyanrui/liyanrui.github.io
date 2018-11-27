@@ -7,15 +7,19 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <sitemap>
   <loc>/categories/awk.xml</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>/categories/bash.xml</loc>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/cat_hui-tu.xml</loc>
-  <lastmod>2018-11-08T10:31:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/cat_linux.xml</loc>
-  <lastmod>2018-11-24T01:12:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/cat_pai-ban.xml</loc>
@@ -23,11 +27,11 @@
  </sitemap>
  <sitemap>
   <loc>/categories/cat_wen-ben-chu-li.xml</loc>
-  <lastmod>2018-11-07T01:39:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/context-mkiv.xml</loc>
-  <lastmod>2018-11-08T10:31:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/cygwin.xml</loc>
@@ -39,7 +43,7 @@
  </sitemap>
  <sitemap>
   <loc>/categories/metafun.xml</loc>
-  <lastmod>2018-11-08T10:31:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/categories/nikola.xml</loc>
@@ -55,10 +59,10 @@
  </sitemap>
  <sitemap>
   <loc>/rss.xml</loc>
-  <lastmod>2018-11-24T01:12:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/sitemap.xml</loc>
-  <lastmod>2018-11-24T01:12:00Z</lastmod>
+  <lastmod>2018-11-27T09:21:00Z</lastmod>
  </sitemap>
 </sitemapindex>
