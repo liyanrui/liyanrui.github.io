@@ -1,5 +1,5 @@
 <!--
-.. title: AWK 列传
+.. title: AWK 小传
 .. slug: awk
 .. date: 2018-10-20 18:22:36 UTC+08:00
 .. tags: AWK
