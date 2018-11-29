@@ -245,6 +245,7 @@ JS_DATE_FORMAT = 'YYYY-MM-DD HH:mm'
 FILES_FOLDERS = {'files': 'files',
                  'meta-doc': 'meta-doc',
                  'mycss': 'mycss',
+                 'trash': 'trash',
                  'images': 'images'}
 
 
