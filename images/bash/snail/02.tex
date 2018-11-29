@@ -1,0 +1,15 @@
+\usemodule[zhfonts]
+\startbuffer[a]
+\type{PS1="\e[0;32m\w\e[0m\n$ "}
+\stopbuffer
+\startMPpage
+input snail;
+Node a, b, c;
+a := io("\getbuffer[a]");
+b := proc("\type{echo}");
+c := io("\getbuffer[a]");
+as_star(b, a, "right"); as_star(c, b, "right");
+draw_each a, b, c;
+flow_each a => b, b => c;
+\stopMPpage
+ 
