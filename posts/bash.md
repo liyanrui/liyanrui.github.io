@@ -51,5 +51,5 @@ $ sed -i 's/“/「/g; s/”/」/g' foo-*.txt
 
 ![][1]
 
-[1]:/images/01.png
+[1]:/images/bash/01.png
 
