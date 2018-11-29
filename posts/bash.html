@@ -93,7 +93,7 @@
 <p><code>\e[0;32m</code> 和 <code>\e[0m</code> 皆为 Bash 世界里的颜色值，前者表示绿色，后者表示无色；当二者之间出现 <code>\w</code> 时，所产生的效果是设定 <code>\w</code> 为绿色，但是不影响 <code>\w</code> 以外的字符。<code>\w</code> 表示当前目录。<code>\n</code> 表示换行。这种咒语级的代码，足以令很多人望 Bash 而生畏或生厌了。不必担心，这样的咒语并不经常需要念。</p>
 <p>倘若我在 <code>~/.bashrc</code> 文件里删除上述对 <code>PS1</code> 的设定，那么我对终端的初始印象应当是 <code>$</code> 的顶部没有东西，左侧是「<code>garfileo@zero ~</code>」，右侧是那个不断明灭的矩形块。或许你会喜欢我对 <code>PS1</code> 所作出的上述设定，特别是在你企图在命令提示符的右侧输入很长的命令之时。</p>
 <h2>echo</h2>
-<p>倘若初次使用一种 Shell，也许还不知道如何向 <code>~/.bashrc</code> 文件添加</p>
+<p>倘若初次使用 Bash，也许尚不知如何向 <code>~/.bashrc</code> 文件添加</p>
 <pre class="code literal-block"><span></span><span class="nv">PS1</span><span class="o">=</span><span class="s2">"\e[0;32m\w\e[0m\n</span>$<span class="s2"> "</span>
 </pre>
 
