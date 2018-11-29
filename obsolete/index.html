@@ -68,18 +68,27 @@
 
 
 <p>庄子说，「指穷于为薪。火传也，不知其尽也。」倘若将「引号替换」视为「火」，那么用微软 Word 逐一打开文件，进行引号替换处理，再将处理后的文件保存起来，这种做法就是「指穷于为薪」，即使你很敬业，很努力，但是这样去做一辈子，在 sed 看来也只是完成了它在一瞬间就能做到的事。庄子若活到现在，一定是一个善于用计算机语言编程的人。</p>
-<h2>对终端的初始印象</h2>
+<h2>终端</h2>
 <p>心里至少要有一团光，哪怕它很微弱，只是来自一根火柴。在这样的微光里，看到的是世界是一片寂静的混沌，至少也是全貌。我的桌子上总是有一盒火柴，作为对童年爱放野火的冬天的怀念。我取出一根火柴，让它的头部迅捷有力地擦过磷纸，小小的火焰喷射而出，引燃了它的身体。我要带着这团火焰，进入一个诡异的黑暗世界，它的名字叫终端。</p>
 <p>终端是 Shell 的界面，人通过终端输入命令。Shell 从终端接到命令，然后理解命令，执行命令。不要忘记，Bash 是诸多 Shell 中的一种。</p>
-<p>在这个世界里，持着光，我注意的第一个东西是「<code>$</code>」，它的右面是一个不断明灭的矩形块，顶部是「<code>~</code>」。「<code>$</code>」称作命令提示符。闪烁的矩形块表示可以在此输入命令。「<code>~</code>」是我当前所在的位置——硬盘里的某个目录；实际上 <code>~</code> 是 Bash 对我的个人主目录给出的简写，它的全称是「<code>/home/garfileo</code>」。倘若我此时在<code>/tmp</code> 目录，那么<code>$</code> 的顶部应当是「<code>/tmp</code>」。</p>
+<p>在这个世界里，持着光，我注意的第一个东西是「<code>$</code>」，它的右面是一个不断明灭的矩形块，顶部是「<code>~</code>」。「<code>$</code>」称作命令提示符。闪烁的矩形块表示可以在此输入命令。「<code>~</code>」是我当前所在的位置——硬盘里的某个目录，亦即当前目录或当前工作目录。实际上 <code>~</code> 不过是 Bash 对我的个人主目录给出的简写，它的全称是「<code>/home/garfileo</code>」。倘若我此时正处于<code>/tmp</code> 目录，那么<code>$</code> 的顶部应当是「<code>/tmp</code>」。</p>
 <p><img alt="" src="../images/bash/01.png"></p>
 <p>对于终端的初始印象，你与我或许不同。若想看到我所看到的，需要在 <code>~/.bashrc</code> 文件里添加</p>
 <pre class="code literal-block"><span></span><span class="nv">PS1</span><span class="o">=</span><span class="s2">"\e[0;32m\w\e[0m\n</span>$<span class="s2"> "</span>
 </pre>
 
 
-<p><code>\e[0;32m</code> 和 <code>\e[0m</code> 皆为 Bash 世界里的颜色值，前者表示绿色，后者表示无色；当二者之间出现 <code>\w</code> 时，所产生的效果是设定 <code>\w</code> 为绿色，但是不影响 <code>\w</code> 以外的字符。<code>\w</code> 表示当前所在的位置。<code>\n</code> 表示换行。这种咒语级的代码，足以令很多人望 Bash 而生畏或生厌了。</p>
+<p><code>\e[0;32m</code> 和 <code>\e[0m</code> 皆为 Bash 世界里的颜色值，前者表示绿色，后者表示无色；当二者之间出现 <code>\w</code> 时，所产生的效果是设定 <code>\w</code> 为绿色，但是不影响 <code>\w</code> 以外的字符。<code>\w</code> 表示当前目录。<code>\n</code> 表示换行。这种咒语级的代码，足以令很多人望 Bash 而生畏或生厌了。</p>
 <p>倘若我在 <code>~/.bashrc</code> 文件里删除上述对 <code>PS1</code> 的设定，那么我对终端的初始印象应当是 <code>$</code> 的顶部没有东西，左侧是「<code>garfileo@zero ~</code>」，右侧是那个不断明灭的矩形块。或许你会喜欢我对 <code>PS1</code> 所作出的上述设定，特别是在你企图在命令提示符的右侧输入很长的命令之时。</p>
+<h2>echo</h2>
+<p>倘若初次使用一种 Shell，也许还不知道如何向 <code>~/.bashrc</code> 文件添加</p>
+<pre class="code literal-block"><span></span><span class="nv">PS1</span><span class="o">=</span><span class="s2">"\e[0;32m\w\e[0m\n</span>$<span class="s2"> "</span>
+</pre>
+
+
+<p>不过，现在运行 Bash 的操作系统大多提供了图形界面。可以图形界面式的文件管理器里找到 <code>.bashrc</code> 文件，然后使用一种图形界面式的文本编辑器打开这份文件，添加上述内容，然后再保存文件。这是我们刚开始使用计算机的时候就已经学会了的方法。但是，从现在开始可不必如此，因为类似的任务通过一些简单的命令便可完成。例如，要完成上述任务，只需</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s1">'PS1="\e[0;32m\w\e[0m\n$ "'</span> &gt;&gt; ~/.bashrc
+</pre>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/some-minor-operation-for-videos.html" class="u-url">为视频做小手术</a></h1>
