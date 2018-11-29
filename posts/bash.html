@@ -116,6 +116,9 @@
 
 <p>就像是对空旷寂静的山谷喊了一声「<code>PS1="\e[0;32m\w\e[0m\n$ "</code>」，然后山谷给出了回音，<code>echo</code> 命令得名于此。亦即，<code>echo</code> 只是将它所接受的文本不加改变地输出。</p>
 <p><img alt="" src="../images/bash/02.svg"></p>
+<p><code>echo</code> 本身是无用的。但是，当它的后面出现了 <code>&gt;&gt; ~/.bashrc</code> 时，它的输出便会被 <code>&gt;&gt;</code> 强行导入 <code>~/.bashrc</code> 文件，此时没用的 <code>echo</code> 便发挥了作用。天生我材必有用。</p>
+<h2>输入/输出重定向</h2>
+<p><code>&gt;&gt;</code> 是输出重定向符，因为它可以将一个命令的输出导向到指定的文件。当 <code>&gt;&gt;</code> 在 <code>echo</code> 命令之后出现时，它是如何得知 <code>echo</code> 命令的输出的呢？对我们而言，<code>echo</code> 命令的输出是在终端里呈现出来的，难道 <code>&gt;&gt;</code> 也能像我们这样「看到」终端里的内容么？我们看到的，并非全部。我们所看到的 <code>echo</code> 的输出，实际上是 <code>echo</code> 在一份文件里写入的内容，这份文件的名字叫标准输出（stdout）。终端总是能够从这份文件读取内容并显示出来。<code>&gt;&gt;</code> 也能从这份文件读取内容并写入其他文件。这是我们看不到的部分。</p>
 </div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
