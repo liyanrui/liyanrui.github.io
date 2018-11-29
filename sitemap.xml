@@ -7,7 +7,7 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-11-29T11:33:00Z</lastmod>
+  <lastmod>2018-11-29T11:41:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
@@ -23,7 +23,7 @@
  </url>
  <url>
   <loc>/categories/cat_hui-tu.html</loc>
-  <lastmod>2018-11-27T09:21:00Z</lastmod>
+  <lastmod>2018-11-29T11:41:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_linux.html</loc>
@@ -39,7 +39,7 @@
  </url>
  <url>
   <loc>/categories/context-mkiv.html</loc>
-  <lastmod>2018-11-27T09:21:00Z</lastmod>
+  <lastmod>2018-11-29T11:41:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cygwin.html</loc>
@@ -55,7 +55,7 @@
  </url>
  <url>
   <loc>/categories/metafun.html</loc>
-  <lastmod>2018-11-27T09:21:00Z</lastmod>
+  <lastmod>2018-11-29T11:41:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/nikola.html</loc>
@@ -87,7 +87,7 @@
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-11-29T11:33:00Z</lastmod>
+  <lastmod>2018-11-29T11:41:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/awk.html</loc>
@@ -111,7 +111,7 @@
  </url>
  <url>
   <loc>/posts/snail.html</loc>
-  <lastmod>2018-11-24T01:12:00Z</lastmod>
+  <lastmod>2018-11-29T11:41:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/some-minor-operation-for-videos.html</loc>
