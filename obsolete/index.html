@@ -108,6 +108,9 @@
 <p><code>&gt;&gt;</code> 是输出重定向符，因为它可以将一个命令的输出导向到指定的文件。当 <code>&gt;&gt;</code> 在 <code>echo</code> 命令之后出现时，它是如何得知 <code>echo</code> 命令的输出的呢？对我们而言，<code>echo</code> 命令的输出是在终端里呈现出来的，难道 <code>&gt;&gt;</code> 也能像我们这样「看到」终端里的内容么？</p>
 <p>我们看到的，并非全部。我们所看到的 <code>echo</code> 的输出，实际上是 <code>echo</code> 在一份文件里写入的内容，这份文件的名字叫 stdout（标准输出）。终端从 stdout 读取内容并显示于屏幕。<code>&gt;&gt;</code> 也能从 stdout 读取内容并写入其他文件。这些是我们看不到的部分。</p>
 <h2>输入/输出</h2>
+<p>在终端的命令提示符后输入</p>
+<p>echo 'PS1="\e[0;32m\w\e[0m\n$ "' &gt;&gt; ~/.bashrc</p>
+<p>然后回车。Bash 是如何得到这行文本的呢？依然是通过一份文件。这份文件的名字叫 stdin（标准输入）。我们在终端里输入任何信息，本质上都是在向 stdin 写入内容。当我们输入一行文本回车时，Bash 便开始读取 stdin 里的内容，把它们理解为一条命令或一组命令的组合，然后予以执行。</p>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/some-minor-operation-for-videos.html" class="u-url">为视频做小手术</a></h1>
