@@ -65,7 +65,7 @@ PS1="\e[0;32m\w\e[0m\n$ "
 
 # echo
 
-倘若初次使用一种 Shell，也许还不知道如何向 `~/.bashrc` 文件添加
+倘若初次使用 Bash，也许尚不知如何向 `~/.bashrc` 文件添加
 
 ```bash
 PS1="\e[0;32m\w\e[0m\n$ "
