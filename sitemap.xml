@@ -7,11 +7,11 @@
                         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
  <url>
   <loc>/2018/index.html</loc>
-  <lastmod>2018-11-29T11:48:00Z</lastmod>
+  <lastmod>2018-11-29T11:50:00Z</lastmod>
  </url>
  <url>
   <loc>/archive.html</loc>
-  <lastmod>2018-11-27T09:21:00Z</lastmod>
+  <lastmod>2018-11-29T11:50:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/awk.html</loc>
@@ -27,7 +27,7 @@
  </url>
  <url>
   <loc>/categories/cat_linux.html</loc>
-  <lastmod>2018-11-29T11:48:00Z</lastmod>
+  <lastmod>2018-11-29T11:50:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_pai-ban.html</loc>
@@ -51,7 +51,7 @@
  </url>
  <url>
   <loc>/categories/index.html</loc>
-  <lastmod>2018-11-27T09:21:00Z</lastmod>
+  <lastmod>2018-11-29T11:50:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/metafun.html</loc>
@@ -87,11 +87,11 @@
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2018-11-29T11:48:00Z</lastmod>
+  <lastmod>2018-11-29T11:50:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/awk.html</loc>
-  <lastmod>2018-11-27T09:21:00Z</lastmod>
+  <lastmod>2018-11-29T11:50:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/bash.html</loc>
@@ -107,7 +107,7 @@
  </url>
  <url>
   <loc>/posts/nikola-tips.html</loc>
-  <lastmod>2018-11-08T10:31:00Z</lastmod>
+  <lastmod>2018-11-29T11:50:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/snail.html</loc>
