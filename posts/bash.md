@@ -25,7 +25,7 @@
 
 若打算学习计算机语言，不妨从 Bash 语言入手，把它作为「母语」。
 
-Bash 是一个命令解释程序，用于执行从标准输入或文件中读取的命令。能被 Bash 理解的语言即 Bash 语言。像 Bash 这样的程序通常称为 Shell，作为计算机用户操作计算机时的基本交互界面，亦即计算机用户通过 Shell 使用操作系统内核所提供的种种功能。Bash 是众多 Shell 中的一种，但它却是流传最为广泛的 Shell。在 Windows 系统中，Windows 10 以前的版本可以通过安装 Cygwin 便可获得 Bash，而在 Windows 10 中，只需开启 WSL（Windows Subsystem for Linux）便有了 Bash。至于 Linux 和 Mac OS X 系统，Bash 则是它们的核心标配组件。Android 手机上，只需通过 [F-Droid](https://f-droid.org/) 安装 Termux APP 也能得到 Bash。
+Bash 是一个命令解释程序，用于执行从标准输入或文件中读取的命令。能被 Bash 理解的语言即 Bash 语言。像 Bash 这样的程序通常称为 Shell，作为计算机用户操作计算机时的基本交互界面，亦即计算机用户通过 Shell 使用操作系统内核所提供的种种功能。Bash 是众多 Shell 中的一种，但它却是流传最为广泛的 Shell。在 Windows 系统中，Windows 10 以前的版本可以通过安装 Cygwin 便可获得 Bash，而在 Windows 10 中，只需开启 WSL（Windows Subsystem for Linux）便有了 Bash。至于 Linux 和 Mac OS X 系统，Bash 则是它们的核心标配组件。Android 手机上，通过 [F-Droid](https://f-droid.org/) 安装 Termux 也能得到 Bash。
 
 因为 Bash 几乎无处不在，而且它能够帮助我们处理许多计算机里的日常任务，所以不妨把它作为计算机世界里的母语去学习。计算机语言虽然种类繁多，但是用这些语言写的程序，通常可以作为命令在 Bash 或其他某种 Shell 环境中运行，这种做法颇类似于我们在母语的基础上学会了一些专业里的「行话」。
 
