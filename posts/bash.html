@@ -98,22 +98,23 @@
 </pre>
 
 
-<p>不过，现在运行 Bash 的操作系统大多提供了图形界面。可以图形界面式的文件管理器里找到 <code>.bashrc</code> 文件，然后使用一种图形界面式的文本编辑器打开这份文件，添加上述内容，然后再保存文件。这是我们刚开始使用计算机的时候就已经学会了的方法。但是，从现在开始可不必如此，因为类似的任务通过一些简单的命令便可完成。例如，要完成上述任务，只需</p>
-<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s1">'PS1="\e[0;32m\w\e[0m\n$ "'</span> &gt;&gt; ~/.bashrc
+<p>不过，现在运行 Bash 的操作系统大多提供了图形界面。可以图形界面式的文件管理器里找到 <code>.bashrc</code> 文件，然后使用一种图形界面式的文本编辑器打开这份文件，添加上述内容，然后再保存文件。这是我们刚开始使用计算机的时候就已经学会了的方法。但是，从现在开始可不必如此，因为类似的任务通过一些简单的命令便可完成。例如，要完成上述任务，只需在终端的命令提示符后输入</p>
+<pre class="code literal-block"><span></span><span class="go">echo 'PS1="\e[0;32m\w\e[0m\n$ "' &gt;&gt; ~/.bashrc</span>
 </pre>
 
 
-<p><code>echo</code> 命令可将一行文本显示于终端。例如，若输入</p>
-<pre class="code literal-block"><span></span><span class="go">echo 'PS1="\e[0;32m\w\e[0m\n$ "'</span>
+<p>然后回车。之后，Bash 便会对我们输入的这一行文本予以理解和执行。我们输入的这行文本便是命令。</p>
+<p><code>echo</code> 命令可将一行文本显示于终端。例如，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s1">'PS1="\e[0;32m\w\e[0m\n$ "'</span>
 </pre>
 
 
-<p>那么终端接下来会显示</p>
+<p>Bash 执行这条命令之后，终端紧接着便会显示</p>
 <pre class="code literal-block"><span></span><span class="go">PS1="\e[0;32m\w\e[0m\n$ "</span>
 </pre>
 
 
-<p>像是对空旷寂静的山谷喊了一声「<code>PS1="\e[0;32m\w\e[0m\n$ "</code>」，然后山谷给出了回音，<code>echo</code> 命令得名于此；亦即，<code>echo</code> 只是将它所接受的文本不加改变地输出。</p>
+<p>就像是对空旷寂静的山谷喊了一声「<code>PS1="\e[0;32m\w\e[0m\n$ "</code>」，然后山谷给出了回音，<code>echo</code> 命令得名于此。亦即，<code>echo</code> 只是将它所接受的文本不加改变地输出。</p>
 <p><img alt="" src="../images/bash/02.svg"></p>
 </div>
     </div>
