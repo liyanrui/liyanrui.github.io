@@ -131,6 +131,20 @@ Hello wrold!
 
 在 Bash 中，可以执行 `bash` 命令，这一点细想起来会有些奇怪。不过，人类不也经常将「自我」作为一种事物去思考么？
 
+实际上，上述 `bash` 命令中的输入重定向符是不必要的。因为 `bash` 命令原本便支持直接读取指定文件中的内容并将其视为命令予以执行，即
+
+```console
+$ bash /tmp/foo.sh
+```
+
+输入重定向符主要用于那些只支持从 stdin 获取输入信息的程序，例如，用于计算凸包的程序 qhull 便是这样的程序。倘若机器上已经安装了 qhull 软件包，可以使用 `rbox` 命令生成含有三维点集的数据文件，然后通过 `<` 将数据文件中的三维点集信息传递于 `qhull` 程序：
+
+```console
+$ rbox c > points.asc
+$ qhull s n < points.asc
+```
+
+之后，`qhull` 便会输出三维点集的凸包信息。
 
 [1]:/images/bash/01.png
 [2]:/images/bash/02.svg
