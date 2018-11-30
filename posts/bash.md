@@ -175,7 +175,7 @@ $ rbox c | qhull s n
 
 假设文件 foo.tex 的内容为
 
-```
+```TeX
 \starttext
 这是一份 ConTeXt 文稿。
 \stoptext
@@ -192,6 +192,21 @@ $ mv foo-tmp.tex foo.tex
 `cat` 命令用于将多份文本文件的内容连接起来，并将结果写入 stdout。当 `cat` 只处理一份文本文件时，产生的效果是将这份文件的内容写入 stdout。由于 stdout 中的内容可通过 `>>` 导入到指定文件，因此上述的 `cat` 命令所起到的作用相当于把 foo.tex 的内容复制出来，并追加到 foo-tmp.tex 的尾部。
 
 `mv` 命令可将文件从其当前所在目录移动到另一个指定目录，倘若这个指定目录依然是当前目录，那么 `mv` 命令便起到了文件重命名的效果。上述 `mv` 命令将 foo-tmp.tex 重命名为 foo.tex。最终得到的 foo.tex，便等价于在其原有的内容首部插入了「`\usemodule[zhfonts]`」。
+
+不过，能够运行 Bash 的环境，大多也提供了 sed 程序。与 Bash 相似，sed 也能执行它能够理解的一组命令，这组命令专事于文本的编辑。例如，如果将
+
+```sed
+'1 i \
+\\usemodule[zhfonts]'
+```
+
+传递于 `sed`，则 `sed` 便会将这份文本理解为，在给定的文件的第 1 行插入「`\\usemodule[zhfonts]`」。下面是完整的 `sed` 命令：
+
+```console
+$ sed -i '1 i \
+> \\usemodule[zhfonts]' foo.tex
+```
+
 
 
 [1]:/images/bash/01.png
