@@ -237,15 +237,26 @@
 
 
 <p><code>rbox</code> 命令中的 <code>c</code>，<code>qhull</code> 命令中的 <code>s</code> 和 <code>n</code> 皆为选项。这些选项是用来「修饰」动词的，所以可把它们理解为「状语」。因此，任何一条可被 Bash 理解的命令，其基本形式为</p>
-<pre class="code literal-block"><span></span><span class="go">命令 [选项] [数据]</span>
+<pre class="code literal-block"><span></span>命令 [选项] [数据]
 </pre>
 
 
 <p>方括号及其所包含的内容表示可有可无。与之相应的英文语法为</p>
-<pre class="code literal-block"><span></span><span class="go">谓语 [状语] [宾语]</span>
+<pre class="code literal-block"><span></span>谓语 [状语] [宾语]
 </pre>
 
 
+<p>当两条命令用管道衔接起来时，即</p>
+<pre class="code literal-block"><span></span>命令 [选项] [数据] | 命令 [选项]
+</pre>
+
+
+<p>与之相应的英文语法就是并列句。例如，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s1">'echo "Hello world!"'</span> <span class="p">|</span> bash
+</pre>
+
+
+<p>可将这条命令翻译为汉语，「构造『echo "Hello world"』，并传给 bash！」，也可以翻译成英文，「write the statement "echo 'Hllo world'" and pass it to bash!」。</p>
 <p>学习 Bash 语言，不过是记住数十个常用的命令并弄清楚它们的常规选项的含义，便可以与计算机从容地交流了，这远比学习英文容易。</p>
 <h2>引号</h2>
 <p>命令的输入数据和输出数据只有两种，文本与存储文本的文件。Bash 如何对它们予以区分呢？Bash 规定，凡出现在一对双引号 <code>"</code> 或出现在一对单引号 <code>'</code> 之内的文字便是文本，否则便是文件。不过，我们向 Bash 提交的一切皆为文本。为了进行区分，应当将作为命令的输入或输出数据的文本称为字串，并且出现在一对 <code>"</code> 之内的字串可称为双引号字串，出现在 <code>'</code> 之内的字串则称为单引号字串</p>
