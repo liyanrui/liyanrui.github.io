@@ -172,7 +172,7 @@
 
 
 <p>只要一条命令能通过 stdout 输出信息，而另一条命令能通过 stdin 获取信息，那么这两条命令便可以借助管道连接起来使用。说话要比写字快，而且能够节省纸张，管道的意义与之类似，不仅提高了信息的传递速度，而且不消耗硬盘。</p>
-<h2>md5sum 和 awk</h2>
+<h2>向文本文件首部追加信息</h2>
 <p>通过 <code>&gt;&gt;</code> 能够实现向一份文本文件尾部追加信息。有没有办法向一份文本文件的首部追加信息呢？这个问题并不简单。在生活中，有许多事需要我们排队。来得晚了，应当主动站在队尾，这样做不会影响对于早来的人。但是，若来得晚了，反而强行站到队伍的前面去了，可能会被挨打。也许我们都喜欢插队，但是却很少有人喜欢插队的人。所谓文件，事实上不过是一组排好了队的字节。因此，通过 <code>&gt;&gt;</code> 向一份文本文件尾部追加信息容易，但是若将信息插入到文件的首部，原有的文件内容在硬盘里的相应位置必然要发生变化。</p>
 <p>假设文件 foo.tex 的内容为</p>
 <pre class="code literal-block"><span></span>\starttext
@@ -181,12 +181,15 @@
 </pre>
 
 
-<p>若想将 <code>\usemodule[zhfonts]</code> 增加到这份文件的首部，可通过以下步骤而实现：</p>
-<ol>
-<li><code>echo '\usemodule[zhfonts] &gt; foo-tmp.tex'</code></li>
-<li><code>cat foo.tex &gt;&gt; foo-tmp.tex</code></li>
-<li><code>mv foo-tmp.tex foo.tex</code></li>
-</ol>
+<p>若想将「<code>\usemodule[zhfonts]</code>」增加到这份文件的首部，可通过以下命令实现：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="err">'</span><span class="se">\u</span>semodule<span class="o">[</span>zhfonts<span class="o">]</span> &gt; foo-tmp.tex
+<span class="gp">$</span> cat foo.tex &gt;&gt; foo-tmp.tex
+<span class="gp">$</span> mv foo-tmp.tex foo.tex
+</pre>
+
+
+<p><code>cat</code> 命令用于将多份文本文件的内容连接起来，并将结果写入 stdout。当 <code>cat</code> 只处理一份文本文件时，产生的效果是将这份文件的内容写入 stdout。由于 stdout 中的内容可通过 <code>&gt;&gt;</code> 导入到指定文件，因此上述的 <code>cat</code> 命令所起到的作用相当于把 foo.tex 的内容复制出来，并追加到 foo-tmp.tex 的尾部。</p>
+<p><code>mv</code> 命令可将文件从其当前所在目录移动到另一个指定目录，倘若这个指定目录依然是当前目录，那么 <code>mv</code> 命令便起到了文件重命名的效果。上述 <code>mv</code> 命令将 foo-tmp.tex 重命名为 foo.tex。最终得到的 foo.tex，便等价于在其原有的内容首部插入了「<code>\usemodule[zhfonts]</code>」。</p>
 </div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
