@@ -184,10 +184,22 @@
 </pre>
 
 
-<p>传递于 <code>sed</code>，则 <code>sed</code> 便会将这份文本理解为，在给定的文件的第 1 行插入「<code>\\usemodule[zhfonts]</code>」。下面是完整的 <code>sed</code> 命令：</p>
+<p>传递于 <code>sed</code>，并指使 <code>sed</code> 将此命令作用于 foo.tex，即</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> sed -i <span class="s1">'1 i \</span>
 <span class="s1">&gt; \\usemodule[zhfonts]'</span> foo.tex
 </pre>
+
+
+<p><code>sed</code> 便会这条命令理解为，在 foo.tex 的第 1 行插入「<code>\\usemodule[zhfonts]</code>」。</p>
+<p>注意，上述的 <code>&gt;</code> 符号并非输出重定向符，它是终端的二级命令提示符。在终端中输入多行文本构成的命令时，终端自动给出二级命令提示符。还记得 <code>$</code> 吧，之前将其称为命令提示符，实际上它是一级命令提示符，这也正是为何用于设定它的格式时是通过 <code>PS1</code> 的原因。类似地，可以通过 <code>PS2</code> 来定制二级命令提示符的格式。Bash 如何知道我们要输入多行文本呢，亦即在我们输完 <code>sed -i 'i 1 \</code> 并摁了回车键之后，为何 Bash 不认为我们已经将命令输入完毕呢？这是因为在上述命令中，在第一行的末尾出现的 <code>\</code>，会被 Bash 理解为续行符。回车键产生的换行符位于续航符之后，会被 Bash 忽略。</p>
+<p>利用续行符，可将较长的命令分成多行输入，Bash 会将最后一行的换行符作为命令输入完毕的信号。例如，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s1">'echo "Hello world!"'</span> <span class="se">\</span>
+&gt;  <span class="p">|</span> bash
+</pre>
+
+
+<p>这条命令虽然不长，但是足以说明续行符的用法。</p>
+<p>不过，上述的 <code>sed</code> 命令的第一行虽然在末尾出现了续行符，但实际上 Bash 是没有机会得知该续行符的存在。因为 sed 程序所接受的命令文本是拘禁在一对单引号中的，这样的文本中的换行符，Bash 会不予理睬。亦即，上述的 <code>sed</code> 命令的第一行末尾的 <code>\</code>，实际上并非 Bash 的续行符，它与 <code>i</code> 的组合 <code>i \</code> 实际上是 sed 程序的一个指令，用于在指定的文本行之前插入一行或多行给定的文本。也是因为对于 sed 程序而言， <code>\</code> 有特殊含义，因此使用 <code>sed</code> 命令在 foo.tex 的首部添加「<code>\usemodule[zhfonts]</code>」时，需要对文本中的 <code>\</code> 进行转义，而 sed 程序是将 <code>\</code> 作为转义符，因此在 sed 命令中，「<code>\usemodule[zhfonts]</code>」必须写成「<code>\\usemodule[zhfonts]</code>」。</p>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/some-minor-operation-for-videos.html" class="u-url">为视频做小手术</a></h1>
