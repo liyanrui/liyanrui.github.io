@@ -276,7 +276,7 @@ $ qhull s n < points.asc
 $ echo 'echo "Hello world!"' | bash
 ```
 
-可将这条命令翻译为汉语，「构造『echo "Hello world"』，并传给 bash！」，也可以翻译成英文，「write the statement "echo 'Hllo world'" and pass it to bash!」。
+可将这条命令翻译为汉语，「写出『echo "Hello world"』，传给 bash！」，也可以翻译成英文，「write the statement "echo 'Hello world'" and pass it to bash!」。
 
 学习 Bash 语言，不过是记住数十个常用的命令并弄清楚它们的常规选项的含义，便可以与计算机从容地交流了，这远比学习英文容易。
 
