@@ -166,13 +166,14 @@
 </pre>
 
 
-<p>这两组命令是否相似？都是一条命令通过输出重定向将自己原本要写入 stdout 的输出信息被重定向到了一份文件，另一条命令则是通过输入重定向将自己原本要从 stdin 里获取的输入信息变成了从指定文件中获取。这个过程类似于，你将信息写到了纸条上，然后又将纸条扔给我看。但是在生活中，我们通常不会这样麻烦，你会用嘴巴发出信息，我则用耳朵接受信息。Bash 也有类似的机制，名曰管道。基于管道，上述两组命令可简化为</p>
+<p>这两组命令是否相似？在形式上，它们都是一条命令通过输出重定向将自己原本要写入 stdout 的输出信息被重定向到了一份文件，另一条命令则是通过输入重定向将自己原本要从 stdin 里获取的输入信息变成了从指定文件中获取。这个过程类似于，你将信息写到了纸条上，然后又将纸条扔给我看。但是在生活中，我们通常不会这样麻烦，你会用嘴巴发出信息，我则用耳朵接受信息。Bash 也有类似的机制，名曰管道。基于管道，上述两组命令可简化为</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s1">'echo "Hello world!"'</span> <span class="p">|</span> bash
 <span class="gp">$</span> rbox c <span class="p">|</span> qhull s n
 </pre>
 
 
 <p>只要一条命令能通过 stdout 输出信息，而另一条命令能通过 stdin 获取信息，那么这两条命令便可以借助管道连接起来使用。说话要比写字快，而且能够节省纸张，管道的意义与之类似，不仅提高了信息的传递速度，而且不消耗硬盘。</p>
+<h2>组</h2>
 </div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
