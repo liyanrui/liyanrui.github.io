@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 Bash)</title><link>/</link><description></description><atom:link href="/categories/bash.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Fri, 30 Nov 2018 09:13:00 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bash 记</title><link>/posts/bash.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;h2&gt;说和指&lt;/h2&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 Bash)</title><link>/</link><description></description><atom:link href="/categories/bash.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Fri, 30 Nov 2018 09:13:42 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bash 记</title><link>/posts/bash.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;h2&gt;说和指&lt;/h2&gt;
 &lt;p&gt;若让计算机理解我的意图，可以有两种方式，说和指。这与生活中我为了让他人能够理解我的意图所采用的方式相似。譬如，我想让朋友去超市帮我买瓶饮料，我可以使用祈使句，「帮我去超市买瓶可乐，如何？」我也可以把他领到超市门口，指一下超市，然后再把他领进超市，指一下饮料柜里的一瓶可乐，然后再指一下他口袋里的钱包。基于说的方式让计算机理解我的意图，就是向计算机输入一些命令，计算机则通过命令解释程序理解我的意图。基于指的方式让计算机理解我的意图，就是通过鼠标、触摸屏之类的交互设备，向计算机输入一些坐标信息，计算机则通过图形界面程序理解我的意图。&lt;/p&gt;
 &lt;p&gt;在生活中，人们通常会喜欢通过说的方式让他人理解自己的意图，只有在难以言说的时候，才会考虑用指的办法。这是因为我们已经掌握了一门与他人沟通交流所用的语言，利用这种语言让他人理解我们的意图，是成本最低的方法。但是对于计算机而言，由于大多数人通常没有机会学习计算机可以理解的语言，因此对于他们而言，采取指的方式让计算机理解他们的意图则是成本最低的方法。因为这个缘故，大多数人喜欢以图形界面交互的方式使用计算机，因为他们觉得学习一门计算机语言，成本太高。倘若将一门计算机语言列入小学课程，或许孩子们长大后与计算机的沟通便不再像现代人这样过度依赖图形界面交互方式。&lt;/p&gt;
 &lt;p&gt;图形界面与命令并不冲突。我们教孩子说话，一开始也是以指物的方式，让孩子获得了基本的语言交流能力。图形界面程序为计算机的普及作出了很大贡献，但是在这个基础上，若想让计算机更准确、高效地理解我们的意图，那么便需要学习一门计算机语言了。&lt;/p&gt;
@@ -112,7 +112,7 @@
 
 
 &lt;p&gt;只要一条命令能通过 stdout 输出信息，而另一条命令能通过 stdin 获取信息，那么这两条命令便可以借助管道连接起来使用。说话要比写字快，而且能够节省纸张，管道的意义与之类似，不仅提高了信息的传递速度，而且不消耗硬盘。&lt;/p&gt;
-&lt;h2&gt;向文本文件首部追加信息&lt;/h2&gt;
+&lt;h2&gt;cat， mv 和 sed&lt;/h2&gt;
 &lt;p&gt;通过 &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt; 能够实现向一份文本文件尾部追加信息。有没有办法向一份文本文件的首部追加信息呢？这个问题并不简单。在生活中，有许多事需要我们排队。来得晚了，应当主动站在队尾，这样做不会影响对于早来的人。但是，若来得晚了，反而强行站到队伍的前面去了，可能会被挨打。也许我们都喜欢插队，但是却很少有人喜欢插队的人。所谓文件，事实上不过是一组排好了队的字节。因此，通过 &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt; 向一份文本文件尾部追加信息容易，但是若将信息插入到文件的首部，原有的文件内容在硬盘里的相应位置必然要发生变化。&lt;/p&gt;
 &lt;p&gt;假设文件 foo.tex 的内容为&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\starttext&lt;/span&gt;
