@@ -128,7 +128,7 @@
 </pre>
 
 
-<p>在 Bash 中，可以执行 <code>bash</code> 命令，这一点细想起来会有些奇怪。不过，人类不也经常将「自我」作为一种事物去思考么？</p>
+<p>在 Bash 中，可以执行 <code>bash</code> 命令，这一点细想起来会有些奇怪。不过，人类不是也经常将「自我」作为一种事物去思考么？</p>
 <p>实际上，上述 <code>bash</code> 命令中的输入重定向符是不必要的。因为 <code>bash</code> 命令原本便支持直接读取指定文件中的内容并将其视为命令予以执行，即</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> bash /tmp/foo.sh
 </pre>
@@ -141,6 +141,26 @@
 
 
 <p>之后，<code>qhull</code> 便会输出三维点集的凸包信息。</p>
+<h2>管道</h2>
+<p>认真观察</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s1">'echo "Hello world!"'</span> &gt; /tmp/foo.sh
+<span class="gp">$</span> bash &lt; /tmp/foo.sh
+</pre>
+
+
+<p>和</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> rbox c &gt; points.asc
+<span class="gp">$</span> qhull s n &lt; points.asc
+</pre>
+
+
+<p>这两组命令是否相似？都是一条命令通过输出重定向将自己原本要写入 stdout 的输出信息被重定向到了一份文件，另一条命令则是通过输入重定向将自己原本要从 stdin 里获取的输入信息变成了从指定文件中获取。这个过程类似于，你将信息写到了纸条上，然后又将纸条扔给我看。但是在生活中，我们通常不会这样麻烦，你会用嘴巴发出信息，我则用耳朵接受信息。Bash 也有类似的机制，名曰管道。基于管道，上述两组命令可简化为</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s1">'echo "Hello world!"'</span> <span class="p">|</span> bash
+<span class="gp">$</span> rbox c <span class="p">|</span> qhull s n
+</pre>
+
+
+<p>只要一条命令能通过 stdout 输出信息，而另一条命令能通过 stdin 获取信息，那么这两条命令便可以借助管道连接起来使用。</p>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/some-minor-operation-for-videos.html" class="u-url">为视频做小手术</a></h1>
