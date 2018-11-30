@@ -129,6 +129,8 @@ $ bash < /tmp/foo.sh
 Hello wrold!
 ```
 
+在 Bash 中，可以执行 `bash` 命令，这一点细想起来会有些奇怪。不过，人类不也经常将「自我」作为一种事物去思考么？
+
 
 [1]:/images/bash/01.png
 [2]:/images/bash/02.svg
