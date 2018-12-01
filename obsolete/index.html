@@ -200,55 +200,10 @@
 
 <p>这条命令虽然不长，但是足以说明续行符的用法。</p>
 <p>不过，上述的 <code>sed</code> 命令的第一行虽然在末尾出现了续行符，但实际上 Bash 是没有机会得知该续行符的存在。因为 sed 程序所接受的命令文本是拘禁在一对单引号中的，这种形式的文本叫做单引号字串。单引号字串中的续行符和换行符，Bash 会不予理睬。因此，上述的 <code>sed</code> 命令的第一行末尾的 <code>\</code>，实际上并非面向 Bash 而存在，「<code>i \</code>」实际上是 sed 程序的一个指令，用于在指定的文本行之前插入一行或多行给定的文本。因为 <code>\</code> 对于 sed 程序有着特殊含义，因此在通过 <code>sed</code> 命令在 foo.tex 的首部添加「<code>\usemodule[zhfonts]</code>」时，必需对文本中的 <code>\</code> 进行转义，由于 sed 程序是以 <code>\</code> 为转义符，因此在 sed 命令中，「<code>\usemodule[zhfonts]</code>」必须写成「<code>\\usemodule[zhfonts]</code>」。</p>
-<p>至此，是否觉察到了 Bash 的世界的混乱之处？</p>
-<h2>Bash 语法</h2>
-<p>在 Bash 命令解释器看来，我们提交的文本是遵守 Bash 语法的文本。每条命令实际上是一条完整的语句，与人类语言中的祈使句相似。例如，<code>echo</code>、<code>cat</code>、<code>mv</code>、<code>sed</code> 等命令，它们的名字实际上是相应的可执行文件（程序）的名字；通过 <code>which</code> 命令便可查出这些可执行文件在系统中的路径（或位置）。例如</p>
-<pre class="code literal-block"><span></span><span class="gp">$</span> which mv
-<span class="go">/bin/mv</span>
-<span class="gp">$</span> which sed
-<span class="go">/bin/sed</span>
-<span class="gp">$</span> which bash
-<span class="go">/bin/bash</span>
-</pre>
-
-
-<p><code>mv</code>、<code>sed</code> 和 <code>bash</code> 这些命令对应的可执行文件皆位于 <code>/bin</code> 目录之内。这些可执行文件的名字，类似于人类语言里的「动词」。文本或文件（包括 stdin 和 stdout），它们存储着程序的输入数据和输出数据，类似于「名词」。有动词，有名词，便可以造句了。例如，</p>
-<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s2">"Hello world!"</span> &gt; foo.txt
-</pre>
-
-
-<p>这条命令可以翻译成汉语，「将 "Hello world!" 写入文件 foo.txt！」，也可以翻译成英文，「write "Hello world!" into the file named foo.txt!」。</p>
-<p>有些命令是有选项的。例如上文中给出的 <code>rbox</code> 和 <code>qhull</code> 命令：</p>
-<pre class="code literal-block"><span></span><span class="gp">$</span> rbox c &gt; points.asc
-<span class="gp">$</span> qhull s n &lt; points.asc
-</pre>
-
-
-<p><code>rbox</code> 命令中的 <code>c</code>，<code>qhull</code> 命令中的 <code>s</code> 和 <code>n</code> 皆为选项。这些选项是用来「修饰」动词的，所以可把它们理解为「状语」。因此，任何一条可被 Bash 理解的命令，其基本形式为</p>
-<pre class="code literal-block"><span></span>命令 [选项] [数据]
-</pre>
-
-
-<p>方括号及其所包含的内容表示可有可无。与之相应的英文语法为</p>
-<pre class="code literal-block"><span></span>谓语 [状语] [宾语]
-</pre>
-
-
-<p>当两条命令用管道衔接起来时，即</p>
-<pre class="code literal-block"><span></span>命令 [选项] [数据] | 命令 [选项]
-</pre>
-
-
-<p>与之相应的英文语法就是并列句。例如，</p>
-<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s1">'echo "Hello world!"'</span> <span class="p">|</span> bash
-</pre>
-
-
-<p>可将这条命令翻译为汉语，「写出『echo "Hello world"』，传给 bash！」，也可以翻译成英文，「write "echo 'Hello world'" and pass it to bash!」。</p>
-<p>学习 Bash 语言，不过是记住数十个常用的命令并弄清楚它们的常规选项的含义，便可以与计算机从容地交流了，这远比学习英文容易。</p>
+<p>至此，是否觉察到了 Bash 语言的混乱之处？</p>
 <h2>引号</h2>
-<p>命令的输入数据和输出数据只有两种，文本与存储文本的文件。Bash 如何对它们予以区分呢？Bash 规定，凡出现在一对双引号 <code>"</code> 或出现在一对单引号 <code>'</code> 之内的文字便是文本，否则便是文件。不过，我们向 Bash 提交的一切皆为文本。为了进行区分，应当将作为命令的输入或输出数据的文本称为字串，并且出现在一对 <code>"</code> 之内的字串可称为双引号字串，出现在 <code>'</code> 之内的字串则称为单引号字串</p>
-<p>很容易去问，为什么会有两种字串？其实应该去问，为什么人类发明的文字里要有两种引号？在与他人的对话中，彼此所说的每句话可以用双引号包围起来。例如：</p>
+<p>命令的输入数据和输出数据只有两种，文本与存储文本的文件。Bash 如何对它们予以区分呢？Bash 规定，凡出现在一对双引号 <code>"</code> 或出现在一对单引号 <code>'</code> 之内的文字便是文本，否则便是文件。不过，我们向 Bash 提交的一切皆为文本。为了进行区分，应当将作为命令的输入或输出数据的文本称为字串，并且出现在一对 <code>"</code> 之内的字串可称为双引号字串，出现在 <code>'</code> 之内的字串则称为单引号字串。</p>
+<p>问为什么会有两种字串，不如问为什么人类发明的文字里要有两种引号。在与他人的对话中，彼此所说的每句话可以用双引号包围起来。例如：</p>
 <pre class="code literal-block"><span></span>我：“最近我在读《齐物论》。”
 你：“它讲了什么？”
 我：“庄子建议我们应当‘为是不用而寓诸庸’。”
@@ -332,6 +287,7 @@
 
 
 <p>Bash 不会认为这条语句是在定义变量 <code>my_var</code>，反而会认为 <code>my_var</code> 是命令，<code>=</code> 和 "3" 是它的输入数据。</p>
+<h2>条件</h2>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/some-minor-operation-for-videos.html" class="u-url">为视频做小手术</a></h1>
