@@ -411,5 +411,73 @@ $ test -e foo.txt
 
 等价。
 
+# 循环
+
+做 10 个俯卧撑。如何用 Bash 语言描述呢？有两种方式，一种是
+
+```console
+$ for ((i = 1; i <= 10; i++)); do echo "第 $i 个俯卧撑"; done
+```
+
+也可以写为
+
+```console
+$ for ((i = 1; i <= 10; i++))
+> do 
+>     echo "第 $i 个俯卧撑"
+> done
+```
+
+或
+
+```console
+$ for ((i = 1; i <= 10; i++)); do 
+>     echo "第 $i 个俯卧撑"
+> done
+```
+
+执行这条命令后，继而终端便会显示
+
+```
+第 1 个俯卧撑
+第 2 个俯卧撑
+第 3 个俯卧撑
+第 4 个俯卧撑
+第 5 个俯卧撑
+第 6 个俯卧撑
+第 7 个俯卧撑
+第 8 个俯卧撑
+第 9 个俯卧撑
+第 10 个俯卧撑
+```
+
+另一种方式是
+
+```console
+$ i=1
+$ while ((i <= 10)); do echo "第 $i 个俯卧撑"; ((i++)); done
+```
+
+也可写为
+
+```console
+$ i=1
+$ while ((i <= 10))
+> do
+>     echo "第 $i 个俯卧撑"
+>     ((i++))
+> done
+```
+
+或
+
+```console
+$ i=1
+$ while ((i <= 10)); do
+>     echo "第 $i 个俯卧撑"
+>     ((i++))
+> done
+```
+
 [1]:/images/bash/01.png
 [2]:/images/bash/02.svg

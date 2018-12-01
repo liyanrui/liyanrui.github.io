@@ -356,6 +356,64 @@ $ <span class="nb">echo</span> <span class="nv">$?</span>
 
 
 <p>等价。</p>
+<h2>循环</h2>
+<p>做 10 个俯卧撑。如何用 Bash 语言描述呢？有两种方式，一种是</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="k">for</span> <span class="o">((</span><span class="nv">i</span> <span class="o">=</span> <span class="m">1</span><span class="p">;</span> i &lt;<span class="o">=</span> <span class="m">10</span><span class="p">;</span> i++<span class="o">))</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="s2">"第 </span><span class="nv">$i</span><span class="s2"> 个俯卧撑"</span><span class="p">;</span> <span class="k">done</span>
+</pre>
+
+
+<p>也可以写为</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="k">for</span> <span class="o">((</span><span class="nv">i</span> <span class="o">=</span> <span class="m">1</span><span class="p">;</span> i &lt;<span class="o">=</span> <span class="m">10</span><span class="p">;</span> i++<span class="o">))</span>
+<span class="gp">&gt;</span> <span class="k">do</span> 
+<span class="gp">&gt;</span>     <span class="nb">echo</span> <span class="s2">"第 </span><span class="nv">$i</span><span class="s2"> 个俯卧撑"</span>
+<span class="gp">&gt;</span> <span class="k">done</span>
+</pre>
+
+
+<p>或</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="k">for</span> <span class="o">((</span><span class="nv">i</span> <span class="o">=</span> <span class="m">1</span><span class="p">;</span> i &lt;<span class="o">=</span> <span class="m">10</span><span class="p">;</span> i++<span class="o">))</span><span class="p">;</span> <span class="k">do</span> 
+<span class="gp">&gt;</span>     <span class="nb">echo</span> <span class="s2">"第 </span><span class="nv">$i</span><span class="s2"> 个俯卧撑"</span>
+<span class="gp">&gt;</span> <span class="k">done</span>
+</pre>
+
+
+<p>执行这条命令后，继而终端便会显示</p>
+<pre class="code literal-block"><span></span>第 1 个俯卧撑
+第 2 个俯卧撑
+第 3 个俯卧撑
+第 4 个俯卧撑
+第 5 个俯卧撑
+第 6 个俯卧撑
+第 7 个俯卧撑
+第 8 个俯卧撑
+第 9 个俯卧撑
+第 10 个俯卧撑
+</pre>
+
+
+<p>另一种方式是</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nv">i</span><span class="o">=</span><span class="m">1</span>
+<span class="gp">$</span> <span class="k">while</span> <span class="o">((</span>i &lt;<span class="o">=</span> <span class="m">10</span><span class="o">))</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="s2">"第 </span><span class="nv">$i</span><span class="s2"> 个俯卧撑"</span><span class="p">;</span> <span class="o">((</span>i++<span class="o">))</span><span class="p">;</span> <span class="k">done</span>
+</pre>
+
+
+<p>也可写为</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nv">i</span><span class="o">=</span><span class="m">1</span>
+<span class="gp">$</span> <span class="k">while</span> <span class="o">((</span>i &lt;<span class="o">=</span> <span class="m">10</span><span class="o">))</span>
+<span class="gp">&gt;</span> <span class="k">do</span>
+<span class="gp">&gt;</span>     <span class="nb">echo</span> <span class="s2">"第 </span><span class="nv">$i</span><span class="s2"> 个俯卧撑"</span>
+<span class="gp">&gt;</span>     <span class="o">((</span>i++<span class="o">))</span>
+<span class="gp">&gt;</span> <span class="k">done</span>
+</pre>
+
+
+<p>或</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nv">i</span><span class="o">=</span><span class="m">1</span>
+<span class="gp">$</span> <span class="k">while</span> <span class="o">((</span>i &lt;<span class="o">=</span> <span class="m">10</span><span class="o">))</span><span class="p">;</span> <span class="k">do</span>
+<span class="gp">&gt;</span>     <span class="nb">echo</span> <span class="s2">"第 </span><span class="nv">$i</span><span class="s2"> 个俯卧撑"</span>
+<span class="gp">&gt;</span>     <span class="o">((</span>i++<span class="o">))</span>
+<span class="gp">&gt;</span> <span class="k">done</span>
+</pre>
 </div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
