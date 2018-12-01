@@ -278,6 +278,8 @@ $ echo 'echo "Hello world!"' | bash
 
 可将这条命令翻译为汉语，「写出『echo "Hello world"』，传给 bash！」，也可以翻译成英文，「write the statement "echo 'Hello world'" and pass it to bash!」。
 
+至于输入/输出重定向，在英文语法中则对应于 `from ...` 和 `to ...` 这样的介词短语。
+
 学习 Bash 语言，不过是记住数十个常用的命令并弄清楚它们的常规选项的含义，便可以与计算机从容地交流了，这远比学习英文容易。
 
 # 引号
@@ -354,7 +356,7 @@ $ echo $hello
 Hello world!
 ```
 
-当然，通过名字重复使用数据并不局限于上述重复 `echo` 的情况。名字最重要的用途是简化数据的组合，例如
+当然，通过名字重复使用数据并不局限于上述重复 `echo` 的情况。名字最重要的用途是简化数据的复合，例如
 
 ```console
 $ echo "I say: \"$hello\""
