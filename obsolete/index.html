@@ -50,7 +50,7 @@
 <h2>说和指</h2>
 <p>若让计算机理解我的意图，可以有两种方式，说和指。这与生活中我为了让他人能够理解我的意图所采用的方式相似。譬如，我想让朋友去超市帮我买瓶饮料，我可以使用祈使句，「帮我去超市买瓶可乐，如何？」我也可以把他领到超市门口，指一下超市，然后再把他领进超市，指一下饮料柜里的一瓶可乐，然后再指一下他口袋里的钱包。基于说的方式让计算机理解我的意图，就是向计算机输入一些命令，计算机则通过命令解释程序理解我的意图。基于指的方式让计算机理解我的意图，就是通过鼠标、触摸屏之类的交互设备，向计算机输入一些坐标信息，计算机则通过图形界面程序理解我的意图。</p>
 <p>在生活中，人们通常会喜欢通过说的方式让他人理解自己的意图，只有在难以言说的时候，才会考虑用指的办法。这是因为我们已经掌握了一门与他人沟通交流所用的语言，利用这种语言让他人理解我们的意图，是成本最低的方法。但是对于计算机而言，由于大多数人通常没有机会学习计算机可以理解的语言，因此对于他们而言，采取指的方式让计算机理解他们的意图则是成本最低的方法。因为这个缘故，大多数人喜欢以图形界面交互的方式使用计算机，因为他们觉得学习一门计算机语言，成本太高。倘若将一门计算机语言列入小学课程，或许孩子们长大后与计算机的沟通便不再像现代人这样过度依赖图形界面交互方式。</p>
-<p>图形界面与命令并不冲突。我们教孩子说话，一开始也是以指物的方式，让孩子获得了基本的语言交流能力。图形界面程序为计算机的普及作出了很大贡献，但是在这个基础上，若想让计算机更准确、高效地理解我们的意图，那么便需要学习一门计算机语言了。</p>
+<p>图形界面与命令并不冲突。我们教孩子说话，一开始也是以指物的方式，让孩子获得了基本的语言交流能力，在这个基础上再教他们识文断字。图形界面程序为计算机的普及作出了很大贡献，但是在这个基础上，若想让计算机更准确、高效地理解我们的意图，那么便需要学习一门计算机语言了。</p>
 <p>计算机语言不像人类语言那样丰富。因此，不要指望我们冲着计算机喊几嗓子，或者在运行着命令解释器的终端（命令行窗口）里输入「帮我写毕业论文」这样的句子，计算机就能够充分理解我们的意图，转而毫无怨言地去工作。至少直至目前，我们的计算机尚不具备这样的功能。不过，我们可以通过付费的方式，对那些擅长计算机语言的人喊几嗓子，或者给他们发几条微信。倘若想亲历亲为，而且认为与计算机这样的机器进行交流像是在玩一种文字意义上的游戏，那么便可以从学习一种命令行解释程序入手，学习这个程序所支持的语言以及一些常用的命令。</p>
 <h2>Bash 语言</h2>
 <p>若打算学习计算机语言，不妨从 Bash 语言入手，把它作为「母语」。</p>
@@ -248,7 +248,7 @@
 <p>学习 Bash 语言，不过是记住数十个常用的命令并弄清楚它们的常规选项的含义，便可以与计算机从容地交流了，这远比学习英文容易。</p>
 <h2>引号</h2>
 <p>命令的输入数据和输出数据只有两种，文本与存储文本的文件。Bash 如何对它们予以区分呢？Bash 规定，凡出现在一对双引号 <code>"</code> 或出现在一对单引号 <code>'</code> 之内的文字便是文本，否则便是文件。不过，我们向 Bash 提交的一切皆为文本。为了进行区分，应当将作为命令的输入或输出数据的文本称为字串，并且出现在一对 <code>"</code> 之内的字串可称为双引号字串，出现在 <code>'</code> 之内的字串则称为单引号字串</p>
-<p>很容易去问，为什么会有两种字串？其实应该去问，为什么人类发明的文字里要有两种引号？在与他人的对话中，我说说的话可以用双引号包围起来。例如：</p>
+<p>很容易去问，为什么会有两种字串？其实应该去问，为什么人类发明的文字里要有两种引号？在与他人的对话中，彼此所说的每句话可以用双引号包围起来。例如：</p>
 <pre class="code literal-block"><span></span>我：“最近我在读《齐物论》。”
 你：“它讲了什么？”
 我：“庄子建议我们应当‘为是不用而寓诸庸’。”
@@ -278,8 +278,55 @@
 
 
 <p>Bash 便会对文本中的 <code>!</code> 会有特殊的理解，因为 <code>!</code> 是 Bash 命令，想不到吧？</p>
-<p>双引号字串与单引号字串各有其用，唯有宽严度的人方能用好它们。</p>
+<p>双引号字串与单引号字串各有其用，宽严有度的人通常不会抱怨为什么要有两种引号，为什么要有两种字串。</p>
 <h2>名可名</h2>
+<p><code>PS1</code> 是一个名字，「<code>\e[0;32m\w\e[0m\n$</code>」是它指代的对象，<code>$PS1</code> 是引用这个对象。在 Bash 的世界里，允许我们以这样的方式对数据予以命名，而后以名字指代数据。例如</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nv">hello</span><span class="o">=</span><span class="s2">"Hello world!"</span>
+<span class="gp">$</span> <span class="nb">echo</span> <span class="nv">$hello</span>
+</pre>
+
+
+<p>与</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s2">"Hello world!"</span>
+</pre>
+
+
+<p>等价。</p>
+<p>名字，这是我们很熟悉的概念，但是在数学和编程中，它不再叫名字，而是叫「变量」。为数据取一个名字，就是「定义一个变量」，而使用这个名字，叫做「变量解引用」。很寻常的做法，一旦换了名目，就立刻令人觉得莫测高深了起来。</p>
+<p>名字之所以被视为变量，肯定不是因为老子说过「名可名，非恒名」。为数据取名字，只是为了方便数据的重复使用。譬如，一旦定义了变量 <code>hello</code>，便可以重复使用它：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="nv">$hello</span>
+<span class="go">Hello world!</span>
+<span class="gp">$</span> <span class="nb">echo</span> <span class="nv">$hello</span>
+<span class="go">Hello world!</span>
+<span class="gp">$</span> <span class="nb">echo</span> <span class="nv">$hello</span>
+<span class="go">Hello world!</span>
+</pre>
+
+
+<p>当然，通过名字重复使用数据并不局限于上述重复 <code>echo</code> 的情况。名字最重要的用途是简化数据的组合，例如</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s2">"I say: \"</span><span class="nv">$hello</span><span class="s2">\""</span>
+<span class="go">I say: "Hello world!"</span>
+</pre>
+
+
+<p>这条命令利用了双引号字串的宽松，实现了在字串中对变量进行解引用，从而起到了言语简约但意义完备的效果。由于双引号字串较为宽松，字串中若出现引号，会引起 Bash 的解读在我们看来是混乱的，因此在上述命令中需要使用 <code>\</code> 对字串中的引号进行转义，让 Bash 将其视为字面上的引号，而非字串的引号。倘若去掉转移符 <code>\</code>，即</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s2">"I say: "</span><span class="nv">$hello</span><span class="s2">""</span>
+</pre>
+
+
+<p>Bash 会认为 <code>echo</code> 的输入数据为</p>
+<ol>
+<li><code>"I say: "</code></li>
+<li><code>$hello</code></li>
+<li><code>""</code></li>
+</ol>
+<p>在双引号字串中，为避免 Bash 对某些我们期望保持本义的字符产生误解，通常需要用转义符 <code>\</code> 让 Bash 放弃这样的尝试。</p>
+<p>要注意，在定义变量时，等号两侧不能出现空白字符。例如</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nv">my_var</span> <span class="o">=</span> <span class="s2">"3"</span>
+</pre>
+
+
+<p>Bash 不会认为这条语句是在定义变量 <code>my_var</code>，反而会认为 <code>my_var</code> 是命令，<code>=</code> 和 "3" 是它的输入数据。</p>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/some-minor-operation-for-videos.html" class="u-url">为视频做小手术</a></h1>
