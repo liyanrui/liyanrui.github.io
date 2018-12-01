@@ -328,7 +328,35 @@ Bash 不会认为这条语句是在定义变量 `my_var`，反而会认为 `my_v
 
 # 条件
 
+对于一个变量 `foo`，若不知它是否已定义，可在终端里喊唤它一下试试，
 
+```
+$ echo $foo
+
+```
+
+倘若 `echo` 只是输出一个空行，便可以确定 `foo` 未定义。上述命令中，`echo` 输出了空行，因此 `foo` 未定义。
+
+如果 `foo` 未定义，就给它一个定义，否则便对 `foo` 进行展开。像这样的任务，单凭查看 `echo` 的输出无法完成。不过，Bash 支持与「`如果……就……否则……就……`」类似的语法。例如
+
+```console
+$ if [ "$foo" = "" ]; then foo="FOO"; else echo $foo; fi
+```
+
+或
+
+```console
+$ if [ "$foo" = "" ]
+> then
+>     foo="FOO"
+> else
+>     echo $foo
+> fi
+```
+
+`[ "$foo" = "" ]` 是一条命令，用于测试 `"$foo"` 与 `""` 是否相同。`if` 可根据 `[ "$foo" = "" ]` 的结果控制 Bash 是执行 `foo="FOO"` 还是执行 `echo $foo`。
+
+假设变量 `foo` 未定义，那么 `[ "$foo" = "" ]` 的结果是什么呢？
 
 [1]:/images/bash/01.png
 [2]:/images/bash/02.svg
