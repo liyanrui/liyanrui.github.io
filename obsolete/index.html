@@ -316,11 +316,16 @@
 
 <p>Bash 会认为 <code>echo</code> 的输入数据为</p>
 <ol>
-<li><code>"I say: "</code></li>
+<li><code>I say:</code></li>
 <li><code>$hello</code></li>
-<li><code>""</code></li>
+<li>空字串</li>
 </ol>
-<p>在双引号字串中，为避免 Bash 对某些我们期望保持本义的字符产生误解，通常需要用转义符 <code>\</code> 让 Bash 放弃这样的尝试。</p>
+<p>在双引号字串中，为避免 Bash 对某些我们期望保持本义的字符产生误解，通常需要用转义符 <code>\</code> 让 Bash 放弃这样的尝试。因此，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s2">"I say: \"</span><span class="nv">$hello</span><span class="s2">\""</span>
+</pre>
+
+
+<p>Bash 会认为 <code>echo</code> 的输入数据是「<code>I say: "$hello"</code>」。</p>
 <p>要注意，在定义变量时，等号两侧不能出现空白字符。例如</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nv">my_var</span> <span class="o">=</span> <span class="s2">"3"</span>
 </pre>
