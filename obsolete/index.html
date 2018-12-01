@@ -245,6 +245,7 @@
 
 
 <p>可将这条命令翻译为汉语，「写出『echo "Hello world"』，传给 bash！」，也可以翻译成英文，「write the statement "echo 'Hello world'" and pass it to bash!」。</p>
+<p>至于输入/输出重定向，在英文语法中则对应于 <code>from ...</code> 和 <code>to ...</code> 这样的介词短语。</p>
 <p>学习 Bash 语言，不过是记住数十个常用的命令并弄清楚它们的常规选项的含义，便可以与计算机从容地交流了，这远比学习英文容易。</p>
 <h2>引号</h2>
 <p>命令的输入数据和输出数据只有两种，文本与存储文本的文件。Bash 如何对它们予以区分呢？Bash 规定，凡出现在一对双引号 <code>"</code> 或出现在一对单引号 <code>'</code> 之内的文字便是文本，否则便是文件。不过，我们向 Bash 提交的一切皆为文本。为了进行区分，应当将作为命令的输入或输出数据的文本称为字串，并且出现在一对 <code>"</code> 之内的字串可称为双引号字串，出现在 <code>'</code> 之内的字串则称为单引号字串</p>
@@ -303,7 +304,7 @@
 </pre>
 
 
-<p>当然，通过名字重复使用数据并不局限于上述重复 <code>echo</code> 的情况。名字最重要的用途是简化数据的组合，例如</p>
+<p>当然，通过名字重复使用数据并不局限于上述重复 <code>echo</code> 的情况。名字最重要的用途是简化数据的复合，例如</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s2">"I say: \"</span><span class="nv">$hello</span><span class="s2">\""</span>
 <span class="go">I say: "Hello world!"</span>
 </pre>
