@@ -332,14 +332,30 @@ $ <span class="nb">echo</span> <span class="nv">$?</span>
 
 <p>那么 <code>[ "$foo" = "" ]</code> 的退出状态为非 0，意味着 <code>"$foo"</code> 与 <code>""</code> 不同。</p>
 <h2>常用的测试命令</h2>
-<p>由于 <code>[ "$foo" = "" ]</code> 是一条命令，因此必须注意，<code>[</code> 与其后的字符之间至少要空出一格，否则这条命令便写错了，Bash 会拒绝执行。</p>
-<p>在测试命令中， <code>=</code> 可用于比较两个字串是否相同，比较结果表现为测试命令的退出状态。类似地，<code>!=</code> 可用于比较两个字串是否不同。<code>=</code> 和 <code>！=</code> 皆为双目运算符，即参与运算的对象是两个。对于字串，也有单目运算符，例如 <code>-z</code>，用于确定字串长度是否为 0。事实上，<code>[ "$foo" = "" ]</code> 与 <code>[ -z "$foo" ]</code> 等价。</p>
-<p>命令的输入/输出数据除了字串之外，还有文件。很多时候，也需要对文件进行一些测试。最为常用的是确定一份文件或一个目录（目录本质上也是文件）是否存在，单目运算符 <code>-d</code> 可满足这一要求。例如，</p>
-<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="k">if</span> <span class="o">[</span> -d foo.txt <span class="o">]</span><span class="p">;</span> <span class="k">then</span> rm foo.txt<span class="p">;</span> <span class="k">else</span> touch foo.txt<span class="p">;</span> <span class="k">fi</span>
+<p>由于 <code>[ "$foo" = "" ]</code> 是一条命令，因此必须注意，<code>[</code> 与其后的字符之间至少要空出一格，否则这条命令便写错了，Bash 会拒绝执行。<code>[</code> 和 <code>]</code> 所囊括的文本称为表达式。</p>
+<p>在测试命令的表达式中， <code>=</code> 可用于比较两个字串是否相同，比较结果表现为测试命令的退出状态。类似地，<code>!=</code> 可用于比较两个字串是否不同。<code>=</code> 和 <code>！=</code> 皆为双目运算符，即参与运算的对象是两个。对于字串，也有单目运算符，例如 <code>-z</code>，用于确定字串长度是否为 0。事实上，<code>[ "$foo" = "" ]</code> 与 <code>[ -z "$foo" ]</code> 等价。</p>
+<p>命令的输入/输出数据除了字串之外，还有文件。很多时候，也需要对文件进行一些测试。最为常用的是确定一份文件是否存在，单目运算符 <code>-e</code> 可满足这一要求。例如，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="k">if</span> <span class="o">[</span> -e foo.txt <span class="o">]</span><span class="p">;</span> <span class="k">then</span> rm foo.txt<span class="p">;</span> <span class="k">else</span> touch foo.txt<span class="p">;</span> <span class="k">fi</span>
 </pre>
 
 
-<p>的含义是，若当前目录中存在文件 foo.txt，便将其删除，否则便创建一份空文件作为 foo.txt。<code>rm</code> 命令可用于删除文件或目录，<code>touch</code> 命令可用于创建给定文件名的空文件。</p>
+<p>的含义是，若当前目录中存在文件 foo.txt，便将其删除，否则便创建一份空文件作为 foo.txt。<code>rm</code> 命令可用于删除文件或目录，<code>touch</code> 命令可用于创建给定文件名的空文件。类似命令有，<code>-d</code> 可用于确定文件或目录是否存在。<code>-s</code> 可用于确定文件存在并且内容为空。双目运算符 <code>-nt</code> 和 <code>-ot</code> 分别用于判断一个文件是否比另一个文件更新或更旧。</p>
+<p>Bash 提供了许多测试运算，详情可查阅 <code>test</code> 命令的手册，方法是：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> man <span class="m">1</span> <span class="nb">test</span>
+</pre>
+
+
+<p>之所以要查阅 <code>test</code> 命令的手册，是因为 <code>[ 表达式 ]</code> 只是 <code>test</code> 命令的一种简洁的写法。事实上，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="o">[</span> -e foo.txt <span class="o">]</span>
+</pre>
+
+
+<p>与 </p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">test</span> -e foo.txt
+</pre>
+
+
+<p>等价。</p>
 </div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
