@@ -298,7 +298,7 @@
 
 
 <p>倘若 <code>echo</code> 只是输出一个空行，便可以确定 <code>foo</code> 未定义。上述命令中，<code>echo</code> 输出了空行，因此 <code>foo</code> 未定义。</p>
-<p>如果 <code>foo</code> 未定义，就给它一个定义，否则便对 <code>foo</code> 进行展开。像这样的任务，单凭查看 <code>echo</code> 的输出无法完成。不过，Bash 支持与「<code>如果……就……否则……就……</code>」类似的语法。例如</p>
+<p>如果 <code>foo</code> 未定义，就给它一个定义，否则便对 <code>foo</code> 进行展开。像这样的任务，单凭查看 <code>echo</code> 的输出无法完成。不过，Bash 支持与「<code>若……则……否则……</code>」类似的语法。例如</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$foo</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span> <span class="nv">foo</span><span class="o">=</span><span class="s2">"FOO"</span><span class="p">;</span> <span class="k">else</span> <span class="nb">echo</span> <span class="nv">$foo</span><span class="p">;</span> <span class="k">fi</span>
 </pre>
 
@@ -314,7 +314,7 @@
 
 
 <p><code>[ "$foo" = "" ]</code> 是一条命令，用于测试 <code>"$foo"</code> 与 <code>""</code> 是否相同。<code>if</code> 可根据 <code>[ "$foo" = "" ]</code> 的结果控制 Bash 是执行 <code>foo="FOO"</code> 还是执行 <code>echo $foo</code>。</p>
-<p>假设变量 <code>foo</code> 未定义，那么 <code>[ "$foo" = "" ]</code> 的结果是什么呢？为 0。假设变量 <code>foo</code> 已定义，那么 <code>[ "$foo" = "" ]</code> 的结果是什么呢？为非 0。如何得知 <code>[ "$foo" = "" ]</code> 的结果呢？显然这个结果不可能写在 stdout 里，否则我们可以从终端里看到这个结果，但事实上我们并不知道这个结果，但 <code>if</code> 却知道。</p>
+<p>假设变量 <code>foo</code> 未定义，那么 <code>[ "$foo" = "" ]</code> 的结果是什么呢？为 0。假设变量 <code>foo</code> 已定义，那么 <code>[ "$foo" = "" ]</code> 的结果是什么呢？为非 0。如何得知 <code>[ "$foo" = "" ]</code> 的结果呢？显然这个结果不可能写在 stdout 里，否则我们可以从终端里看到这个结果，但事实上我们并不知道这个结果，而 <code>if</code> 却能知道。</p>
 <p>事实上，每条命令在被 Bash 执行后，都会给出一个称作「命令的退出状态」的结果。Bash 内定的变量 <code>?</code> 便指代这个结果。因此，要查看一条命令的退出状态，只需在它结束后，立刻对 <code>?</code> 进行展开。例如</p>
 <pre class="code literal-block"><span></span>$ <span class="o">[</span> <span class="s2">"</span><span class="nv">$foo</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">""</span> <span class="o">]</span>
 $ <span class="nb">echo</span> <span class="nv">$?</span>
