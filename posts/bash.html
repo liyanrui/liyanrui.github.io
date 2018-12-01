@@ -414,6 +414,26 @@ $ <span class="nb">echo</span> <span class="nv">$?</span>
 <span class="gp">&gt;</span>     <span class="o">((</span>i++<span class="o">))</span>
 <span class="gp">&gt;</span> <span class="k">done</span>
 </pre>
+
+
+<h2>算术表达式</h2>
+<p>在 <code>for</code> 和 <code>while</code> 之后出现的 <code>((...))</code> 称为算术表达式。算数表达式可独立存在，也可以与 <code>if</code>、<code>for</code> 和 <code>while</code> 配合使用。</p>
+<p><code>((a = 1))</code> 与 <code>a=1</code> 等价；算术表达式中的 <code>=</code> 两侧允许出现空格。</p>
+<p>算数表达式中的比较运算可用于 <code>if</code> 语句。例如</p>
+<pre class="code literal-block"><span></span>$ <span class="k">if</span> <span class="o">((</span><span class="m">3</span> &gt; <span class="m">1</span><span class="o">))</span><span class="p">;</span> <span class="k">then</span> <span class="nb">echo</span> <span class="s2">"Yes"</span><span class="p">;</span> <span class="k">else</span> <span class="nb">echo</span> <span class="s2">"No"</span><span class="p">;</span> <span class="k">fi</span>
+Yes
+$ <span class="k">if</span> <span class="o">((</span><span class="m">3</span> &lt; <span class="m">1</span><span class="o">))</span><span class="p">;</span> <span class="k">then</span> <span class="nb">echo</span> <span class="s2">"Yes"</span><span class="p">;</span> <span class="k">else</span> <span class="nb">echo</span> <span class="s2">"No"</span><span class="p">;</span> <span class="k">fi</span>
+No
+</pre>
+
+
+<p>注意，<code>for</code> 循环结构中的算术表达式是由三个算数表达式构成，即</p>
+<pre class="code literal-block"><span></span><span class="go">((表达式 1; 表达式 2; 表达式 3;))</span>
+</pre>
+
+
+<p>这种算术表达式只能在 <code>for</code> 循环结构中使用。表达式 1 在循环开始时被求值。表达式 2 是在每一轮循环之前被求值，求值结果可以控制循环停止的时机：若求值结果为 0，则循环停止，否则开始新一轮循环。表达式 3 是在每一轮循环结束后被求值。上一节的 <code>while</code> 循环便是对 <code>for</code> 循环表达式很好的解释。</p>
+<h2>函数</h2>
 </div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
