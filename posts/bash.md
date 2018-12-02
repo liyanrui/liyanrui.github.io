@@ -796,7 +796,7 @@ $ for i in *; do rename_by_md5 $i; done
 
 # 结语
 
-现在，请容许我我华丽地退场：
+现在，请容许我华丽地退场：
 
 ```console
 $ exit
