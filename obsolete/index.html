@@ -476,12 +476,67 @@ No
 </pre>
 
 
+<p>上述 <code>new_file_name</code> 的定义很长，不便理解，可以像下面这样多用两个变量对较长的变量定义以予以拆分：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nv">md5_code</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'{print $1}'</span><span class="k">)</span><span class="s2">"</span>
+<span class="gp">$</span> <span class="nv">suffix_name</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'BEGIN{FS="."} {print $NF}'</span><span class="k">)</span><span class="s2">"</span>
+<span class="gp">$</span> <span class="nv">new_file_name</span><span class="o">=</span><span class="s2">"</span><span class="nv">$md5_code</span><span class="s2">.</span><span class="nv">$suffix_name</span><span class="s2">"</span>
+<span class="gp">$</span> <span class="nb">echo</span> <span class="nv">$new_file_name</span>
+<span class="go">95e25f85ee3b71cd17c921d88f2326bf.jpg</span>
+</pre>
+
+
 <p>有了 <code>new_file_name</code> 变量，接下来只需使用 <code>mv</code> 对 <code>foo.jpg</code> 重新命名：</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> mv foo.jpg <span class="nv">$new_file_name</span>
 </pre>
 
 
-<p>大功告成。</p>
+<p>大功告成……可以将上述命令所形成的过程以函数对其命名了，即</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="k">function</span> rename_by_md5 <span class="o">{</span>
+<span class="gp">&gt;</span>     <span class="nv">md5_info</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>md5sum foo.jpg<span class="k">)</span><span class="s2">"</span>
+<span class="gp">&gt;</span>     <span class="nv">md5_code</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'{print $1}'</span><span class="k">)</span><span class="s2">"</span>
+<span class="gp">&gt;</span>     <span class="nv">suffix_name</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'BEGIN{FS="."} {print $NF}'</span><span class="k">)</span><span class="s2">"</span>
+<span class="gp">&gt;</span>     <span class="nv">new_file_name</span><span class="o">=</span><span class="s2">"</span><span class="nv">$md5_code</span><span class="s2">.</span><span class="nv">$suffix_name</span><span class="s2">"</span>
+<span class="gp">&gt;</span>     mv foo.jpg <span class="nv">$new_file_name</span>
+<span class="gp">&gt;</span> <span class="o">}</span>
+</pre>
+
+
+<blockquote>
+<p><strong>注</strong>：倘若你想亲手在终端里输入上述代码，不要忘记，<code>$</code> 是一级命令提示符，<code>&gt;</code> 是二级命令提示符，它们不必输入。</p>
+</blockquote>
+<p><code>rename_by_md5</code> 便是 <code>{</code> 和 <code>}</code> 所包围的这组命令的名字。在终端里，可以像命令那样使用这个名字，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> rename_by_md5
+</pre>
+
+
+<p>结果便会将当前目录的 foo.jpg 重新命名为 95e25f85ee3b71cd17c921d88f2326bf.jpg。如果接下来再次使用这个名字，Bash 便会抱怨，没有 foo.jpg 这个文件：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> rename_by_md5
+<span class="go">d5sum: foo.jpg: No such file or directory</span>
+<span class="go">mv: cannot stat 'foo.jpg': No such file or directory</span>
+</pre>
+
+
+<p>这是因为 <code>rename_by_md5</code> 所指代的过程只能对 foo.jpg 文件重新命名。若已经对 foo.jpg 完成了重新命名，那么 foo.jpg 就不存在了，所以再次使用 <code>rename_by_md5</code>，便失效了。这样不好。函数应当能够变量那样，一经定义，便可重复使用。函数的重复使用，对于 <code>rename_by_md5</code> 意味着什么呢？意味着它所指代的过程不应当仅依赖 foo.jpg，而应当将这个过程所处理的文件名视为一个未知数。学过中学数学的我们应当很容易理解，函数的自变量就是未知数。上面定义的 <code>rename_by_md5</code> 里没有自变量，因此它虽然是函数，但实际上是一个常函数。</p>
+<p>在 Bash 语言里，函数的自变量不像我们在数学里所熟悉的 <code>x</code>、<code>y</code>、<code>z</code> 这些 ，而是 <code>1</code>、<code>2</code>、<code>3</code>……它们皆为变量，若获得它们指代的数据，需要用 <code>$</code>。掌握了这一知识，可对上述的 <code>rename_by_md5</code> 予以修改</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="k">function</span> rename_by_md5 <span class="o">{</span>
+<span class="gp">&gt;</span>     <span class="nv">md5_info</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>md5sum <span class="nv">$1</span><span class="k">)</span><span class="s2">"</span>
+<span class="gp">&gt;</span>     <span class="nv">md5_code</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'{print $1}'</span><span class="k">)</span><span class="s2">"</span>
+<span class="gp">&gt;</span>     <span class="nv">suffix_name</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'BEGIN{FS="."} {print $NF}'</span><span class="k">)</span><span class="s2">"</span>
+<span class="gp">&gt;</span>     <span class="nv">new_file_name</span><span class="o">=</span><span class="s2">"</span><span class="nv">$md5_code</span><span class="s2">.</span><span class="nv">$suffix_name</span><span class="s2">"</span>
+<span class="gp">&gt;</span>     mv <span class="nv">$1</span> <span class="nv">$new_file_name</span>
+<span class="gp">&gt;</span> <span class="o">}</span>
+</pre>
+
+
+<p>亦即，将 <code>rename_by_md5</code> 原定义中出现那的 <code>foo.jpg</code> 全部更换为 <code>$1</code>，值得注意的是，这个 <code>$1</code> 与 <code>awk</code> 命令中的 <code>$1</code> 并不相同，而且 <code>awk</code> 命令也不会理睬前者。</p>
+<p>现在的 <code>rename_by_md5</code> 可以用于任何文件的重新命名，例如：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> rename_by_md5 foo.jpg
+<span class="gp">$</span> rename_by_md5 bar.jpg
+</pre>
+
+
+<p><code>rename_by_md5</code> 的定义中的 <code>$1</code> 所指代的值便是在上述命令中的输入数据。这样的输入数据称为函数的参数。会写支持一个参数的函数，想必写支持两个、三个或更多个参数的函数，并不难吧？不难。</p>
+<h2>脚本</h2>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/some-minor-operation-for-videos.html" class="u-url">为视频做小手术</a></h1>

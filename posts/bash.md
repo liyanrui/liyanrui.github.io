@@ -573,13 +573,76 @@ $ echo $new_file_name
 95e25f85ee3b71cd17c921d88f2326bf.jpg
 ```
 
+上述 `new_file_name` 的定义很长，不便理解，可以像下面这样多用两个变量对较长的变量定义以予以拆分：
+
+```console
+$ md5_code="$(echo $md5_info | awk '{print $1}')"
+$ suffix_name="$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"
+$ new_file_name="$md5_code.$suffix_name"
+$ echo $new_file_name
+95e25f85ee3b71cd17c921d88f2326bf.jpg
+```
+
 有了 `new_file_name` 变量，接下来只需使用 `mv` 对 `foo.jpg` 重新命名：
 
 ```console
 $ mv foo.jpg $new_file_name
 ```
 
-大功告成。
+大功告成……可以将上述命令所形成的过程以函数对其命名了，即
+
+```console
+$ function rename_by_md5 {
+>     md5_info="$(md5sum foo.jpg)"
+>     md5_code="$(echo $md5_info | awk '{print $1}')"
+>     suffix_name="$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"
+>     new_file_name="$md5_code.$suffix_name"
+>     mv foo.jpg $new_file_name
+> }
+```
+
+> **注**：倘若你想亲手在终端里输入上述代码，不要忘记，`$` 是一级命令提示符，`>` 是二级命令提示符，它们不必输入。
+
+`rename_by_md5` 便是 `{` 和 `}` 所包围的这组命令的名字。在终端里，可以像命令那样使用这个名字，
+
+```console
+$ rename_by_md5
+```
+
+结果便会将当前目录的 foo.jpg 重新命名为 95e25f85ee3b71cd17c921d88f2326bf.jpg。如果接下来再次使用这个名字，Bash 便会抱怨，没有 foo.jpg 这个文件：
+
+```console
+$ rename_by_md5
+d5sum: foo.jpg: No such file or directory
+mv: cannot stat 'foo.jpg': No such file or directory
+```
+
+这是因为 `rename_by_md5` 所指代的过程只能对 foo.jpg 文件重新命名。若已经对 foo.jpg 完成了重新命名，那么 foo.jpg 就不存在了，所以再次使用 `rename_by_md5`，便失效了。这样不好。函数应当能够变量那样，一经定义，便可重复使用。函数的重复使用，对于 `rename_by_md5` 意味着什么呢？意味着它所指代的过程不应当仅依赖 foo.jpg，而应当将这个过程所处理的文件名视为一个未知数。学过中学数学的我们应当很容易理解，函数的自变量就是未知数。上面定义的 `rename_by_md5` 里没有自变量，因此它虽然是函数，但实际上是一个常函数。
+
+在 Bash 语言里，函数的自变量不像我们在数学里所熟悉的 `x`、`y`、`z` 这些 ，而是 `1`、`2`、`3`……它们皆为变量，若获得它们指代的数据，需要用 `$`。掌握了这一知识，可对上述的 `rename_by_md5` 予以修改
+
+```console
+$ function rename_by_md5 {
+>     md5_info="$(md5sum $1)"
+>     md5_code="$(echo $md5_info | awk '{print $1}')"
+>     suffix_name="$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"
+>     new_file_name="$md5_code.$suffix_name"
+>     mv $1 $new_file_name
+> }
+```
+
+亦即，将 `rename_by_md5` 原定义中出现那的 `foo.jpg` 全部更换为 `$1`，值得注意的是，这个 `$1` 与 `awk` 命令中的 `$1` 并不相同，而且 `awk` 命令也不会理睬前者。
+
+现在的 `rename_by_md5` 可以用于任何文件的重新命名，例如：
+
+```console
+$ rename_by_md5 foo.jpg
+$ rename_by_md5 bar.jpg
+```
+
+`rename_by_md5` 的定义中的 `$1` 所指代的值便是在上述命令中的输入数据。这样的输入数据称为函数的参数。会写支持一个参数的函数，想必写支持两个、三个或更多个参数的函数，并不难吧？不难。
+
+# 脚本
 
 
 
