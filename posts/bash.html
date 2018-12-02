@@ -482,23 +482,23 @@ No
 
 
 <p>利用 Bash 的子 Shell，便可以将上述两条命令合并到一个新的变量的定义中，即</p>
-<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nv">new_file_name</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'{print $1}'</span><span class="k">)</span><span class="s2">.</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'BEGIN{FS="."} {print $NF}'</span><span class="k">)</span><span class="s2">"</span>
-<span class="gp">$</span> <span class="nb">echo</span> <span class="nv">$new_file_name</span>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nv">new_name</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'{print $1}'</span><span class="k">)</span><span class="s2">.</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'BEGIN{FS="."} {print $NF}'</span><span class="k">)</span><span class="s2">"</span>
+<span class="gp">$</span> <span class="nb">echo</span> <span class="nv">$new_name</span>
 <span class="go">95e25f85ee3b71cd17c921d88f2326bf.jpg</span>
 </pre>
 
 
-<p>上述 <code>new_file_name</code> 的定义很长，不便理解，可以像下面这样多用两个变量对较长的变量定义以予以拆分：</p>
+<p>上述 <code>new_name</code> 的定义很长，不便理解，可以像下面这样多用两个变量对较长的变量定义以予以拆分：</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nv">md5_code</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'{print $1}'</span><span class="k">)</span><span class="s2">"</span>
 <span class="gp">$</span> <span class="nv">suffix_name</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'BEGIN{FS="."} {print $NF}'</span><span class="k">)</span><span class="s2">"</span>
-<span class="gp">$</span> <span class="nv">new_file_name</span><span class="o">=</span><span class="s2">"</span><span class="nv">$md5_code</span><span class="s2">.</span><span class="nv">$suffix_name</span><span class="s2">"</span>
-<span class="gp">$</span> <span class="nb">echo</span> <span class="nv">$new_file_name</span>
+<span class="gp">$</span> <span class="nv">new_name</span><span class="o">=</span><span class="s2">"</span><span class="nv">$md5_code</span><span class="s2">.</span><span class="nv">$suffix_name</span><span class="s2">"</span>
+<span class="gp">$</span> <span class="nb">echo</span> <span class="nv">$new_name</span>
 <span class="go">95e25f85ee3b71cd17c921d88f2326bf.jpg</span>
 </pre>
 
 
-<p>有了 <code>new_file_name</code> 变量，接下来只需使用 <code>mv</code> 对 <code>foo.jpg</code> 重新命名：</p>
-<pre class="code literal-block"><span></span><span class="gp">$</span> mv foo.jpg <span class="nv">$new_file_name</span>
+<p>有了 <code>new_name</code> 变量，接下来只需使用 <code>mv</code> 对 <code>foo.jpg</code> 重新命名：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> mv foo.jpg <span class="nv">$new_name</span>
 </pre>
 
 
@@ -507,8 +507,8 @@ No
 <span class="gp">&gt;</span>     <span class="nv">md5_info</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>md5sum foo.jpg<span class="k">)</span><span class="s2">"</span>
 <span class="gp">&gt;</span>     <span class="nv">md5_code</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'{print $1}'</span><span class="k">)</span><span class="s2">"</span>
 <span class="gp">&gt;</span>     <span class="nv">suffix_name</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'BEGIN{FS="."} {print $NF}'</span><span class="k">)</span><span class="s2">"</span>
-<span class="gp">&gt;</span>     <span class="nv">new_file_name</span><span class="o">=</span><span class="s2">"</span><span class="nv">$md5_code</span><span class="s2">.</span><span class="nv">$suffix_name</span><span class="s2">"</span>
-<span class="gp">&gt;</span>     mv foo.jpg <span class="nv">$new_file_name</span>
+<span class="gp">&gt;</span>     <span class="nv">new_name</span><span class="o">=</span><span class="s2">"</span><span class="nv">$md5_code</span><span class="s2">.</span><span class="nv">$suffix_name</span><span class="s2">"</span>
+<span class="gp">&gt;</span>     mv foo.jpg <span class="nv">$new_name</span>
 <span class="gp">&gt;</span> <span class="o">}</span>
 </pre>
 
@@ -534,8 +534,8 @@ No
 <span class="gp">&gt;</span>     <span class="nv">md5_info</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>md5sum <span class="nv">$1</span><span class="k">)</span><span class="s2">"</span>
 <span class="gp">&gt;</span>     <span class="nv">md5_code</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'{print $1}'</span><span class="k">)</span><span class="s2">"</span>
 <span class="gp">&gt;</span>     <span class="nv">suffix_name</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'BEGIN{FS="."} {print $NF}'</span><span class="k">)</span><span class="s2">"</span>
-<span class="gp">&gt;</span>     <span class="nv">new_file_name</span><span class="o">=</span><span class="s2">"</span><span class="nv">$md5_code</span><span class="s2">.</span><span class="nv">$suffix_name</span><span class="s2">"</span>
-<span class="gp">&gt;</span>     mv <span class="nv">$1</span> <span class="nv">$new_file_name</span>
+<span class="gp">&gt;</span>     <span class="nv">new_name</span><span class="o">=</span><span class="s2">"</span><span class="nv">$md5_code</span><span class="s2">.</span><span class="nv">$suffix_name</span><span class="s2">"</span>
+<span class="gp">&gt;</span>     mv <span class="nv">$1</span> <span class="nv">$new_name</span>
 <span class="gp">&gt;</span> <span class="o">}</span>
 </pre>
 
@@ -625,6 +625,56 @@ No
 
 <p>在我的机器里，<code>~/.myscript</code> 便是 <code>/home/garfileo/.myscript</code>，将这个目录添加到 <code>PATH</code> 所指代的目录列表之后，每当我在终端中输入 <code>foo</code>，Bash 便会从 <code>$PATH</code> 里的目录查找与命令 <code>foo</code> 同名的具有可执行权限的文件，然后将其作为程序运行。</p>
 <p>现在可以试着在 ~/.myscript 目录写一份名为 rename_by_md5 的脚本了！</p>
+<h2>Here Document</h2>
+<p>不过，在你打开一个文本编辑器，打算在 ~/.myscript 创建一份名为 rename_by_md5 的脚本文件之前，我觉得有必要给出使用 <code>cat</code> 命令写简单文件的方法：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> cat <span class="s">&lt;&lt; 'EOF' &gt; ~/.myscript/rename_by_md5</span>
+<span class="gp">&gt;</span><span class="s"> #!/bin/bash</span>
+<span class="gp">&gt;</span><span class="s"> function rename_by_md5 {</span>
+<span class="gp">&gt;</span><span class="s">     md5_info="$(md5sum $1)"</span>
+<span class="gp">&gt;</span><span class="s">     md5_code="$(echo $md5_info | awk '{print $1}')"</span>
+<span class="gp">&gt;</span><span class="s">     suffix_name="$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"</span>
+<span class="gp">&gt;</span><span class="s">     new_name="$md5_code.$suffix_name"</span>
+<span class="gp">&gt;</span><span class="s">     mv $1 $new_name</span>
+<span class="gp">&gt;</span><span class="s"> }</span>
+<span class="gp">&gt;</span><span class="s"> rename_by_md5 $1</span>
+<span class="gp">&gt;</span><span class="s"> EOF</span>
+</pre>
+
+
+<p>Bash 将这种写文件的方法称为 Here Document。命令中的第一个 <code>EOF</code>，用于设定文件的结束标志。第二个 <code>EOF</code> 意味着写文件过程至此终止。可以使用自己喜欢的标志代替 <code>EOF</code>。例如，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> cat <span class="s">&lt;&lt; '很任性地结束' &gt; ~/.myscript/rename_by_md5</span>
+<span class="gp">&gt;</span><span class="s"> #!/bin/bash</span>
+<span class="gp">&gt;</span><span class="s"> ... ... ...</span>
+<span class="gp">&gt;</span><span class="s"> rename_by_md5 $1</span>
+<span class="gp">&gt;</span><span class="s"> 很任性地结束</span>
+</pre>
+
+
+<p>注意，设定文件结束标志时，单引号字串形式的标志并非必须，但是单引号能够阻止 Bash 对正要写入文件的内容中的一些对它具有特殊含义的字符自作聪明地予以替换。</p>
+<p>执行上述写文件的命令之后，可以使用 <code>cat</code> 查看 ~/.myscript/rename_by_md5：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> cat ~/.myscript/rename_by_md5
+<span class="gp">#</span>!/bin/bash
+<span class="go">function rename_by_md5 {</span>
+<span class="go">    md5_info="$(md5sum $1)"</span>
+<span class="go">    md5_code="$(echo $md5_info | awk '{print $1}')"</span>
+<span class="go">    suffix_name="$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"</span>
+<span class="go">    new_name="$md5_code.$suffix_name"</span>
+<span class="go">    mv $1 $new_name</span>
+<span class="go">}</span>
+<span class="go">rename_by_md5 $1</span>
+</pre>
+
+
+<h2>四两拨千斤</h2>
+<p>如果当前目录里有几千份图片文件需要用 <code>rename_by_md5</code> 命令进行重新命名，该如何做呢？现在，对于我们而言，只费吹灰之力而已，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="k">for</span> i in *<span class="p">;</span> <span class="k">do</span> rename_by_md5 <span class="nv">$i</span><span class="p">;</span> <span class="k">done</span>
+</pre>
+
+
+<p>这个例子展示了 <code>for</code> 循环的另一种形式。<code>for i in *</code> 的意思是「对当前目录中的任一份文件 i」。对当前目录中的任一份文件做什么？「<code>rename_by_md5 $i</code>」。</p>
+<h2>结语</h2>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">exit</span>
+</pre>
 </div>
     </div>
     <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">

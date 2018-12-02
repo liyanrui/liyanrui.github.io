@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 Linux)</title><link>/</link><description></description><atom:link href="/categories/cat_linux.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Sun, 02 Dec 2018 03:48:09 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bash 记</title><link>/posts/bash.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;h2&gt;说和指&lt;/h2&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 Linux)</title><link>/</link><description></description><atom:link href="/categories/cat_linux.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Sun, 02 Dec 2018 04:14:37 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bash 记</title><link>/posts/bash.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;h2&gt;说和指&lt;/h2&gt;
 &lt;p&gt;若让计算机理解我的意图，可以有两种方式，说和指。这与生活中我为了让他人能够理解我的意图所采用的方式相似。譬如，我想让朋友去超市帮我买瓶饮料，我可以使用祈使句，「帮我去超市买瓶可乐，如何？」我也可以把他领到超市门口，指一下超市，然后再把他领进超市，指一下饮料柜里的一瓶可乐，然后再指一下他口袋里的钱包。基于说的方式让计算机理解我的意图，就是向计算机输入一些命令，计算机则通过命令解释程序理解我的意图。基于指的方式让计算机理解我的意图，就是通过鼠标、触摸屏之类的交互设备，向计算机输入一些坐标信息，计算机则通过图形界面程序理解我的意图。&lt;/p&gt;
 &lt;p&gt;在生活中，人们通常会喜欢通过说的方式让他人理解自己的意图，只有在难以言说的时候，才会考虑用指的办法。这是因为我们已经掌握了一门与他人沟通交流所用的语言，利用这种语言让他人理解我们的意图，是成本最低的方法。但是对于计算机而言，由于大多数人通常没有机会学习计算机可以理解的语言，因此对于他们而言，采取指的方式让计算机理解他们的意图则是成本最低的方法。因为这个缘故，大多数人喜欢以图形界面交互的方式使用计算机，因为他们觉得学习一门计算机语言，成本太高。倘若将一门计算机语言列入小学课程，或许孩子们长大后与计算机的沟通便不再像现代人这样过度依赖图形界面交互方式。&lt;/p&gt;
 &lt;p&gt;图形界面与命令并不冲突。我们教孩子说话，一开始也是以指物的方式，让孩子获得了基本的语言交流能力，在这个基础上再教他们识文断字。图形界面程序为计算机的普及作出了很大贡献，但是在这个基础上，若想让计算机更准确、高效地理解我们的意图，那么便需要学习一门计算机语言了。&lt;/p&gt;
@@ -422,23 +422,23 @@ No
 
 
 &lt;p&gt;利用 Bash 的子 Shell，便可以将上述两条命令合并到一个新的变量的定义中，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nv"&gt;new_file_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$md5_info&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;'{print $1}'&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;.&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$md5_info&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;'BEGIN{FS="."} {print $NF}'&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
-&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$new_file_name&lt;/span&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nv"&gt;new_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$md5_info&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;'{print $1}'&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;.&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$md5_info&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;'BEGIN{FS="."} {print $NF}'&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$new_name&lt;/span&gt;
 &lt;span class="go"&gt;95e25f85ee3b71cd17c921d88f2326bf.jpg&lt;/span&gt;
 &lt;/pre&gt;
 
 
-&lt;p&gt;上述 &lt;code&gt;new_file_name&lt;/code&gt; 的定义很长，不便理解，可以像下面这样多用两个变量对较长的变量定义以予以拆分：&lt;/p&gt;
+&lt;p&gt;上述 &lt;code&gt;new_name&lt;/code&gt; 的定义很长，不便理解，可以像下面这样多用两个变量对较长的变量定义以予以拆分：&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nv"&gt;md5_code&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$md5_info&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;'{print $1}'&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
 &lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nv"&gt;suffix_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$md5_info&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;'BEGIN{FS="."} {print $NF}'&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
-&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nv"&gt;new_file_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$md5_code&lt;/span&gt;&lt;span class="s2"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;$suffix_name&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
-&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$new_file_name&lt;/span&gt;
+&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nv"&gt;new_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$md5_code&lt;/span&gt;&lt;span class="s2"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;$suffix_name&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$new_name&lt;/span&gt;
 &lt;span class="go"&gt;95e25f85ee3b71cd17c921d88f2326bf.jpg&lt;/span&gt;
 &lt;/pre&gt;
 
 
-&lt;p&gt;有了 &lt;code&gt;new_file_name&lt;/code&gt; 变量，接下来只需使用 &lt;code&gt;mv&lt;/code&gt; 对 &lt;code&gt;foo.jpg&lt;/code&gt; 重新命名：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; mv foo.jpg &lt;span class="nv"&gt;$new_file_name&lt;/span&gt;
+&lt;p&gt;有了 &lt;code&gt;new_name&lt;/code&gt; 变量，接下来只需使用 &lt;code&gt;mv&lt;/code&gt; 对 &lt;code&gt;foo.jpg&lt;/code&gt; 重新命名：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; mv foo.jpg &lt;span class="nv"&gt;$new_name&lt;/span&gt;
 &lt;/pre&gt;
 
 
@@ -447,8 +447,8 @@ No
 &lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     &lt;span class="nv"&gt;md5_info&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;md5sum foo.jpg&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
 &lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     &lt;span class="nv"&gt;md5_code&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$md5_info&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;'{print $1}'&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
 &lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     &lt;span class="nv"&gt;suffix_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$md5_info&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;'BEGIN{FS="."} {print $NF}'&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
-&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     &lt;span class="nv"&gt;new_file_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$md5_code&lt;/span&gt;&lt;span class="s2"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;$suffix_name&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
-&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     mv foo.jpg &lt;span class="nv"&gt;$new_file_name&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     &lt;span class="nv"&gt;new_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$md5_code&lt;/span&gt;&lt;span class="s2"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;$suffix_name&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     mv foo.jpg &lt;span class="nv"&gt;$new_name&lt;/span&gt;
 &lt;span class="gp"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/pre&gt;
 
@@ -474,8 +474,8 @@ No
 &lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     &lt;span class="nv"&gt;md5_info&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;md5sum &lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
 &lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     &lt;span class="nv"&gt;md5_code&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$md5_info&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;'{print $1}'&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
 &lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     &lt;span class="nv"&gt;suffix_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$md5_info&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;'BEGIN{FS="."} {print $NF}'&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
-&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     &lt;span class="nv"&gt;new_file_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$md5_code&lt;/span&gt;&lt;span class="s2"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;$suffix_name&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
-&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     mv &lt;span class="nv"&gt;$1&lt;/span&gt; &lt;span class="nv"&gt;$new_file_name&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     &lt;span class="nv"&gt;new_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="nv"&gt;$md5_code&lt;/span&gt;&lt;span class="s2"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;$suffix_name&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;     mv &lt;span class="nv"&gt;$1&lt;/span&gt; &lt;span class="nv"&gt;$new_name&lt;/span&gt;
 &lt;span class="gp"&gt;&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/pre&gt;
 
@@ -564,7 +564,57 @@ No
 
 
 &lt;p&gt;在我的机器里，&lt;code&gt;~/.myscript&lt;/code&gt; 便是 &lt;code&gt;/home/garfileo/.myscript&lt;/code&gt;，将这个目录添加到 &lt;code&gt;PATH&lt;/code&gt; 所指代的目录列表之后，每当我在终端中输入 &lt;code&gt;foo&lt;/code&gt;，Bash 便会从 &lt;code&gt;$PATH&lt;/code&gt; 里的目录查找与命令 &lt;code&gt;foo&lt;/code&gt; 同名的具有可执行权限的文件，然后将其作为程序运行。&lt;/p&gt;
-&lt;p&gt;现在可以试着在 ~/.myscript 目录写一份名为 rename_by_md5 的脚本了！&lt;/p&gt;&lt;/div&gt;</description><category>Bash</category><guid>/posts/bash.html</guid><pubDate>Tue, 27 Nov 2018 09:04:06 GMT</pubDate></item><item><title>为视频做小手术</title><link>/posts/some-minor-operation-for-videos.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;FFmpeg 命令的一般格式为：&lt;/p&gt;
+&lt;p&gt;现在可以试着在 ~/.myscript 目录写一份名为 rename_by_md5 的脚本了！&lt;/p&gt;
+&lt;h2&gt;Here Document&lt;/h2&gt;
+&lt;p&gt;不过，在你打开一个文本编辑器，打算在 ~/.myscript 创建一份名为 rename_by_md5 的脚本文件之前，我觉得有必要给出使用 &lt;code&gt;cat&lt;/code&gt; 命令写简单文件的方法：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; cat &lt;span class="s"&gt;&amp;lt;&amp;lt; 'EOF' &amp;gt; ~/.myscript/rename_by_md5&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt; #!/bin/bash&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt; function rename_by_md5 {&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt;     md5_info="$(md5sum $1)"&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt;     md5_code="$(echo $md5_info | awk '{print $1}')"&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt;     suffix_name="$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt;     new_name="$md5_code.$suffix_name"&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt;     mv $1 $new_name&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt; }&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt; rename_by_md5 $1&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt; EOF&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;Bash 将这种写文件的方法称为 Here Document。命令中的第一个 &lt;code&gt;EOF&lt;/code&gt;，用于设定文件的结束标志。第二个 &lt;code&gt;EOF&lt;/code&gt; 意味着写文件过程至此终止。可以使用自己喜欢的标志代替 &lt;code&gt;EOF&lt;/code&gt;。例如，&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; cat &lt;span class="s"&gt;&amp;lt;&amp;lt; '很任性地结束' &amp;gt; ~/.myscript/rename_by_md5&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt; #!/bin/bash&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt; ... ... ...&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt; rename_by_md5 $1&lt;/span&gt;
+&lt;span class="gp"&gt;&amp;gt;&lt;/span&gt;&lt;span class="s"&gt; 很任性地结束&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;注意，设定文件结束标志时，单引号字串形式的标志并非必须，但是单引号能够阻止 Bash 对正要写入文件的内容中的一些对它具有特殊含义的字符自作聪明地予以替换。&lt;/p&gt;
+&lt;p&gt;执行上述写文件的命令之后，可以使用 &lt;code&gt;cat&lt;/code&gt; 查看 ~/.myscript/rename_by_md5：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; cat ~/.myscript/rename_by_md5
+&lt;span class="gp"&gt;#&lt;/span&gt;!/bin/bash
+&lt;span class="go"&gt;function rename_by_md5 {&lt;/span&gt;
+&lt;span class="go"&gt;    md5_info="$(md5sum $1)"&lt;/span&gt;
+&lt;span class="go"&gt;    md5_code="$(echo $md5_info | awk '{print $1}')"&lt;/span&gt;
+&lt;span class="go"&gt;    suffix_name="$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"&lt;/span&gt;
+&lt;span class="go"&gt;    new_name="$md5_code.$suffix_name"&lt;/span&gt;
+&lt;span class="go"&gt;    mv $1 $new_name&lt;/span&gt;
+&lt;span class="go"&gt;}&lt;/span&gt;
+&lt;span class="go"&gt;rename_by_md5 $1&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;h2&gt;四两拨千斤&lt;/h2&gt;
+&lt;p&gt;如果当前目录里有几千份图片文件需要用 &lt;code&gt;rename_by_md5&lt;/code&gt; 命令进行重新命名，该如何做呢？现在，对于我们而言，只费吹灰之力而已，&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; i in *&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; rename_by_md5 &lt;span class="nv"&gt;$i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;done&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;这个例子展示了 &lt;code&gt;for&lt;/code&gt; 循环的另一种形式。&lt;code&gt;for i in *&lt;/code&gt; 的意思是「对当前目录中的任一份文件 i」。对当前目录中的任一份文件做什么？「&lt;code&gt;rename_by_md5 $i&lt;/code&gt;」。&lt;/p&gt;
+&lt;h2&gt;结语&lt;/h2&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</description><category>Bash</category><guid>/posts/bash.html</guid><pubDate>Tue, 27 Nov 2018 09:04:06 GMT</pubDate></item><item><title>为视频做小手术</title><link>/posts/some-minor-operation-for-videos.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;FFmpeg 命令的一般格式为：&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg &lt;span class="o"&gt;[&lt;/span&gt;全局选项&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;输入选项&lt;span class="o"&gt;]&lt;/span&gt; -i input.mp4 &lt;span class="o"&gt;[&lt;/span&gt;输出选项&lt;span class="o"&gt;]&lt;/span&gt; output.mp4
 &lt;/pre&gt;
 
