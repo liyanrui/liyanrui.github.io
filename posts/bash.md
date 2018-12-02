@@ -568,25 +568,25 @@ jpg
 利用 Bash 的子 Shell，便可以将上述两条命令合并到一个新的变量的定义中，即
 
 ```console
-$ new_file_name="$(echo $md5_info | awk '{print $1}').$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"
-$ echo $new_file_name
+$ new_name="$(echo $md5_info | awk '{print $1}').$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"
+$ echo $new_name
 95e25f85ee3b71cd17c921d88f2326bf.jpg
 ```
 
-上述 `new_file_name` 的定义很长，不便理解，可以像下面这样多用两个变量对较长的变量定义以予以拆分：
+上述 `new_name` 的定义很长，不便理解，可以像下面这样多用两个变量对较长的变量定义以予以拆分：
 
 ```console
 $ md5_code="$(echo $md5_info | awk '{print $1}')"
 $ suffix_name="$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"
-$ new_file_name="$md5_code.$suffix_name"
-$ echo $new_file_name
+$ new_name="$md5_code.$suffix_name"
+$ echo $new_name
 95e25f85ee3b71cd17c921d88f2326bf.jpg
 ```
 
-有了 `new_file_name` 变量，接下来只需使用 `mv` 对 `foo.jpg` 重新命名：
+有了 `new_name` 变量，接下来只需使用 `mv` 对 `foo.jpg` 重新命名：
 
 ```console
-$ mv foo.jpg $new_file_name
+$ mv foo.jpg $new_name
 ```
 
 大功告成……可以将上述命令所形成的过程以函数对其命名了，即
@@ -596,8 +596,8 @@ $ function rename_by_md5 {
 >     md5_info="$(md5sum foo.jpg)"
 >     md5_code="$(echo $md5_info | awk '{print $1}')"
 >     suffix_name="$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"
->     new_file_name="$md5_code.$suffix_name"
->     mv foo.jpg $new_file_name
+>     new_name="$md5_code.$suffix_name"
+>     mv foo.jpg $new_name
 > }
 ```
 
@@ -626,8 +626,8 @@ $ function rename_by_md5 {
 >     md5_info="$(md5sum $1)"
 >     md5_code="$(echo $md5_info | awk '{print $1}')"
 >     suffix_name="$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"
->     new_file_name="$md5_code.$suffix_name"
->     mv $1 $new_file_name
+>     new_name="$md5_code.$suffix_name"
+>     mv $1 $new_name
 > }
 ```
 
@@ -737,6 +737,68 @@ $ echo $?
 在我的机器里，`~/.myscript` 便是 `/home/garfileo/.myscript`，将这个目录添加到 `PATH` 所指代的目录列表之后，每当我在终端中输入 `foo`，Bash 便会从 `$PATH` 里的目录查找与命令 `foo` 同名的具有可执行权限的文件，然后将其作为程序运行。
 
 现在可以试着在 ~/.myscript 目录写一份名为 rename_by_md5 的脚本了！
+
+# Here Document
+
+不过，在你打开一个文本编辑器，打算在 ~/.myscript 创建一份名为 rename_by_md5 的脚本文件之前，我觉得有必要给出使用 `cat` 命令写简单文件的方法：
+
+```console
+$ cat << 'EOF' > ~/.myscript/rename_by_md5
+> #!/bin/bash
+> function rename_by_md5 {
+>     md5_info="$(md5sum $1)"
+>     md5_code="$(echo $md5_info | awk '{print $1}')"
+>     suffix_name="$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"
+>     new_name="$md5_code.$suffix_name"
+>     mv $1 $new_name
+> }
+> rename_by_md5 $1
+> EOF
+```
+
+Bash 将这种写文件的方法称为 Here Document。命令中的第一个 `EOF`，用于设定文件的结束标志。第二个 `EOF` 意味着写文件过程至此终止。可以使用自己喜欢的标志代替 `EOF`。例如，
+
+```console
+$ cat << '很任性地结束' > ~/.myscript/rename_by_md5
+> #!/bin/bash
+> ... ... ...
+> rename_by_md5 $1
+> 很任性地结束
+```
+
+注意，设定文件结束标志时，单引号字串形式的标志并非必须，但是单引号能够阻止 Bash 对正要写入文件的内容中的一些对它具有特殊含义的字符自作聪明地予以替换。
+
+执行上述写文件的命令之后，可以使用 `cat` 查看 ~/.myscript/rename_by_md5：
+
+```console
+$ cat ~/.myscript/rename_by_md5
+#!/bin/bash
+function rename_by_md5 {
+    md5_info="$(md5sum $1)"
+    md5_code="$(echo $md5_info | awk '{print $1}')"
+    suffix_name="$(echo $md5_info | awk 'BEGIN{FS="."} {print $NF}')"
+    new_name="$md5_code.$suffix_name"
+    mv $1 $new_name
+}
+rename_by_md5 $1
+```
+
+
+# 四两拨千斤
+
+如果当前目录里有几千份图片文件需要用 `rename_by_md5` 命令进行重新命名，该如何做呢？现在，对于我们而言，只费吹灰之力而已，
+
+```console
+$ for i in *; do rename_by_md5 $i; done
+```
+
+这个例子展示了 `for` 循环的另一种形式。`for i in *` 的意思是「对当前目录中的任一份文件 i」。对当前目录中的任一份文件做什么？「`rename_by_md5 $i`」。
+
+# 结语
+
+```console
+$ exit
+```
 
 [1]:/images/bash/01.png
 [2]:/images/bash/02.svg
