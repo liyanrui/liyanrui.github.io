@@ -72,20 +72,20 @@
 <p>终端是 Shell 的界面，人通过终端输入命令。Shell 从终端接到命令，然后理解命令，执行命令。不要忘记，Bash 是诸多 Shell 中的一种。</p>
 <p>在这个世界里，持着光，我注意的第一个东西是「<code>$</code>」，它的右面是一个不断明灭的矩形块，顶部是「<code>~</code>」。「<code>$</code>」称作命令提示符。闪烁的矩形块表示可以在此输入命令。「<code>~</code>」是我当前所在的位置——硬盘里的某个目录，亦即当前目录或当前工作目录。实际上 <code>~</code> 不过是 Bash 对我的个人主目录给出的简写，它的全称是「<code>/home/garfileo</code>」。倘若我此时正处于<code>/tmp</code> 目录，那么<code>$</code> 的顶部应当是「<code>/tmp</code>」。</p>
 <p><img alt="" src="../images/bash/01.png"></p>
-<p>对于终端的初始印象，你与我或许不同。若想看到我所看到的，需要在 <code>~/.bashrc</code> 文件里添加</p>
+<p>对于终端的初始印象，你与我或许不同。若想看到我所看到的，需要在 ~/.bashrc 文件里添加</p>
 <pre class="code literal-block"><span></span><span class="nv">PS1</span><span class="o">=</span><span class="s2">"\e[0;32m\w\e[0m\n</span>$<span class="s2"> "</span>
 </pre>
 
 
 <p><code>\e[0;32m</code> 和 <code>\e[0m</code> 皆为 Bash 世界里的颜色值，前者表示绿色，后者表示无色；当二者之间出现 <code>\w</code> 时，所产生的效果是设定 <code>\w</code> 为绿色，但是不影响 <code>\w</code> 以外的字符。<code>\w</code> 表示当前目录。<code>\n</code> 表示换行。这种咒语级的代码，足以令很多人望 Bash 而生畏或生厌了。不必担心，这样的咒语并不经常需要念。</p>
-<p>倘若我在 <code>~/.bashrc</code> 文件里删除上述对 <code>PS1</code> 的设定，那么我对终端的初始印象应当是 <code>$</code> 的顶部没有东西，左侧是「<code>garfileo@zero ~</code>」，右侧是那个不断明灭的矩形块。或许你会喜欢我对 <code>PS1</code> 所作出的上述设定，特别是在你企图在命令提示符的右侧输入很长的命令之时。</p>
+<p>倘若我在 ~/.bashrc 文件里删除上述对 <code>PS1</code> 的设定，那么我对终端的初始印象应当是 <code>$</code> 的顶部没有东西，左侧是「<code>garfileo@zero ~</code>」，右侧是那个不断明灭的矩形块。或许你会喜欢我对 <code>PS1</code> 所作出的上述设定，特别是在你企图在命令提示符的右侧输入很长的命令之时。</p>
 <h2>echo</h2>
-<p>倘若初次使用 Bash，也许尚不知如何向 <code>~/.bashrc</code> 文件添加</p>
+<p>倘若初次使用 Bash，也许尚不知如何向 ~/.bashrc 文件添加</p>
 <pre class="code literal-block"><span></span><span class="nv">PS1</span><span class="o">=</span><span class="s2">"\e[0;32m\w\e[0m\n</span>$<span class="s2"> "</span>
 </pre>
 
 
-<p>不过，现在运行 Bash 的操作系统大多提供了图形界面。可以图形界面式的文件管理器里找到 <code>.bashrc</code> 文件，然后使用一种图形界面式的文本编辑器打开这份文件，添加上述内容，然后再保存文件。这是我们刚开始使用计算机的时候就已经学会了的方法。但是，从现在开始可不必如此，因为类似的任务通过一些简单的命令便可完成。例如，要完成上述任务，只需在终端的命令提示符后输入</p>
+<p>不过，现在运行 Bash 的操作系统大多提供了图形界面。可以图形界面式的文件管理器里找到 .bashrc 文件，然后使用一种图形界面式的文本编辑器打开这份文件，添加上述内容，然后再保存文件。这是我们刚开始使用计算机的时候就已经学会了的方法。但是，从现在开始可不必如此，因为类似的任务通过一些简单的命令便可完成。例如，要完成上述任务，只需在终端的命令提示符后输入</p>
 <pre class="code literal-block"><span></span><span class="nb">echo</span> <span class="s1">'PS1="\e[0;32m\w\e[0m\n$ "'</span> &gt;&gt; ~/.bashrc
 </pre>
 
@@ -103,7 +103,7 @@
 
 <p>就像是对空旷寂静的山谷喊了一声「<code>PS1="\e[0;32m\w\e[0m\n$ "</code>」，然后山谷给出了回音，<code>echo</code> 命令得名于此。亦即，<code>echo</code> 只是将它所接受的文本不加改变地输出。</p>
 <p><img alt="" src="../images/bash/02.svg"></p>
-<p><code>echo</code> 本身是无用的。但是，当它的后面出现了 <code>&gt;&gt; ~/.bashrc</code> 时，它的输出便会被 <code>&gt;&gt;</code> 强行导入 <code>~/.bashrc</code> 文件，此时没用的 <code>echo</code> 便发挥了作用。天生我材必有用。</p>
+<p><code>echo</code> 本身是无用的。但是，当它的后面出现了 <code>&gt;&gt; ~/.bashrc</code> 时，它的输出便会被 <code>&gt;&gt;</code> 强行导入 ~/.bashrc 文件，此时没用的 <code>echo</code> 便发挥了作用。天生我材必有用。</p>
 <p><code>&gt;&gt;</code> 是输出重定向符，因为它可以将一个命令的输出导向到指定的文件。当 <code>&gt;&gt;</code> 在 <code>echo</code> 命令之后出现时，它是如何得知 <code>echo</code> 命令的输出的呢？对我们而言，<code>echo</code> 命令的输出是在终端里呈现出来的，难道 <code>&gt;&gt;</code> 也能像我们这样「看到」终端里的内容么？</p>
 <p>我们看到的，并非全部。我们所看到的 <code>echo</code> 的输出，实际上是 <code>echo</code> 在一份文件里写入的内容，这份文件的名字叫 stdout（标准输出）。终端从 stdout 读取内容并显示于屏幕。<code>&gt;&gt;</code> 也能从 stdout 读取内容并写入其他文件。这些是我们看不到的部分。</p>
 <h2>输入/输出重定向</h2>
@@ -118,7 +118,7 @@
 </pre>
 
 
-<p>执行这条命令之后，<code>~/.bashrc</code> 文件的全部内容便会被替换为「<code>\e[0;32m\w\e[0m\n$ "</code>」。</p>
+<p>执行这条命令之后，~/.bashrc 文件的全部内容便会被替换为「<code>\e[0;32m\w\e[0m\n$ "</code>」。</p>
 <p>任何命令，只要它能够向 stdout 输出信息，其输出皆能通过 <code>&gt;</code> 和 <code>&gt;&gt;</code> 写入到指定文件。倘若所指定的文件不存在，Bash 会自动创建。因此，不妨将 Bash 的输出重定向符视为对各种文本编辑器或字处理软件的「文件（File）」菜单里的「另存为（Save as）」功能的抽象。</p>
 <p>Bash 也提供了输入重定向符 <code>&lt;</code>，可将其视为对各种文本编辑器或字处理软件的「文件（File）」菜单里的「打开（Open）」功能的抽象。任何命令，只要它以 stdin 中的信息作为输入，皆能通过 <code>&lt;</code> 将指定文件中的信息作为输入，因为 <code>&lt;</code> 可将指定文件中的信息写入 stdin。例如，Bash 将 stdin 中的信息视为命令予以执行，倘若将某条命令写入一份文件，然后通过 <code>&lt;</code> 将该文件作为 Bash 的输入，所产生的效果是，Bash 会将这份文件中的内容视为命令并予以执行。以下命令模拟了这一过程：</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s1">'echo "Hello world!"'</span> &gt; /tmp/foo.sh
@@ -215,7 +215,7 @@
 </pre>
 
 
-<p>倘若期望这条 <code>echo</code> 命令能够输出 <code>$PS1</code>，那么结果就会令人失望了。这条命令输出的并非 <code>$PS1</code>，而是一开始我们在 <code>~/.bashrc</code> 文件中为 <code>PS1</code> 所设定的「<code>\e[0;32m\w\e[0m\n$</code>」。</p>
+<p>倘若期望这条 <code>echo</code> 命令能够输出 <code>$PS1</code>，那么结果就会令人失望了。这条命令输出的并非 <code>$PS1</code>，而是一开始我们在 ~/.bashrc 文件中为 <code>PS1</code> 所设定的「<code>\e[0;32m\w\e[0m\n$</code>」。</p>
 <p>单引号比双引号更为紧致，它可以阻止 Bash 对 <code>$PS1</code> 有其自己的理解。因此</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="s1">'$PS1'</span>
 </pre>
@@ -537,6 +537,14 @@ No
 
 <p><code>rename_by_md5</code> 的定义中的 <code>$1</code> 所指代的值便是在上述命令中的输入数据。这样的输入数据称为函数的参数。会写支持一个参数的函数，想必写支持两个、三个或更多个参数的函数，并不难吧？不难。</p>
 <h2>脚本</h2>
+<p>上一节所讨论的函数 <code>rename_by_md5</code>，是在一个终端里定义的。若终端关闭，再开启，这个函数的定义便不复存在。为了让它恒久地存在，可将其添加到 ~/.bashrc 文件里，然后</p>
+<pre class="code literal-block"><span></span>$ <span class="nb">source</span> ~/.bashrc
+</pre>
+
+
+<p>或者在下次启动终端之后，Bash 便知道 <code>rename_by_md5</code> 是已定义的函数。不过，另有更好的方法可令 <code>rename_by_md5</code> 恒久存在。</p>
+<p>为何放在 ~/.bashrc 中，Bash 便能得到函数的定义？不止如此，在上文中，我们也是在这份文件中定义了变量 <code>PS1</code>。想必在每次打开终端之时，终端里运行的 Bash 一定是读取了这份文件，并执行了文件中的命令。像 ~/.bashrc 这样的文件称为 Bash 脚本。我们也可以写与之类似的脚本，只是无法像 ~/.bashrc 那样特殊，在打开终端时就被 Bash 读取。不过也没必要那样特殊，因为已经有了 ~/.bashrc，而且我们也可以向它写入信息。</p>
+<p>自己写的 Bash 脚本，若它具备可执行权限，并且所在的目录位于 <code>PATH</code> 变量定义中的目录列表中，这份脚本文件的名字可以作为命令使用。写脚本的过程，通常称为脚本编程，意思是用脚本编写程序。或许你还不知道什么是文件的可执行权限以及 <code>PATH</code> 变量又是什么，也没什么。只需遵循下面的步骤，构造一份可以作为命令使用的脚本程序，在此基础上再去理解文件的可执行权限以及 <code>PATH</code> 变量便可事半功倍。</p>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/some-minor-operation-for-videos.html" class="u-url">为视频做小手术</a></h1>

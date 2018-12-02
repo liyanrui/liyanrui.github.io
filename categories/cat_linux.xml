@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 Linux)</title><link>/</link><description></description><atom:link href="/categories/cat_linux.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Sun, 02 Dec 2018 02:40:54 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bash 记</title><link>/posts/bash.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;h2&gt;说和指&lt;/h2&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>NULL (关于文章 Linux)</title><link>/</link><description></description><atom:link href="/categories/cat_linux.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2018 &lt;a href="mailto:garfileo@gmail.com"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Sun, 02 Dec 2018 03:10:50 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Bash 记</title><link>/posts/bash.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;h2&gt;说和指&lt;/h2&gt;
 &lt;p&gt;若让计算机理解我的意图，可以有两种方式，说和指。这与生活中我为了让他人能够理解我的意图所采用的方式相似。譬如，我想让朋友去超市帮我买瓶饮料，我可以使用祈使句，「帮我去超市买瓶可乐，如何？」我也可以把他领到超市门口，指一下超市，然后再把他领进超市，指一下饮料柜里的一瓶可乐，然后再指一下他口袋里的钱包。基于说的方式让计算机理解我的意图，就是向计算机输入一些命令，计算机则通过命令解释程序理解我的意图。基于指的方式让计算机理解我的意图，就是通过鼠标、触摸屏之类的交互设备，向计算机输入一些坐标信息，计算机则通过图形界面程序理解我的意图。&lt;/p&gt;
 &lt;p&gt;在生活中，人们通常会喜欢通过说的方式让他人理解自己的意图，只有在难以言说的时候，才会考虑用指的办法。这是因为我们已经掌握了一门与他人沟通交流所用的语言，利用这种语言让他人理解我们的意图，是成本最低的方法。但是对于计算机而言，由于大多数人通常没有机会学习计算机可以理解的语言，因此对于他们而言，采取指的方式让计算机理解他们的意图则是成本最低的方法。因为这个缘故，大多数人喜欢以图形界面交互的方式使用计算机，因为他们觉得学习一门计算机语言，成本太高。倘若将一门计算机语言列入小学课程，或许孩子们长大后与计算机的沟通便不再像现代人这样过度依赖图形界面交互方式。&lt;/p&gt;
 &lt;p&gt;图形界面与命令并不冲突。我们教孩子说话，一开始也是以指物的方式，让孩子获得了基本的语言交流能力，在这个基础上再教他们识文断字。图形界面程序为计算机的普及作出了很大贡献，但是在这个基础上，若想让计算机更准确、高效地理解我们的意图，那么便需要学习一门计算机语言了。&lt;/p&gt;
@@ -24,20 +24,20 @@
 &lt;p&gt;终端是 Shell 的界面，人通过终端输入命令。Shell 从终端接到命令，然后理解命令，执行命令。不要忘记，Bash 是诸多 Shell 中的一种。&lt;/p&gt;
 &lt;p&gt;在这个世界里，持着光，我注意的第一个东西是「&lt;code&gt;$&lt;/code&gt;」，它的右面是一个不断明灭的矩形块，顶部是「&lt;code&gt;~&lt;/code&gt;」。「&lt;code&gt;$&lt;/code&gt;」称作命令提示符。闪烁的矩形块表示可以在此输入命令。「&lt;code&gt;~&lt;/code&gt;」是我当前所在的位置——硬盘里的某个目录，亦即当前目录或当前工作目录。实际上 &lt;code&gt;~&lt;/code&gt; 不过是 Bash 对我的个人主目录给出的简写，它的全称是「&lt;code&gt;/home/garfileo&lt;/code&gt;」。倘若我此时正处于&lt;code&gt;/tmp&lt;/code&gt; 目录，那么&lt;code&gt;$&lt;/code&gt; 的顶部应当是「&lt;code&gt;/tmp&lt;/code&gt;」。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="/images/bash/01.png"&gt;&lt;/p&gt;
-&lt;p&gt;对于终端的初始印象，你与我或许不同。若想看到我所看到的，需要在 &lt;code&gt;~/.bashrc&lt;/code&gt; 文件里添加&lt;/p&gt;
+&lt;p&gt;对于终端的初始印象，你与我或许不同。若想看到我所看到的，需要在 ~/.bashrc 文件里添加&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;PS1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"\e[0;32m\w\e[0m\n&lt;/span&gt;$&lt;span class="s2"&gt; "&lt;/span&gt;
 &lt;/pre&gt;
 
 
 &lt;p&gt;&lt;code&gt;\e[0;32m&lt;/code&gt; 和 &lt;code&gt;\e[0m&lt;/code&gt; 皆为 Bash 世界里的颜色值，前者表示绿色，后者表示无色；当二者之间出现 &lt;code&gt;\w&lt;/code&gt; 时，所产生的效果是设定 &lt;code&gt;\w&lt;/code&gt; 为绿色，但是不影响 &lt;code&gt;\w&lt;/code&gt; 以外的字符。&lt;code&gt;\w&lt;/code&gt; 表示当前目录。&lt;code&gt;\n&lt;/code&gt; 表示换行。这种咒语级的代码，足以令很多人望 Bash 而生畏或生厌了。不必担心，这样的咒语并不经常需要念。&lt;/p&gt;
-&lt;p&gt;倘若我在 &lt;code&gt;~/.bashrc&lt;/code&gt; 文件里删除上述对 &lt;code&gt;PS1&lt;/code&gt; 的设定，那么我对终端的初始印象应当是 &lt;code&gt;$&lt;/code&gt; 的顶部没有东西，左侧是「&lt;code&gt;garfileo@zero ~&lt;/code&gt;」，右侧是那个不断明灭的矩形块。或许你会喜欢我对 &lt;code&gt;PS1&lt;/code&gt; 所作出的上述设定，特别是在你企图在命令提示符的右侧输入很长的命令之时。&lt;/p&gt;
+&lt;p&gt;倘若我在 ~/.bashrc 文件里删除上述对 &lt;code&gt;PS1&lt;/code&gt; 的设定，那么我对终端的初始印象应当是 &lt;code&gt;$&lt;/code&gt; 的顶部没有东西，左侧是「&lt;code&gt;garfileo@zero ~&lt;/code&gt;」，右侧是那个不断明灭的矩形块。或许你会喜欢我对 &lt;code&gt;PS1&lt;/code&gt; 所作出的上述设定，特别是在你企图在命令提示符的右侧输入很长的命令之时。&lt;/p&gt;
 &lt;h2&gt;echo&lt;/h2&gt;
-&lt;p&gt;倘若初次使用 Bash，也许尚不知如何向 &lt;code&gt;~/.bashrc&lt;/code&gt; 文件添加&lt;/p&gt;
+&lt;p&gt;倘若初次使用 Bash，也许尚不知如何向 ~/.bashrc 文件添加&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;PS1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;"\e[0;32m\w\e[0m\n&lt;/span&gt;$&lt;span class="s2"&gt; "&lt;/span&gt;
 &lt;/pre&gt;
 
 
-&lt;p&gt;不过，现在运行 Bash 的操作系统大多提供了图形界面。可以图形界面式的文件管理器里找到 &lt;code&gt;.bashrc&lt;/code&gt; 文件，然后使用一种图形界面式的文本编辑器打开这份文件，添加上述内容，然后再保存文件。这是我们刚开始使用计算机的时候就已经学会了的方法。但是，从现在开始可不必如此，因为类似的任务通过一些简单的命令便可完成。例如，要完成上述任务，只需在终端的命令提示符后输入&lt;/p&gt;
+&lt;p&gt;不过，现在运行 Bash 的操作系统大多提供了图形界面。可以图形界面式的文件管理器里找到 .bashrc 文件，然后使用一种图形界面式的文本编辑器打开这份文件，添加上述内容，然后再保存文件。这是我们刚开始使用计算机的时候就已经学会了的方法。但是，从现在开始可不必如此，因为类似的任务通过一些简单的命令便可完成。例如，要完成上述任务，只需在终端的命令提示符后输入&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;'PS1="\e[0;32m\w\e[0m\n$ "'&lt;/span&gt; &amp;gt;&amp;gt; ~/.bashrc
 &lt;/pre&gt;
 
@@ -55,7 +55,7 @@
 
 &lt;p&gt;就像是对空旷寂静的山谷喊了一声「&lt;code&gt;PS1="\e[0;32m\w\e[0m\n$ "&lt;/code&gt;」，然后山谷给出了回音，&lt;code&gt;echo&lt;/code&gt; 命令得名于此。亦即，&lt;code&gt;echo&lt;/code&gt; 只是将它所接受的文本不加改变地输出。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="/images/bash/02.svg"&gt;&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;echo&lt;/code&gt; 本身是无用的。但是，当它的后面出现了 &lt;code&gt;&amp;gt;&amp;gt; ~/.bashrc&lt;/code&gt; 时，它的输出便会被 &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt; 强行导入 &lt;code&gt;~/.bashrc&lt;/code&gt; 文件，此时没用的 &lt;code&gt;echo&lt;/code&gt; 便发挥了作用。天生我材必有用。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;echo&lt;/code&gt; 本身是无用的。但是，当它的后面出现了 &lt;code&gt;&amp;gt;&amp;gt; ~/.bashrc&lt;/code&gt; 时，它的输出便会被 &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt; 强行导入 ~/.bashrc 文件，此时没用的 &lt;code&gt;echo&lt;/code&gt; 便发挥了作用。天生我材必有用。&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt; 是输出重定向符，因为它可以将一个命令的输出导向到指定的文件。当 &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt; 在 &lt;code&gt;echo&lt;/code&gt; 命令之后出现时，它是如何得知 &lt;code&gt;echo&lt;/code&gt; 命令的输出的呢？对我们而言，&lt;code&gt;echo&lt;/code&gt; 命令的输出是在终端里呈现出来的，难道 &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt; 也能像我们这样「看到」终端里的内容么？&lt;/p&gt;
 &lt;p&gt;我们看到的，并非全部。我们所看到的 &lt;code&gt;echo&lt;/code&gt; 的输出，实际上是 &lt;code&gt;echo&lt;/code&gt; 在一份文件里写入的内容，这份文件的名字叫 stdout（标准输出）。终端从 stdout 读取内容并显示于屏幕。&lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt; 也能从 stdout 读取内容并写入其他文件。这些是我们看不到的部分。&lt;/p&gt;
 &lt;h2&gt;输入/输出重定向&lt;/h2&gt;
@@ -70,7 +70,7 @@
 &lt;/pre&gt;
 
 
-&lt;p&gt;执行这条命令之后，&lt;code&gt;~/.bashrc&lt;/code&gt; 文件的全部内容便会被替换为「&lt;code&gt;\e[0;32m\w\e[0m\n$ "&lt;/code&gt;」。&lt;/p&gt;
+&lt;p&gt;执行这条命令之后，~/.bashrc 文件的全部内容便会被替换为「&lt;code&gt;\e[0;32m\w\e[0m\n$ "&lt;/code&gt;」。&lt;/p&gt;
 &lt;p&gt;任何命令，只要它能够向 stdout 输出信息，其输出皆能通过 &lt;code&gt;&amp;gt;&lt;/code&gt; 和 &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt; 写入到指定文件。倘若所指定的文件不存在，Bash 会自动创建。因此，不妨将 Bash 的输出重定向符视为对各种文本编辑器或字处理软件的「文件（File）」菜单里的「另存为（Save as）」功能的抽象。&lt;/p&gt;
 &lt;p&gt;Bash 也提供了输入重定向符 &lt;code&gt;&amp;lt;&lt;/code&gt;，可将其视为对各种文本编辑器或字处理软件的「文件（File）」菜单里的「打开（Open）」功能的抽象。任何命令，只要它以 stdin 中的信息作为输入，皆能通过 &lt;code&gt;&amp;lt;&lt;/code&gt; 将指定文件中的信息作为输入，因为 &lt;code&gt;&amp;lt;&lt;/code&gt; 可将指定文件中的信息写入 stdin。例如，Bash 将 stdin 中的信息视为命令予以执行，倘若将某条命令写入一份文件，然后通过 &lt;code&gt;&amp;lt;&lt;/code&gt; 将该文件作为 Bash 的输入，所产生的效果是，Bash 会将这份文件中的内容视为命令并予以执行。以下命令模拟了这一过程：&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;'echo "Hello world!"'&lt;/span&gt; &amp;gt; /tmp/foo.sh
@@ -167,7 +167,7 @@
 &lt;/pre&gt;
 
 
-&lt;p&gt;倘若期望这条 &lt;code&gt;echo&lt;/code&gt; 命令能够输出 &lt;code&gt;$PS1&lt;/code&gt;，那么结果就会令人失望了。这条命令输出的并非 &lt;code&gt;$PS1&lt;/code&gt;，而是一开始我们在 &lt;code&gt;~/.bashrc&lt;/code&gt; 文件中为 &lt;code&gt;PS1&lt;/code&gt; 所设定的「&lt;code&gt;\e[0;32m\w\e[0m\n$&lt;/code&gt;」。&lt;/p&gt;
+&lt;p&gt;倘若期望这条 &lt;code&gt;echo&lt;/code&gt; 命令能够输出 &lt;code&gt;$PS1&lt;/code&gt;，那么结果就会令人失望了。这条命令输出的并非 &lt;code&gt;$PS1&lt;/code&gt;，而是一开始我们在 ~/.bashrc 文件中为 &lt;code&gt;PS1&lt;/code&gt; 所设定的「&lt;code&gt;\e[0;32m\w\e[0m\n$&lt;/code&gt;」。&lt;/p&gt;
 &lt;p&gt;单引号比双引号更为紧致，它可以阻止 Bash 对 &lt;code&gt;$PS1&lt;/code&gt; 有其自己的理解。因此&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;'$PS1'&lt;/span&gt;
 &lt;/pre&gt;
@@ -488,7 +488,15 @@ No
 
 
 &lt;p&gt;&lt;code&gt;rename_by_md5&lt;/code&gt; 的定义中的 &lt;code&gt;$1&lt;/code&gt; 所指代的值便是在上述命令中的输入数据。这样的输入数据称为函数的参数。会写支持一个参数的函数，想必写支持两个、三个或更多个参数的函数，并不难吧？不难。&lt;/p&gt;
-&lt;h2&gt;脚本&lt;/h2&gt;&lt;/div&gt;</description><category>Bash</category><guid>/posts/bash.html</guid><pubDate>Tue, 27 Nov 2018 09:04:06 GMT</pubDate></item><item><title>为视频做小手术</title><link>/posts/some-minor-operation-for-videos.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;FFmpeg 命令的一般格式为：&lt;/p&gt;
+&lt;h2&gt;脚本&lt;/h2&gt;
+&lt;p&gt;上一节所讨论的函数 &lt;code&gt;rename_by_md5&lt;/code&gt;，是在一个终端里定义的。若终端关闭，再开启，这个函数的定义便不复存在。为了让它恒久地存在，可将其添加到 ~/.bashrc 文件里，然后&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;source&lt;/span&gt; ~/.bashrc
+&lt;/pre&gt;
+
+
+&lt;p&gt;或者在下次启动终端之后，Bash 便知道 &lt;code&gt;rename_by_md5&lt;/code&gt; 是已定义的函数。不过，另有更好的方法可令 &lt;code&gt;rename_by_md5&lt;/code&gt; 恒久存在。&lt;/p&gt;
+&lt;p&gt;为何放在 ~/.bashrc 中，Bash 便能得到函数的定义？不止如此，在上文中，我们也是在这份文件中定义了变量 &lt;code&gt;PS1&lt;/code&gt;。想必在每次打开终端之时，终端里运行的 Bash 一定是读取了这份文件，并执行了文件中的命令。像 ~/.bashrc 这样的文件称为 Bash 脚本。我们也可以写与之类似的脚本，只是无法像 ~/.bashrc 那样特殊，在打开终端时就被 Bash 读取。不过也没必要那样特殊，因为已经有了 ~/.bashrc，而且我们也可以向它写入信息。&lt;/p&gt;
+&lt;p&gt;自己写的 Bash 脚本，若它具备可执行权限，并且所在的目录位于 &lt;code&gt;PATH&lt;/code&gt; 变量定义中的目录列表中，这份脚本文件的名字可以作为命令使用。写脚本的过程，通常称为脚本编程，意思是用脚本编写程序。或许你还不知道什么是文件的可执行权限以及 &lt;code&gt;PATH&lt;/code&gt; 变量又是什么，也没什么。只需遵循下面的步骤，构造一份可以作为命令使用的脚本程序，在此基础上再去理解文件的可执行权限以及 &lt;code&gt;PATH&lt;/code&gt; 变量便可事半功倍。&lt;/p&gt;&lt;/div&gt;</description><category>Bash</category><guid>/posts/bash.html</guid><pubDate>Tue, 27 Nov 2018 09:04:06 GMT</pubDate></item><item><title>为视频做小手术</title><link>/posts/some-minor-operation-for-videos.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;FFmpeg 命令的一般格式为：&lt;/p&gt;
 &lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg &lt;span class="o"&gt;[&lt;/span&gt;全局选项&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;输入选项&lt;span class="o"&gt;]&lt;/span&gt; -i input.mp4 &lt;span class="o"&gt;[&lt;/span&gt;输出选项&lt;span class="o"&gt;]&lt;/span&gt; output.mp4
 &lt;/pre&gt;
 
