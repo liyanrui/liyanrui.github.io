@@ -792,7 +792,7 @@ rename_by_md5 $1
 $ for i in *; do rename_by_md5 $i; done
 ```
 
-这个例子展示了 `for` 循环的另一种形式。`for i in *` 的意思是「对当前目录中的任一份文件 i」。对当前目录中的任一份文件做什么？「`rename_by_md5 $i`」。
+这个例子展示了 `for` 循环的另一种形式。`for i in *` 的意思是「对当前目录中的任一份文件 i」。对当前目录中的任一份文件 i 做什么？「`rename_by_md5 $i`」。
 
 # 结语
 
