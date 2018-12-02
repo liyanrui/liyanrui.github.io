@@ -182,7 +182,7 @@ $ rbox c | qhull s n
 若想将「`\usemodule[zhfonts]`」增加到这份文件的首部，可通过以下命令实现：
 
 ```console
-$ echo '\usemodule[zhfonts] > foo-tmp.tex
+$ echo '\usemodule[zhfonts]' > foo-tmp.tex
 $ cat foo.tex >> foo-tmp.tex
 $ mv foo-tmp.tex foo.tex
 ```
