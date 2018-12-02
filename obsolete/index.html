@@ -430,8 +430,58 @@ No
 </pre>
 
 
-<p>务必要分清楚上述算术表达式的求值结果与命令退出状态的区别。</p>
+<p>务必弄清楚上述算术表达式的求值结果与命令退出状态的区别。</p>
+<p>在 <code>test</code> 或 <code>[</code> 命令中，数字之间的相等以及大小比较，可以用 <code>-eq</code>、<code>-lt</code>、<code>-gt</code>、<code>-le</code>、<code>-ge</code>，分别表示相等、小于、大于、不大于以及不小于。因此，在使用 <code>test</code> 命令时，要清楚是数字的比较还是字串的比较。</p>
 <h2>函数</h2>
+<p>与变量是数据的名字相似，函数是过程的名字。所谓过程，即按照时间顺序给出一组命令，让 Bash 依序执行每条命令。</p>
+<p><code>md5sum</code> 命令可以算出给定文件的 MD5 码。例如，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> md5sum foo.jpg
+<span class="go">95e25f85ee3b71cd17c921d88f2326bf  foo.jpg</span>
+</pre>
+
+
+<p>文件的 MD5 码，类似于我们的指纹。不同的人，指纹相同的概率很小。不同的文件，MD5 码相同的概率也很小。许多网站在收到用户上传的图片之后，会以图片文件的 MD5 码作为图片文件的名字，以此避免同样的图片存入数据库中，从而达成节省硬盘空间的目的。我们可以构造一个过程，将一份文件以它的 MD5 码重新命名，亦即我们要写一个函数。</p>
+<p>先来考虑，这个过程应当分为哪些步骤。首先可以使用 <code>md5sum</code> 算出文件的 MD5 码。但是观察上述 <code>md5sum</code> 的输出，需要设法将 MD5 码之后的空格以及文件名去除，但是要保留文件名的后缀（例如 <code>.jpg</code>），继而将剩余的 MD5 码以及文件名的后缀组合为文件名，用这个名字对文件进行重新命名。</p>
+<p>若实现上述过程，现有的 Bash 知识尚且不够。譬如，<code>md5sum</code> 命令输出的信息，如何将其作为数据，为其命名，从而得到一个变量？Bash 允许在变量的定义中临时启用自身的一个复本即子 Shell 去执行一些命令，而后将命令的输出到 stdout 的信息作为数据出现在变量的定义中。例如，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nv">md5_info</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>md5sum foo.jpg<span class="k">)</span><span class="s2">"</span>
+<span class="gp">$</span> <span class="nb">echo</span> <span class="nv">$md5_info</span>
+<span class="go">95e25f85ee3b71cd17c921d88f2326bf foo.jpg</span>
+</pre>
+
+
+<p><code>(...)</code> 便是子 Shell，括号之内的文本便是要交由 Bash 的子 Shell 执行的命令。若让子 Shell 所执行命令的输出作为数据，需要使用 <code>$</code> 对子 Shell 予以展开。</p>
+<p>持有变量 <code>md5_info</code> 之后，可以使用 <a href="https://liyanrui.github.io/posts/awk.html">AWK</a> 实现 MD5 码和文件名的后缀的组合。AWK 值得投入一些时间去学习它的基本用法，尤其是尚不知有什么好方法基于</p>
+<pre class="code literal-block"><span></span>95e25f85ee3b71cd17c921d88f2326bf foo.jpg
+</pre>
+
+
+<p>生成</p>
+<pre class="code literal-block"><span></span>95e25f85ee3b71cd17c921d88f2326bf.jpg
+</pre>
+
+
+<p>的此刻。</p>
+<p>以下命令可从 <code>$md5_info</code> 中提取 MD5 码和文件名称后缀：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'{print $1}'</span>
+<span class="go">95e25f85ee3b71cd17c921d88f2326bf</span>
+<span class="gp">$</span> <span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'BEGIN{FS="."} {print $NF}'</span>
+<span class="go">jpg</span>
+</pre>
+
+
+<p>利用 Bash 的子 Shell，便可以将上述两条命令合并到一个新的变量的定义中，即</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nv">new_file_name</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'{print $1}'</span><span class="k">)</span><span class="s2">.</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$md5_info</span> <span class="p">|</span> awk <span class="s1">'BEGIN{FS="."} {print $NF}'</span><span class="k">)</span><span class="s2">"</span>
+<span class="gp">$</span> <span class="nb">echo</span> <span class="nv">$new_file_name</span>
+<span class="go">95e25f85ee3b71cd17c921d88f2326bf.jpg</span>
+</pre>
+
+
+<p>有了 <code>new_file_name</code> 变量，接下来只需使用 <code>mv</code> 对 <code>foo.jpg</code> 重新命名：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> mv foo.jpg <span class="nv">$new_file_name</span>
+</pre>
+
+
+<p>大功告成。</p>
 </div>
     </div>
     </article><article class="h-entry post-text" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title"><a href="../posts/some-minor-operation-for-videos.html" class="u-url">为视频做小手术</a></h1>
