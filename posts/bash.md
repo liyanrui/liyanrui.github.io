@@ -654,9 +654,89 @@ $ source ~/.bashrc
 
 为何放在 ~/.bashrc 中，Bash 便能得到函数的定义？不止如此，在上文中，我们也是在这份文件中定义了变量 `PS1`。想必在每次打开终端之时，终端里运行的 Bash 一定是读取了这份文件，并执行了文件中的命令。像 ~/.bashrc 这样的文件称为 Bash 脚本。我们也可以写与之类似的脚本，只是无法像 ~/.bashrc 那样特殊，在打开终端时就被 Bash 读取。不过也没必要那样特殊，因为已经有了 ~/.bashrc，而且我们也可以向它写入信息。
 
-自己写的 Bash 脚本，若它具备可执行权限，并且所在的目录位于 `PATH` 变量定义中的目录列表中，这份脚本文件的名字可以作为命令使用。写脚本的过程，通常称为脚本编程，意思是用脚本编写程序。或许你还不知道什么是文件的可执行权限以及 `PATH` 变量又是什么，也没什么。只需遵循下面的步骤，构造一份可以作为命令使用的脚本程序，在此基础上再去理解文件的可执行权限以及 `PATH` 变量便可事半功倍。
+自己写的 Bash 脚本，若它具备可执行权限，并且所在的目录位于 `PATH` 变量定义中的目录列表中，这份脚本文件的名字可以作为命令使用。写脚本的过程，通常称为脚本编程，意思是用脚本编写程序。或许你还不知道什么是文件的可执行权限以及 `PATH` 变量又是什么。
 
+变量是数据的名字。函数是过程的名字。那么，命令是谁的名字？是可执行文件的名字。何谓可执行文件？具有可执行权限的文件。例如，在 /tmp 目录创建一份空文件 foo，然后把它作为命令去执行：
 
+```console
+$ cd /tmp
+$ touch foo
+$ ./foo
+```
+
+`cd` 命令用于从当前目录跳转至指定目录。`./foo` 的意思是将当前目录（即 `./`） 中的文件 foo 作为命令执行，结果得到的是 Bash 冷冰冰的拒绝：
+
+```
+bash: ./foo: Permission denied
+```
+
+此时，若查看 `$?` 的值，结果为 126：
+
+```console
+$ echo $?
+126
+```
+
+按照 Bash 的约定，命令的退出状态为非 0，意味着命令对应的程序出错，为 0 则意味着命令对应的程序成功地完成了自己的任务。这一约定也决定了 `if` 语句是以命令的退出状态为 0 时表示条件为真，否则条件为假。
+
+接下来，可以用 `ls` 命令查看 foo 文件所具有的权限：
+
+```console
+$ ls -l foo
+-rw-r--r-- 1 garfileo users 0 Dec  2 11:17 foo
+```
+
+即使看不懂 `ls` 命令输出的信息的含义也没关系，接下来，使用 `chmod` 命令为 foo 增加可执行权限，然后再用 `ls` 命令查看它的权限：
+
+```console
+$ chmod +x foo
+$ ls -l foo
+-rwxr-xr-x 1 garfileo users 0 Dec  2 11:17 foo
+```
+
+这次 `ls` 命令输出的结果与上一次有何不同？
+
+现在，再次执行 `./foo`，并查看其退出状态：
+
+```console
+$ ./foo
+$ echo $?
+0
+```
+
+虽然执行 `./foo` 之后，终端什么也没有输出，但是这条命令的退出状态为 0，这表明 foo 是一个程序，并且成功地完成了自己什么也没有做的任务。
+
+现在，将 foo 文件从 /tmp 目录移动到 ~/.myscript 目录，若后者不存在，可使用 `mkdir` 命令创建。还记得 `-d` 吗？
+
+```console
+$ dest=~/.myscript
+$ if [ ! -d $dest ]; then mkdir $dest; fi
+$ mv /tmp/foo $dest
+```
+
+在此，可以复习一下条件语句。`-d $dest` 表示「`$dest` 存在」，其前加上 `!` 便表示「`$dest` 不存在」，前面再出现 `if`  便表示「如果 `$dest` 不存在」。如果 `$dest` 不存在，当如何？「`then mkdir $dest`」。事实上，这里没必要使用条件语句。因为 `mkdir` 有一个选项 `-p`，倘若欲创建的目录已存在，`-p` 选项可以让 `mkdir` 停止创建这个目录的行为。因此，上述命令可等价地写为
+
+```console
+$ dest=~/.myscript
+$ mkdir -p $dest
+$ mv /tmp/foo $dest
+```
+
+现在，foo 文件位于 ~/.myscript 目录。只需将 ~/.myscript 添加到 `PATH` 所指代的目录列表，然后便可以将 foo 文件的名字 `foo` 作为命令使用：
+
+```console
+$ echo "PATH=~/.myscript:$PATH" >> ~/.bashrc
+$ source ~/.bashrc
+$ echo $PATH
+/home/garfileo/.myscript:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/bin
+$ foo
+$ echo $?
+0
+```
+
+在我的机器里，`~/.myscript` 便是 `/home/garfileo/.myscript`，将这个目录添加到 `PATH` 所指代的目录列表之后，每当我在终端中输入 `foo`，Bash 便会从 `$PATH` 里的目录查找与命令 `foo` 同名的具有可执行权限的文件，然后将其作为程序运行。
+
+现在可以试着在 ~/.myscript 目录写一份名为 rename_by_md5 的脚本了！
 
 [1]:/images/bash/01.png
 [2]:/images/bash/02.svg
