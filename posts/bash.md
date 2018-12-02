@@ -781,7 +781,6 @@ function rename_by_md5 {
 rename_by_md5 $1
 ```
 
-
 # 四两拨千斤
 
 如果当前目录里有几千份图片文件需要用 `rename_by_md5` 命令进行重新命名，该如何做呢？现在，对于我们而言，只费吹灰之力而已，
@@ -791,6 +790,46 @@ $ for i in *; do rename_by_md5 $i; done
 ```
 
 这个例子展示了 `for` 循环的另一种形式。`*` 名曰「通配符」，表示当前目录所有的文件或目录。所以，`ls *` 可在终端里显示当前目录的所有文件。`mv * /tmp` 则可将当前目录里的所有文件移动到 `/tmp` 目录。`for i in *` 的意思是「对当前目录中的任一份文件 i」。对当前目录中的任一份文件 i 做什么？「`rename_by_md5 $i`」。
+
+# 陷阱
+
+与人类语言类似，稍有不甚，所说的话就会出现语病。Bash 语言亦如此。假设，当前目录有一份名为「a b.txt」的文件，若使用 `md5sum` 命令生成该文件的 MD5 码，命令若写成
+
+```console
+$ md5sum a b.txt
+```
+
+便是错的。因为 `md5sum` 会以为我们让它为文件  `a` 和文件 `b.txt` 生成 MD5 码，而且 `md5sum` 的确支持这样做。对于名字含有空格的文件，在命令中，请务必使用双引号囊括起来：
+
+```console
+$ md5sum "a b.txt"
+```
+
+如此便不会令 `md5sum` 产生误解。因此，上文中给出的
+
+```console
+md5_info="$(md5sum $1)"
+```
+
+安全起见，应当将其写为
+
+```console
+md5_info="$(md5sum "$1")"
+```
+
+同理，
+
+```console
+$ for i in *; do rename_by_md5 $i; done
+```
+
+应当写为
+
+```console
+$ for i in *; do rename_by_md5 "$i"; done
+```
+
+有人已将 [Bash 的常见陷阱](http://mywiki.wooledge.org/BashPitfalls)总结成文，待熟悉 Bash 语言并用它编写较为重要的程序时再行观摩。
 
 # 结语
 

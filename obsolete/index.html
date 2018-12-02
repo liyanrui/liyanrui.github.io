@@ -659,6 +659,38 @@ No
 
 
 <p>这个例子展示了 <code>for</code> 循环的另一种形式。<code>*</code> 名曰「通配符」，表示当前目录所有的文件或目录。所以，<code>ls *</code> 可在终端里显示当前目录的所有文件。<code>mv * /tmp</code> 则可将当前目录里的所有文件移动到 <code>/tmp</code> 目录。<code>for i in *</code> 的意思是「对当前目录中的任一份文件 i」。对当前目录中的任一份文件 i 做什么？「<code>rename_by_md5 $i</code>」。</p>
+<h2>陷阱</h2>
+<p>与人类语言类似，稍有不甚，所说的话就会出现语病。Bash 语言亦如此。假设，当前目录有一份名为「a b.txt」的文件，若使用 <code>md5sum</code> 命令生成该文件的 MD5 码，命令若写成</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> md5sum a b.txt
+</pre>
+
+
+<p>便是错的。因为 <code>md5sum</code> 会以为我们让它为文件  <code>a</code> 和文件 <code>b.txt</code> 生成 MD5 码，而且 <code>md5sum</code> 的确支持这样做。对于名字含有空格的文件，在命令中，请务必使用双引号囊括起来：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> md5sum <span class="s2">"a b.txt"</span>
+</pre>
+
+
+<p>如此便不会令 <code>md5sum</code> 产生误解。因此，上文中给出的</p>
+<pre class="code literal-block"><span></span><span class="go">md5_info="$(md5sum $1)"</span>
+</pre>
+
+
+<p>安全起见，应当将其写为</p>
+<pre class="code literal-block"><span></span><span class="go">md5_info="$(md5sum "$1")"</span>
+</pre>
+
+
+<p>同理，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="k">for</span> i in *<span class="p">;</span> <span class="k">do</span> rename_by_md5 <span class="nv">$i</span><span class="p">;</span> <span class="k">done</span>
+</pre>
+
+
+<p>应当写为</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> <span class="k">for</span> i in *<span class="p">;</span> <span class="k">do</span> rename_by_md5 <span class="s2">"</span><span class="nv">$i</span><span class="s2">"</span><span class="p">;</span> <span class="k">done</span>
+</pre>
+
+
+<p>有人已将 <a href="http://mywiki.wooledge.org/BashPitfalls">Bash 的常见陷阱</a>总结成文，待熟悉 Bash 语言并用它编写较为重要的程序时再行观摩。</p>
 <h2>结语</h2>
 <p>现在，请容许我华丽地退场：</p>
 <pre class="code literal-block"><span></span><span class="gp">$</span> <span class="nb">exit</span>
