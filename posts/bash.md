@@ -613,7 +613,7 @@ $ rename_by_md5
 
 ```console
 $ rename_by_md5
-d5sum: foo.jpg: No such file or directory
+md5sum: foo.jpg: No such file or directory
 mv: cannot stat 'foo.jpg': No such file or directory
 ```
 
