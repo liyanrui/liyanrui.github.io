@@ -1,5 +1,5 @@
 <!--
-.. title: Bash 记
+.. title: 写给高年级小学生的《Bash 指南》
 .. slug: bash
 .. date: 2018-11-27 17:04:06 UTC+08:00
 .. tags: Bash
