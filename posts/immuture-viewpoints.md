@@ -1,9 +1,9 @@
 <!--
-.. title: 随笔
+.. title: 一些不成熟的看法
 .. slug: immuture-viewpoints
 .. date: 2018-12-15 23:43:58 UTC+08:00
-.. tags: 
-.. category: 
+.. tags: 思想
+.. category: 随笔
 .. link: 
 .. description: 
 .. type: text
