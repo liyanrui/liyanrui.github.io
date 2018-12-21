@@ -15,17 +15,6 @@
 * <a href="#碎纸片" target="_parent">碎纸片</a>
 * <a href="#如何证明自己不是一条狗" target="_parent">如何证明自己不是一条狗</a>
 * <a href="#读《齐物论》" target="_parent">读《齐物论》</a>
-    * <a href="#天籁" target="_parent">天籁</a>
-    * <a href="#真宰" target="_parent">真宰</a>
-    * <a href="#以明" target="_parent">以明</a>
-    * <a href="#为是不用" target="_parent">为是不用</a>
-    * <a href="#滑移之耀" target="_parent">滑移之耀</a>
-    * <a href="#寓言" target="_parent">寓言</a>
-        * <a href="#尧问舜" target="_parent">尧问舜</a>
-        * <a href="#啮缺问王倪" target="_parent">啮缺问王倪</a>
-        * <a href="#瞿鹊子问长梧子" target="_parent">瞿鹊子问长梧子</a>
-        * <a href="#罔两问影" target="_parent">罔两问影</a>
-        * <a href="#庄周梦蝶" target="_parent">庄周梦蝶</a>
 * <a href="#换牙" target="_parent">换牙</a>
 * <a href="#是的，你开悟了，然后呢？" target="_parent">是的，你开悟了，然后呢？</a>
 * <a href="#然后" target="_parent">然后</a>
