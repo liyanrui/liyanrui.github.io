@@ -3,7 +3,7 @@
 .. slug: index
 -->
 
-![新月](/images/new-moon.png)
+<img src="/images/new-moon.png" style="width:100%; height:auto" />
 
 祭司死了
 
