@@ -3,4 +3,4 @@
 .. slug: index
 -->
 
-<img src="/images/new-moon.png" style="width:80%; height:auto" />
+<img src="/images/new-moon.png" style="width:100%; height:auto" />
