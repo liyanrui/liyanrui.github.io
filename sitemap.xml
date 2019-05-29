@@ -10,8 +10,12 @@
   <lastmod>2019-05-01T09:58:00Z</lastmod>
  </url>
  <url>
+  <loc>/2019/index.html</loc>
+  <lastmod>2019-05-29T01:22:00Z</lastmod>
+ </url>
+ <url>
   <loc>/archive.html</loc>
-  <lastmod>2019-05-01T09:58:00Z</lastmod>
+  <lastmod>2019-05-29T01:22:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/awk.html</loc>
@@ -35,7 +39,7 @@
  </url>
  <url>
   <loc>/categories/cat_sui-bi.html</loc>
-  <lastmod>2019-05-01T09:58:00Z</lastmod>
+  <lastmod>2019-05-29T01:22:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/cat_wen-ben-chu-li.html</loc>
@@ -51,7 +55,7 @@
  </url>
  <url>
   <loc>/categories/index.html</loc>
-  <lastmod>2019-05-01T09:58:00Z</lastmod>
+  <lastmod>2019-05-29T01:22:00Z</lastmod>
  </url>
  <url>
   <loc>/categories/metafun.html</loc>
@@ -63,7 +67,7 @@
  </url>
  <url>
   <loc>/categories/si-xiang.html</loc>
-  <lastmod>2019-05-01T09:58:00Z</lastmod>
+  <lastmod>2019-05-29T01:22:00Z</lastmod>
  </url>
  <url>
   <loc>/galleries/demo/index.html</loc>
@@ -91,7 +95,7 @@
  </url>
  <url>
   <loc>/obsolete/index.html</loc>
-  <lastmod>2019-05-01T09:58:00Z</lastmod>
+  <lastmod>2019-05-29T01:22:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/awk.html</loc>
@@ -103,19 +107,19 @@
  </url>
  <url>
   <loc>/posts/immuture-viewpoints.html</loc>
-  <lastmod>2019-05-01T09:58:00Z</lastmod>
+  <lastmod>2019-05-29T01:22:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/metafun.html</loc>
   <lastmod>2019-01-04T02:14:00Z</lastmod>
  </url>
  <url>
-  <loc>/posts/nikola-tips.html</loc>
-  <lastmod>2019-01-04T02:14:00Z</lastmod>
+  <loc>/posts/metamorphosis.html</loc>
+  <lastmod>2019-05-29T01:22:00Z</lastmod>
  </url>
  <url>
-  <loc>/posts/reading-all-things-in-one.html</loc>
-  <lastmod>2019-01-04T02:28:00Z</lastmod>
+  <loc>/posts/nikola-tips.html</loc>
+  <lastmod>2019-01-04T02:14:00Z</lastmod>
  </url>
  <url>
   <loc>/posts/snail.html</loc>
