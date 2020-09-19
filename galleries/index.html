@@ -25,7 +25,7 @@
 <body>
     <a href="#content" class="sr-only sr-only-focusable">跳到主内容</a>
     <div id="container">
-         
+        
     <header id="header"><h1 id="brand"><a href="../" title="NULL" rel="home">
 
         <span id="blog-title">NULL</span>
@@ -45,12 +45,12 @@
     </ul></nav></header><main id="content"><nav class="breadcrumbs"><ul class="breadcrumb">
 <li>galleries</li>
 </ul></nav><h1>galleries</h1>
-    <ul>
-<li><a href="demo/"><i class="icon-folder-open"></i> Nikola Tesla</a></li>
-    </ul>
+            <ul>
+<li><a href="demo/">📂 Nikola Tesla</a></li>
+            </ul>
 <div id="gallery_container"></div>
 
-         </main><footer id="footer"><p>我的邮箱：garfileo@gmail.com</p>
+        </main><footer id="footer"><p>我的邮箱：garfileo@gmail.com</p>
             
         </footer>
 </div>
@@ -59,7 +59,7 @@
 var jsonContent = [];
 var thumbnailSize = 180;
 renderGallery(jsonContent, thumbnailSize);
-window.addEventListener('resize', renderGallery);
+window.addEventListener('resize', function(){renderGallery(jsonContent, thumbnailSize)});
 </script><script>
     baguetteBox.run('div#content', {
         ignoreClass: 'islink',
