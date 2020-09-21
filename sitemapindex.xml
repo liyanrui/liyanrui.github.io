@@ -55,11 +55,11 @@
  </sitemap>
  <sitemap>
   <loc>/galleries/demo/rss.xml</loc>
-  <lastmod>2020-09-21T00:44:00Z</lastmod>
+  <lastmod>2020-09-21T08:55:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/galleries/rss.xml</loc>
-  <lastmod>2020-09-21T00:44:00Z</lastmod>
+  <lastmod>2020-09-21T08:55:00Z</lastmod>
  </sitemap>
  <sitemap>
   <loc>/rss.xml</loc>
@@ -67,6 +67,6 @@
  </sitemap>
  <sitemap>
   <loc>/sitemap.xml</loc>
-  <lastmod>2020-09-21T01:31:00Z</lastmod>
+  <lastmod>2020-09-21T08:55:00Z</lastmod>
  </sitemap>
 </sitemapindex>
