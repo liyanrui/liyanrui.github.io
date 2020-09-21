@@ -25,7 +25,7 @@ SITE_URL = "/"
 # This is the URL where Nikola's output will be deployed.
 # If not set, defaults to SITE_URL
 # BASE_URL = "https://example.com/"
-BLOG_EMAIL = "garfileo@gmail.com"
+BLOG_EMAIL = "lyr.m2@live.cn"
 BLOG_DESCRIPTION = "LiYanrui's homepage."  # (translatable)
 
 # Nikola is multilingual!
