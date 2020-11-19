@@ -77,7 +77,7 @@
 </tr>
 <tr>
 <td class="linenos linenodiv"><a href="#listingshellopy-8"><code data-line-number=" 8"></code></a></td>
-<td class="code"><code><a name="listingshellopy-8"></a>    <span class="k">print</span><span class="p">(</span><span class="n">greeting</span><span class="p">)</span>
+<td class="code"><code><a name="listingshellopy-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">greeting</span><span class="p">)</span>
 </code></td>
 </tr>
 <tr>
@@ -110,9 +110,7 @@
             <script src="../assets/js/all-nocdn.js"></script><script>
     baguetteBox.run('div#content', {
         ignoreClass: 'islink',
-        captions: function(element) {
-            return element.getElementsByTagName('img')[0].alt;
-    }});
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
     </script>
 </body>
 </html>

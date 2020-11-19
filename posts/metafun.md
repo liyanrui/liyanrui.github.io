@@ -304,7 +304,7 @@ $$
 T = (t_x, t_y, t_{xx}, t_{xy}, t_{yx}, t_{yy})
 $$
 
-对于任意一点　\\(p=(p_x, p_y)\\)，MetaPost 的 `transform` 命令可将 \\(T\\) 作用于 \\(p\\)，即 `p transform T`，可将 \\(p\\) 变换为
+对于任意一点　\\(p=(p_x, p_y)\\)，MetaPost 的 `transformed` 命令可将 \\(T\\) 作用于 \\(p\\)，即 `p transformed T`，可将 \\(p\\) 变换为
 
 $$
 q = (t_{xx}p_x + t_{xy}p_y + t_x, t_{yx}p_x + t_{yy}p_y + t_y)
@@ -319,7 +319,7 @@ t_{yx} & t_{yy} & t_y \\\\
 0 & 0 & 1\end{matrix}\right]
 $$
 
-此时，`p transform T` 语句所描述的坐标变换，便可表示为 \\(q = Mp\\)。坐标变换矩阵 \\(M\\) 所描述的是平移、旋转、缩放以及错切等变换的组合，亦即这些特定的变换皆为 \\(M\\) 的特例。因此，在应用 `transform` 的时候，通常并不直接提供六元组形式的变换，而是以 `scaled`、`shifted` 以及 `rotated` 等变换的组合构造一个变换。
+此时，`p transformed T` 语句所描述的坐标变换，便可表示为 \\(q = Mp\\)。坐标变换矩阵 \\(M\\) 所描述的是平移、旋转、缩放以及错切等变换的组合，亦即这些特定的变换皆为 \\(M\\) 的特例。因此，通常并不直接提供六元组形式的变换，而是以 `scaled`、`shifted` 以及 `rotated` 等变换的组合构造一个变换。
 
 假设在边长为 8cm 的正方形区域
 

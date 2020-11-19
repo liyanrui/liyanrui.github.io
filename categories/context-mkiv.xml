@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title># rm -rf / (关于文章 ConTeXt MkIV)</title><link>/</link><description></description><atom:link href="/categories/context-mkiv.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2020 &lt;a href="mailto:lyr.m2@live.cn"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Tue, 22 Sep 2020 00:59:12 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>蜗牛</title><link>/posts/snail.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;最近用 MetaFun &lt;sup&gt;[1]&lt;/sup&gt; 制作了一个小模块 &lt;a href="https://github.com/liyanrui/snail/blob/master/snail.mp"&gt;snail.mp&lt;/a&gt; &lt;sup&gt;[2]&lt;/sup&gt; ，用于绘制矢量图格式的简单流程图。&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title># rm -rf / (关于文章 ConTeXt MkIV)</title><link>/</link><description></description><atom:link href="/categories/context-mkiv.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2020 &lt;a href="mailto:lyr.m2@live.cn"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Thu, 19 Nov 2020 08:41:06 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>蜗牛</title><link>/posts/snail.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;最近用 MetaFun &lt;sup&gt;[1]&lt;/sup&gt; 制作了一个小模块 &lt;a href="https://github.com/liyanrui/snail/blob/master/snail.mp"&gt;snail.mp&lt;/a&gt; &lt;sup&gt;[2]&lt;/sup&gt; ，用于绘制矢量图格式的简单流程图。&lt;/p&gt;
 &lt;p&gt;此事纯属无心之举。原本是要用 awk 写一个能够自动编排文档中的参考文献和注释的工具。在酝酿情绪的过程中，打算用 MetaFun 画一幅简单的示意图。在绘图过程中，因不断嫌弃所用代码的繁琐，最终有了十余行简短的绘图代码以及能够让这些代码工作的一个小模块。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="/images/snail/01.png"&gt;&lt;/p&gt;
 &lt;p&gt;我将这个模块命名为 Snail（蜗牛）。之所以如此命名，一方面是因为以语言描述的方式绘制流程图，效率太低了；另一方面，绘图过程也的确像蜗牛的爬动。&lt;/p&gt;
@@ -350,215 +350,189 @@ _planet.s := .2_star.s; _planet.sx := _planet.s; _planet.sy := _planet.sx;
 &lt;h2&gt;画笔&lt;/h2&gt;
 &lt;p&gt;画笔即 MetaPost 的内置变量 &lt;code&gt;pen&lt;/code&gt;。MetaPost 提供了两种画笔类型，&lt;code&gt;pencircle&lt;/code&gt; 和 &lt;code&gt;pensquare&lt;/code&gt;，前者为 MetaPost 默认，「笔尖」为圆形，后者「笔尖」为方形。MetaPost 允许用户自行定义画笔类型。&lt;/p&gt;
 &lt;p&gt;画笔主要用于控制所绘线条的粗细。线条默认的宽度为 PostScript 所规定的大点（Big Point）的直径尺寸，即 1 bp。MetaPost 将 1 bp 作为基准长度单位，其他单位皆为该单位的倍数：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;bp := 1
-mm = 2.83464
-cm = 28.34645
-pc = 11.95517
-cc = 12.79213
-in := 72
-pt = 0.99626
-dd = 1.06601
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;bp := 1&lt;/span&gt;
+&lt;span class="err"&gt;mm = 2.83464&lt;/span&gt;
+&lt;span class="err"&gt;cm = 28.34645&lt;/span&gt;
+&lt;span class="err"&gt;pc = 11.95517&lt;/span&gt;
+&lt;span class="err"&gt;cc = 12.79213&lt;/span&gt;
+&lt;span class="err"&gt;in := 72&lt;/span&gt;
+&lt;span class="err"&gt;pt = 0.99626&lt;/span&gt;
+&lt;span class="err"&gt;dd = 1.06601&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;code&gt;pickup&lt;/code&gt; 命令可用于设定画笔，从而影响随后的绘图语句所绘制线条的粗细，这一影响直至 &lt;code&gt;pickup&lt;/code&gt; 命令的再次出现为止。例如，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;pickup pencircle scaled 1mm;
-一系列绘图语句;
-pickup pencircle scaled 2mm;
-一系列绘图语句;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;pickup pencircle scaled 1mm;&lt;/span&gt;
+&lt;span class="err"&gt;一系列绘图语句;&lt;/span&gt;
+&lt;span class="err"&gt;pickup pencircle scaled 2mm;&lt;/span&gt;
+&lt;span class="err"&gt;一系列绘图语句;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;定义了两个画笔，笔尖粗度分别为 1mm 和 2mm，分别会影响位于其后的绘图过程。&lt;code&gt;scaled&lt;/code&gt; 用于数值大小的缩放变换；其他变换还有 &lt;code&gt;shifted&lt;/code&gt;、&lt;code&gt;rotated&lt;/code&gt; 以及 &lt;code&gt;slant&lt;/code&gt;，分别为平移、旋转以及错切变换。在画笔的设定中，&lt;code&gt;scaled 1mm&lt;/code&gt; 意味着将线条粗细程序由 MetaPost 默认的 1 bp 在水平和竖直方向上同等放大为 1 mm &lt;strong&gt;&lt;sup&gt;注 4&lt;/sup&gt;&lt;/strong&gt; 。可以使用 &lt;code&gt;xscaled&lt;/code&gt; 或 &lt;code&gt;yscaled&lt;/code&gt; 对画笔的水平或竖直方向的粗细进行调整，对于 &lt;code&gt;pencircle&lt;/code&gt; 类型的画笔而言，此举意味着将笔尖由默认的圆形转化为椭圆，而对于 &lt;code&gt;pensquare&lt;/code&gt;，则意味着将笔尖由正方形转化为矩形。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;注 4&lt;/strong&gt;：在 MetaPost 程序中，数字与单位之间不能出现空格。事实上，在 MetaPost 中，诸如 &lt;code&gt;1mm&lt;/code&gt;、&lt;code&gt;2cm&lt;/code&gt; 此类的长度描述本质上是 &lt;code&gt;mm&lt;/code&gt; 或 &lt;code&gt;cm&lt;/code&gt; 等变量的倍数，即 &lt;code&gt;1 * mm&lt;/code&gt;、&lt;code&gt;2 * cm&lt;/code&gt;。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在 &lt;code&gt;pickup&lt;/code&gt; 的影响范围内，绘图语句可以通过 &lt;code&gt;withpen&lt;/code&gt; 命令局部调整线条的粗细，例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;withpen pencircle scaled 1mm
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;withpen pencircle scaled 1mm&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;h2&gt;颜色&lt;/h2&gt;
 &lt;p&gt;MetaPost 以含有三个分量的向量表示颜色。向量的三个分量分别表示红色、绿色和蓝色，取值范围为 [0, 1]，例如 &lt;code&gt;(0.4, 0.5, 0.6)&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;可将颜色保存到 &lt;code&gt;color&lt;/code&gt; 类型的变量中，以备绘图中重复使用。例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;color darkred;
-darkred := (0.625, 0, 0);
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;color darkred;&lt;/span&gt;
+&lt;span class="err"&gt;darkred := (0.625, 0, 0);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;由于 MetaPost 内部已经定义了用于表示红色的变量 &lt;code&gt;red&lt;/code&gt;，因此 &lt;code&gt;darkred&lt;/code&gt; 变量的定义也可写为&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;color darkred;
-darkred := 0.625 * red;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;color darkred;&lt;/span&gt;
+&lt;span class="err"&gt;darkred := 0.625 * red;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;类似于 &lt;code&gt;1 * cm&lt;/code&gt; 可以写为 &lt;code&gt;1cm&lt;/code&gt;，倍数也可以直接作用于颜色：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;darkred := 0.625red;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;darkred := 0.625red;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;在绘图语句中可以通过 &lt;code&gt;withcolor&lt;/code&gt; 命令设定所绘线条或区域填充的颜色，例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;withcolor 0.625red
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;withcolor 0.625red&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;由于颜色的倍数不可能大于 1，因此整数部分必定为 &lt;code&gt;0&lt;/code&gt;，在 MetaPost 语句中可以省略，例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;darkred := .625red;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;darkred := .625red;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;若绘图语句未通过 &lt;code&gt;withcolor&lt;/code&gt; 命令设定颜色，则默认颜色为黑色。&lt;/p&gt;
 &lt;h2&gt;单页图&lt;/h2&gt;
 &lt;p&gt;在排版空间中，可安置 MetaPost 图形之处大致有插图、单页图、页面元素背景以及页面背景等类别。若以先习得 MetaPost 的基本用法为目的，则单页图最为合用，并且生成的图形易于转化为位图以作他用。&lt;/p&gt;
 &lt;p&gt;所谓 MetaPost 单页图，本质上是 ConTeXt 输出的排版结果——PDF 文档，只是文档页面的大小恰好容得下图形。ConTeXt 为 MetaPost 单页面提供了 &lt;code&gt;MPpage&lt;/code&gt; 环境：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\startMPpage&lt;/span&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;\startMPpage&lt;/span&gt;
 MetaPost 绘图语句;
 &lt;span class="k"&gt;\stopMPpage&lt;/span&gt;
-&lt;/pre&gt;
-
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;例如，假设存在 ConTeXt 文档 foo.tex，其内容为&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\startMPpage&lt;/span&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;\startMPpage&lt;/span&gt;
 path p;
 u := 10cm; v := 3cm;
 p := fullsquare xyscaled (u, v) randomized 0.07u;
 drawpath p;
 drawpoints p;
 &lt;span class="k"&gt;\stopMPpage&lt;/span&gt;
-&lt;/pre&gt;
-
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;通过 context 命令便可基于 foo.tex 生成 foo.pdf，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; context foo
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gp"&gt;$&lt;/span&gt; context foo
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;结果得到的 foo.pdf 为单页文档，其页面只包含着一个边线被随机扰动的矩形：&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="/images/metafun/02.png"&gt;&lt;/p&gt;
 &lt;h2&gt;线条&lt;/h2&gt;
 &lt;p&gt;线条即画笔所走的路径。最简单的路径是点。MetaPost 用序对表示点，例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;pair a;
-a := (2cm, 3.5cm)
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;pair a;&lt;/span&gt;
+&lt;span class="err"&gt;a := (2cm, 3.5cm)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;表示在直接坐标系中，横坐标 &lt;code&gt;x&lt;/code&gt; 为 &lt;code&gt;2cm&lt;/code&gt; 而纵坐标 &lt;code&gt;y&lt;/code&gt; 为 &lt;code&gt;3.5cm&lt;/code&gt; 之处有一个点 &lt;code&gt;a&lt;/code&gt;。&lt;code&gt;draw&lt;/code&gt; 命令用于路径的绘制，通过它可将点 &lt;code&gt;a&lt;/code&gt; 绘制出来，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;draw a;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;draw a;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;从一个点到另一个点，可构成一条线段。例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;pair a, b;
-a := (2cm, 3.5cm); b := (5cm, 5cm);
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;pair&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 
-path p; 
-p := a -- b;
-&lt;/pre&gt;
-
+&lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; 
+&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="c1"&gt;-- b;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;可构造从点 &lt;code&gt;a&lt;/code&gt; 到 &lt;code&gt;b&lt;/code&gt; 的线段 &lt;code&gt;a -- b&lt;/code&gt;，并将其保存到路径变量 &lt;code&gt;p&lt;/code&gt; 中。使用&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;draw p withcolor .625green;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;draw p withcolor .625green;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;即可绘制这条线段。在该条语句中，线条颜色被设为暗绿色 &lt;code&gt;0.625green&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;由于 MetaPost 允许在 &lt;code&gt;draw&lt;/code&gt; 语句中直接给出点的坐标的形式构造路径，因此上述 MetaPost 程序可缩减为一行语句：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;draw (2cm, 3.5cm) -- (5cm, 5cm) withcolor .625green;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;draw (2cm, 3.5cm) -- (5cm, 5cm) withcolor .625green;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;但是，若要绘制复杂的图形，借助变量，会使得 MetaPost 程序更易于编写和理解。例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;pair a, b; path p;
-a := (2cm, 3.5cm); b := (5cm, 5cm);
-p := a -- b;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;pair&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="c1"&gt;-- b;&lt;/span&gt;
 
-pickup pencircle scaled 2pt;
-draw p withcolor .625green;
+&lt;span class="n"&gt;pickup&lt;/span&gt; &lt;span class="n"&gt;pencircle&lt;/span&gt; &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;draw&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;withcolor&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;625&lt;/span&gt;&lt;span class="n"&gt;green&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-pickup pencircle scaled 4pt;
-color darkred; darkred := .625red;
-draw a withcolor darkred;
-draw b withcolor darkred;
-&lt;/pre&gt;
-
+&lt;span class="n"&gt;pickup&lt;/span&gt; &lt;span class="n"&gt;pencircle&lt;/span&gt; &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;color&lt;/span&gt; &lt;span class="n"&gt;darkred&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;darkred&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;625&lt;/span&gt;&lt;span class="n"&gt;red&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;draw&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;withcolor&lt;/span&gt; &lt;span class="n"&gt;darkred&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;draw&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="n"&gt;withcolor&lt;/span&gt; &lt;span class="n"&gt;darkred&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/03.png"&gt;&lt;/p&gt;
 &lt;p&gt;不仅绘制了线段，而且将线段的端点也绘制了出来。&lt;/p&gt;
 &lt;p&gt;利用线段可绘制任意的多边形。例如，绘制一个直角三角形，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;pair a, b, c; path p;
-a := (0, 0); b := (4cm, 0); c := (4cm, 3cm);
-p := a -- b -- c -- a;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;pair&lt;/span&gt; &lt;span class="s"&gt;a,&lt;/span&gt; &lt;span class="s"&gt;b,&lt;/span&gt; &lt;span class="s"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="s"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="s"&gt;:=&lt;/span&gt; &lt;span class="s"&gt;(0,&lt;/span&gt; &lt;span class="s"&gt;0)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="s"&gt;:=&lt;/span&gt; &lt;span class="s"&gt;(4cm,&lt;/span&gt; &lt;span class="s"&gt;0)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="s"&gt;:=&lt;/span&gt; &lt;span class="s"&gt;(4cm,&lt;/span&gt; &lt;span class="s"&gt;3cm)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="s"&gt;:=&lt;/span&gt; &lt;span class="s"&gt;a&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-% 注意：凡以百分号领起的文本为 MetaPost 代码注释。
+&lt;span class="c"&gt;% 注意：凡以百分号领起的文本为 MetaPost 代码注释。&lt;/span&gt;
 
-pickup pencircle scaled 5; % 将画笔设为 5 bp
-draw p withcolor .8white;
+&lt;span class="n"&gt;pickup&lt;/span&gt; &lt;span class="s"&gt;pencircle&lt;/span&gt; &lt;span class="s"&gt;scaled&lt;/span&gt; &lt;span class="s"&gt;5&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c"&gt;% 将画笔设为 5 bp&lt;/span&gt;
+&lt;span class="n"&gt;draw&lt;/span&gt; &lt;span class="s"&gt;p&lt;/span&gt; &lt;span class="s"&gt;withcolor&lt;/span&gt; &lt;span class="s"&gt;.8white&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-pickup pencircle scaled 4;
-draw a; draw b; draw c;
-&lt;/pre&gt;
-
+&lt;span class="n"&gt;pickup&lt;/span&gt; &lt;span class="s"&gt;pencircle&lt;/span&gt; &lt;span class="s"&gt;scaled&lt;/span&gt; &lt;span class="s"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;draw&lt;/span&gt; &lt;span class="s"&gt;a&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;draw&lt;/span&gt; &lt;span class="s"&gt;b&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;draw&lt;/span&gt; &lt;span class="s"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/04.png"&gt;&lt;/p&gt;
 &lt;p&gt;为了便于图形的演示，MetaFun 提供了 &lt;code&gt;drawpath&lt;/code&gt; 和 &lt;code&gt;drawpoints&lt;/code&gt; 宏，前者用于绘制路径，后者用于绘制路径的节点。通过这两个宏，上例可简化为&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;pair a, b, c; path p;
-a := (0, 0); b := (4cm, 0); c := (4cm, 3cm);
-p := a -- b -- c -- a;
-drawpath p; drawpoints p;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;pair a, b, c; path p;&lt;/span&gt;
+&lt;span class="err"&gt;a := (0, 0); b := (4cm, 0); c := (4cm, 3cm);&lt;/span&gt;
+&lt;span class="err"&gt;p := a -- b -- c -- a;&lt;/span&gt;
+&lt;span class="err"&gt;drawpath p; drawpoints p;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;显然，上述路径 &lt;code&gt;p&lt;/code&gt; 是一条闭合路径，但 MetaPost 对此并不知情，需要通过 &lt;code&gt;cycle&lt;/code&gt; 命令告诉它，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;p := a -- b -- c -- cycle;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;p := a -- b -- c -- cycle;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;否则，虽然我们认为 &lt;code&gt;p&lt;/code&gt; 是闭合路径，但 MetaPost 并不苟同，以致在使用 &lt;code&gt;fill&lt;/code&gt; 命令对该路径包围的区域填充颜色时，会导致 MetaPost 报错并罢工。&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;fill&lt;/code&gt; 命令可对闭合路径所包围的区域着色。例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;pair a, b, c; path p;
-a := (0, 0); b := (4cm, 0); c := (4cm, 3cm);
-p := a -- b -- c -- cycle;
-drawpath p; drawpoints p;
-fill p withcolor .8blue;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;pair a, b, c; path p;&lt;/span&gt;
+&lt;span class="err"&gt;a := (0, 0); b := (4cm, 0); c := (4cm, 3cm);&lt;/span&gt;
+&lt;span class="err"&gt;p := a -- b -- c -- cycle;&lt;/span&gt;
+&lt;span class="err"&gt;drawpath p; drawpoints p;&lt;/span&gt;
+&lt;span class="err"&gt;fill p withcolor .8blue;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/05.png"&gt;&lt;/p&gt;
 &lt;p&gt;上例中的路径 &lt;code&gt;p&lt;/code&gt; 皆为直线插值。MetaPost 支持以曲线插值的方式构造路径。倘若将直线插值符的 &lt;code&gt;--&lt;/code&gt; 替换为曲线插值符 &lt;code&gt;..&lt;/code&gt; 便可产生一条插值于点 &lt;code&gt;a&lt;/code&gt;、&lt;code&gt;b&lt;/code&gt; 和 &lt;code&gt;c&lt;/code&gt; 的曲线路径，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;p := a .. b .. c .. cycle;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;p := a .. b .. c .. cycle;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/06.png"&gt;&lt;/p&gt;
 &lt;p&gt;直线插值符与曲线插值符可并用，例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;p := a .. b .. c -- cycle;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;p := a .. b .. c -- cycle;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/07.png"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;controls&lt;/code&gt; 命令可将路径中的某些结点转化为控制点，从而可构造 Bézier 曲线。例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;p := a .. controls b ..c; draw p;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;p := a .. controls b ..c; draw p;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/08.png"&gt;&lt;/p&gt;
 &lt;p&gt;构造的是一条二次 Bézier 曲线路径，此时点 &lt;code&gt;b&lt;/code&gt; 成为控制点，曲线只插值于点 &lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt;。MetaFun 提供了 &lt;code&gt;drawcontrollines&lt;/code&gt; 以及 &lt;code&gt;drawcontrolpoints&lt;/code&gt; 宏，分别用于绘制 Bézier 曲线的控制形及控制点，例如，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;p := a .. controls b ..c;
-drawpath p; drawpoints p;
-drawcontrollines p; drawcontrolpoints p;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;p := a .. controls b ..c;&lt;/span&gt;
+&lt;span class="err"&gt;drawpath p; drawpoints p;&lt;/span&gt;
+&lt;span class="err"&gt;drawcontrollines p; drawcontrolpoints p;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/09.png"&gt;&lt;/p&gt;
 &lt;p&gt;三次 Bézier 曲线需要在路径中设定 2 个控制点，例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;pair a, b, c, d; path p;
-a := (0, 0); b := (4cm, 0); c := (4cm, 3cm); d := (0, 3cm);
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;pair&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="k"&gt;c&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 
-p := a .. controls b and c .. d;
-drawpath p; drawpoints p;
-drawcontrollines p; drawcontrolpoints p;
-&lt;/pre&gt;
-
+&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="p"&gt;..&lt;/span&gt; &lt;span class="n"&gt;controls&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="k"&gt;and&lt;/span&gt; &lt;span class="k"&gt;c&lt;/span&gt; &lt;span class="p"&gt;..&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;drawpath&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;drawpoints&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;drawcontrollines&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;drawcontrolpoints&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/10.png"&gt;&lt;/p&gt;
 &lt;p&gt;无论是插值曲线还是 Bézier 曲线，MetaPost 最高支持三次曲线。不过，对于形状较为复杂的路径，MetaPost 支持以多段插值直线、曲线以及 Bézier 曲线拼接 &lt;strong&gt;&lt;sup&gt;注 5&lt;/sup&gt;&lt;/strong&gt; 的方式构造路径。&lt;/p&gt;
@@ -570,7 +544,7 @@ drawcontrollines p; drawcontrolpoints p;
 &lt;p&gt;$$
 T = (t_x, t_y, t_{xx}, t_{xy}, t_{yx}, t_{yy})
 $$&lt;/p&gt;
-&lt;p&gt;对于任意一点　\(p=(p_x, p_y)\)，MetaPost 的 &lt;code&gt;transform&lt;/code&gt; 命令可将 \(T\) 作用于 \(p\)，即 &lt;code&gt;p transform T&lt;/code&gt;，可将 \(p\) 变换为&lt;/p&gt;
+&lt;p&gt;对于任意一点　\(p=(p_x, p_y)\)，MetaPost 的 &lt;code&gt;transformed&lt;/code&gt; 命令可将 \(T\) 作用于 \(p\)，即 &lt;code&gt;p transformed T&lt;/code&gt;，可将 \(p\) 变换为&lt;/p&gt;
 &lt;p&gt;$$
 q = (t_{xx}p_x + t_{xy}p_y + t_x, t_{yx}p_x + t_{yy}p_y + t_y)
 $$&lt;/p&gt;
@@ -581,36 +555,32 @@ t_{xx} &amp;amp; t_{xy} &amp;amp; t_x \\
 t_{yx} &amp;amp; t_{yy} &amp;amp; t_y \\
 0 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]
 $$&lt;/p&gt;
-&lt;p&gt;此时，&lt;code&gt;p transform T&lt;/code&gt; 语句所描述的坐标变换，便可表示为 \(q = Mp\)。坐标变换矩阵 \(M\) 所描述的是平移、旋转、缩放以及错切等变换的组合，亦即这些特定的变换皆为 \(M\) 的特例。因此，在应用 &lt;code&gt;transform&lt;/code&gt; 的时候，通常并不直接提供六元组形式的变换，而是以 &lt;code&gt;scaled&lt;/code&gt;、&lt;code&gt;shifted&lt;/code&gt; 以及 &lt;code&gt;rotated&lt;/code&gt; 等变换的组合构造一个变换。&lt;/p&gt;
+&lt;p&gt;此时，&lt;code&gt;p transformed T&lt;/code&gt; 语句所描述的坐标变换，便可表示为 \(q = Mp\)。坐标变换矩阵 \(M\) 所描述的是平移、旋转、缩放以及错切等变换的组合，亦即这些特定的变换皆为 \(M\) 的特例。因此，通常并不直接提供六元组形式的变换，而是以 &lt;code&gt;scaled&lt;/code&gt;、&lt;code&gt;shifted&lt;/code&gt; 以及 &lt;code&gt;rotated&lt;/code&gt; 等变换的组合构造一个变换。&lt;/p&gt;
 &lt;p&gt;假设在边长为 8cm 的正方形区域&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;numeric sidelength, u; 
-sidelength := 8cm; u := 0.5sidelength;
-drawpath fullsquare scaled sidelength dashed (evenly scaled 1mm);
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;numeric sidelength, u; &lt;/span&gt;
+&lt;span class="err"&gt;sidelength := 8cm; u := 0.5sidelength;&lt;/span&gt;
+&lt;span class="err"&gt;drawpath fullsquare scaled sidelength dashed (evenly scaled 1mm);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/11.png"&gt;&lt;/p&gt;
 &lt;p&gt;有四个点&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;pair a, b, c, d;
-a := (-0.5, -0.5) * u;
-b := (-0.5, 0.5) * u;
-c := (0.5, 0.5) * u;
-d := (0.5, -0.5) * u;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;pair a, b, c, d;&lt;/span&gt;
+&lt;span class="err"&gt;a := (-0.5, -0.5) * u;&lt;/span&gt;
+&lt;span class="err"&gt;b := (-0.5, 0.5) * u;&lt;/span&gt;
+&lt;span class="err"&gt;c := (0.5, 0.5) * u;&lt;/span&gt;
+&lt;span class="err"&gt;d := (0.5, -0.5) * u;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;它们构成路径 &lt;code&gt;p&lt;/code&gt;，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;path p; p := a -- b -- c -- d;
-drawpath p; drawpoints p;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;path p; p := a -- b -- c -- d;&lt;/span&gt;
+&lt;span class="err"&gt;drawpath p; drawpoints p;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/12.png"&gt;&lt;/p&gt;
 &lt;p&gt;现在将 &lt;code&gt;p&lt;/code&gt; 缩小为原来的 0.5 倍，可为此构造变换 &lt;code&gt;T&lt;/code&gt;，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;transform T;
-T := identity scaled 0.5;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;transform T;&lt;/span&gt;
+&lt;span class="err"&gt;T := identity scaled 0.5;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;code&gt;identity&lt;/code&gt; 是 MetaPost 内置的恒等变换，其值为向量 &lt;code&gt;(0, 0, 1, 0, 0, 1)&lt;/code&gt;，将其写为齐次坐标变换矩阵，可得&lt;/p&gt;
 &lt;p&gt;$$
@@ -628,159 +598,142 @@ $$&lt;/p&gt;
 $$&lt;/p&gt;
 &lt;p&gt;在这里，&lt;code&gt;identity&lt;/code&gt; 的唯一作用是喂给 &lt;code&gt;scaled&lt;/code&gt; 命令，令其得以工作。因为 MetaPost 所有的特定坐标变换命令在工作时要求它的前面必须存在一个表达式，这个表达式可以是一个变换，也可以是一条路径。因此 &lt;code&gt;identity&lt;/code&gt; 能够满足这些命令的需要，而且不影响它们的行为。&lt;/p&gt;
 &lt;p&gt;使用 &lt;code&gt;transformed&lt;/code&gt; 可将 &lt;code&gt;T&lt;/code&gt; 作用于路径 &lt;code&gt;p&lt;/code&gt;，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;path q; q := p transformed T;
-drawpath q withcolor .7green;
-drawpoints q withcolor .7red;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;path q; q := p transformed T;&lt;/span&gt;
+&lt;span class="err"&gt;drawpath q withcolor .7green;&lt;/span&gt;
+&lt;span class="err"&gt;drawpoints q withcolor .7red;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/13.png"&gt;&lt;/p&gt;
 &lt;p&gt;在 &lt;code&gt;T&lt;/code&gt; 的基础上可以继续增加变换。例如，通过 &lt;code&gt;shifted&lt;/code&gt; 让经过了缩放变换的 &lt;code&gt;p&lt;/code&gt; 向左平移 &lt;code&gt;0.7 * u&lt;/code&gt;：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;T := T shifted (-0.7 * u, 0);
-q := p transformed T;
-drawpath  q withcolor .7blue; drawpoints q withcolor .7yellow;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;T := T shifted (-0.7 * u, 0);&lt;/span&gt;
+&lt;span class="err"&gt;q := p transformed T;&lt;/span&gt;
+&lt;span class="err"&gt;drawpath  q withcolor .7blue; drawpoints q withcolor .7yellow;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/14.png"&gt;&lt;/p&gt;
 &lt;p&gt;接下来，在 &lt;code&gt;T&lt;/code&gt; 的基础上，再增加一个旋转变换，令经过了缩放和平移变换后的 &lt;code&gt;p&lt;/code&gt;，即 &lt;code&gt;p transformed T&lt;/code&gt;，绕其中心点逆时针转动 90 度。通过 &lt;code&gt;rotated&lt;/code&gt; 命令可构造旋转变换，但是该命令是以原点为中心对路径进行旋转。若对经过了缩放和平移变换后的 &lt;code&gt;p&lt;/code&gt; 绕其中心作旋转变换，首先需要确定 &lt;code&gt;p&lt;/code&gt; 在经过缩放和平移之后的中心点。由于 &lt;code&gt;p&lt;/code&gt; 的初始中心点可根据它的 4 个节点计算出来，结果为 &lt;code&gt;(0, 0)&lt;/code&gt;，亦即原点，因此只需对 &lt;code&gt;p&lt;/code&gt; 的初始中心点予以 &lt;code&gt;T&lt;/code&gt; 变换，便可得到变换后的 &lt;code&gt;p&lt;/code&gt; 的中心点，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;pair pcenter;
-pcenter := (0, 0) transformed T;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;pair pcenter;&lt;/span&gt;
+&lt;span class="err"&gt;pcenter := (0, 0) transformed T;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;若让 &lt;code&gt;p transformed T&lt;/code&gt; 围绕 &lt;code&gt;pcenter&lt;/code&gt; 逆时针旋转 90 度角，需要先对 &lt;code&gt;p transformed T&lt;/code&gt; 进行平移变换，令其中心与原点对准，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;p transofmed T shifted (-(xpart pcenter), -(ypart pcenter))
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;p transofmed T shifted (-(xpart pcenter), -(ypart pcenter))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;code&gt;xpart&lt;/code&gt; 和 &lt;code&gt;ypart&lt;/code&gt; 分别用于提取任意一点的横坐标与纵坐标分量。然后，对此刻的 &lt;code&gt;p&lt;/code&gt; 逆时针旋转 90 度角，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;p transofmed T shifted (-(xpart pcenter), -(ypart pcenter)) rotated 90
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;p transofmed T shifted (-(xpart pcenter), -(ypart pcenter)) rotated 90&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;接下来，通过 &lt;code&gt;shifted&lt;/code&gt; 将此刻的 &lt;code&gt;p&lt;/code&gt; 移回原位，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;p transofmed T shifted (-(xpart pcenter), -(ypart pcenter)) 
-               rotated 90 
-               shifted ((xpart pcenter), (ypart pcenter))
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;p transofmed T shifted (-(xpart pcenter), -(ypart pcenter)) &lt;/span&gt;
+&lt;span class="err"&gt;               rotated 90 &lt;/span&gt;
+&lt;span class="err"&gt;               shifted ((xpart pcenter), (ypart pcenter))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;若将上述的变换叠加到 &lt;code&gt;T&lt;/code&gt; 中，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;T := T shifted (-(xpart pcenter), -(ypart pcenter)) 
-     rotated 90 
-     shifted ((xpart pcenter), (ypart pcenter));
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;T := T shifted (-(xpart pcenter), -(ypart pcenter)) &lt;/span&gt;
+&lt;span class="err"&gt;     rotated 90 &lt;/span&gt;
+&lt;span class="err"&gt;     shifted ((xpart pcenter), (ypart pcenter));&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;将 &lt;code&gt;T&lt;/code&gt; 作用于 &lt;code&gt;p&lt;/code&gt;，便可实现 &lt;code&gt;p transformed T&lt;/code&gt; 围绕 &lt;code&gt;pcenter&lt;/code&gt; 逆时针旋转 90 度角，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;drawpath p transformed T withcolor .7red;
-drawpoints p transformed T withcolor .7cyan;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;drawpath p transformed T withcolor .7red;&lt;/span&gt;
+&lt;span class="err"&gt;drawpoints p transformed T withcolor .7cyan;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;不过，MetaPost 的 &lt;code&gt;rotatedaround&lt;/code&gt; 变换已经实现了上述的围绕指定点对路径进行旋转的功能，因此上述的 &lt;code&gt;T&lt;/code&gt; 可简写为&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;T := T rotatedaround (pcenter, 90);
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;T := T rotatedaround (pcenter, 90);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;现在，在 &lt;code&gt;T&lt;/code&gt; 的基础上，增加一个镜象变换，例如，以过原点 &lt;code&gt;(0, 0)&lt;/code&gt; 且斜率为 1 的一条直线为镜线，将 &lt;code&gt;p transformed T&lt;/code&gt; 变换为自身的影像。为了便于观察，先将镜线绘制出来，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;pair mb, me;
-mb := (-1, -1) * u;
-me := (1, 1) * u;
-drawarrowpath mb -- me;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;pair mb, me;&lt;/span&gt;
+&lt;span class="err"&gt;mb := (-1, -1) * u;&lt;/span&gt;
+&lt;span class="err"&gt;me := (1, 1) * u;&lt;/span&gt;
+&lt;span class="err"&gt;drawarrowpath mb -- me;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/15.png"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;drawarrowpath&lt;/code&gt; 宏可绘制路径及其走向。显然，&lt;code&gt;mirrorline&lt;/code&gt; 过原点 &lt;code&gt;(0, 0)&lt;/code&gt; 且斜率为 1，基于它，可构造一个镜象变换。并将其叠加至 &lt;code&gt;T&lt;/code&gt;，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;T := T reflectedabout (mb, me);
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;T := T reflectedabout (mb, me);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;将 &lt;code&gt;T&lt;/code&gt; 作用于 &lt;code&gt;p&lt;/code&gt; 便可得到 &lt;code&gt;p&lt;/code&gt; 的镜象，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;drawpath p transformed T withcolor .7red;
-drawpoints p transformed T withcolor .7cyan;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;drawpath p transformed T withcolor .7red;&lt;/span&gt;
+&lt;span class="err"&gt;drawpoints p transformed T withcolor .7cyan;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/16.png"&gt;&lt;/p&gt;
 &lt;h2&gt;路径合成&lt;/h2&gt;
 &lt;p&gt;不仅变换可以叠加合成，路径也可以如此。例如，对于上一节所给出的路径 &lt;code&gt;p&lt;/code&gt;，对其作旋转、平移变换，生成路径 &lt;code&gt;q&lt;/code&gt;，然后通过 &lt;code&gt;--&lt;/code&gt; 可将二者连接起来，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;path q[];
-q[1] := p scaled 0.5;
-q[2] := q[1] shifted (s, 0);
-q[3] := q[1] -- q[2];
-drawpath q[3]; drawpoints q[3];
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;path q[];&lt;/span&gt;
+&lt;span class="err"&gt;q[1] := p scaled 0.5;&lt;/span&gt;
+&lt;span class="err"&gt;q[2] := q[1] shifted (s, 0);&lt;/span&gt;
+&lt;span class="err"&gt;q[3] := q[1] -- q[2];&lt;/span&gt;
+&lt;span class="err"&gt;drawpath q[3]; drawpoints q[3];&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/17.png"&gt;&lt;/p&gt;
 &lt;p&gt;在 MetaPost 中，类似 &lt;code&gt;q&lt;/code&gt; 这样的变量称为带有后缀的变量。可以用此类变量模拟数组。&lt;/p&gt;
 &lt;h2&gt;从简单到复杂&lt;/h2&gt;
 &lt;p&gt;通过图形变换和路径合成，可基于简单图形，构造复杂图形。下面以 Hilbert 曲线的绘制为例，在实践中感受 MetaPost 的魅力。&lt;/p&gt;
 &lt;p&gt;首先，回顾路径 &lt;code&gt;p&lt;/code&gt;：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;numeric sidelength, u;
-sidelength := 8cm; u := 0.5sidelength;
-drawpath fullsquare scaled 2s dashed (evenly scaled 1mm);
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nb"&gt;numeric&lt;/span&gt; &lt;span class="n"&gt;sidelength&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;sidelength&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="n"&gt;sidelength&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;drawpath&lt;/span&gt; &lt;span class="n"&gt;fullsquare&lt;/span&gt; &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;dashed&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;evenly&lt;/span&gt; &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="n"&gt;mm&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 
-pair a, b, c, d;
-a := (-0.5, -0.5) * u;
-b := (-0.5, 0.5) * u;
-c := (0.5, 0.5) * u;
-d := (0.5, -0.5) * u;
+&lt;span class="n"&gt;pair&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;c&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-path p; 
-p := a -- b -- c -- d;
-drawpath p; drawpoints p;
-&lt;/pre&gt;
-
+&lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; 
+&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="c1"&gt;-- b -- c -- d;&lt;/span&gt;
+&lt;span class="n"&gt;drawpath&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;drawpoints&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/18.png"&gt;&lt;/p&gt;
 &lt;p&gt;此时的 &lt;code&gt;p&lt;/code&gt;，称为 1 阶 Hilbert 曲线。&lt;/p&gt;
 &lt;p&gt;接下来，构造四个变换：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;  transform sw, nw, ne, se;
-  sw := identity
-        scaled 0.5
-        reflectedabout ((0, 0), (1, 1))
-        shifted (-0.5u, -0.5u);
-  nw := identity
-        scaled 0.5
-        shifted (-0.5u, 0.5u);
-  ne := identity
-        scaled 0.5
-        shifted (0.5u, 0.5u);
-  se := identity
-        scaled 0.5
-        reflectedabout ((0, 0), (1, -1))
-        shifted (0.5u, -0.5u);
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;  transform sw, nw, ne, se;&lt;/span&gt;
+&lt;span class="err"&gt;  sw := identity&lt;/span&gt;
+&lt;span class="err"&gt;        scaled 0.5&lt;/span&gt;
+&lt;span class="err"&gt;        reflectedabout ((0, 0), (1, 1))&lt;/span&gt;
+&lt;span class="err"&gt;        shifted (-0.5u, -0.5u);&lt;/span&gt;
+&lt;span class="err"&gt;  nw := identity&lt;/span&gt;
+&lt;span class="err"&gt;        scaled 0.5&lt;/span&gt;
+&lt;span class="err"&gt;        shifted (-0.5u, 0.5u);&lt;/span&gt;
+&lt;span class="err"&gt;  ne := identity&lt;/span&gt;
+&lt;span class="err"&gt;        scaled 0.5&lt;/span&gt;
+&lt;span class="err"&gt;        shifted (0.5u, 0.5u);&lt;/span&gt;
+&lt;span class="err"&gt;  se := identity&lt;/span&gt;
+&lt;span class="err"&gt;        scaled 0.5&lt;/span&gt;
+&lt;span class="err"&gt;        reflectedabout ((0, 0), (1, -1))&lt;/span&gt;
+&lt;span class="err"&gt;        shifted (0.5u, -0.5u);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;将这四个变换分别作用于 &lt;code&gt;p&lt;/code&gt; 并将生成的新路径连接起来，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;p := p transformed sw
-     -- p transformed nw
-     -- p transformed ne
-     -- p transformed se;
-drawpath p; drawpoints p;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;p := p transformed sw&lt;/span&gt;
+&lt;span class="err"&gt;     -- p transformed nw&lt;/span&gt;
+&lt;span class="err"&gt;     -- p transformed ne&lt;/span&gt;
+&lt;span class="err"&gt;     -- p transformed se;&lt;/span&gt;
+&lt;span class="err"&gt;drawpath p; drawpoints p;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/19.png"&gt;&lt;/p&gt;
 &lt;p&gt;所得结果称为 2 阶 Hilbert 曲线。对 &lt;code&gt;p&lt;/code&gt; 再次做上述变换，便可构造出 3 阶 Hilbert 曲线，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;p := p transformed sw
-     -- p transformed nw
-     -- p transformed ne
-     -- p transformed se;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;transformed&lt;/span&gt; &lt;span class="n"&gt;sw&lt;/span&gt;
+     &lt;span class="c1"&gt;-- p transformed nw&lt;/span&gt;
+     &lt;span class="c1"&gt;-- p transformed ne&lt;/span&gt;
+     &lt;span class="c1"&gt;-- p transformed se;&lt;/span&gt;
 
-p := p transformed sw
-     -- p transformed nw
-     -- p transformed ne
-     -- p transformed se;
+&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;transformed&lt;/span&gt; &lt;span class="n"&gt;sw&lt;/span&gt;
+     &lt;span class="c1"&gt;-- p transformed nw&lt;/span&gt;
+     &lt;span class="c1"&gt;-- p transformed ne&lt;/span&gt;
+     &lt;span class="c1"&gt;-- p transformed se;&lt;/span&gt;
 
-drawpath p; drawpoints p;
-&lt;/pre&gt;
-
+&lt;span class="n"&gt;drawpath&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;drawpoints&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/20.png"&gt;&lt;/p&gt;
 &lt;p&gt;依此类推，可继续构造更高阶的 Hilbert 曲线。随着阶数的升高，曲线很快会将一个正方形区域填满，例如 5 阶曲线，&lt;/p&gt;
@@ -788,58 +741,52 @@ drawpath p; drawpoints p;
 &lt;p&gt;因此，Hilbert 曲线通常被称为空间填充曲线。利用 Hilbert 曲线，可将多维空间转化为一维连续空间。&lt;/p&gt;
 &lt;h2&gt;循环&lt;/h2&gt;
 &lt;p&gt;使用 MetaPost 的 &lt;code&gt;for&lt;/code&gt; 循环语句对高阶 Hilbert 曲线的构造代码予以简化。例如构造 5 阶 Hilbert 曲线，只需&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;for i := 2 upto 5:
-    p := p transformed sw
-         -- p transformed nw
-         -- p transformed ne
-         -- p transformed se;
-endfor;
-drawpath p; drawpoints p;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;for i := 2 upto 5:&lt;/span&gt;
+&lt;span class="err"&gt;    p := p transformed sw&lt;/span&gt;
+&lt;span class="err"&gt;         -- p transformed nw&lt;/span&gt;
+&lt;span class="err"&gt;         -- p transformed ne&lt;/span&gt;
+&lt;span class="err"&gt;         -- p transformed se;&lt;/span&gt;
+&lt;span class="err"&gt;endfor;&lt;/span&gt;
+&lt;span class="err"&gt;drawpath p; drawpoints p;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;若采用更为通用的 &lt;code&gt;for&lt;/code&gt; 语句，上述的 &lt;code&gt;for&lt;/code&gt; 代码可改为&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;for i := 2 step 1 until 5:
-    p := p transformed sw
-         -- p transformed nw
-         -- p transformed ne
-         -- p transformed se;
-endfor;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;for i := 2 step 1 until 5:&lt;/span&gt;
+&lt;span class="err"&gt;    p := p transformed sw&lt;/span&gt;
+&lt;span class="err"&gt;         -- p transformed nw&lt;/span&gt;
+&lt;span class="err"&gt;         -- p transformed ne&lt;/span&gt;
+&lt;span class="err"&gt;         -- p transformed se;&lt;/span&gt;
+&lt;span class="err"&gt;endfor;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;code&gt;step&lt;/code&gt; 可以控制循环变量 &lt;code&gt;i&lt;/code&gt; 的步长。&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;for&lt;/code&gt; 也可用于对象序列的迭代访问。例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;p := p transformed sw
-     -- p transformed nw
-     -- p transformed ne
-     -- p transformed se;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;p := p transformed sw&lt;/span&gt;
+&lt;span class="err"&gt;     -- p transformed nw&lt;/span&gt;
+&lt;span class="err"&gt;     -- p transformed ne&lt;/span&gt;
+&lt;span class="err"&gt;     -- p transformed se;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;可写为&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="nt"&gt;transformed&lt;/span&gt; &lt;span class="nt"&gt;sw&lt;/span&gt; &lt;span class="nt"&gt;for&lt;/span&gt; &lt;span class="nt"&gt;j&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;nw&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;ne&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;se&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;--&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="nt"&gt;transformed&lt;/span&gt; &lt;span class="nt"&gt;j&lt;/span&gt; &lt;span class="nt"&gt;endfor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;p := p transformed sw for j := nw, ne, se: -- p transformed j endfor;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;MetaPost 允许表达式中出现循环语句，而且循环的最终结果是每一轮循环所包含的内容的连接。&lt;/p&gt;
 &lt;h2&gt;宏&lt;/h2&gt;
 &lt;p&gt;在一个 MetaPost 程序里，除了数据以及注释语句之外，剩下的几乎都是宏。mpost 会将程序中所有的宏展开，从而得到最为基本的绘图语句的组合，继而 mpost 将这些基本的绘图语句翻译为 PostScript 语句，从而得到 PostScript 格式的文档。&lt;/p&gt;
 &lt;p&gt;宏的展开，其基本原理是文本替换。例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;for i := 1 upto 4:
-    MetaPost 语句;
-endfor;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;for i := 1 upto 4:&lt;/span&gt;
+&lt;span class="err"&gt;    MetaPost 语句;&lt;/span&gt;
+&lt;span class="err"&gt;endfor;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;其中的 &lt;code&gt;upto&lt;/code&gt; 就是一个宏，mpost 会将它的展开为 &lt;code&gt;step 1 until&lt;/code&gt;。之所以如此，是因为 &lt;code&gt;upto&lt;/code&gt; 的定义&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;def upto = step 1 until enddef;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;def upto = step 1 until enddef;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;code&gt;upto&lt;/code&gt; 没有参数，它的展开本质上是单纯的文本替换。有参数的宏可以通过参数调整宏的展开结果；宏的参数，本质上是宏展开文本中可变的部分。&lt;/p&gt;
 &lt;p&gt;通过有参数的宏，可实现更具一般性的 Hilbert 曲线的构造过程。对于 Hilbert 曲线的构造过程而言，可变的部分有 Hilbert 曲线所填充的正方形区域的边长以及 Hilbert 曲线的阶数，若将二者分别用 &lt;code&gt;numeric&lt;/code&gt; 类型的变量 &lt;code&gt;sidelength&lt;/code&gt; 和 &lt;code&gt;n&lt;/code&gt; 表示，那么一般性的 Hilbert 曲线的构造过程可表示为&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;numeric&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5sidelength&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;numeric&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5sidelength&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 &lt;span class="nt"&gt;pair&lt;/span&gt; &lt;span class="nt"&gt;a&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;b&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;c&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;d&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 &lt;span class="nt"&gt;a&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 &lt;span class="nt"&gt;b&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
@@ -870,11 +817,10 @@ endfor;
 &lt;span class="nt"&gt;endfor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 
 &lt;span class="nt"&gt;drawpath&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;drawpoints&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-&lt;/pre&gt;
-
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;将上述语句作为宏 &lt;code&gt;hilbert&lt;/code&gt; 的替换文本，并将 &lt;code&gt;sidelength&lt;/code&gt; 和 &lt;code&gt;n&lt;/code&gt; 作为 &lt;code&gt;hilbert&lt;/code&gt; 宏的参数，则 &lt;code&gt;hilbert&lt;/code&gt; 宏可定义为&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;def&lt;/span&gt; &lt;span class="nt"&gt;hilbert&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;expr&lt;/span&gt; &lt;span class="nt"&gt;sidelength&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;n&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="nt"&gt;def&lt;/span&gt; &lt;span class="nt"&gt;hilbert&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;expr&lt;/span&gt; &lt;span class="nt"&gt;sidelength&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;n&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 
   &lt;span class="nt"&gt;numeric&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5sidelength&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
   &lt;span class="nt"&gt;pair&lt;/span&gt; &lt;span class="nt"&gt;a&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;b&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;c&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;d&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
   &lt;span class="nt"&gt;a&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
@@ -907,196 +853,175 @@ endfor;
 
   &lt;span class="nt"&gt;drawpath&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;drawpoints&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
 &lt;span class="nt"&gt;enddef&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-&lt;/pre&gt;
-
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;code&gt;(expr sidelength, n)&lt;/code&gt; 为 &lt;code&gt;hilbert&lt;/code&gt; 的参数列表，&lt;code&gt;expr&lt;/code&gt; 表示参数 &lt;code&gt;sidelength&lt;/code&gt; 和 &lt;code&gt;n&lt;/code&gt; 的类型皆为 MetaPost 的表达式。除了 &lt;code&gt;expr&lt;/code&gt; 之外，MetaPost 还支持 &lt;code&gt;text&lt;/code&gt; 和 &lt;code&gt;suffix&lt;/code&gt; 类型的参数。&lt;code&gt;text&lt;/code&gt; 类型的参数可以是任意 MetaPost 语句，但结尾必须为 &lt;code&gt;;&lt;/code&gt;。&lt;code&gt;suffix&lt;/code&gt; 表示含有后缀的变量，可将该类变量其理解为数组。需要注意，宏的参数，在其替换文本中不能再重新声明或赋值。&lt;/p&gt;
 &lt;p&gt;现在调用 &lt;code&gt;hilbert&lt;/code&gt; 宏，便可将其展开为任意阶数的 Hilbert 曲线的构造及绘制语句。例如，在边长为 8cm 的正方形区域内构造并绘制 4 阶的 Hilbert 曲线，只需&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;hilbert(8cm, 4);
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;hilbert(8cm, 4);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;h2&gt;条件&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;hilbert&lt;/code&gt; 宏有一个 Bug，它无法构造 1 阶 Hilbert 曲线——路径 &lt;code&gt;p&lt;/code&gt; 的初始状态。要修复这个 Bug，需要使用条件语句&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;if 条件:
-  语句;
-elseif 条件:
-  语句;
-else:
-  语句;
-fi
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;if 条件:&lt;/span&gt;
+&lt;span class="err"&gt;  语句;&lt;/span&gt;
+&lt;span class="err"&gt;elseif 条件:&lt;/span&gt;
+&lt;span class="err"&gt;  语句;&lt;/span&gt;
+&lt;span class="c"&gt;else:&lt;/span&gt;
+&lt;span class="c"&gt;  语句;&lt;/span&gt;
+&lt;span class="err"&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;其中，&lt;code&gt;elseif&lt;/code&gt; 部分可选。&lt;/p&gt;
 &lt;p&gt;可在构造 Hilbert 曲线的循环中，利用条件语句，将 &lt;code&gt;n = 1&lt;/code&gt; 视为特殊情况，在这种情况中不对 &lt;code&gt;p&lt;/code&gt; 进行变换，如此便可得到正确阶树的 Hilbert 曲线，亦即，将 &lt;code&gt;hilbert&lt;/code&gt; 宏的替换文本中的&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;for&lt;/span&gt; &lt;span class="nt"&gt;i&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;2&lt;/span&gt; &lt;span class="nt"&gt;upto&lt;/span&gt; &lt;span class="nt"&gt;n&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-  &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="nt"&gt;transformed&lt;/span&gt; &lt;span class="nt"&gt;sw&lt;/span&gt; &lt;span class="nt"&gt;for&lt;/span&gt; &lt;span class="nt"&gt;j&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;nw&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;ne&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;se&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;--&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="nt"&gt;transformed&lt;/span&gt; &lt;span class="nt"&gt;j&lt;/span&gt; &lt;span class="nt"&gt;endfor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-&lt;span class="nt"&gt;endfor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;for i := 2 upto n:&lt;/span&gt;
+&lt;span class="err"&gt;  p := p transformed sw for j := nw, ne, se: -- p transformed j endfor;&lt;/span&gt;
+&lt;span class="err"&gt;endfor;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;修改为&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;if&lt;/span&gt; &lt;span class="nt"&gt;n&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-  &lt;span class="nt"&gt;for&lt;/span&gt; &lt;span class="nt"&gt;i&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;2&lt;/span&gt; &lt;span class="nt"&gt;upto&lt;/span&gt; &lt;span class="nt"&gt;n&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-    &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="nt"&gt;transformed&lt;/span&gt; &lt;span class="nt"&gt;sw&lt;/span&gt; &lt;span class="nt"&gt;for&lt;/span&gt; &lt;span class="nt"&gt;j&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;nw&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;ne&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;se&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;--&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="nt"&gt;transformed&lt;/span&gt; &lt;span class="nt"&gt;j&lt;/span&gt; &lt;span class="nt"&gt;endfor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;endfor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-&lt;span class="nt"&gt;fi&lt;/span&gt;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;if n &amp;gt; 1:&lt;/span&gt;
+&lt;span class="err"&gt;  for i := 2 upto n:&lt;/span&gt;
+&lt;span class="err"&gt;    p := p transformed sw for j := nw, ne, se: -- p transformed j endfor;&lt;/span&gt;
+&lt;span class="err"&gt;  endfor;&lt;/span&gt;
+&lt;span class="err"&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;如此，便修复了 &lt;code&gt;hilbert&lt;/code&gt; 宏在曲线阶数上的 Bug。&lt;/p&gt;
 &lt;h2&gt;数据与绘图分离&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;hilbert&lt;/code&gt; 宏的定义还存在一个问题，它做的事情太多了，不仅负责 Hilbert 曲线的构造，还负责曲线的绘制。做的事情多，并不意味着功能更强大。若需要对线条的颜色以及粗细虚实予以调整，需要修改 &lt;code&gt;hilbert&lt;/code&gt; 宏的定义。应对这些变化，最简单的方法是让 &lt;code&gt;hilbert&lt;/code&gt; 不负责绘图，只负责生成 Hilbert 曲线路径。为达到这一目的，需要用 &lt;code&gt;vardef&lt;/code&gt; 来定义 &lt;code&gt;hilbert&lt;/code&gt; 宏，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nt"&gt;vardef&lt;/span&gt; &lt;span class="nt"&gt;hilbert&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;expr&lt;/span&gt; &lt;span class="nt"&gt;sidelength&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;n&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 
-  &lt;span class="nt"&gt;numeric&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5sidelength&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;pair&lt;/span&gt; &lt;span class="nt"&gt;a&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;b&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;c&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;d&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;a&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;b&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;c&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;d&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;vardef&lt;/span&gt; &lt;span class="n"&gt;hilbert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;expr&lt;/span&gt; &lt;span class="n"&gt;sidelength&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 
+  &lt;span class="n"&gt;numeric&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;sidelength&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;pair&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-  &lt;span class="nt"&gt;path&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; 
-  &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;a&lt;/span&gt; &lt;span class="nt"&gt;--&lt;/span&gt; &lt;span class="nt"&gt;b&lt;/span&gt; &lt;span class="nt"&gt;--&lt;/span&gt; &lt;span class="nt"&gt;c&lt;/span&gt; &lt;span class="nt"&gt;--&lt;/span&gt; &lt;span class="nt"&gt;d&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; 
+  &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-  &lt;span class="nt"&gt;transform&lt;/span&gt; &lt;span class="nt"&gt;sw&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;nw&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;ne&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;se&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;sw&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;identity&lt;/span&gt;
-        &lt;span class="nt"&gt;scaled&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;
-        &lt;span class="nt"&gt;reflectedabout&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
-        &lt;span class="nt"&gt;shifted&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-  &lt;span class="nt"&gt;nw&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;identity&lt;/span&gt;
-        &lt;span class="nt"&gt;scaled&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;
-        &lt;span class="nt"&gt;shifted&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-  &lt;span class="nt"&gt;ne&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;identity&lt;/span&gt;
-        &lt;span class="nt"&gt;scaled&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;
-        &lt;span class="nt"&gt;shifted&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-  &lt;span class="nt"&gt;se&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;identity&lt;/span&gt;
-        &lt;span class="nt"&gt;scaled&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;
-        &lt;span class="nt"&gt;reflectedabout&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;-1&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
-        &lt;span class="nt"&gt;shifted&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;transform&lt;/span&gt; &lt;span class="n"&gt;sw&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;nw&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ne&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;se&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;sw&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;identity&lt;/span&gt;
+        &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;
+        &lt;span class="n"&gt;reflectedabout&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="n"&gt;shifted&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;nw&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;identity&lt;/span&gt;
+        &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;
+        &lt;span class="n"&gt;shifted&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;ne&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;identity&lt;/span&gt;
+        &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;
+        &lt;span class="n"&gt;shifted&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;se&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;identity&lt;/span&gt;
+        &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;
+        &lt;span class="n"&gt;reflectedabout&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="n"&gt;shifted&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 
-  &lt;span class="nt"&gt;for&lt;/span&gt; &lt;span class="nt"&gt;i&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;2&lt;/span&gt; &lt;span class="nt"&gt;upto&lt;/span&gt; &lt;span class="nt"&gt;n&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-    &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="nt"&gt;transformed&lt;/span&gt; &lt;span class="nt"&gt;sw&lt;/span&gt; &lt;span class="nt"&gt;for&lt;/span&gt; &lt;span class="nt"&gt;j&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;nw&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;ne&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;se&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;--&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="nt"&gt;transformed&lt;/span&gt; &lt;span class="nt"&gt;j&lt;/span&gt; &lt;span class="nt"&gt;endfor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;endfor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;p&lt;/span&gt;
-&lt;span class="nt"&gt;enddef&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-&lt;/pre&gt;
-
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="n"&gt;upto&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;transformed&lt;/span&gt; &lt;span class="n"&gt;sw&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nw&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ne&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;se&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;transformed&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;endfor&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;endfor&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;p&lt;/span&gt;
+&lt;span class="n"&gt;enddef&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;使用 &lt;code&gt;vardef&lt;/code&gt; 定义的宏，其替换文本的最后一句即为宏返回的结果。将 &lt;code&gt;p&lt;/code&gt; 作为 &lt;code&gt;hilbert&lt;/code&gt; 宏的替换文本的最后一句，便可使得 &lt;code&gt;hilbert&lt;/code&gt; 返回 Hilbert 曲线路径。&lt;/p&gt;
 &lt;p&gt;若测试 &lt;code&gt;hilbert&lt;/code&gt; 宏能否满足需求，只需&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;path p; p := hilbert(8cm, 3);
-drawpath p; drawpoints p;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;path p; p := hilbert(8cm, 3);&lt;/span&gt;
+&lt;span class="err"&gt;drawpath p; drawpoints p;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;使用 &lt;code&gt;randomized&lt;/code&gt; 命令对 &lt;code&gt;p&lt;/code&gt; 作轻微的随机扰动，可使得 Hilbert 曲线具备一丝艺术气息，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;path p; p := hilbert(8cm, 3) randomized 5mm;
-drawpath p; drawpoints p;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;path p; p := hilbert(8cm, 3) randomized 5mm;&lt;/span&gt;
+&lt;span class="err"&gt;drawpath p; drawpoints p;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/22.png"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;randomized&lt;/code&gt; 能够对出现在它之前的对象按指定幅度予以随机扰动。路径出现于 &lt;code&gt;randomized&lt;/code&gt; 之前，则路径中的所有节点的位置会被随机扰动。&lt;/p&gt;
 &lt;h2&gt;变量的作用域&lt;/h2&gt;
 &lt;p&gt;调用 &lt;code&gt;hilbert&lt;/code&gt; 宏，即使将其将其返回的路径赋予变量 &lt;code&gt;q&lt;/code&gt;，但依然可以用 &lt;code&gt;p&lt;/code&gt; 访问 &lt;code&gt;hilbert&lt;/code&gt; 所生成的路径：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;path q; q := hilbert(5cm, 3);
-drawpath p withcolor .625gren;
-drawpoints p withcolor .625red;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;path q; q := hilbert(5cm, 3);&lt;/span&gt;
+&lt;span class="err"&gt;drawpath p withcolor .625gren;&lt;/span&gt;
+&lt;span class="err"&gt;drawpoints p withcolor .625red;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;这意味着在 &lt;code&gt;hilbert&lt;/code&gt; 宏的定义中出现的变量 &lt;code&gt;p&lt;/code&gt;，在 &lt;code&gt;hilbert&lt;/code&gt; 宏的外部也是可见的。之所以出现这样的结果，原因在于 MetaPost 语言中，除了循环结构的变量之外，几乎所有的变量默认皆为全局变量。例如，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;for i := 1 upto 5:
-    path p;
-    p := fullsquare scaled (i * 1cm) shifted (i * 1cm, 0);
-endfor;
-drawpath p;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;for i := 1 upto 5:&lt;/span&gt;
+&lt;span class="err"&gt;    path p;&lt;/span&gt;
+&lt;span class="err"&gt;    p := fullsquare scaled (i * 1cm) shifted (i * 1cm, 0);&lt;/span&gt;
+&lt;span class="err"&gt;endfor;&lt;/span&gt;
+&lt;span class="err"&gt;drawpath p;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;其中，&lt;code&gt;p&lt;/code&gt; 为全局变量，但 &lt;code&gt;i&lt;/code&gt; 为局部变量。&lt;/p&gt;
 &lt;p&gt;若要构造一些局部变量，需要使用 &lt;code&gt;begingroup ... endgroup&lt;/code&gt; 以及 &lt;code&gt;save&lt;/code&gt; 语句。例如，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;begingroup
-save s, p;
-numeric s; path q;
-s := 5cm;
-q := fullsquare scaled s shifted (s, 0);
-endgroup;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;begingroup&lt;/span&gt;
+&lt;span class="n"&gt;save&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nb"&gt;numeric&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="n"&gt;q&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="n"&gt;cm&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;q&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fullsquare&lt;/span&gt; &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="n"&gt;shifted&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;endgroup&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-drawpath p;
-&lt;/pre&gt;
-
+&lt;span class="n"&gt;drawpath&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;在绘制路径 &lt;code&gt;p&lt;/code&gt; 时，mpost 会报错，因为所绘制的路径并不存在。&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;begingroup ... endgroup&lt;/code&gt; 构造了一个作用域，&lt;code&gt;save&lt;/code&gt; 则用于声明局部变量的名字。若该结构在宏的定义中使用，便可以对宏内所用的一些不想被外部所知的变量给予保护。&lt;/p&gt;
 &lt;h2&gt;线性方程&lt;/h2&gt;
 &lt;p&gt;mpost 具备线性方程求解的功能。基于这一功能，mpost 可动态确定变量类型。例如，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;a = 1;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;a = 1;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;这里的 &lt;code&gt;=&lt;/code&gt; 并非赋值运算符。MetaPost 的赋值运算是上文中一直使用的 &lt;code&gt;:=&lt;/code&gt;。这里的 &lt;code&gt;=&lt;/code&gt; 表示方程或等式。在上文讲述条件结构的时候，已见识了它。mpost 会对这个方程进行求解，结果是变量 &lt;code&gt;a&lt;/code&gt; 的值为 1，因此这条语句等价于&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;numeric a;
-a := 1;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;numeric a;&lt;/span&gt;
+&lt;span class="err"&gt;a := 1;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;对于&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;a + 2b = 5;
-3b = 7;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;a + 2b = 5;&lt;/span&gt;
+&lt;span class="err"&gt;3b = 7;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;mpost 的求解结果为&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;a = 0.33333;
-b = 2.33333;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;a = 0.33333;&lt;/span&gt;
+&lt;span class="err"&gt;b = 2.33333;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;对于&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;a = (2cm, 3cm);
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;a = (2cm, 3cm);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;mpost 会报错，它认为一个数值与一个点无法构成方程，但是将变量名称写成以 &lt;code&gt;z&lt;/code&gt; 开头带有后缀的形式，便可构成方程，例如&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;z1 = (2cm, 3cm);
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;z1 = (2cm, 3cm);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;mpost 会将 &lt;code&gt;z1&lt;/code&gt; 视为一个点 &lt;code&gt;(x1, y1)&lt;/code&gt;，因此上述方程本质上是&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;(x1, y1) = (2cm, 3cm);
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;(x1, y1) = (2cm, 3cm);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;反之，倘若 mpost 求解了以下方程&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;x1 = 3cm; 
-y1 = 4cm;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;x1 = 3cm; &lt;/span&gt;
+&lt;span class="err"&gt;y1 = 4cm;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;就相当于定义了点 &lt;code&gt;z1 = (3cm, 4cm)&lt;/code&gt;。变量名称的后缀，可以是数字，也可以是数字 + 字母，还可以是 &lt;code&gt;.&lt;/code&gt; + 数字或字母，例如：&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;z3 = z1; z3r = z1; z.3 = z1; z.3r = z1;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;z3 = z1; z3r = z1; z.3 = z1; z.3r = z1;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;除了可用于节省变量的声明之外，利用 mpost 求解线性方程的功能确定两条线段的交点也极为方便。例如，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;path p, q;
-z0 = (0, 0); z1 = (7cm, 5cm); z2 = (0, 3cm); z3 = (7cm, 3cm);
-p := z0 -- z1;
-q := z2 -- z3;
-z4 = whatever[z0, z1] = whatever[z2, z3];
-drawpath p; drawpath q;
-drawpoints z4;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;path p, q;&lt;/span&gt;
+&lt;span class="err"&gt;z0 = (0, 0); z1 = (7cm, 5cm); z2 = (0, 3cm); z3 = (7cm, 3cm);&lt;/span&gt;
+&lt;span class="err"&gt;p := z0 -- z1;&lt;/span&gt;
+&lt;span class="err"&gt;q := z2 -- z3;&lt;/span&gt;
+&lt;span class="err"&gt;z4 = whatever[z0, z1] = whatever[z2, z3];&lt;/span&gt;
+&lt;span class="err"&gt;drawpath p; drawpath q;&lt;/span&gt;
+&lt;span class="err"&gt;drawpoints z4;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/23.png"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;whatever[z0, z1]&lt;/code&gt; 表示 &lt;code&gt;z0 -- z1&lt;/code&gt; 上的任意一点。若写为 &lt;code&gt;0.5[z0, z1]&lt;/code&gt; 表示线段 &lt;code&gt;z0 -- z1&lt;/code&gt; 的中点。若写为 &lt;code&gt;1/3[z0, z1]&lt;/code&gt; 则表示 &lt;code&gt;z0 -- z1&lt;/code&gt; 距离 &lt;code&gt;z0&lt;/code&gt; 最近的三等分点。&lt;code&gt;[z0, z1]&lt;/code&gt; 这样的写法表示由线段 &lt;code&gt;z0 -- z1&lt;/code&gt; 构成的区间。两个数也能构成区间，例如 &lt;code&gt;[2, 4]&lt;/code&gt;，再例如 &lt;code&gt;0.5[2, 4]&lt;/code&gt; 的结果为 3。&lt;/p&gt;
 &lt;h2&gt;MetaFun：MetaPost + ConTeXt&lt;/h2&gt;
 &lt;p&gt;MetaPost 绘制的图形，通过 MetaFun 便可与 ConTeXt 的排版元素取得结合，从而显著增强 ConTeXt 的排版能力。例如，可以将一条 Hilbert 曲线作为文本框的背景。当然，只要能够绘制 Hilbert 曲线，将其保存为单页面文件，几乎任何一个功能健全的排版软件都能够以该图形作为文本框的背景，但是一旦图形被保存为文件，这就意味着图形失去了可变性，只适于作为特定尺寸的文本框的背景。&lt;/p&gt;
 &lt;p&gt;假设将一条三阶 Hilbert 曲线以矢量图的形式保存为单页面文件 hilbert-3.pdf，那么在 ConTeXt 中可通过覆盖（Overlay）的方式将其作为文本框的背景图片，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\usemodule&lt;/span&gt;&lt;span class="na"&gt;[zhfonts]&lt;/span&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;\usemodule&lt;/span&gt;&lt;span class="na"&gt;[zhfonts]&lt;/span&gt;
 
 &lt;span class="k"&gt;\defineoverlay&lt;/span&gt;&lt;span class="na"&gt;[hilbert][{\externalfigure[hilbert-3.pdf]&lt;/span&gt;&lt;span class="nb"&gt;}&lt;/span&gt;]
 &lt;span class="k"&gt;\setupframed&lt;/span&gt;
@@ -1110,13 +1035,12 @@ drawpoints z4;
 &lt;span class="k"&gt;\starttext&lt;/span&gt;
 &lt;span class="k"&gt;\framed&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;&lt;span class="k"&gt;\bfd&lt;/span&gt; 天地一指也&lt;span class="k"&gt;\\&lt;/span&gt; 万物一马也&lt;span class="nb"&gt;}&lt;/span&gt;
 &lt;span class="k"&gt;\stoptext&lt;/span&gt;
-&lt;/pre&gt;
-
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/24.png"&gt;&lt;/p&gt;
 &lt;p&gt;若直接以 hilbert-3.pdf 文件所包含的图形作为文本框（即 &lt;code&gt;\framed&lt;/code&gt;）的背景，那么背景图片的尺寸默认是 hilbert-3.pdf 文件所包含的图形的尺寸。显然，这个尺寸太大了，背景图片超出了文本框。&lt;/p&gt;
 &lt;p&gt;理想的文本框背景应该与文本框的尺寸相等。可通过变量（TeX 宏） &lt;code&gt;\overlaywidth&lt;/code&gt; 和 &lt;code&gt;\overlayheight&lt;/code&gt; 获得当前的文本框的宽度和高度，并基于这两个尺寸，对背景图片的尺寸进行调整，使之适应文本框，即&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\usemodule&lt;/span&gt;&lt;span class="na"&gt;[zhfonts]&lt;/span&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;\usemodule&lt;/span&gt;&lt;span class="na"&gt;[zhfonts]&lt;/span&gt;
 
 &lt;span class="k"&gt;\defineoverlay&lt;/span&gt;
   [hilbert]
@@ -1134,53 +1058,51 @@ drawpoints z4;
 &lt;span class="k"&gt;\starttext&lt;/span&gt;
 &lt;span class="k"&gt;\framed&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;&lt;span class="k"&gt;\bfd&lt;/span&gt; 天地一指也&lt;span class="k"&gt;\\&lt;/span&gt; 万物一马也&lt;span class="nb"&gt;}&lt;/span&gt;
 &lt;span class="k"&gt;\stoptext&lt;/span&gt;
-&lt;/pre&gt;
-
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/25.png"&gt;&lt;/p&gt;
 &lt;p&gt;现在，背景图片被硬性地塞入了文本框，结果导致 Hilbert 曲线的线条变细，并且横向的线条被圧扁了。这正是以图形文件中的图形作为文本框背景的弊端所在，即背景图形中的线条失真。此外，经过缩放的 Hilbert 曲线，虽然恰好能够充满文本框，但实际上并不正确，因为 3 阶的 Hilbert 曲线是不可能恰好充满它所填充的空间。这些失真在 MetaPost 绘图过程中不会出现。当 MetaPost 通过 MetaFun 与 ConTeXt 取得融合时，ConTeXt 的排版元素便能够享有这一优势。&lt;/p&gt;
 &lt;p&gt;为实现 MetaPost 与 ConTeXt 排版元素的融合，MetaFun 提供了 &lt;code&gt;uniqueMPgraphic&lt;/code&gt; 环境，在该环境内编写 MetaPost 程序，然后这个环境可以像插图那样在 ConTeXt 排版元素中使用。例如，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="nt"&gt;startuniqueMPgraphic&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="err"&gt;hilbert-3&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;span class="nt"&gt;vardef&lt;/span&gt; &lt;span class="nt"&gt;hilbert&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;expr&lt;/span&gt; &lt;span class="nt"&gt;sidelength&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;n&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 
-  &lt;span class="nt"&gt;u&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5sidelength&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;z1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;z2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;z3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;z4&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="nt"&gt;u&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;\&lt;span class="n"&gt;startuniqueMPgraphic&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;hilbert&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="n"&gt;vardef&lt;/span&gt; &lt;span class="n"&gt;hilbert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;expr&lt;/span&gt; &lt;span class="n"&gt;sidelength&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 
+  &lt;span class="n"&gt;u&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;sidelength&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;z1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;z2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;z3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;z4&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-  &lt;span class="nt"&gt;path&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;z1&lt;/span&gt; &lt;span class="nt"&gt;--&lt;/span&gt; &lt;span class="nt"&gt;z2&lt;/span&gt; &lt;span class="nt"&gt;--&lt;/span&gt; &lt;span class="nt"&gt;z3&lt;/span&gt; &lt;span class="nt"&gt;--&lt;/span&gt; &lt;span class="nt"&gt;z4&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;z1&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;z2&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;z3&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;z4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-  &lt;span class="nt"&gt;transform&lt;/span&gt; &lt;span class="nt"&gt;sw&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;nw&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;ne&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;se&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;sw&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;identity&lt;/span&gt;
-        &lt;span class="nt"&gt;scaled&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;
-        &lt;span class="nt"&gt;reflectedabout&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
-        &lt;span class="nt"&gt;shifted&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-  &lt;span class="nt"&gt;nw&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;identity&lt;/span&gt;
-        &lt;span class="nt"&gt;scaled&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;
-        &lt;span class="nt"&gt;shifted&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-  &lt;span class="nt"&gt;ne&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;identity&lt;/span&gt;
-        &lt;span class="nt"&gt;scaled&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;
-        &lt;span class="nt"&gt;shifted&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-  &lt;span class="nt"&gt;se&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;identity&lt;/span&gt;
-        &lt;span class="nt"&gt;scaled&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5&lt;/span&gt;
-        &lt;span class="nt"&gt;reflectedabout&lt;/span&gt; &lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;-1&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
-        &lt;span class="nt"&gt;shifted&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;-0&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nc"&gt;5u&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;transform&lt;/span&gt; &lt;span class="n"&gt;sw&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;nw&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ne&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;se&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;sw&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;identity&lt;/span&gt;
+        &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;
+        &lt;span class="n"&gt;reflectedabout&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="n"&gt;shifted&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;nw&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;identity&lt;/span&gt;
+        &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;
+        &lt;span class="n"&gt;shifted&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;ne&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;identity&lt;/span&gt;
+        &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;
+        &lt;span class="n"&gt;shifted&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;se&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;identity&lt;/span&gt;
+        &lt;span class="n"&gt;scaled&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;
+        &lt;span class="n"&gt;reflectedabout&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="n"&gt;shifted&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 
-  &lt;span class="nt"&gt;for&lt;/span&gt; &lt;span class="nt"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nt"&gt;2&lt;/span&gt; &lt;span class="nt"&gt;upto&lt;/span&gt; &lt;span class="nt"&gt;n&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-    &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="nt"&gt;transformed&lt;/span&gt; &lt;span class="nt"&gt;sw&lt;/span&gt; &lt;span class="nt"&gt;for&lt;/span&gt; &lt;span class="nt"&gt;j&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;nw&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;ne&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;se&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nt"&gt;--&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="nt"&gt;transformed&lt;/span&gt; &lt;span class="nt"&gt;j&lt;/span&gt; &lt;span class="nt"&gt;endfor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;endfor&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
-  &lt;span class="nt"&gt;p&lt;/span&gt;
-&lt;span class="nt"&gt;enddef&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="n"&gt;upto&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;transformed&lt;/span&gt; &lt;span class="n"&gt;sw&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;nw&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ne&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;se&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;transformed&lt;/span&gt; &lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;endfor&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;endfor&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;p&lt;/span&gt;
+&lt;span class="n"&gt;enddef&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-&lt;span class="nt"&gt;path&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt;&lt;span class="o"&gt;;&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="o"&gt;:=&lt;/span&gt; &lt;span class="nt"&gt;hilbert&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;OverlayWidth&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nt"&gt;3&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-&lt;span class="nt"&gt;drawpath&lt;/span&gt; &lt;span class="nt"&gt;p&lt;/span&gt; &lt;span class="nt"&gt;yscaled&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nt"&gt;OverlayHeight&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="nt"&gt;OverlayWidth&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
-&lt;span class="err"&gt;\&lt;/span&gt;&lt;span class="nt"&gt;stopuniqueMPgraphic&lt;/span&gt;
-&lt;/pre&gt;
-
+&lt;span class="n"&gt;path&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;hilbert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;OverlayWidth&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="n"&gt;drawpath&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;yscaled&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;OverlayHeight&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;OverlayWidth&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+\&lt;span class="n"&gt;stopuniqueMPgraphic&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;在上述名为 &lt;code&gt;hilbert-3&lt;/code&gt; 的 &lt;code&gt;uniqueMPgraphic&lt;/code&gt; 环境中，对 &lt;code&gt;hilbert&lt;/code&gt; 宏所生成的 Hibert 曲线，根据变量 &lt;code&gt;OverlayWitdh&lt;/code&gt; 和 &lt;code&gt;OverlayHeight&lt;/code&gt; 的值给出了适应性的缩放，亦即在 &lt;code&gt;uniqueMPgraphic&lt;/code&gt; 环境中，MetaPost 程序可以共享 ConTeXt 排版元素的一些变量。&lt;/p&gt;
 &lt;p&gt;若将上述 &lt;code&gt;uniqueMPgraphic&lt;/code&gt; 环境作为文本框的背景图片，只需&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\defineoverlay&lt;/span&gt;&lt;span class="na"&gt;[hilbert][\uniqueMPgraphic{hilbert-3}]&lt;/span&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;\defineoverlay&lt;/span&gt;&lt;span class="na"&gt;[hilbert][\uniqueMPgraphic{hilbert-3}]&lt;/span&gt;
 &lt;span class="k"&gt;\setupframed&lt;/span&gt;
   [background=hilbert,
     width=8cm,
@@ -1192,18 +1114,16 @@ drawpoints z4;
 &lt;span class="k"&gt;\starttext&lt;/span&gt;
 &lt;span class="k"&gt;\framed&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;&lt;span class="k"&gt;\bfd&lt;/span&gt; 天地一指也&lt;span class="k"&gt;\\&lt;/span&gt; 万物一马也&lt;span class="nb"&gt;}&lt;/span&gt;
 &lt;span class="k"&gt;\stoptext&lt;/span&gt;
-&lt;/pre&gt;
-
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;结果可得&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="/images/metafun/26.png"&gt;&lt;/p&gt;
 &lt;p&gt;使用 &lt;code&gt;\framed&lt;/code&gt; 的 &lt;code&gt;frame=off&lt;/code&gt; 可以隐藏文本框的边框，这样便可得到以 3 阶 Hilbert 曲线作为背景的文本框，而且背景的尺寸能够适应文本框的尺寸的变化。例如，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;\setupframed&lt;/span&gt;&lt;span class="na"&gt;[frame=off]&lt;/span&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;\setupframed&lt;/span&gt;&lt;span class="na"&gt;[frame=off]&lt;/span&gt;
 &lt;span class="k"&gt;\midaligned&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;&lt;span class="k"&gt;\framed&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;&lt;span class="k"&gt;\bfd&lt;/span&gt; 天地一指也&lt;span class="k"&gt;\\&lt;/span&gt; 万物一马也&lt;span class="nb"&gt;}}&lt;/span&gt;
 &lt;span class="k"&gt;\blank&lt;/span&gt;&lt;span class="na"&gt;[1cm]&lt;/span&gt;
 &lt;span class="k"&gt;\midaligned&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;&lt;span class="k"&gt;\framed&lt;/span&gt;&lt;span class="na"&gt;[width=12cm, height=3cm]&lt;/span&gt;&lt;span class="nb"&gt;{&lt;/span&gt;&lt;span class="k"&gt;\bfd&lt;/span&gt; 天地一指也&lt;span class="k"&gt;\\&lt;/span&gt; 万物一马也&lt;span class="nb"&gt;}}&lt;/span&gt;
-&lt;/pre&gt;
-
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;&lt;img alt="" src="/images/metafun/27.png"&gt;&lt;/p&gt;
 &lt;p&gt;以上仅以文本框为例，简单介绍了 ConTeXt 与 MetaPost 的结合。事实上，对于 ConTeXt 的任一排版元素，只要它具备 &lt;code&gt;background&lt;/code&gt; 选项，便可以利用 MetaPost 图形为其构建背景图形。即使一些排版元素不具备 &lt;code&gt;background&lt;/code&gt; 选项，但是只要它们具备 &lt;code&gt;command&lt;/code&gt; 选项，便可以通过嵌入文本框的方式与 MetaPost 图形结合。&lt;/p&gt;
@@ -1211,9 +1131,8 @@ drawpoints z4;
 &lt;p&gt;有关 MetaFun 更为详细的介绍见荷兰人 Hans Hagen 所写的 MetaFun 手册 &lt;strong&gt;&lt;sup&gt;&lt;a href="/images/metafun/10.png"&gt;10&lt;/a&gt;&lt;/sup&gt;&lt;/strong&gt; 。Hans Hagen 即是 ConTeXt 的开发者，也是 MetaFun 的开发者。&lt;/p&gt;
 &lt;p&gt;对于以编程的方式绘制精确二维矢量图这种任务而言，MetaPost 是一种功能强大的编程语言。不过，适合这一任务的功能强大的编程语言并不少，譬如 LaTeX 的小伙伴 pgf/tikz，擅长绘制三维矢量图的 Asymptote，擅长绘制图表的 gnuplot、MathGL 等。与这些同类相比，MetaPost 胜出之处在于语法的优雅。&lt;/p&gt;
 &lt;p&gt;MetaPost 语法的优雅一方面来自于它的宏编程特质。像每一种优雅都来自刻苦地训练一样，MetaPost 的优雅也并非朝发夕至之工可致。在编写这篇文章的一些简单示例的过程中，mpost 崩溃次数难以历数，而且它的每次崩溃几乎都会给出冗长的出错信息，需要像侦探一样从中查出端倪。因此，MetaPost 的优雅只是会向那些绘制精确矢量图这种任务乐此不疲的人绽放。另一方面，MetaPost MetaPost 绘图命令与英文的语法相近，即「谓语 + 宾语 + 定语 + 状语」的形式，例如，&lt;/p&gt;
-&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;主语 I（省略） + 谓语 draw + 路径 p + 定语 scaled 0.5 + 状语 withcolor .8red;
-&lt;/pre&gt;
-
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="err"&gt;主语 I（省略） + 谓语 draw + 路径 p + 定语 scaled 0.5 + 状语 withcolor .8red;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;MetaFun 的出现，为 MetaPost 在排版领域开辟了用武之地。在文档排版方面，利用 MetaPost 所绘制的精确的矢量图形为一些排版元素构造背景，使得文档的排版更为精美。&lt;/p&gt;
 &lt;p&gt;绘图是一门艺术。排版也是一门艺术。艺术的重要性在于它能够开拓人类的思维空间。使用 MetaPost 绘图，使用 ConTeXt 对文档进行排版则是技术。艺术的空间需要借助技术去探索或开拓。MetaFun 贯通了 MetaPost 和 ConTeXt，意味着具备了探索或开拓计算机绘图与排版相融合的艺术空间的一种工具。&lt;/p&gt;
