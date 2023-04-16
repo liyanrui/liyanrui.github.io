@@ -1,0 +1,177 @@
+@media screen and (max-width:1024px) {
+    #TOC {display: none;}
+}
+
+html {
+    font-size: 14px;
+    line-height: 24px;
+}
+
+body {
+    margin: 0 auto;
+    max-width: 50%;
+    padding: 20px;
+    hyphens: auto;
+    word-wrap: break-word;
+    /* 对于 firefox，font-kerning 需要设为 auto，中文标点才会正常。*/
+    /* font-kerning: normal; */
+    font-family: "Arial", "Noto Sans CJK SC", sans-serif;
+}
+
+header {
+    text-align: center;
+}
+
+h1, h2, h3, h4, h5 {
+    margin: .5em auto;
+    line-height: 1.5em;
+}
+
+h1.home-title { font-size: 2.65em; margin: .5em auto;}
+h1.title { font-size: 2em; margin: .5em auto;}
+h1 { font-size: 1.6em;}
+h2 { font-size: 1.4em;}
+h3 { font-size: 1.2em;}
+p.subtitle {
+    font-size:1.2em;
+    text-align: center;
+}
+
+#TOC {
+    margin-top: 1em;
+    margin-left: 1em;
+    padding: 1em;
+    border: 2pt solid darkgray;
+    line-height: 1.5em;
+    position: fixed;
+    right: 1.5em;
+    top: 3em;
+    overflow: hidden;
+}
+div.homeback {
+    font-size: 1em;
+    width: 1em;
+    text-color:white;
+    text-align: center;
+    position: fixed;
+    right: 1.5em;
+    bottom: 3em;
+    line-height: 1.2em;
+    padding: .5em .3em;
+    background: #666666;
+}
+
+
+#TOC a {
+    font-size: 0.9em;
+    font-weight: normal;
+}
+#TOC ul,  #TOC ol {
+    padding-left: 1em;
+}
+
+hr {
+    color: #eeeeee;
+    size: 10;
+}
+
+div.homeback a {
+    text-decoration: none;
+}
+div.homeback a:link {
+    color: white;
+    font-weight: bold;
+}
+div.homeback a:hover {
+    color: white;
+    text-decoration: none;
+}
+div.homeback a:visited {
+    color: white;
+    text-decoration: none;
+}
+
+
+p {
+    margin: 1.3em 0;
+    text-align: justify;
+}
+
+figure {
+    margin: auto;
+    text-align: center;
+}
+
+img {
+    margin: 0 0;
+    max-width: 100%;
+}
+figure figcaption {
+    font-size: 0.9em;
+    text-align: center;
+}
+
+pre {
+    font-size: 0.9em;
+    padding: 1em;
+    line-height: 1.5em;
+    overflow:auto !important;
+    background: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 0.25em;
+    max-height: 400px;
+}
+
+code, code span {
+    color: #e83e8c;
+    font-family: Monaco, 'Lucida Console', monospace;
+}
+pre code {
+    overflow:auto !important;
+    color: #000000;
+    font-family: Monaco, 'Lucida Console', monospace;
+}
+
+a:link {
+    color: #993333;
+    font-weight: bold;
+    text-decoration: underline; 
+}
+a:hover {
+    color: #FF6666;
+    text-decoration: none;
+}
+a:visited {
+    color: #0066CC;
+    text-decoration: none;
+}
+
+/* metadata */
+p.author, p.date { text-align: center; margin: 0 auto;}
+
+blockquote {
+    margin: 0px !important;
+    border-left: 4px solid #009A61;
+}
+
+blockquote p {
+    font-size: 1em;
+    margin: 0px !important;
+    text-align: justify;
+    padding:0.5em;
+}
+
+/* 列表项 */
+ul, ol {
+    padding: 0pt;
+    margin: 0pt;
+}
+ul ul, ul ol, ol ul, ol ol {
+    padding-left: 2em;
+}
+li {padding-bottom:0.25em}
+
+/* 文章里小节标题的序号与标题名称之间的间距, 针对我写的生成文章目录的 m4 宏 */
+span.section-sep { margin-left: 0.5em; margin-right: 0.5em; }
+
+p.footer {text-align:center;}
