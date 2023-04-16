@@ -1,9 +1,9 @@
 @media screen and (max-width:1024px) {
     #TOC {display: none;}
-    body {max-width: 60% !important;}
+    body {max-width: 65% !important;}
 }
 @media screen and (max-width:720px) {
-    body {max-width: 70% !important;}
+    body {max-width: 75% !important;}
 }
 
 html {
