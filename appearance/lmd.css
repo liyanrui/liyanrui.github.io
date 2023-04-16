@@ -4,6 +4,7 @@
 }
 @media screen and (max-width:720px) {
     body {max-width: 80% !important;}
+    div.homeback {right: .5em !important;}
 }
 
 html {
@@ -58,7 +59,7 @@ div.homeback {
     text-color:white;
     text-align: center;
     position: fixed;
-    right: .5em;
+    right: 1.7em;
     bottom: 6em;
     line-height: 1.2em;
     padding: .5em .3em;
