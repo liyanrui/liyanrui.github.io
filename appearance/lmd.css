@@ -2,11 +2,8 @@
     #TOC {display: none;}
     body {max-width: 60% !important;}
 }
-@media screen and (max-width:800px) {
-    body {max-width: 70% !important;}
-}
-@media screen and (max-width:640px) {
-    body {max-width: 80% !important;}
+@media screen and (max-width:720px) {
+    body {max-width: 75% !important;}
 }
 
 html {
@@ -61,7 +58,7 @@ div.homeback {
     text-color:white;
     text-align: center;
     position: fixed;
-    right: 1em;
+    right: 1.5em;
     bottom: 3em;
     line-height: 1.2em;
     padding: .5em .3em;
