@@ -169,7 +169,7 @@ ul, ol {
 ul ul, ul ol, ol ul, ol ol {
     padding-left: 2em;
 }
-li {padding-bottom:0.25em}
+li {padding-bottom:0.5em}
 
 /* 文章里小节标题的序号与标题名称之间的间距, 针对我写的生成文章目录的 m4 宏 */
 span.section-sep { margin-left: 0.5em; margin-right: 0.5em; }
