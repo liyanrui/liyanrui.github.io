@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN"$if(dir)$ dir="$dir$"$endif$>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$lang$" xml:lang="$lang$"$if(dir)$ dir="$dir$"$endif$>
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
@@ -44,10 +44,9 @@ $if(subtitle)$
 $endif$
 <hr />
 $body$
-$for(include-after)$
-$include-after$
-$endfor$
+$if(footer)$
 <hr />
-<p class="footer">若需联系我，可发邮件至 <a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或者在 <a href="https://github.com/liyanrui/liyanrui.github.io/issues">Issues</a> 上提问。</p>
+<div class="footer">$footer$</div>
+$endif$
 </body>
 </html>

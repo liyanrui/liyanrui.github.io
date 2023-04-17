@@ -1,7 +1,9 @@
 ---
 title: Bash 的真谛
 homeback: ../../index.html
+lang: zh-CN
 date: 2023 年 04 月 16 日
+footer: 若需要联系我，可发邮件至 <lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
 
 虽然我已经用了 Bash 将近 20 年，几乎每天都在使用它，但我确定自己绝非 Bash 专家，充其量只是小学生级别，此事可从多年前我写过的一篇文章「[写给高年级小学生的《Bash 指南》](https://segmentfault.com/a/1190000017229619)」获得证明。现在让我写一份 Bash 脚本，即使是完成非常简单的任务，我依然要从网络上搜索 Bash 的语法。现在 Chat GPT 大行其道了，问问它可能会更好一些。不过，Bash 的真谛可能恰恰是 Bash 专家们难以发现的，原因很简单，因为他们并非天才。

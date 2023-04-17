@@ -49,8 +49,8 @@ p.subtitle {
     border: 2pt solid darkgray;
     line-height: 1.5em;
     position: fixed;
-    right: 1.5em;
-    top: 3em;
+    right: 1.75em;
+    top: 6em;
     overflow: hidden;
 }
 div.homeback {
@@ -59,7 +59,7 @@ div.homeback {
     text-color:white;
     text-align: center;
     position: fixed;
-    right: 1.7em;
+    right: 1.75em;
     bottom: 6em;
     line-height: 1.2em;
     padding: .5em .3em;
@@ -179,4 +179,4 @@ li {padding-bottom:0.5em}
 /* 文章里小节标题的序号与标题名称之间的间距, 针对我写的生成文章目录的 m4 宏 */
 span.section-sep { margin-left: 0.5em; margin-right: 0.5em; }
 
-p.footer {text-align:center;}
+div.footer {text-align:center;}
