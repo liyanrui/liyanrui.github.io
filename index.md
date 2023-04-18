@@ -6,4 +6,4 @@ footer: 若需要联系我，可发邮件至 <lyr.m2@live.cn> 或在[讨论区](
 ...
 
 * [Bash 的真谛](output/2023/the-essence-of-bash.html)：也许很少有人会想到，长期以来，Bash 饱受非议之处，恰恰是它的妙处所在。
-
+* [lmd 脚本](output/2023/lmd.html)：一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档并通过 [Pandoc](https://www.pandoc.org) 将其转换为 HTML 格式。
