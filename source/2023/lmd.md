@@ -16,7 +16,7 @@ lmd 是一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档并通
 $ git clone https://github.com/liyanrui/lmd.git
 ```
 
-亦可下载 [lmd-main.zip](https://github.com/liyanrui/lmd/archive/refs/heads/main.zip) 包，解包后，得到目录 lmd-main，将其改为 lmd（当然，并非必须）。
+亦可下载 [lmd-main.zip](https://github.com/liyanrui/lmd/archive/refs/heads/main.zip) 包，解包后，得到目录 lmd-main，更其名为 lmd（当然，并非必须）。
 
 将包含 lmd 脚本的目录移动到你觉得适合它的目录，例如 `/opt`，便可完成 lmd 的安装，可使用 `tree` 命令查看其目录结构：
 
