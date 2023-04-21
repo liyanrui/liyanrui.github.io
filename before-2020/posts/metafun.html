@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="zh_cn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>MetaFun 小传 | # rm -rf /</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="zh_cn" href="../rss.xml">
+<link rel="canonical" href="#">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link href="../mycss/tweak.css" rel="stylesheet" type="text/css">
+<base target="_parent">
+<meta name="author" content="Garfileo">
+<link rel="prev" href="awk.html" title="AWK 小传" type="text/html">
+<link rel="next" href="snail.html" title="蜗牛" type="text/html">
+<meta property="og:site_name" content="# rm -rf /">
+<meta property="og:title" content="MetaFun 小传">
+<meta property="og:url" content="/posts/metafun.html">
+<meta property="og:description" content="MetaFun 是 ConTeXt 的一部分，主要用于 MetaPost 的绘图功能与 ConTeXt 的排版功能的衔接。
+ConTeXt 专事文字排版，功能匹于 LaTeX，但更易于使用，二者皆为 TeX 宏包，即二者皆基于 TeX 提供的宏编程功能，对 TeX 语言予以封装，建立更利于文字排版工作的高级语言。TeX 是一种计算机排版语言，供编排科技手稿以及著作出版印刷之用 [1] 。MetaP">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2018-10-29T18:10:38+08:00">
+<meta property="article:tag" content="ConTeXt MkIV">
+<meta property="article:tag" content="MetaFun">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">跳到主内容</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="# rm -rf /" rel="home">
+
+        <span id="blog-title"># rm -rf /</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../categories/index.html">标签</a></li>
+                <li><a href="../archive.html">文章存档</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="#" class="u-url">MetaFun 小传</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    Garfileo
+            </span></p>
+            <p class="dateline">
+            <a href="#" rel="bookmark">
+            <time class="published dt-published" datetime="2018-10-29T18:10:38+08:00" itemprop="datePublished" title="2018-10-29 18:10">2018-10-29 18:10</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>MetaFun 是 ConTeXt 的一部分，主要用于 MetaPost 的绘图功能与 ConTeXt 的排版功能的衔接。</p>
+<p>ConTeXt 专事文字排版，功能匹于 LaTeX，但更易于使用，二者皆为 TeX 宏包，即二者皆基于 TeX 提供的宏编程功能，对 TeX 语言予以封装，建立更利于文字排版工作的高级语言。TeX 是一种计算机排版语言，供编排科技手稿以及著作出版印刷之用 <strong><sup>[1]</sup></strong> 。MetaPost 是用于绘制矢量绘图的计算机语言。</p>
+<p>目前最新的 ConTeXt 版本为 MkIV，安装 ConTeXt Standalone 可得 <strong><sup>[2]</sup></strong> 。ConTeXt MkIV 的基本用法可参考之前我写的几篇文章 <strong><sup>[3–7]</sup></strong> ，或阅读 ConTeXt 官方文档 <strong><sup>[8, 9]</sup></strong> 。</p>
+<p>MetaFun 以 MetaPost 生成的矢量图形作为页面特定区域的背景，而后基于 ConTeXt 的排版功能在该背景上实现编排文字。</p>
+<p><img alt="" src="../images/metafun/01.png"></p>
+<h2>MetaPost</h2>
+<p>MetaPost 是一种编程语言 <strong><sup>注 1</sup></strong> ，其编译器为 mpost。用该语言编写的程序，其输出结果为 PostScript 格式的矢量图形文件 <strong><sup>注 2</sup></strong> 。<code>MPpage</code> 环境中的 MetaPost 语句即 MetaPost 程序。在使用 context 命令生成单页面图形文件的过程中，context 命令会调用 mpost，由后者处理 MetaPost 程序，生成 PostScript 图形文件。继而 context 命令调用 TeX 引擎 <strong><sup>注 3</sup></strong> 会将 mpost 生成的图形文件嵌入至单页面文档中，并将图形的宽高作为页面宽高。</p>
+<blockquote>
+<p><strong>注 1</strong>：确切地说，MetaPost 是一种宏编程语言。</p>
+<p><strong>注 2</strong>：PostScript 文件可转化为 PDF、SVG 等格式的矢量图形文件。</p>
+<p><strong>注 3</strong>：TeX 引擎即 TeX 文档的编译器。ConTeXt 文档本质上也是 TeX 文档，因此要通过 TeX 引擎对其其进行编译，输出排版结果。ConTeXt MkIV 的 TeX 引擎为 LuaTeX，其输出的排版结果为 PDF 格式文档。</p>
+</blockquote>
+<h2>画笔</h2>
+<p>画笔即 MetaPost 的内置变量 <code>pen</code>。MetaPost 提供了两种画笔类型，<code>pencircle</code> 和 <code>pensquare</code>，前者为 MetaPost 默认，「笔尖」为圆形，后者「笔尖」为方形。MetaPost 允许用户自行定义画笔类型。</p>
+<p>画笔主要用于控制所绘线条的粗细。线条默认的宽度为 PostScript 所规定的大点（Big Point）的直径尺寸，即 1 bp。MetaPost 将 1 bp 作为基准长度单位，其他单位皆为该单位的倍数：</p>
+<pre class="code literal-block"><span></span><code><span class="err">bp := 1</span>
+<span class="err">mm = 2.83464</span>
+<span class="err">cm = 28.34645</span>
+<span class="err">pc = 11.95517</span>
+<span class="err">cc = 12.79213</span>
+<span class="err">in := 72</span>
+<span class="err">pt = 0.99626</span>
+<span class="err">dd = 1.06601</span>
+</code></pre>
+
+<p><code>pickup</code> 命令可用于设定画笔，从而影响随后的绘图语句所绘制线条的粗细，这一影响直至 <code>pickup</code> 命令的再次出现为止。例如，</p>
+<pre class="code literal-block"><span></span><code><span class="err">pickup pencircle scaled 1mm;</span>
+<span class="err">一系列绘图语句;</span>
+<span class="err">pickup pencircle scaled 2mm;</span>
+<span class="err">一系列绘图语句;</span>
+</code></pre>
+
+<p>定义了两个画笔，笔尖粗度分别为 1mm 和 2mm，分别会影响位于其后的绘图过程。<code>scaled</code> 用于数值大小的缩放变换；其他变换还有 <code>shifted</code>、<code>rotated</code> 以及 <code>slant</code>，分别为平移、旋转以及错切变换。在画笔的设定中，<code>scaled 1mm</code> 意味着将线条粗细程序由 MetaPost 默认的 1 bp 在水平和竖直方向上同等放大为 1 mm <strong><sup>注 4</sup></strong> 。可以使用 <code>xscaled</code> 或 <code>yscaled</code> 对画笔的水平或竖直方向的粗细进行调整，对于 <code>pencircle</code> 类型的画笔而言，此举意味着将笔尖由默认的圆形转化为椭圆，而对于 <code>pensquare</code>，则意味着将笔尖由正方形转化为矩形。</p>
+<blockquote>
+<p><strong>注 4</strong>：在 MetaPost 程序中，数字与单位之间不能出现空格。事实上，在 MetaPost 中，诸如 <code>1mm</code>、<code>2cm</code> 此类的长度描述本质上是 <code>mm</code> 或 <code>cm</code> 等变量的倍数，即 <code>1 * mm</code>、<code>2 * cm</code>。</p>
+</blockquote>
+<p>在 <code>pickup</code> 的影响范围内，绘图语句可以通过 <code>withpen</code> 命令局部调整线条的粗细，例如</p>
+<pre class="code literal-block"><span></span><code><span class="err">withpen pencircle scaled 1mm</span>
+</code></pre>
+
+<h2>颜色</h2>
+<p>MetaPost 以含有三个分量的向量表示颜色。向量的三个分量分别表示红色、绿色和蓝色，取值范围为 [0, 1]，例如 <code>(0.4, 0.5, 0.6)</code>。</p>
+<p>可将颜色保存到 <code>color</code> 类型的变量中，以备绘图中重复使用。例如</p>
+<pre class="code literal-block"><span></span><code><span class="err">color darkred;</span>
+<span class="err">darkred := (0.625, 0, 0);</span>
+</code></pre>
+
+<p>由于 MetaPost 内部已经定义了用于表示红色的变量 <code>red</code>，因此 <code>darkred</code> 变量的定义也可写为</p>
+<pre class="code literal-block"><span></span><code><span class="err">color darkred;</span>
+<span class="err">darkred := 0.625 * red;</span>
+</code></pre>
+
+<p>类似于 <code>1 * cm</code> 可以写为 <code>1cm</code>，倍数也可以直接作用于颜色：</p>
+<pre class="code literal-block"><span></span><code><span class="err">darkred := 0.625red;</span>
+</code></pre>
+
+<p>在绘图语句中可以通过 <code>withcolor</code> 命令设定所绘线条或区域填充的颜色，例如</p>
+<pre class="code literal-block"><span></span><code><span class="err">withcolor 0.625red</span>
+</code></pre>
+
+<p>由于颜色的倍数不可能大于 1，因此整数部分必定为 <code>0</code>，在 MetaPost 语句中可以省略，例如</p>
+<pre class="code literal-block"><span></span><code><span class="err">darkred := .625red;</span>
+</code></pre>
+
+<p>若绘图语句未通过 <code>withcolor</code> 命令设定颜色，则默认颜色为黑色。</p>
+<h2>单页图</h2>
+<p>在排版空间中，可安置 MetaPost 图形之处大致有插图、单页图、页面元素背景以及页面背景等类别。若以先习得 MetaPost 的基本用法为目的，则单页图最为合用，并且生成的图形易于转化为位图以作他用。</p>
+<p>所谓 MetaPost 单页图，本质上是 ConTeXt 输出的排版结果——PDF 文档，只是文档页面的大小恰好容得下图形。ConTeXt 为 MetaPost 单页面提供了 <code>MPpage</code> 环境：</p>
+<pre class="code literal-block"><span></span><code><span class="k">\startMPpage</span>
+MetaPost 绘图语句;
+<span class="k">\stopMPpage</span>
+</code></pre>
+
+<p>例如，假设存在 ConTeXt 文档 foo.tex，其内容为</p>
+<pre class="code literal-block"><span></span><code><span class="k">\startMPpage</span>
+path p;
+u := 10cm; v := 3cm;
+p := fullsquare xyscaled (u, v) randomized 0.07u;
+drawpath p;
+drawpoints p;
+<span class="k">\stopMPpage</span>
+</code></pre>
+
+<p>通过 context 命令便可基于 foo.tex 生成 foo.pdf，即</p>
+<pre class="code literal-block"><span></span><code><span class="gp">$</span> context foo
+</code></pre>
+
+<p>结果得到的 foo.pdf 为单页文档，其页面只包含着一个边线被随机扰动的矩形：</p>
+<p><img alt="" src="../images/metafun/02.png"></p>
+<h2>线条</h2>
+<p>线条即画笔所走的路径。最简单的路径是点。MetaPost 用序对表示点，例如</p>
+<pre class="code literal-block"><span></span><code><span class="err">pair a;</span>
+<span class="err">a := (2cm, 3.5cm)</span>
+</code></pre>
+
+<p>表示在直接坐标系中，横坐标 <code>x</code> 为 <code>2cm</code> 而纵坐标 <code>y</code> 为 <code>3.5cm</code> 之处有一个点 <code>a</code>。<code>draw</code> 命令用于路径的绘制，通过它可将点 <code>a</code> 绘制出来，即</p>
+<pre class="code literal-block"><span></span><code><span class="err">draw a;</span>
+</code></pre>
+
+<p>从一个点到另一个点，可构成一条线段。例如</p>
+<pre class="code literal-block"><span></span><code><span class="n">pair</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">;</span>
+<span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="n">cm</span><span class="p">,</span> <span class="mi">3</span><span class="p">.</span><span class="mi">5</span><span class="n">cm</span><span class="p">);</span> <span class="n">b</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="n">cm</span><span class="p">,</span> <span class="mi">5</span><span class="n">cm</span><span class="p">);</span>
+
+<span class="n">path</span> <span class="n">p</span><span class="p">;</span> 
+<span class="n">p</span> <span class="p">:</span><span class="o">=</span> <span class="n">a</span> <span class="c1">-- b;</span>
+</code></pre>
+
+<p>可构造从点 <code>a</code> 到 <code>b</code> 的线段 <code>a -- b</code>，并将其保存到路径变量 <code>p</code> 中。使用</p>
+<pre class="code literal-block"><span></span><code><span class="err">draw p withcolor .625green;</span>
+</code></pre>
+
+<p>即可绘制这条线段。在该条语句中，线条颜色被设为暗绿色 <code>0.625green</code>。</p>
+<p>由于 MetaPost 允许在 <code>draw</code> 语句中直接给出点的坐标的形式构造路径，因此上述 MetaPost 程序可缩减为一行语句：</p>
+<pre class="code literal-block"><span></span><code><span class="err">draw (2cm, 3.5cm) -- (5cm, 5cm) withcolor .625green;</span>
+</code></pre>
+
+<p>但是，若要绘制复杂的图形，借助变量，会使得 MetaPost 程序更易于编写和理解。例如</p>
+<pre class="code literal-block"><span></span><code><span class="n">pair</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">;</span> <span class="n">path</span> <span class="n">p</span><span class="p">;</span>
+<span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="n">cm</span><span class="p">,</span> <span class="mi">3</span><span class="p">.</span><span class="mi">5</span><span class="n">cm</span><span class="p">);</span> <span class="n">b</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="n">cm</span><span class="p">,</span> <span class="mi">5</span><span class="n">cm</span><span class="p">);</span>
+<span class="n">p</span> <span class="p">:</span><span class="o">=</span> <span class="n">a</span> <span class="c1">-- b;</span>
+
+<span class="n">pickup</span> <span class="n">pencircle</span> <span class="n">scaled</span> <span class="mi">2</span><span class="n">pt</span><span class="p">;</span>
+<span class="n">draw</span> <span class="n">p</span> <span class="n">withcolor</span> <span class="p">.</span><span class="mi">625</span><span class="n">green</span><span class="p">;</span>
+
+<span class="n">pickup</span> <span class="n">pencircle</span> <span class="n">scaled</span> <span class="mi">4</span><span class="n">pt</span><span class="p">;</span>
+<span class="n">color</span> <span class="n">darkred</span><span class="p">;</span> <span class="n">darkred</span> <span class="p">:</span><span class="o">=</span> <span class="p">.</span><span class="mi">625</span><span class="n">red</span><span class="p">;</span>
+<span class="n">draw</span> <span class="n">a</span> <span class="n">withcolor</span> <span class="n">darkred</span><span class="p">;</span>
+<span class="n">draw</span> <span class="n">b</span> <span class="n">withcolor</span> <span class="n">darkred</span><span class="p">;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/03.png"></p>
+<p>不仅绘制了线段，而且将线段的端点也绘制了出来。</p>
+<p>利用线段可绘制任意的多边形。例如，绘制一个直角三角形，</p>
+<pre class="code literal-block"><span></span><code><span class="n">pair</span> <span class="s">a,</span> <span class="s">b,</span> <span class="s">c</span><span class="p">;</span> <span class="n">path</span> <span class="s">p</span><span class="p">;</span>
+<span class="n">a</span> <span class="s">:=</span> <span class="s">(0,</span> <span class="s">0)</span><span class="p">;</span> <span class="n">b</span> <span class="s">:=</span> <span class="s">(4cm,</span> <span class="s">0)</span><span class="p">;</span> <span class="n">c</span> <span class="s">:=</span> <span class="s">(4cm,</span> <span class="s">3cm)</span><span class="p">;</span>
+<span class="n">p</span> <span class="s">:=</span> <span class="s">a</span> <span class="o">--</span> <span class="n">b</span> <span class="o">--</span> <span class="n">c</span> <span class="o">--</span> <span class="n">a</span><span class="p">;</span>
+
+<span class="c">% 注意：凡以百分号领起的文本为 MetaPost 代码注释。</span>
+
+<span class="n">pickup</span> <span class="s">pencircle</span> <span class="s">scaled</span> <span class="s">5</span><span class="p">;</span> <span class="c">% 将画笔设为 5 bp</span>
+<span class="n">draw</span> <span class="s">p</span> <span class="s">withcolor</span> <span class="s">.8white</span><span class="p">;</span>
+
+<span class="n">pickup</span> <span class="s">pencircle</span> <span class="s">scaled</span> <span class="s">4</span><span class="p">;</span>
+<span class="n">draw</span> <span class="s">a</span><span class="p">;</span> <span class="n">draw</span> <span class="s">b</span><span class="p">;</span> <span class="n">draw</span> <span class="s">c</span><span class="p">;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/04.png"></p>
+<p>为了便于图形的演示，MetaFun 提供了 <code>drawpath</code> 和 <code>drawpoints</code> 宏，前者用于绘制路径，后者用于绘制路径的节点。通过这两个宏，上例可简化为</p>
+<pre class="code literal-block"><span></span><code><span class="err">pair a, b, c; path p;</span>
+<span class="err">a := (0, 0); b := (4cm, 0); c := (4cm, 3cm);</span>
+<span class="err">p := a -- b -- c -- a;</span>
+<span class="err">drawpath p; drawpoints p;</span>
+</code></pre>
+
+<p>显然，上述路径 <code>p</code> 是一条闭合路径，但 MetaPost 对此并不知情，需要通过 <code>cycle</code> 命令告诉它，即</p>
+<pre class="code literal-block"><span></span><code><span class="err">p := a -- b -- c -- cycle;</span>
+</code></pre>
+
+<p>否则，虽然我们认为 <code>p</code> 是闭合路径，但 MetaPost 并不苟同，以致在使用 <code>fill</code> 命令对该路径包围的区域填充颜色时，会导致 MetaPost 报错并罢工。</p>
+<p><code>fill</code> 命令可对闭合路径所包围的区域着色。例如</p>
+<pre class="code literal-block"><span></span><code><span class="err">pair a, b, c; path p;</span>
+<span class="err">a := (0, 0); b := (4cm, 0); c := (4cm, 3cm);</span>
+<span class="err">p := a -- b -- c -- cycle;</span>
+<span class="err">drawpath p; drawpoints p;</span>
+<span class="err">fill p withcolor .8blue;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/05.png"></p>
+<p>上例中的路径 <code>p</code> 皆为直线插值。MetaPost 支持以曲线插值的方式构造路径。倘若将直线插值符的 <code>--</code> 替换为曲线插值符 <code>..</code> 便可产生一条插值于点 <code>a</code>、<code>b</code> 和 <code>c</code> 的曲线路径，</p>
+<pre class="code literal-block"><span></span><code><span class="err">p := a .. b .. c .. cycle;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/06.png"></p>
+<p>直线插值符与曲线插值符可并用，例如</p>
+<pre class="code literal-block"><span></span><code><span class="err">p := a .. b .. c -- cycle;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/07.png"></p>
+<p><code>controls</code> 命令可将路径中的某些结点转化为控制点，从而可构造 Bézier 曲线。例如</p>
+<pre class="code literal-block"><span></span><code><span class="err">p := a .. controls b ..c; draw p;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/08.png"></p>
+<p>构造的是一条二次 Bézier 曲线路径，此时点 <code>b</code> 成为控制点，曲线只插值于点 <code>a</code> 和 <code>b</code>。MetaFun 提供了 <code>drawcontrollines</code> 以及 <code>drawcontrolpoints</code> 宏，分别用于绘制 Bézier 曲线的控制形及控制点，例如，</p>
+<pre class="code literal-block"><span></span><code><span class="err">p := a .. controls b ..c;</span>
+<span class="err">drawpath p; drawpoints p;</span>
+<span class="err">drawcontrollines p; drawcontrolpoints p;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/09.png"></p>
+<p>三次 Bézier 曲线需要在路径中设定 2 个控制点，例如</p>
+<pre class="code literal-block"><span></span><code><span class="n">pair</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="k">c</span><span class="p">,</span> <span class="n">d</span><span class="p">;</span> <span class="n">path</span> <span class="n">p</span><span class="p">;</span>
+<span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="n">b</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="n">cm</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="k">c</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="n">cm</span><span class="p">,</span> <span class="mi">3</span><span class="n">cm</span><span class="p">);</span> <span class="n">d</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="n">cm</span><span class="p">);</span>
+
+<span class="n">p</span> <span class="p">:</span><span class="o">=</span> <span class="n">a</span> <span class="p">..</span> <span class="n">controls</span> <span class="n">b</span> <span class="k">and</span> <span class="k">c</span> <span class="p">..</span> <span class="n">d</span><span class="p">;</span>
+<span class="n">drawpath</span> <span class="n">p</span><span class="p">;</span> <span class="n">drawpoints</span> <span class="n">p</span><span class="p">;</span>
+<span class="n">drawcontrollines</span> <span class="n">p</span><span class="p">;</span> <span class="n">drawcontrolpoints</span> <span class="n">p</span><span class="p">;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/10.png"></p>
+<p>无论是插值曲线还是 Bézier 曲线，MetaPost 最高支持三次曲线。不过，对于形状较为复杂的路径，MetaPost 支持以多段插值直线、曲线以及 Bézier 曲线拼接 <strong><sup>注 5</sup></strong> 的方式构造路径。</p>
+<blockquote>
+<p><strong>注 5</strong>：对于一组曲线，MetaPost 会以切向连续并且近似曲率连续的方式予以光滑拼接。</p>
+</blockquote>
+<h2>变换</h2>
+<p>为了便于对所绘图形作缩放、旋转、平移、错切以及随机扰动等处理，MetaPost 提供了一种数据类型——变换，即含有六个分量的向量：</p>
+<p>$$
+T = (t_x, t_y, t_{xx}, t_{xy}, t_{yx}, t_{yy})
+$$</p>
+<p>对于任意一点　\(p=(p_x, p_y)\)，MetaPost 的 <code>transformed</code> 命令可将 \(T\) 作用于 \(p\)，即 <code>p transformed T</code>，可将 \(p\) 变换为</p>
+<p>$$
+q = (t_{xx}p_x + t_{xy}p_y + t_x, t_{yx}p_x + t_{yy}p_y + t_y)
+$$</p>
+<p>实质上，若以仿射坐标的形式看待 \(p\)，并采用列向量 \(\left[\begin{matrix}p_x \\ p_y \\ 1\end{matrix}\right]\) 表示其坐标，则 \(T\) 的 6 个分量可形成坐标变换矩阵</p>
+<p>$$
+M = \left[\begin{matrix}
+t_{xx} &amp; t_{xy} &amp; t_x \\
+t_{yx} &amp; t_{yy} &amp; t_y \\
+0 &amp; 0 &amp; 1\end{matrix}\right]
+$$</p>
+<p>此时，<code>p transformed T</code> 语句所描述的坐标变换，便可表示为 \(q = Mp\)。坐标变换矩阵 \(M\) 所描述的是平移、旋转、缩放以及错切等变换的组合，亦即这些特定的变换皆为 \(M\) 的特例。因此，通常并不直接提供六元组形式的变换，而是以 <code>scaled</code>、<code>shifted</code> 以及 <code>rotated</code> 等变换的组合构造一个变换。</p>
+<p>假设在边长为 8cm 的正方形区域</p>
+<pre class="code literal-block"><span></span><code><span class="err">numeric sidelength, u; </span>
+<span class="err">sidelength := 8cm; u := 0.5sidelength;</span>
+<span class="err">drawpath fullsquare scaled sidelength dashed (evenly scaled 1mm);</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/11.png"></p>
+<p>有四个点</p>
+<pre class="code literal-block"><span></span><code><span class="err">pair a, b, c, d;</span>
+<span class="err">a := (-0.5, -0.5) * u;</span>
+<span class="err">b := (-0.5, 0.5) * u;</span>
+<span class="err">c := (0.5, 0.5) * u;</span>
+<span class="err">d := (0.5, -0.5) * u;</span>
+</code></pre>
+
+<p>它们构成路径 <code>p</code>，</p>
+<pre class="code literal-block"><span></span><code><span class="err">path p; p := a -- b -- c -- d;</span>
+<span class="err">drawpath p; drawpoints p;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/12.png"></p>
+<p>现在将 <code>p</code> 缩小为原来的 0.5 倍，可为此构造变换 <code>T</code>，</p>
+<pre class="code literal-block"><span></span><code><span class="err">transform T;</span>
+<span class="err">T := identity scaled 0.5;</span>
+</code></pre>
+
+<p><code>identity</code> 是 MetaPost 内置的恒等变换，其值为向量 <code>(0, 0, 1, 0, 0, 1)</code>，将其写为齐次坐标变换矩阵，可得</p>
+<p>$$
+\left[\begin{matrix}
+1 &amp; 0  &amp; 0 \\
+0 &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 1\end{matrix}\right]
+$$</p>
+<p>因此，实际上 <code>identity</code> 表示的是单位矩阵。因此 <code>identity scaled 0.5</code> 所构造的变换，本质上是以一个单位矩阵乘以由 <code>scaled 0.5</code> 构造的缩放变换矩阵</p>
+<p>$$
+\left[\begin{matrix}
+0.5 &amp; 0 &amp; 0 \\
+0 &amp; 0.5 &amp; 0 \\
+0 &amp; 0 &amp; 1\end{matrix}\right]
+$$</p>
+<p>在这里，<code>identity</code> 的唯一作用是喂给 <code>scaled</code> 命令，令其得以工作。因为 MetaPost 所有的特定坐标变换命令在工作时要求它的前面必须存在一个表达式，这个表达式可以是一个变换，也可以是一条路径。因此 <code>identity</code> 能够满足这些命令的需要，而且不影响它们的行为。</p>
+<p>使用 <code>transformed</code> 可将 <code>T</code> 作用于路径 <code>p</code>，</p>
+<pre class="code literal-block"><span></span><code><span class="err">path q; q := p transformed T;</span>
+<span class="err">drawpath q withcolor .7green;</span>
+<span class="err">drawpoints q withcolor .7red;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/13.png"></p>
+<p>在 <code>T</code> 的基础上可以继续增加变换。例如，通过 <code>shifted</code> 让经过了缩放变换的 <code>p</code> 向左平移 <code>0.7 * u</code>：</p>
+<pre class="code literal-block"><span></span><code><span class="err">T := T shifted (-0.7 * u, 0);</span>
+<span class="err">q := p transformed T;</span>
+<span class="err">drawpath  q withcolor .7blue; drawpoints q withcolor .7yellow;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/14.png"></p>
+<p>接下来，在 <code>T</code> 的基础上，再增加一个旋转变换，令经过了缩放和平移变换后的 <code>p</code>，即 <code>p transformed T</code>，绕其中心点逆时针转动 90 度。通过 <code>rotated</code> 命令可构造旋转变换，但是该命令是以原点为中心对路径进行旋转。若对经过了缩放和平移变换后的 <code>p</code> 绕其中心作旋转变换，首先需要确定 <code>p</code> 在经过缩放和平移之后的中心点。由于 <code>p</code> 的初始中心点可根据它的 4 个节点计算出来，结果为 <code>(0, 0)</code>，亦即原点，因此只需对 <code>p</code> 的初始中心点予以 <code>T</code> 变换，便可得到变换后的 <code>p</code> 的中心点，即</p>
+<pre class="code literal-block"><span></span><code><span class="err">pair pcenter;</span>
+<span class="err">pcenter := (0, 0) transformed T;</span>
+</code></pre>
+
+<p>若让 <code>p transformed T</code> 围绕 <code>pcenter</code> 逆时针旋转 90 度角，需要先对 <code>p transformed T</code> 进行平移变换，令其中心与原点对准，即</p>
+<pre class="code literal-block"><span></span><code><span class="err">p transofmed T shifted (-(xpart pcenter), -(ypart pcenter))</span>
+</code></pre>
+
+<p><code>xpart</code> 和 <code>ypart</code> 分别用于提取任意一点的横坐标与纵坐标分量。然后，对此刻的 <code>p</code> 逆时针旋转 90 度角，即</p>
+<pre class="code literal-block"><span></span><code><span class="err">p transofmed T shifted (-(xpart pcenter), -(ypart pcenter)) rotated 90</span>
+</code></pre>
+
+<p>接下来，通过 <code>shifted</code> 将此刻的 <code>p</code> 移回原位，即</p>
+<pre class="code literal-block"><span></span><code><span class="err">p transofmed T shifted (-(xpart pcenter), -(ypart pcenter)) </span>
+<span class="err">               rotated 90 </span>
+<span class="err">               shifted ((xpart pcenter), (ypart pcenter))</span>
+</code></pre>
+
+<p>若将上述的变换叠加到 <code>T</code> 中，即</p>
+<pre class="code literal-block"><span></span><code><span class="err">T := T shifted (-(xpart pcenter), -(ypart pcenter)) </span>
+<span class="err">     rotated 90 </span>
+<span class="err">     shifted ((xpart pcenter), (ypart pcenter));</span>
+</code></pre>
+
+<p>将 <code>T</code> 作用于 <code>p</code>，便可实现 <code>p transformed T</code> 围绕 <code>pcenter</code> 逆时针旋转 90 度角，即</p>
+<pre class="code literal-block"><span></span><code><span class="err">drawpath p transformed T withcolor .7red;</span>
+<span class="err">drawpoints p transformed T withcolor .7cyan;</span>
+</code></pre>
+
+<p>不过，MetaPost 的 <code>rotatedaround</code> 变换已经实现了上述的围绕指定点对路径进行旋转的功能，因此上述的 <code>T</code> 可简写为</p>
+<pre class="code literal-block"><span></span><code><span class="err">T := T rotatedaround (pcenter, 90);</span>
+</code></pre>
+
+<p>现在，在 <code>T</code> 的基础上，增加一个镜象变换，例如，以过原点 <code>(0, 0)</code> 且斜率为 1 的一条直线为镜线，将 <code>p transformed T</code> 变换为自身的影像。为了便于观察，先将镜线绘制出来，</p>
+<pre class="code literal-block"><span></span><code><span class="err">pair mb, me;</span>
+<span class="err">mb := (-1, -1) * u;</span>
+<span class="err">me := (1, 1) * u;</span>
+<span class="err">drawarrowpath mb -- me;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/15.png"></p>
+<p><code>drawarrowpath</code> 宏可绘制路径及其走向。显然，<code>mirrorline</code> 过原点 <code>(0, 0)</code> 且斜率为 1，基于它，可构造一个镜象变换。并将其叠加至 <code>T</code>，即</p>
+<pre class="code literal-block"><span></span><code><span class="err">T := T reflectedabout (mb, me);</span>
+</code></pre>
+
+<p>将 <code>T</code> 作用于 <code>p</code> 便可得到 <code>p</code> 的镜象，</p>
+<pre class="code literal-block"><span></span><code><span class="err">drawpath p transformed T withcolor .7red;</span>
+<span class="err">drawpoints p transformed T withcolor .7cyan;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/16.png"></p>
+<h2>路径合成</h2>
+<p>不仅变换可以叠加合成，路径也可以如此。例如，对于上一节所给出的路径 <code>p</code>，对其作旋转、平移变换，生成路径 <code>q</code>，然后通过 <code>--</code> 可将二者连接起来，即</p>
+<pre class="code literal-block"><span></span><code><span class="err">path q[];</span>
+<span class="err">q[1] := p scaled 0.5;</span>
+<span class="err">q[2] := q[1] shifted (s, 0);</span>
+<span class="err">q[3] := q[1] -- q[2];</span>
+<span class="err">drawpath q[3]; drawpoints q[3];</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/17.png"></p>
+<p>在 MetaPost 中，类似 <code>q</code> 这样的变量称为带有后缀的变量。可以用此类变量模拟数组。</p>
+<h2>从简单到复杂</h2>
+<p>通过图形变换和路径合成，可基于简单图形，构造复杂图形。下面以 Hilbert 曲线的绘制为例，在实践中感受 MetaPost 的魅力。</p>
+<p>首先，回顾路径 <code>p</code>：</p>
+<pre class="code literal-block"><span></span><code><span class="nb">numeric</span> <span class="n">sidelength</span><span class="p">,</span> <span class="n">u</span><span class="p">;</span>
+<span class="n">sidelength</span> <span class="p">:</span><span class="o">=</span> <span class="mi">8</span><span class="n">cm</span><span class="p">;</span> <span class="n">u</span> <span class="p">:</span><span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="n">sidelength</span><span class="p">;</span>
+<span class="n">drawpath</span> <span class="n">fullsquare</span> <span class="n">scaled</span> <span class="mi">2</span><span class="n">s</span> <span class="n">dashed</span> <span class="p">(</span><span class="n">evenly</span> <span class="n">scaled</span> <span class="mi">1</span><span class="n">mm</span><span class="p">);</span>
+
+<span class="n">pair</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="k">c</span><span class="p">,</span> <span class="n">d</span><span class="p">;</span>
+<span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="p">;</span>
+<span class="n">b</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="p">;</span>
+<span class="k">c</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="p">;</span>
+<span class="n">d</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="p">;</span>
+
+<span class="n">path</span> <span class="n">p</span><span class="p">;</span> 
+<span class="n">p</span> <span class="p">:</span><span class="o">=</span> <span class="n">a</span> <span class="c1">-- b -- c -- d;</span>
+<span class="n">drawpath</span> <span class="n">p</span><span class="p">;</span> <span class="n">drawpoints</span> <span class="n">p</span><span class="p">;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/18.png"></p>
+<p>此时的 <code>p</code>，称为 1 阶 Hilbert 曲线。</p>
+<p>接下来，构造四个变换：</p>
+<pre class="code literal-block"><span></span><code><span class="err">  transform sw, nw, ne, se;</span>
+<span class="err">  sw := identity</span>
+<span class="err">        scaled 0.5</span>
+<span class="err">        reflectedabout ((0, 0), (1, 1))</span>
+<span class="err">        shifted (-0.5u, -0.5u);</span>
+<span class="err">  nw := identity</span>
+<span class="err">        scaled 0.5</span>
+<span class="err">        shifted (-0.5u, 0.5u);</span>
+<span class="err">  ne := identity</span>
+<span class="err">        scaled 0.5</span>
+<span class="err">        shifted (0.5u, 0.5u);</span>
+<span class="err">  se := identity</span>
+<span class="err">        scaled 0.5</span>
+<span class="err">        reflectedabout ((0, 0), (1, -1))</span>
+<span class="err">        shifted (0.5u, -0.5u);</span>
+</code></pre>
+
+<p>将这四个变换分别作用于 <code>p</code> 并将生成的新路径连接起来，</p>
+<pre class="code literal-block"><span></span><code><span class="err">p := p transformed sw</span>
+<span class="err">     -- p transformed nw</span>
+<span class="err">     -- p transformed ne</span>
+<span class="err">     -- p transformed se;</span>
+<span class="err">drawpath p; drawpoints p;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/19.png"></p>
+<p>所得结果称为 2 阶 Hilbert 曲线。对 <code>p</code> 再次做上述变换，便可构造出 3 阶 Hilbert 曲线，即</p>
+<pre class="code literal-block"><span></span><code><span class="n">p</span> <span class="p">:</span><span class="o">=</span> <span class="n">p</span> <span class="n">transformed</span> <span class="n">sw</span>
+     <span class="c1">-- p transformed nw</span>
+     <span class="c1">-- p transformed ne</span>
+     <span class="c1">-- p transformed se;</span>
+
+<span class="n">p</span> <span class="p">:</span><span class="o">=</span> <span class="n">p</span> <span class="n">transformed</span> <span class="n">sw</span>
+     <span class="c1">-- p transformed nw</span>
+     <span class="c1">-- p transformed ne</span>
+     <span class="c1">-- p transformed se;</span>
+
+<span class="n">drawpath</span> <span class="n">p</span><span class="p">;</span> <span class="n">drawpoints</span> <span class="n">p</span><span class="p">;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/20.png"></p>
+<p>依此类推，可继续构造更高阶的 Hilbert 曲线。随着阶数的升高，曲线很快会将一个正方形区域填满，例如 5 阶曲线，</p>
+<p><img alt="" src="../images/metafun/21.png"></p>
+<p>因此，Hilbert 曲线通常被称为空间填充曲线。利用 Hilbert 曲线，可将多维空间转化为一维连续空间。</p>
+<h2>循环</h2>
+<p>使用 MetaPost 的 <code>for</code> 循环语句对高阶 Hilbert 曲线的构造代码予以简化。例如构造 5 阶 Hilbert 曲线，只需</p>
+<pre class="code literal-block"><span></span><code><span class="err">for i := 2 upto 5:</span>
+<span class="err">    p := p transformed sw</span>
+<span class="err">         -- p transformed nw</span>
+<span class="err">         -- p transformed ne</span>
+<span class="err">         -- p transformed se;</span>
+<span class="err">endfor;</span>
+<span class="err">drawpath p; drawpoints p;</span>
+</code></pre>
+
+<p>若采用更为通用的 <code>for</code> 语句，上述的 <code>for</code> 代码可改为</p>
+<pre class="code literal-block"><span></span><code><span class="err">for i := 2 step 1 until 5:</span>
+<span class="err">    p := p transformed sw</span>
+<span class="err">         -- p transformed nw</span>
+<span class="err">         -- p transformed ne</span>
+<span class="err">         -- p transformed se;</span>
+<span class="err">endfor;</span>
+</code></pre>
+
+<p><code>step</code> 可以控制循环变量 <code>i</code> 的步长。</p>
+<p><code>for</code> 也可用于对象序列的迭代访问。例如</p>
+<pre class="code literal-block"><span></span><code><span class="err">p := p transformed sw</span>
+<span class="err">     -- p transformed nw</span>
+<span class="err">     -- p transformed ne</span>
+<span class="err">     -- p transformed se;</span>
+</code></pre>
+
+<p>可写为</p>
+<pre class="code literal-block"><span></span><code><span class="err">p := p transformed sw for j := nw, ne, se: -- p transformed j endfor;</span>
+</code></pre>
+
+<p>MetaPost 允许表达式中出现循环语句，而且循环的最终结果是每一轮循环所包含的内容的连接。</p>
+<h2>宏</h2>
+<p>在一个 MetaPost 程序里，除了数据以及注释语句之外，剩下的几乎都是宏。mpost 会将程序中所有的宏展开，从而得到最为基本的绘图语句的组合，继而 mpost 将这些基本的绘图语句翻译为 PostScript 语句，从而得到 PostScript 格式的文档。</p>
+<p>宏的展开，其基本原理是文本替换。例如</p>
+<pre class="code literal-block"><span></span><code><span class="err">for i := 1 upto 4:</span>
+<span class="err">    MetaPost 语句;</span>
+<span class="err">endfor;</span>
+</code></pre>
+
+<p>其中的 <code>upto</code> 就是一个宏，mpost 会将它的展开为 <code>step 1 until</code>。之所以如此，是因为 <code>upto</code> 的定义</p>
+<pre class="code literal-block"><span></span><code><span class="err">def upto = step 1 until enddef;</span>
+</code></pre>
+
+<p><code>upto</code> 没有参数，它的展开本质上是单纯的文本替换。有参数的宏可以通过参数调整宏的展开结果；宏的参数，本质上是宏展开文本中可变的部分。</p>
+<p>通过有参数的宏，可实现更具一般性的 Hilbert 曲线的构造过程。对于 Hilbert 曲线的构造过程而言，可变的部分有 Hilbert 曲线所填充的正方形区域的边长以及 Hilbert 曲线的阶数，若将二者分别用 <code>numeric</code> 类型的变量 <code>sidelength</code> 和 <code>n</code> 表示，那么一般性的 Hilbert 曲线的构造过程可表示为</p>
+<pre class="code literal-block"><span></span><code><span class="nt">numeric</span> <span class="nt">u</span><span class="o">;</span> <span class="nt">u</span> <span class="o">:=</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5sidelength</span><span class="o">;</span>
+<span class="nt">pair</span> <span class="nt">a</span><span class="o">,</span> <span class="nt">b</span><span class="o">,</span> <span class="nt">c</span><span class="o">,</span> <span class="nt">d</span><span class="o">;</span>
+<span class="nt">a</span> <span class="o">:=</span> <span class="o">(</span><span class="nt">-0</span><span class="p">.</span><span class="nc">5</span><span class="o">,</span> <span class="nt">-0</span><span class="p">.</span><span class="nc">5</span><span class="o">)</span> <span class="o">*</span> <span class="nt">u</span><span class="o">;</span>
+<span class="nt">b</span> <span class="o">:=</span> <span class="o">(</span><span class="nt">-0</span><span class="p">.</span><span class="nc">5</span><span class="o">,</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5</span><span class="o">)</span> <span class="o">*</span> <span class="nt">u</span><span class="o">;</span>
+<span class="nt">c</span> <span class="o">:=</span> <span class="o">(</span><span class="nt">0</span><span class="p">.</span><span class="nc">5</span><span class="o">,</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5</span><span class="o">)</span> <span class="o">*</span> <span class="nt">u</span><span class="o">;</span>
+<span class="nt">d</span> <span class="o">:=</span> <span class="o">(</span><span class="nt">0</span><span class="p">.</span><span class="nc">5</span><span class="o">,</span> <span class="nt">-0</span><span class="p">.</span><span class="nc">5</span><span class="o">)</span> <span class="o">*</span> <span class="nt">u</span><span class="o">;</span>
+
+<span class="nt">path</span> <span class="nt">p</span><span class="o">;</span> 
+<span class="nt">p</span> <span class="o">:=</span> <span class="nt">a</span> <span class="nt">--</span> <span class="nt">b</span> <span class="nt">--</span> <span class="nt">c</span> <span class="nt">--</span> <span class="nt">d</span><span class="o">;</span>
+
+<span class="nt">transform</span> <span class="nt">sw</span><span class="o">,</span> <span class="nt">nw</span><span class="o">,</span> <span class="nt">ne</span><span class="o">,</span> <span class="nt">se</span><span class="o">;</span>
+<span class="nt">sw</span> <span class="o">:=</span> <span class="nt">identity</span>
+      <span class="nt">scaled</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5</span>
+      <span class="nt">reflectedabout</span> <span class="o">((</span><span class="nt">0</span><span class="o">,</span> <span class="nt">0</span><span class="o">),</span> <span class="o">(</span><span class="nt">1</span><span class="o">,</span> <span class="nt">1</span><span class="o">))</span>
+      <span class="nt">shifted</span> <span class="o">(</span><span class="nt">-0</span><span class="p">.</span><span class="nc">5u</span><span class="o">,</span> <span class="nt">-0</span><span class="p">.</span><span class="nc">5u</span><span class="o">);</span>
+<span class="nt">nw</span> <span class="o">:=</span> <span class="nt">identity</span>
+      <span class="nt">scaled</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5</span>
+      <span class="nt">shifted</span> <span class="o">(</span><span class="nt">-0</span><span class="p">.</span><span class="nc">5u</span><span class="o">,</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5u</span><span class="o">);</span>
+<span class="nt">ne</span> <span class="o">:=</span> <span class="nt">identity</span>
+      <span class="nt">scaled</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5</span>
+      <span class="nt">shifted</span> <span class="o">(</span><span class="nt">0</span><span class="p">.</span><span class="nc">5u</span><span class="o">,</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5u</span><span class="o">);</span>
+<span class="nt">se</span> <span class="o">:=</span> <span class="nt">identity</span>
+      <span class="nt">scaled</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5</span>
+      <span class="nt">reflectedabout</span> <span class="o">((</span><span class="nt">0</span><span class="o">,</span> <span class="nt">0</span><span class="o">),</span> <span class="o">(</span><span class="nt">1</span><span class="o">,</span> <span class="nt">-1</span><span class="o">))</span>
+      <span class="nt">shifted</span> <span class="o">(</span><span class="nt">0</span><span class="p">.</span><span class="nc">5u</span><span class="o">,</span> <span class="nt">-0</span><span class="p">.</span><span class="nc">5u</span><span class="o">);</span>
+
+<span class="nt">for</span> <span class="nt">i</span> <span class="o">:=</span> <span class="nt">2</span> <span class="nt">upto</span> <span class="nt">n</span><span class="o">:</span>
+  <span class="nt">p</span> <span class="o">:=</span> <span class="nt">p</span> <span class="nt">transformed</span> <span class="nt">sw</span> <span class="nt">for</span> <span class="nt">j</span> <span class="o">:=</span> <span class="nt">nw</span><span class="o">,</span> <span class="nt">ne</span><span class="o">,</span> <span class="nt">se</span><span class="o">:</span> <span class="nt">--</span> <span class="nt">p</span> <span class="nt">transformed</span> <span class="nt">j</span> <span class="nt">endfor</span><span class="o">;</span>
+<span class="nt">endfor</span><span class="o">;</span>
+
+<span class="nt">drawpath</span> <span class="nt">p</span><span class="o">;</span> <span class="nt">drawpoints</span> <span class="nt">p</span><span class="o">;</span>
+</code></pre>
+
+<p>将上述语句作为宏 <code>hilbert</code> 的替换文本，并将 <code>sidelength</code> 和 <code>n</code> 作为 <code>hilbert</code> 宏的参数，则 <code>hilbert</code> 宏可定义为</p>
+<pre class="code literal-block"><span></span><code><span class="nt">def</span> <span class="nt">hilbert</span><span class="o">(</span><span class="nt">expr</span> <span class="nt">sidelength</span><span class="o">,</span> <span class="nt">n</span><span class="o">)</span> <span class="o">=</span> 
+  <span class="nt">numeric</span> <span class="nt">u</span><span class="o">;</span> <span class="nt">u</span> <span class="o">:=</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5sidelength</span><span class="o">;</span>
+  <span class="nt">pair</span> <span class="nt">a</span><span class="o">,</span> <span class="nt">b</span><span class="o">,</span> <span class="nt">c</span><span class="o">,</span> <span class="nt">d</span><span class="o">;</span>
+  <span class="nt">a</span> <span class="o">:=</span> <span class="o">(</span><span class="nt">-0</span><span class="p">.</span><span class="nc">5</span><span class="o">,</span> <span class="nt">-0</span><span class="p">.</span><span class="nc">5</span><span class="o">)</span> <span class="o">*</span> <span class="nt">u</span><span class="o">;</span>
+  <span class="nt">b</span> <span class="o">:=</span> <span class="o">(</span><span class="nt">-0</span><span class="p">.</span><span class="nc">5</span><span class="o">,</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5</span><span class="o">)</span> <span class="o">*</span> <span class="nt">u</span><span class="o">;</span>
+  <span class="nt">c</span> <span class="o">:=</span> <span class="o">(</span><span class="nt">0</span><span class="p">.</span><span class="nc">5</span><span class="o">,</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5</span><span class="o">)</span> <span class="o">*</span> <span class="nt">u</span><span class="o">;</span>
+  <span class="nt">d</span> <span class="o">:=</span> <span class="o">(</span><span class="nt">0</span><span class="p">.</span><span class="nc">5</span><span class="o">,</span> <span class="nt">-0</span><span class="p">.</span><span class="nc">5</span><span class="o">)</span> <span class="o">*</span> <span class="nt">u</span><span class="o">;</span>
+
+  <span class="nt">path</span> <span class="nt">p</span><span class="o">;</span> 
+  <span class="nt">p</span> <span class="o">:=</span> <span class="nt">a</span> <span class="nt">--</span> <span class="nt">b</span> <span class="nt">--</span> <span class="nt">c</span> <span class="nt">--</span> <span class="nt">d</span><span class="o">;</span>
+
+  <span class="nt">transform</span> <span class="nt">sw</span><span class="o">,</span> <span class="nt">nw</span><span class="o">,</span> <span class="nt">ne</span><span class="o">,</span> <span class="nt">se</span><span class="o">;</span>
+  <span class="nt">sw</span> <span class="o">:=</span> <span class="nt">identity</span>
+        <span class="nt">scaled</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5</span>
+        <span class="nt">reflectedabout</span> <span class="o">((</span><span class="nt">0</span><span class="o">,</span> <span class="nt">0</span><span class="o">),</span> <span class="o">(</span><span class="nt">1</span><span class="o">,</span> <span class="nt">1</span><span class="o">))</span>
+        <span class="nt">shifted</span> <span class="o">(</span><span class="nt">-0</span><span class="p">.</span><span class="nc">5u</span><span class="o">,</span> <span class="nt">-0</span><span class="p">.</span><span class="nc">5u</span><span class="o">);</span>
+  <span class="nt">nw</span> <span class="o">:=</span> <span class="nt">identity</span>
+        <span class="nt">scaled</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5</span>
+        <span class="nt">shifted</span> <span class="o">(</span><span class="nt">-0</span><span class="p">.</span><span class="nc">5u</span><span class="o">,</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5u</span><span class="o">);</span>
+  <span class="nt">ne</span> <span class="o">:=</span> <span class="nt">identity</span>
+        <span class="nt">scaled</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5</span>
+        <span class="nt">shifted</span> <span class="o">(</span><span class="nt">0</span><span class="p">.</span><span class="nc">5u</span><span class="o">,</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5u</span><span class="o">);</span>
+  <span class="nt">se</span> <span class="o">:=</span> <span class="nt">identity</span>
+        <span class="nt">scaled</span> <span class="nt">0</span><span class="p">.</span><span class="nc">5</span>
+        <span class="nt">reflectedabout</span> <span class="o">((</span><span class="nt">0</span><span class="o">,</span> <span class="nt">0</span><span class="o">),</span> <span class="o">(</span><span class="nt">1</span><span class="o">,</span> <span class="nt">-1</span><span class="o">))</span>
+        <span class="nt">shifted</span> <span class="o">(</span><span class="nt">0</span><span class="p">.</span><span class="nc">5u</span><span class="o">,</span> <span class="nt">-0</span><span class="p">.</span><span class="nc">5u</span><span class="o">);</span>
+
+  <span class="nt">for</span> <span class="nt">i</span> <span class="o">:=</span> <span class="nt">2</span> <span class="nt">upto</span> <span class="nt">n</span><span class="o">:</span>
+    <span class="nt">p</span> <span class="o">:=</span> <span class="nt">p</span> <span class="nt">transformed</span> <span class="nt">sw</span> <span class="nt">for</span> <span class="nt">j</span> <span class="o">:=</span> <span class="nt">nw</span><span class="o">,</span> <span class="nt">ne</span><span class="o">,</span> <span class="nt">se</span><span class="o">:</span> <span class="nt">--</span> <span class="nt">p</span> <span class="nt">transformed</span> <span class="nt">j</span> <span class="nt">endfor</span><span class="o">;</span>
+  <span class="nt">endfor</span><span class="o">;</span>
+
+  <span class="nt">drawpath</span> <span class="nt">p</span><span class="o">;</span> <span class="nt">drawpoints</span> <span class="nt">p</span><span class="o">;</span>
+<span class="nt">enddef</span><span class="o">;</span>
+</code></pre>
+
+<p><code>(expr sidelength, n)</code> 为 <code>hilbert</code> 的参数列表，<code>expr</code> 表示参数 <code>sidelength</code> 和 <code>n</code> 的类型皆为 MetaPost 的表达式。除了 <code>expr</code> 之外，MetaPost 还支持 <code>text</code> 和 <code>suffix</code> 类型的参数。<code>text</code> 类型的参数可以是任意 MetaPost 语句，但结尾必须为 <code>;</code>。<code>suffix</code> 表示含有后缀的变量，可将该类变量其理解为数组。需要注意，宏的参数，在其替换文本中不能再重新声明或赋值。</p>
+<p>现在调用 <code>hilbert</code> 宏，便可将其展开为任意阶数的 Hilbert 曲线的构造及绘制语句。例如，在边长为 8cm 的正方形区域内构造并绘制 4 阶的 Hilbert 曲线，只需</p>
+<pre class="code literal-block"><span></span><code><span class="err">hilbert(8cm, 4);</span>
+</code></pre>
+
+<h2>条件</h2>
+<p><code>hilbert</code> 宏有一个 Bug，它无法构造 1 阶 Hilbert 曲线——路径 <code>p</code> 的初始状态。要修复这个 Bug，需要使用条件语句</p>
+<pre class="code literal-block"><span></span><code><span class="err">if 条件:</span>
+<span class="err">  语句;</span>
+<span class="err">elseif 条件:</span>
+<span class="err">  语句;</span>
+<span class="c">else:</span>
+<span class="c">  语句;</span>
+<span class="err">fi</span>
+</code></pre>
+
+<p>其中，<code>elseif</code> 部分可选。</p>
+<p>可在构造 Hilbert 曲线的循环中，利用条件语句，将 <code>n = 1</code> 视为特殊情况，在这种情况中不对 <code>p</code> 进行变换，如此便可得到正确阶树的 Hilbert 曲线，亦即，将 <code>hilbert</code> 宏的替换文本中的</p>
+<pre class="code literal-block"><span></span><code><span class="err">for i := 2 upto n:</span>
+<span class="err">  p := p transformed sw for j := nw, ne, se: -- p transformed j endfor;</span>
+<span class="err">endfor;</span>
+</code></pre>
+
+<p>修改为</p>
+<pre class="code literal-block"><span></span><code><span class="err">if n &gt; 1:</span>
+<span class="err">  for i := 2 upto n:</span>
+<span class="err">    p := p transformed sw for j := nw, ne, se: -- p transformed j endfor;</span>
+<span class="err">  endfor;</span>
+<span class="err">fi</span>
+</code></pre>
+
+<p>如此，便修复了 <code>hilbert</code> 宏在曲线阶数上的 Bug。</p>
+<h2>数据与绘图分离</h2>
+<p><code>hilbert</code> 宏的定义还存在一个问题，它做的事情太多了，不仅负责 Hilbert 曲线的构造，还负责曲线的绘制。做的事情多，并不意味着功能更强大。若需要对线条的颜色以及粗细虚实予以调整，需要修改 <code>hilbert</code> 宏的定义。应对这些变化，最简单的方法是让 <code>hilbert</code> 不负责绘图，只负责生成 Hilbert 曲线路径。为达到这一目的，需要用 <code>vardef</code> 来定义 <code>hilbert</code> 宏，即</p>
+<pre class="code literal-block"><span></span><code><span class="n">vardef</span> <span class="n">hilbert</span><span class="p">(</span><span class="n">expr</span> <span class="n">sidelength</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">=</span> 
+  <span class="n">numeric</span> <span class="n">u</span><span class="p">;</span> <span class="n">u</span> <span class="p">:</span><span class="o">=</span> <span class="mf">0.5</span><span class="n">sidelength</span><span class="p">;</span>
+  <span class="n">pair</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">;</span>
+  <span class="n">a</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="p">;</span>
+  <span class="n">b</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="p">;</span>
+  <span class="n">c</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="p">;</span>
+  <span class="n">d</span> <span class="p">:</span><span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="p">;</span>
+
+  <span class="n">path</span> <span class="n">p</span><span class="p">;</span> 
+  <span class="n">p</span> <span class="p">:</span><span class="o">=</span> <span class="n">a</span> <span class="o">--</span> <span class="n">b</span> <span class="o">--</span> <span class="n">c</span> <span class="o">--</span> <span class="n">d</span><span class="p">;</span>
+
+  <span class="n">transform</span> <span class="n">sw</span><span class="p">,</span> <span class="n">nw</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">se</span><span class="p">;</span>
+  <span class="n">sw</span> <span class="p">:</span><span class="o">=</span> <span class="n">identity</span>
+        <span class="n">scaled</span> <span class="mf">0.5</span>
+        <span class="n">reflectedabout</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">shifted</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="n">u</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="n">u</span><span class="p">);</span>
+  <span class="n">nw</span> <span class="p">:</span><span class="o">=</span> <span class="n">identity</span>
+        <span class="n">scaled</span> <span class="mf">0.5</span>
+        <span class="n">shifted</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="n">u</span><span class="p">,</span> <span class="mf">0.5</span><span class="n">u</span><span class="p">);</span>
+  <span class="n">ne</span> <span class="p">:</span><span class="o">=</span> <span class="n">identity</span>
+        <span class="n">scaled</span> <span class="mf">0.5</span>
+        <span class="n">shifted</span> <span class="p">(</span><span class="mf">0.5</span><span class="n">u</span><span class="p">,</span> <span class="mf">0.5</span><span class="n">u</span><span class="p">);</span>
+  <span class="n">se</span> <span class="p">:</span><span class="o">=</span> <span class="n">identity</span>
+        <span class="n">scaled</span> <span class="mf">0.5</span>
+        <span class="n">reflectedabout</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">shifted</span> <span class="p">(</span><span class="mf">0.5</span><span class="n">u</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="n">u</span><span class="p">);</span>
+
+  <span class="k">for</span> <span class="n">i</span> <span class="p">:</span><span class="o">=</span> <span class="mi">2</span> <span class="n">upto</span> <span class="n">n</span><span class="p">:</span>
+    <span class="n">p</span> <span class="p">:</span><span class="o">=</span> <span class="n">p</span> <span class="n">transformed</span> <span class="n">sw</span> <span class="k">for</span> <span class="n">j</span> <span class="p">:</span><span class="o">=</span> <span class="n">nw</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">se</span><span class="p">:</span> <span class="o">--</span> <span class="n">p</span> <span class="n">transformed</span> <span class="n">j</span> <span class="n">endfor</span><span class="p">;</span>
+  <span class="n">endfor</span><span class="p">;</span>
+  <span class="n">p</span>
+<span class="n">enddef</span><span class="p">;</span>
+</code></pre>
+
+<p>使用 <code>vardef</code> 定义的宏，其替换文本的最后一句即为宏返回的结果。将 <code>p</code> 作为 <code>hilbert</code> 宏的替换文本的最后一句，便可使得 <code>hilbert</code> 返回 Hilbert 曲线路径。</p>
+<p>若测试 <code>hilbert</code> 宏能否满足需求，只需</p>
+<pre class="code literal-block"><span></span><code><span class="err">path p; p := hilbert(8cm, 3);</span>
+<span class="err">drawpath p; drawpoints p;</span>
+</code></pre>
+
+<p>使用 <code>randomized</code> 命令对 <code>p</code> 作轻微的随机扰动，可使得 Hilbert 曲线具备一丝艺术气息，</p>
+<pre class="code literal-block"><span></span><code><span class="err">path p; p := hilbert(8cm, 3) randomized 5mm;</span>
+<span class="err">drawpath p; drawpoints p;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/22.png"></p>
+<p><code>randomized</code> 能够对出现在它之前的对象按指定幅度予以随机扰动。路径出现于 <code>randomized</code> 之前，则路径中的所有节点的位置会被随机扰动。</p>
+<h2>变量的作用域</h2>
+<p>调用 <code>hilbert</code> 宏，即使将其将其返回的路径赋予变量 <code>q</code>，但依然可以用 <code>p</code> 访问 <code>hilbert</code> 所生成的路径：</p>
+<pre class="code literal-block"><span></span><code><span class="err">path q; q := hilbert(5cm, 3);</span>
+<span class="err">drawpath p withcolor .625gren;</span>
+<span class="err">drawpoints p withcolor .625red;</span>
+</code></pre>
+
+<p>这意味着在 <code>hilbert</code> 宏的定义中出现的变量 <code>p</code>，在 <code>hilbert</code> 宏的外部也是可见的。之所以出现这样的结果，原因在于 MetaPost 语言中，除了循环结构的变量之外，几乎所有的变量默认皆为全局变量。例如，</p>
+<pre class="code literal-block"><span></span><code><span class="err">for i := 1 upto 5:</span>
+<span class="err">    path p;</span>
+<span class="err">    p := fullsquare scaled (i * 1cm) shifted (i * 1cm, 0);</span>
+<span class="err">endfor;</span>
+<span class="err">drawpath p;</span>
+</code></pre>
+
+<p>其中，<code>p</code> 为全局变量，但 <code>i</code> 为局部变量。</p>
+<p>若要构造一些局部变量，需要使用 <code>begingroup ... endgroup</code> 以及 <code>save</code> 语句。例如，</p>
+<pre class="code literal-block"><span></span><code><span class="n">begingroup</span>
+<span class="n">save</span> <span class="n">s</span><span class="p">,</span> <span class="n">p</span><span class="p">;</span>
+<span class="nb">numeric</span> <span class="n">s</span><span class="p">;</span> <span class="n">path</span> <span class="n">q</span><span class="p">;</span>
+<span class="n">s</span> <span class="p">:</span><span class="o">=</span> <span class="mi">5</span><span class="n">cm</span><span class="p">;</span>
+<span class="n">q</span> <span class="p">:</span><span class="o">=</span> <span class="n">fullsquare</span> <span class="n">scaled</span> <span class="n">s</span> <span class="n">shifted</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="n">endgroup</span><span class="p">;</span>
+
+<span class="n">drawpath</span> <span class="n">p</span><span class="p">;</span>
+</code></pre>
+
+<p>在绘制路径 <code>p</code> 时，mpost 会报错，因为所绘制的路径并不存在。</p>
+<p><code>begingroup ... endgroup</code> 构造了一个作用域，<code>save</code> 则用于声明局部变量的名字。若该结构在宏的定义中使用，便可以对宏内所用的一些不想被外部所知的变量给予保护。</p>
+<h2>线性方程</h2>
+<p>mpost 具备线性方程求解的功能。基于这一功能，mpost 可动态确定变量类型。例如，</p>
+<pre class="code literal-block"><span></span><code><span class="err">a = 1;</span>
+</code></pre>
+
+<p>这里的 <code>=</code> 并非赋值运算符。MetaPost 的赋值运算是上文中一直使用的 <code>:=</code>。这里的 <code>=</code> 表示方程或等式。在上文讲述条件结构的时候，已见识了它。mpost 会对这个方程进行求解，结果是变量 <code>a</code> 的值为 1，因此这条语句等价于</p>
+<pre class="code literal-block"><span></span><code><span class="err">numeric a;</span>
+<span class="err">a := 1;</span>
+</code></pre>
+
+<p>对于</p>
+<pre class="code literal-block"><span></span><code><span class="err">a + 2b = 5;</span>
+<span class="err">3b = 7;</span>
+</code></pre>
+
+<p>mpost 的求解结果为</p>
+<pre class="code literal-block"><span></span><code><span class="err">a = 0.33333;</span>
+<span class="err">b = 2.33333;</span>
+</code></pre>
+
+<p>对于</p>
+<pre class="code literal-block"><span></span><code><span class="err">a = (2cm, 3cm);</span>
+</code></pre>
+
+<p>mpost 会报错，它认为一个数值与一个点无法构成方程，但是将变量名称写成以 <code>z</code> 开头带有后缀的形式，便可构成方程，例如</p>
+<pre class="code literal-block"><span></span><code><span class="err">z1 = (2cm, 3cm);</span>
+</code></pre>
+
+<p>mpost 会将 <code>z1</code> 视为一个点 <code>(x1, y1)</code>，因此上述方程本质上是</p>
+<pre class="code literal-block"><span></span><code><span class="err">(x1, y1) = (2cm, 3cm);</span>
+</code></pre>
+
+<p>反之，倘若 mpost 求解了以下方程</p>
+<pre class="code literal-block"><span></span><code><span class="err">x1 = 3cm; </span>
+<span class="err">y1 = 4cm;</span>
+</code></pre>
+
+<p>就相当于定义了点 <code>z1 = (3cm, 4cm)</code>。变量名称的后缀，可以是数字，也可以是数字 + 字母，还可以是 <code>.</code> + 数字或字母，例如：</p>
+<pre class="code literal-block"><span></span><code><span class="err">z3 = z1; z3r = z1; z.3 = z1; z.3r = z1;</span>
+</code></pre>
+
+<p>除了可用于节省变量的声明之外，利用 mpost 求解线性方程的功能确定两条线段的交点也极为方便。例如，</p>
+<pre class="code literal-block"><span></span><code><span class="err">path p, q;</span>
+<span class="err">z0 = (0, 0); z1 = (7cm, 5cm); z2 = (0, 3cm); z3 = (7cm, 3cm);</span>
+<span class="err">p := z0 -- z1;</span>
+<span class="err">q := z2 -- z3;</span>
+<span class="err">z4 = whatever[z0, z1] = whatever[z2, z3];</span>
+<span class="err">drawpath p; drawpath q;</span>
+<span class="err">drawpoints z4;</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/23.png"></p>
+<p><code>whatever[z0, z1]</code> 表示 <code>z0 -- z1</code> 上的任意一点。若写为 <code>0.5[z0, z1]</code> 表示线段 <code>z0 -- z1</code> 的中点。若写为 <code>1/3[z0, z1]</code> 则表示 <code>z0 -- z1</code> 距离 <code>z0</code> 最近的三等分点。<code>[z0, z1]</code> 这样的写法表示由线段 <code>z0 -- z1</code> 构成的区间。两个数也能构成区间，例如 <code>[2, 4]</code>，再例如 <code>0.5[2, 4]</code> 的结果为 3。</p>
+<h2>MetaFun：MetaPost + ConTeXt</h2>
+<p>MetaPost 绘制的图形，通过 MetaFun 便可与 ConTeXt 的排版元素取得结合，从而显著增强 ConTeXt 的排版能力。例如，可以将一条 Hilbert 曲线作为文本框的背景。当然，只要能够绘制 Hilbert 曲线，将其保存为单页面文件，几乎任何一个功能健全的排版软件都能够以该图形作为文本框的背景，但是一旦图形被保存为文件，这就意味着图形失去了可变性，只适于作为特定尺寸的文本框的背景。</p>
+<p>假设将一条三阶 Hilbert 曲线以矢量图的形式保存为单页面文件 hilbert-3.pdf，那么在 ConTeXt 中可通过覆盖（Overlay）的方式将其作为文本框的背景图片，即</p>
+<pre class="code literal-block"><span></span><code><span class="k">\usemodule</span><span class="na">[zhfonts]</span>
+
+<span class="k">\defineoverlay</span><span class="na">[hilbert][{\externalfigure[hilbert-3.pdf]</span><span class="nb">}</span>]
+<span class="k">\setupframed</span>
+  [background=hilbert,
+    width=8cm,
+    height=4cm,
+    align=middle,
+    location=lohi,
+    align=<span class="nb">{</span>middle,lohi,broad<span class="nb">}</span>]
+
+<span class="k">\starttext</span>
+<span class="k">\framed</span><span class="nb">{</span><span class="k">\bfd</span> 天地一指也<span class="k">\\</span> 万物一马也<span class="nb">}</span>
+<span class="k">\stoptext</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/24.png"></p>
+<p>若直接以 hilbert-3.pdf 文件所包含的图形作为文本框（即 <code>\framed</code>）的背景，那么背景图片的尺寸默认是 hilbert-3.pdf 文件所包含的图形的尺寸。显然，这个尺寸太大了，背景图片超出了文本框。</p>
+<p>理想的文本框背景应该与文本框的尺寸相等。可通过变量（TeX 宏） <code>\overlaywidth</code> 和 <code>\overlayheight</code> 获得当前的文本框的宽度和高度，并基于这两个尺寸，对背景图片的尺寸进行调整，使之适应文本框，即</p>
+<pre class="code literal-block"><span></span><code><span class="k">\usemodule</span><span class="na">[zhfonts]</span>
+
+<span class="k">\defineoverlay</span>
+  [hilbert]
+  [<span class="nb">{</span><span class="k">\externalfigure</span>
+      [hilbert-3.pdf]
+      [width=<span class="k">\overlaywidth</span>, height=<span class="k">\overlayheight</span>]<span class="nb">}</span>]
+<span class="k">\setupframed</span>
+  [background=hilbert,
+    width=8cm,
+    height=4cm,
+    align=middle,
+    location=lohi,
+    align=<span class="nb">{</span>middle,lohi,broad<span class="nb">}</span>]
+
+<span class="k">\starttext</span>
+<span class="k">\framed</span><span class="nb">{</span><span class="k">\bfd</span> 天地一指也<span class="k">\\</span> 万物一马也<span class="nb">}</span>
+<span class="k">\stoptext</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/25.png"></p>
+<p>现在，背景图片被硬性地塞入了文本框，结果导致 Hilbert 曲线的线条变细，并且横向的线条被圧扁了。这正是以图形文件中的图形作为文本框背景的弊端所在，即背景图形中的线条失真。此外，经过缩放的 Hilbert 曲线，虽然恰好能够充满文本框，但实际上并不正确，因为 3 阶的 Hilbert 曲线是不可能恰好充满它所填充的空间。这些失真在 MetaPost 绘图过程中不会出现。当 MetaPost 通过 MetaFun 与 ConTeXt 取得融合时，ConTeXt 的排版元素便能够享有这一优势。</p>
+<p>为实现 MetaPost 与 ConTeXt 排版元素的融合，MetaFun 提供了 <code>uniqueMPgraphic</code> 环境，在该环境内编写 MetaPost 程序，然后这个环境可以像插图那样在 ConTeXt 排版元素中使用。例如，</p>
+<pre class="code literal-block"><span></span><code>\<span class="n">startuniqueMPgraphic</span><span class="p">{</span><span class="n">hilbert</span><span class="o">-</span><span class="mi">3</span><span class="p">}</span>
+<span class="n">vardef</span> <span class="n">hilbert</span><span class="p">(</span><span class="n">expr</span> <span class="n">sidelength</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">=</span> 
+  <span class="n">u</span> <span class="o">=</span> <span class="mf">0.5</span><span class="n">sidelength</span><span class="p">;</span>
+  <span class="n">z1</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="p">;</span>
+  <span class="n">z2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="p">;</span>
+  <span class="n">z3</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="p">;</span>
+  <span class="n">z4</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="p">;</span>
+
+  <span class="n">path</span> <span class="n">p</span><span class="p">;</span> <span class="n">p</span> <span class="p">:</span><span class="o">=</span> <span class="n">z1</span> <span class="o">--</span> <span class="n">z2</span> <span class="o">--</span> <span class="n">z3</span> <span class="o">--</span> <span class="n">z4</span><span class="p">;</span>
+
+  <span class="n">transform</span> <span class="n">sw</span><span class="p">,</span> <span class="n">nw</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">se</span><span class="p">;</span>
+  <span class="n">sw</span> <span class="p">:</span><span class="o">=</span> <span class="n">identity</span>
+        <span class="n">scaled</span> <span class="mf">0.5</span>
+        <span class="n">reflectedabout</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">shifted</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="n">u</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="n">u</span><span class="p">);</span>
+  <span class="n">nw</span> <span class="p">:</span><span class="o">=</span> <span class="n">identity</span>
+        <span class="n">scaled</span> <span class="mf">0.5</span>
+        <span class="n">shifted</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="n">u</span><span class="p">,</span> <span class="mf">0.5</span><span class="n">u</span><span class="p">);</span>
+  <span class="n">ne</span> <span class="p">:</span><span class="o">=</span> <span class="n">identity</span>
+        <span class="n">scaled</span> <span class="mf">0.5</span>
+        <span class="n">shifted</span> <span class="p">(</span><span class="mf">0.5</span><span class="n">u</span><span class="p">,</span> <span class="mf">0.5</span><span class="n">u</span><span class="p">);</span>
+  <span class="n">se</span> <span class="p">:</span><span class="o">=</span> <span class="n">identity</span>
+        <span class="n">scaled</span> <span class="mf">0.5</span>
+        <span class="n">reflectedabout</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">shifted</span> <span class="p">(</span><span class="mf">0.5</span><span class="n">u</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="n">u</span><span class="p">);</span>
+
+  <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span> <span class="n">upto</span> <span class="n">n</span><span class="p">:</span>
+    <span class="n">p</span> <span class="p">:</span><span class="o">=</span> <span class="n">p</span> <span class="n">transformed</span> <span class="n">sw</span> <span class="k">for</span> <span class="n">j</span> <span class="p">:</span><span class="o">=</span> <span class="n">nw</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">se</span><span class="p">:</span> <span class="o">--</span> <span class="n">p</span> <span class="n">transformed</span> <span class="n">j</span> <span class="n">endfor</span><span class="p">;</span>
+  <span class="n">endfor</span><span class="p">;</span>
+  <span class="n">p</span>
+<span class="n">enddef</span><span class="p">;</span>
+
+<span class="n">path</span> <span class="n">p</span><span class="p">;</span> <span class="n">p</span> <span class="p">:</span><span class="o">=</span> <span class="n">hilbert</span><span class="p">(</span><span class="n">OverlayWidth</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="n">drawpath</span> <span class="n">p</span> <span class="n">yscaled</span> <span class="p">(</span><span class="n">OverlayHeight</span> <span class="o">/</span> <span class="n">OverlayWidth</span><span class="p">);</span>
+\<span class="n">stopuniqueMPgraphic</span>
+</code></pre>
+
+<p>在上述名为 <code>hilbert-3</code> 的 <code>uniqueMPgraphic</code> 环境中，对 <code>hilbert</code> 宏所生成的 Hibert 曲线，根据变量 <code>OverlayWitdh</code> 和 <code>OverlayHeight</code> 的值给出了适应性的缩放，亦即在 <code>uniqueMPgraphic</code> 环境中，MetaPost 程序可以共享 ConTeXt 排版元素的一些变量。</p>
+<p>若将上述 <code>uniqueMPgraphic</code> 环境作为文本框的背景图片，只需</p>
+<pre class="code literal-block"><span></span><code><span class="k">\defineoverlay</span><span class="na">[hilbert][\uniqueMPgraphic{hilbert-3}]</span>
+<span class="k">\setupframed</span>
+  [background=hilbert,
+    width=8cm,
+    height=4cm,
+    align=middle,
+    location=lohi,
+    align=<span class="nb">{</span>middle,lohi,broad<span class="nb">}</span>]
+
+<span class="k">\starttext</span>
+<span class="k">\framed</span><span class="nb">{</span><span class="k">\bfd</span> 天地一指也<span class="k">\\</span> 万物一马也<span class="nb">}</span>
+<span class="k">\stoptext</span>
+</code></pre>
+
+<p>结果可得</p>
+<p><img alt="" src="../images/metafun/26.png"></p>
+<p>使用 <code>\framed</code> 的 <code>frame=off</code> 可以隐藏文本框的边框，这样便可得到以 3 阶 Hilbert 曲线作为背景的文本框，而且背景的尺寸能够适应文本框的尺寸的变化。例如，</p>
+<pre class="code literal-block"><span></span><code><span class="k">\setupframed</span><span class="na">[frame=off]</span>
+<span class="k">\midaligned</span><span class="nb">{</span><span class="k">\framed</span><span class="nb">{</span><span class="k">\bfd</span> 天地一指也<span class="k">\\</span> 万物一马也<span class="nb">}}</span>
+<span class="k">\blank</span><span class="na">[1cm]</span>
+<span class="k">\midaligned</span><span class="nb">{</span><span class="k">\framed</span><span class="na">[width=12cm, height=3cm]</span><span class="nb">{</span><span class="k">\bfd</span> 天地一指也<span class="k">\\</span> 万物一马也<span class="nb">}}</span>
+</code></pre>
+
+<p><img alt="" src="../images/metafun/27.png"></p>
+<p>以上仅以文本框为例，简单介绍了 ConTeXt 与 MetaPost 的结合。事实上，对于 ConTeXt 的任一排版元素，只要它具备 <code>background</code> 选项，便可以利用 MetaPost 图形为其构建背景图形。即使一些排版元素不具备 <code>background</code> 选项，但是只要它们具备 <code>command</code> 选项，便可以通过嵌入文本框的方式与 MetaPost 图形结合。</p>
+<h2>结语</h2>
+<p>有关 MetaFun 更为详细的介绍见荷兰人 Hans Hagen 所写的 MetaFun 手册 <strong><sup><a href="../images/metafun/10.png">10</a></sup></strong> 。Hans Hagen 即是 ConTeXt 的开发者，也是 MetaFun 的开发者。</p>
+<p>对于以编程的方式绘制精确二维矢量图这种任务而言，MetaPost 是一种功能强大的编程语言。不过，适合这一任务的功能强大的编程语言并不少，譬如 LaTeX 的小伙伴 pgf/tikz，擅长绘制三维矢量图的 Asymptote，擅长绘制图表的 gnuplot、MathGL 等。与这些同类相比，MetaPost 胜出之处在于语法的优雅。</p>
+<p>MetaPost 语法的优雅一方面来自于它的宏编程特质。像每一种优雅都来自刻苦地训练一样，MetaPost 的优雅也并非朝发夕至之工可致。在编写这篇文章的一些简单示例的过程中，mpost 崩溃次数难以历数，而且它的每次崩溃几乎都会给出冗长的出错信息，需要像侦探一样从中查出端倪。因此，MetaPost 的优雅只是会向那些绘制精确矢量图这种任务乐此不疲的人绽放。另一方面，MetaPost MetaPost 绘图命令与英文的语法相近，即「谓语 + 宾语 + 定语 + 状语」的形式，例如，</p>
+<pre class="code literal-block"><span></span><code><span class="err">主语 I（省略） + 谓语 draw + 路径 p + 定语 scaled 0.5 + 状语 withcolor .8red;</span>
+</code></pre>
+
+<p>MetaFun 的出现，为 MetaPost 在排版领域开辟了用武之地。在文档排版方面，利用 MetaPost 所绘制的精确的矢量图形为一些排版元素构造背景，使得文档的排版更为精美。</p>
+<p>绘图是一门艺术。排版也是一门艺术。艺术的重要性在于它能够开拓人类的思维空间。使用 MetaPost 绘图，使用 ConTeXt 对文档进行排版则是技术。艺术的空间需要借助技术去探索或开拓。MetaFun 贯通了 MetaPost 和 ConTeXt，意味着具备了探索或开拓计算机绘图与排版相融合的艺术空间的一种工具。</p>
+<hr>
+<p><strong>引用的文献：</strong></p>
+<p>[1]  <a href="https://segmentfault.com/a/1190000003779240">序幕有些长</a></p>
+<p>[2]  <a href="https://segmentfault.com/a/1190000003786283">睦邻友好的 ConTeXt Standalone</a></p>
+<p>[3]  <a href="https://segmentfault.com/a/1190000003790820">先写作，后排版</a></p>
+<p>[4]  <a href="https://segmentfault.com/a/1190000003795931">ConTeXt MkIV 中文支持</a></p>
+<p>[5]  <a href="http://segmentfault.com/a/1190000003797764">文稿的物理结构</a></p>
+<p>[6]  <a href="http://segmentfault.com/a/1190000003798231">文稿的逻辑结构</a></p>
+<p>[7]  <a href="http://segmentfault.com/a/1190000003803997">页面布局</a></p>
+<p>[8]  <a href="http://www.pragma-ade.nl/general/manuals/ma-cb-en.pdf">ConTeXt Mark IV an excursion</a></p>
+<p>[9]  <a href="http://pmrb.free.fr/contextref.pdf">ConTeXt Reference</a></p>
+<p>[10]  <a href="http://www.pragma-ade.com/general/manuals/metafun-p.pdf">MetaFun Manual</a></p>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../categories/context-mkiv.html" rel="tag">ConTeXt MkIV</a></li>
+            <li><a class="tag p-category" href="../categories/metafun.html" rel="tag">MetaFun</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="awk.html" rel="prev" title="AWK 小传">上一篇文章</a>
+            </li>
+            <li class="next">
+                <a href="snail.html" rel="next" title="蜗牛">下一篇文章</a>
+            </li>
+        </ul></nav></aside><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script><script>
+                renderMathInElement(document.body,
+                    {
+                        delimiters: [
+                            {left: "$$", right: "$$", display: true},
+                            {left: "\\[", right: "\\]", display: true},
+                            {left: "\\begin{equation*}", right: "\\end{equation*}", display: true},
+                            {left: "\\(", right: "\\)", display: false}
+                        ]
+                    }
+                );
+            </script></article></main><footer id="footer"><p>我的邮箱：lyr.m2@live.cn</p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+    </script>
+</body>
+</html>
