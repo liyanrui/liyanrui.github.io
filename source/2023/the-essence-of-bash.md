@@ -3,6 +3,7 @@ title: Bash 的真谛
 homeback: ../../index.html
 lang: zh-CN
 date: 2023 年 04 月 16 日
+abstract: 也许很少有人会想到，长期以来，Bash 饱受非议之处，恰恰是它的妙处所在。
 footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
 

@@ -3,6 +3,7 @@ title: lmd 脚本
 homeback: ../../index.html
 lang: zh-CN
 date: 2023 年 04 月 19 日
+abstract: ：一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档并通过 [Pandoc](https://www.pandoc.org) 将其转换为 HTML 格式。
 footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
 
@@ -32,9 +33,14 @@ $ tree /opt/lmd
 │   │               ├── homepage.template
 │   │               └── post.template
 │   └── lmd.conf
+├── helper
+│   ├── abstract.awk
+│   ├── appear.awk
+│   ├── hide.awk
+│   └── title.awk
 └── lmd
 
-5 directories, 5 files
+6 directories, 9 files
 ```
 
 然后，将 lmd 脚本所在路径添加至 `PATH` 变量，亦即在 `$HOME/.bashrc` 中增加以下内容：
@@ -43,7 +49,7 @@ $ tree /opt/lmd
 export PATH=/opt/lmd:$PATH
 ```
 
-无论 lmd 脚本被安装至何处，只需要保证它与 data 目录位于同一目录即可。
+无论 lmd 脚本被安装至何处，只需要保证它与 data 以及 helper 目录位于同一目录即可。
 
 
 # 创建文集
@@ -191,6 +197,41 @@ $ git push
 ```
 
 日后只需要按照前文所述的 lmd 命令，便可持续创建文章，撰写内容，然后使用 `git push` 发布文章。
+
+# 制作文集目录
+
+文集目录可以手动编辑生成，只要在目录页面添加指向某篇文章的链接即可，例如可在文集根目录下的 index.md 文件中以列表的形式添加某篇文章：
+
+```markdown
+* [lmd 脚本](output/2023/lmd.html)：一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档并通过 [Pandoc](https://www.pandoc.org) 将其转换为 HTML 格式。
+```
+
+lmd 脚本可将上述手动过程半自动化，前提是文章的元信息区域需提供 abstract（摘要），例如
+
+```markdown
+---
+title: lmd 脚本
+homeback: ../../index.html
+lang: zh-CN
+date: 2023 年 04 月 19 日
+abstract: 一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档并通过 [Pandoc](https://www.pandoc.org) 将其转换为 HTML 格式。
+footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
+...
+```
+
+假设文章对应的 Markdown 文件为 lmd.md，可使用以下命令在 lmd.md 所在目录将文章名称、链接以及摘要以列表项的形式添加到文集根目录下的 index.md：
+
+```bash
+$ lmd appear lmd.md $(lmd root)/index.md
+```
+
+`lmd root` 命令可获得当前目录至文集根目录的相对路径。在指定目录文件中增加的文章信息总是位于目录的顶端，倘若其后有其重复条目，lmd 脚本会自动予以忽略。
+
+若想在目录文件中去掉某篇文章，可在该文章所在目录下执行 `lmd hide` 命令。例如
+
+```bash
+$ lmd hide lmd.md $(lmd root)/index.md
+```
 
 # 外观
 

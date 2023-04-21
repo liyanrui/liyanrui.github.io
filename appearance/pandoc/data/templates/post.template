@@ -48,12 +48,6 @@ $endif$
 $if(date)$
 <p class="date">$date$</p>
 $endif$
-$if(abstract)$
-<div class="abstract">
-<div class="abstract-title">$abstract-title$</div>
-$abstract$
-</div>
-$endif$
 </header>
 $endif$
 <hr />
