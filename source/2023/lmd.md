@@ -7,7 +7,13 @@ abstract: ：一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档
 footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
 
-lmd 是一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档并通过 [Pandoc](https://www.pandoc.org) 将其转换为 HTML 格式。
+lmd 是一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档并通过 [Pandoc](https://www.pandoc.org) 将其转换为 HTML 格式。除 Bash 和 Pandoc 之外，lmd 还依赖以下工具：
+
+* tree：以树状结构显示目录；
+* realpath：用于获取文件或目录的绝对路径，属于 coreutils 包；
+* awk：用于解析和处理文本文件。
+
+欲用 lmd，请确认系统中是否已包含上述工具。
 
 # 获取与安装
 

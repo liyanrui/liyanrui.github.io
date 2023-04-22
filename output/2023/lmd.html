@@ -99,7 +99,13 @@
 <li><a href="#外观">外观</a></li>
 </ul>
 </nav>
-<p>lmd 是一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档并通过 <a href="https://www.pandoc.org">Pandoc</a> 将其转换为 HTML 格式。</p>
+<p>lmd 是一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档并通过 <a href="https://www.pandoc.org">Pandoc</a> 将其转换为 HTML 格式。除 Bash 和 Pandoc 之外，lmd 还依赖以下工具：</p>
+<ul>
+<li>tree：以树状结构显示目录；</li>
+<li>realpath：用于获取文件或目录的绝对路径，属于 coreutils 包；</li>
+<li>awk：用于解析和处理文本文件。</li>
+</ul>
+<p>欲用 lmd，请确认系统中是否已包含上述工具。</p>
 <h1 id="获取与安装">获取与安装</h1>
 <p>可通过 git 获取 lmd：</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>$ <span class="fu">git</span> clone https://github.com/liyanrui/lmd.git</span></code></pre></div>
