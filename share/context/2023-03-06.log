@@ -1,0 +1,331 @@
+system          > 
+system          > ConTeXt  ver: 2023.04.15 00:23 LMTX  fmt: 2023.4.22  int: english/english
+system          > 
+system          > 'cont-new.mkxl' loaded
+open source     > level 1, order 1, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkxl/cont-new.mkxl'
+system          > beware: some patches loaded from cont-new.mkiv
+close source    > level 1, order 1, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkxl/cont-new.mkxl'
+system          > files > jobname './2023-03-06', input './2023-03-06.tex', result './2023-03-06'
+fonts           > latin modern fonts are not preloaded
+languages       > language 'en' is active
+open source     > level 1, order 2, name './2023-03-06.tex'
+open source     > level 2, order 3, name 'xxxenv.tex'
+modules         > 'zhfonts' is loaded
+open source     > level 3, order 4, name '/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.mkiv'
+loading         > ConTeXt User Module / zhfonts
+resolvers       > lua > loading file '/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.lua' succeeded
+close source    > level 3, order 4, name '/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.mkiv'
+open source     > level 3, order 5, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/colo-imp-svg.mkiv'
+close source    > level 3, order 5, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/colo-imp-svg.mkiv'
+colors          > system 'svg' is loaded
+close source    > level 2, order 5, name 'xxxenv.tex'
+fonts           > names > warnings are disabled (tracker 'fonts.warnings')
+fonts           > names > identifying tree font files with suffix 'otf'
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-project' for otf files
+fonts           > names > 0 otf files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-fonts' for otf files
+fonts           > names > 0 otf files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-local' for otf files
+fonts           > names > 0 otf files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-modules' for otf files
+fonts           > names > 0 otf files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-context' for otf files
+fonts           > names > 1 otf files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-linux-64' for otf files
+fonts           > names > 0 otf files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf' for otf files
+fonts           > names > 348 otf files checked,  okay
+fonts           > names > identifying tree font files with suffix 'OTF'
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-project' for OTF files
+fonts           > names > 0 OTF files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-fonts' for OTF files
+fonts           > names > 0 OTF files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-local' for OTF files
+fonts           > names > 0 OTF files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-modules' for OTF files
+fonts           > names > 0 OTF files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-context' for OTF files
+fonts           > names > 1 OTF files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-linux-64' for OTF files
+fonts           > names > 0 OTF files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf' for OTF files
+fonts           > names > 348 OTF files checked,  okay
+fonts           > names > 698 tree files identified, 0 skipped, 0 duplicates, 698 hash entries added, runtime 14.595 seconds
+fonts           > names > identifying tree font files with suffix 'ttf'
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-project' for ttf files
+fonts           > names > 0 ttf files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-fonts' for ttf files
+fonts           > names > 0 ttf files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-local' for ttf files
+fonts           > names > 3 ttf files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-modules' for ttf files
+fonts           > names > 0 ttf files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-context' for ttf files
+fonts           > names > 2 ttf files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-linux-64' for ttf files
+fonts           > names > 0 ttf files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf' for ttf files
+fonts           > names > 40 ttf files checked,  okay
+fonts           > names > identifying tree font files with suffix 'TTF'
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-project' for TTF files
+fonts           > names > 0 TTF files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-fonts' for TTF files
+fonts           > names > 0 TTF files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-local' for TTF files
+fonts           > names > 3 TTF files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-modules' for TTF files
+fonts           > names > 0 TTF files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-context' for TTF files
+fonts           > names > 2 TTF files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-linux-64' for TTF files
+fonts           > names > 0 TTF files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf' for TTF files
+fonts           > names > 40 TTF files checked,  okay
+fonts           > names > 90 tree files identified, 0 skipped, 0 duplicates, 90 hash entries added, runtime 0.995 seconds
+fonts           > names > identifying tree font files with suffix 'ttc'
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-project' for ttc files
+fonts           > names > 0 ttc files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-fonts' for ttc files
+fonts           > names > 0 ttc files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-local' for ttc files
+fonts           > names > 5 ttc files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-modules' for ttc files
+fonts           > names > 0 ttc files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-context' for ttc files
+fonts           > names > 0 ttc files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-linux-64' for ttc files
+fonts           > names > 0 ttc files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf' for ttc files
+fonts           > names > 0 ttc files checked,  okay
+fonts           > names > identifying tree font files with suffix 'TTC'
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-project' for TTC files
+fonts           > names > 0 TTC files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-fonts' for TTC files
+fonts           > names > 0 TTC files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-local' for TTC files
+fonts           > names > 5 TTC files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-modules' for TTC files
+fonts           > names > 0 TTC files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-context' for TTC files
+fonts           > names > 0 TTC files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-linux-64' for TTC files
+fonts           > names > 0 TTC files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf' for TTC files
+fonts           > names > 0 TTC files checked,  okay
+fonts           > names > 10 tree files identified, 0 skipped, 0 duplicates, 10 hash entries added, runtime 0.751 seconds
+fonts           > names > identifying tree font files with suffix 'afm'
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-project' for afm files
+fonts           > names > 0 afm files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-fonts' for afm files
+fonts           > names > 0 afm files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-local' for afm files
+fonts           > names > 0 afm files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-modules' for afm files
+fonts           > names > 0 afm files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-context' for afm files
+fonts           > names > 10 afm files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-linux-64' for afm files
+fonts           > names > 0 afm files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf' for afm files
+fonts           > names > 16 afm files checked,  okay
+fonts           > names > identifying tree font files with suffix 'AFM'
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-project' for AFM files
+fonts           > names > 0 AFM files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-fonts' for AFM files
+fonts           > names > 0 AFM files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-local' for AFM files
+fonts           > names > 0 AFM files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-modules' for AFM files
+fonts           > names > 0 AFM files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-context' for AFM files
+fonts           > names > 10 AFM files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf-linux-64' for AFM files
+fonts           > names > 0 AFM files checked,  okay
+fonts           > names > scanning path '/home/garfileo/opt/context/tex/texmf' for AFM files
+fonts           > names > 16 AFM files checked,  okay
+fonts           > names > 52 tree files identified, 0 skipped, 0 duplicates, 52 hash entries added, runtime 0.076 seconds
+fonts           > names > identifying system font files with suffix 'otf'
+fonts           > names > identifying system font files with suffix 'OTF'
+fonts           > names > 0 system files identified, 0 skipped, 0 duplicates, 0 hash entries added, runtime 0.000 seconds
+fonts           > names > identifying system font files with suffix 'ttf'
+fonts           > names > identifying system font files with suffix 'TTF'
+fonts           > names > 0 system files identified, 0 skipped, 0 duplicates, 0 hash entries added, runtime 0.000 seconds
+fonts           > names > identifying system font files with suffix 'ttc'
+fonts           > names > identifying system font files with suffix 'TTC'
+fonts           > names > 0 system files identified, 0 skipped, 0 duplicates, 0 hash entries added, runtime 0.000 seconds
+fonts           > names > identifying system font files with suffix 'afm'
+fonts           > names > identifying system font files with suffix 'AFM'
+fonts           > names > 0 system files identified, 0 skipped, 0 duplicates, 0 hash entries added, runtime 0.000 seconds
+fonts           > names > 3 files rejected due to clashes
+fonts           > names > 93 double lookups in 'mappings'
+fonts           > names > 75 double lookups in 'fallbacks'
+fonts           > names > 
+fonts           > names > statistics: 
+fonts           > names > 
+fonts           > names > weights
+fonts           > names > 
+fonts           > names >   bold=118 | demi=5 | extrabold=4 | extralight=9 | heavy=8 | light=39 | medium=58 | normal=186 | semi=4 | semibold=18
+fonts           > names > 
+fonts           > names > styles
+fonts           > names > 
+fonts           > names >   italic=164 | normal=281 | slanted=4
+fonts           > names > 
+fonts           > names > widths
+fonts           > names > 
+fonts           > names >   condensed=34 | expanded=16 | normal=391 | thin=8
+fonts           > names > 
+fonts           > names > variants
+fonts           > names > 
+fonts           > names >   normal=445 | smallcaps=4
+fonts           > names > 
+fonts           > names > angles
+fonts           > names > 
+fonts           > names >   -10.00=1 | -10.30=1 | -10.50=1 | -11.00=1 | -11.31=1 | -11.50=1 | -12.00=1 | -13.00=1 | -14.00=1 | -14.04=1 | -15.00=1 | -16.33=1 | -17.20=1 | -8.00=1 | -9.46=1 | -9.50=1 | -9.90=1 | 0.00=1
+fonts           > names > 
+fonts           > names > pfmweights
+fonts           > names > 
+fonts           > names >   0         : 0=23
+fonts           > names >   100       : 100=8
+fonts           > names >   200       : 200=9
+fonts           > names >   300       : 300=32
+fonts           > names >   400       : 400=181
+fonts           > names >   450       : 450=8
+fonts           > names >   500       : 500=28
+fonts           > names >   600       : 600=31
+fonts           > names >   700       : 700=117
+fonts           > names >   800       : 800=4
+fonts           > names >   850       : 850=8
+fonts           > names > 
+fonts           > names > pfmwidths
+fonts           > names > 
+fonts           > names >   0         : 0=23
+fonts           > names >   3         : 3=28
+fonts           > names >   4         : 4=16
+fonts           > names >   5         : 5=366
+fonts           > names >   6         : 6=8
+fonts           > names >   7         : 7=8
+fonts           > names > 
+fonts           > names > registered fonts : 449
+fonts           > names > read files       : 850
+fonts           > names > skipped files    : 0
+fonts           > names > duplicate files  : 0
+fonts           > names > total scan time  : 16.424 seconds
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/data/names.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/data/names.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/data/names.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/data/names.tmd' stripped
+fonts           > names > accessing the data table failed
+selectfont      > the requested font '' has no files for the 'tf' alternative, Latin Modern is used instead.
+open source     > level 2, order 6, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/type-imp-antykwa.mkiv'
+close source    > level 2, order 6, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/fonts/mkiv/type-imp-antykwa.mkiv'
+fonts           > otf loading > loading '/home/garfileo/opt/context/tex/texmf/fonts/data/gust/lm/lmroman10-regular.otf', hash 'lmroman10-regular'
+fonts           > otf loading > loading done
+fonts           > otf loading > saving '/home/garfileo/opt/context/tex/texmf/fonts/data/gust/lm/lmroman10-regular.otf' in cache
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/lmroman10-regular.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/lmroman10-regular.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/lmroman10-regular.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/lmroman10-regular.tmd' stripped
+fonts           > otf loading > loading, optimizing, packing and caching time 0.069
+fonts           > otf loading > loading '/home/garfileo/opt/context/tex/texmf-local/fonts/truetype/msfonts/simsun.ttc', hash 'simsun-nsimsun'
+otf reader      > loading of table 'ebdt' skipped
+otf reader      > loading of table 'eblc' skipped
+otf reader      > subfont named 'NSimSun' has index 2
+fonts           > otf loading > loading done
+fonts           > otf loading > saving '/home/garfileo/opt/context/tex/texmf-local/fonts/truetype/msfonts/simsun.ttc' in cache
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/simsun-nsimsun.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/simsun-nsimsun.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/simsun-nsimsun.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/simsun-nsimsun.tmd' stripped
+fonts           > otf loading > loading, optimizing, packing and caching time 0.561
+fonts           > otf loading > loading '/home/garfileo/opt/context/tex/texmf/fonts/data/gust/lm/latinmodern-math.otf', hash 'latinmodern-math'
+fonts           > otf loading > loading done
+fonts           > otf loading > saving '/home/garfileo/opt/context/tex/texmf/fonts/data/gust/lm/latinmodern-math.otf' in cache
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/latinmodern-math.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/latinmodern-math.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/latinmodern-math.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/latinmodern-math.tmd' stripped
+fonts           > otf loading > loading, optimizing, packing and caching time 0.216
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/rmanttrtfm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/rmanttrtfm.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/rmanttrtfm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/rmanttrtfm.tmd' stripped
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-rm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-rm.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-rm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-rm.tmd' stripped
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttrpfb.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttrpfb.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttrpfb.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttrpfb.tmd' stripped
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/mianttritfm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/mianttritfm.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/mianttritfm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/mianttritfm.tmd' stripped
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-mi.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-mi.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-mi.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-mi.tmd' stripped
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttripfb.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttripfb.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttripfb.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttripfb.tmd' stripped
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/mianttbitfm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/mianttbitfm.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/mianttbitfm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/mianttbitfm.tmd' stripped
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttbipfb.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttbipfb.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttbipfb.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttbipfb.tmd' stripped
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/rmanttbtfm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/rmanttbtfm.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/rmanttbtfm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/rmanttbtfm.tmd' stripped
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttbpfb.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttbpfb.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttbpfb.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/pfb/anttbpfb.tmd' stripped
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/syanttrztfm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/syanttrztfm.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/syanttrztfm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/syanttrztfm.tmd' stripped
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-sy.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-sy.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-sy.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-sy.tmd' stripped
+fonts           > otf loading > loading '/home/garfileo/opt/context/tex/texmf/fonts/data/gust/antt/AntykwaTorunska-Regular.otf', hash 'antykwatorunska-regular'
+fonts           > otf loading > loading done
+fonts           > otf loading > saving '/home/garfileo/opt/context/tex/texmf/fonts/data/gust/antt/AntykwaTorunska-Regular.otf' in cache
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/antykwatorunska-regular.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/antykwatorunska-regular.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/antykwatorunska-regular.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/antykwatorunska-regular.tmd' stripped
+fonts           > otf loading > loading, optimizing, packing and caching time 0.095
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/exanttrtfm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/exanttrtfm.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/exanttrtfm.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/tfm/exanttrtfm.tmd' stripped
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-ex.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-ex.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-ex.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/enc/antt-ex.tmd' stripped
+structure       > sectioning > title @ level 2 : 0.0 -> \raise .15em\hbox {\scale [height=12pt]{2019}} 年数学真题
+fonts           > otf loading > loading '/home/garfileo/opt/context/tex/texmf/fonts/data/gust/lm/lmroman10-bold.otf', hash 'lmroman10-bold'
+fonts           > otf loading > loading done
+fonts           > otf loading > saving '/home/garfileo/opt/context/tex/texmf/fonts/data/gust/lm/lmroman10-bold.otf' in cache
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/lmroman10-bold.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/lmroman10-bold.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/lmroman10-bold.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/lmroman10-bold.tmd' stripped
+fonts           > otf loading > loading, optimizing, packing and caching time 0.066
+fonts           > otf loading > loading '/home/garfileo/opt/context/tex/texmf-local/fonts/opentype/noto/NotoSerifCJK-Bold.ttc', hash 'notoserifcjk-bold-noto-serif-cjk-sc-bold'
+otf reader      > loading of table 'vorg' skipped
+otf reader      > subfont named 'Noto Serif CJK SC Bold' has index 3
+fonts           > otf loading > loading done
+fonts           > otf loading > saving '/home/garfileo/opt/context/tex/texmf-local/fonts/opentype/noto/NotoSerifCJK-Bold.ttc' in cache
+system          > lua > compiling '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/notoserifcjk-bold-noto-serif-cjk-sc-bold.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/notoserifcjk-bold-noto-serif-cjk-sc-bold.tmd'
+system          > lua > dumping '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/notoserifcjk-bold-noto-serif-cjk-sc-bold.tma' into '/home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e/fonts/otl/notoserifcjk-bold-noto-serif-cjk-sc-bold.tmd' stripped
+fonts           > otf loading > loading, optimizing, packing and caching time 15.012
+fonts           > defining > font 'NotoSerifCJK-Bold', feature 'locl', script 'hani', no language 'dflt'
+fonts           > defining > font 'NotoSerifCJK-Bold', feature 'locl', script 'hang', no language 'dflt'
+fonts           > defining > font 'NotoSerifCJK-Bold', feature 'locl', script 'kana', no language 'dflt'
+structure       > sectioning > section @ level 3 : 0.0.1 -> 选择题
+tex error       > tex error on line 13 in file ./2023-03-06.tex: Argument of \option has an extra }
+
+.3B \im {\left {x | x < -1\,\text {或}\,x > 1\right }}\hfill 
+
+<inserted text> 
+    
+    \par 
+<to be read again> 
+    
+    }
+<line 3.13> 
+    \option[.3][B]{\im{\left{x | x < -1\,\text{或}\,x > 1\right}}}
+    %
+
+ 3     \starttext
+ 4     \title{\raise.15em\hbox{\scale[height=12pt]{2019}} 年数学真题}
+ 5     
+ 6     \section{选择题}
+ 7     
+ 8     \startitemize[n,nowhite,inmargin]
+ 9     \item 设集合 \m{M = \left{x | x > -1\right}}，\m{N = \left{x | x^2 > 1\right}}，%
+10     则 \m{M \cap N =} (\hbox to 1cm{})\\
+11     \hbox{%
+12     \option[.2][A]{\im{\left{x | x > -1\right}}}%
+13 >>  \option[.3][B]{\im{\left{x | x < -1\,\text{或}\,x > 1\right}}}%
+14     \option[.2][C]{\im{\left{x | x > 1\right}}}%
+15     \option[.2][D]{\im{\left{x | -1 < x < 1\right}}}%
+16     }
+17     
+18     \item 已知向量 \im{\vct{a}=(1,2)}，\im{\vct{b}=(1,-3)}，则 \im{\labs 3\vct{a} + \vct{b}\rabs} = (\hbox to 1cm{})\\
+19     \hbox{%
+20     \option[.2][A]{\im{5}}%
+21     \option[.3][B]{\im{4}}%
+22     \option[.2][C]{\im{3}}%
+23     \option[.2][D]{\im{\sqrt{5}}}%
+I've run across a '}' that doesn't seem to match anything. For example,
+'\def\a#1{...}' and '\a}' would produce this error. The '\par' that I've just
+inserted will cause me to report a runaway argument that might be the root of the
+problem.

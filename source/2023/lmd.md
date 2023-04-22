@@ -51,7 +51,6 @@ export PATH=/opt/lmd:$PATH
 
 无论 lmd 脚本被安装至何处，只需要保证它与 data 以及 helper 目录位于同一目录即可。
 
-
 # 创建文集
 
 使用 `lmd init` 命令可创建一个目录，作为文集的根目录。该命令的用法为
