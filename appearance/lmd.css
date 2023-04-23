@@ -43,9 +43,7 @@ p.subtitle {
 }
 
 #TOC {
-    margin-top: 1em;
-    margin-left: 1em;
-    padding: 1em;
+    padding: 0em .5em;
     border: 2pt solid darkgray;
     line-height: 1.5em;
     position: fixed;
@@ -66,13 +64,9 @@ div.homeback {
     background: #666666;
 }
 
-
 #TOC a {
     font-size: 0.9em;
     font-weight: normal;
-}
-#TOC ul,  #TOC ol {
-    padding-left: 1em;
 }
 
 hr {
@@ -166,15 +160,11 @@ blockquote p {
     padding:0.5em;
 }
 
-/* 列表项 */
-ul, ol {
-    padding: 0pt;
-    margin: 0pt;
+/* 列表 */
+#TOC ul,  #TOC ol {
+    padding:0em 1em;
 }
-ul ul, ul ol, ol ul, ol ol {
-    padding-left: 2em;
-}
-li {padding-bottom:0.5em}
+li {padding-bottom:0.25em}
 
 /* 文章里小节标题的序号与标题名称之间的间距, 针对我写的生成文章目录的 m4 宏 */
 span.section-sep { margin-left: 0.5em; margin-right: 0.5em; }
