@@ -3,7 +3,7 @@ title: lmd 脚本
 homeback: ../../index.html
 lang: zh-CN
 date: 2023 年 04 月 19 日
-abstract: ：一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档并通过 [Pandoc](https://www.pandoc.org) 将其转换为 HTML 格式。
+abstract: 一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档并通过 [Pandoc](https://www.pandoc.org) 将其转换为 HTML 格式。
 footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
 
