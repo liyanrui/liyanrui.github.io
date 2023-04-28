@@ -132,10 +132,16 @@ $ cd ../source
 
 ```bash
 $ cd source
-$ lmd new category 2023
+$ lmd new category "2023 年" 2023
 ```
 
-将上述命令中的选项 `new` 换成 `delete` 便可删除文章分类。
+上述命令可在当前目录创建子目录 2023 且该目录内含有 2023.md 文件，用于制作分类文章目录，详见后文「制作文集目录」一节。
+
+`lmd delete category` 命令可删除当前目录下的文章分类目录，例如
+
+```bash
+$ lmd delete category 2023
+```
 
 # 创建和删除文章
 
