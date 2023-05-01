@@ -1,0 +1,20 @@
+\usemodule[zhfonts]
+\input snail
+\startuseMPgraphic{foo}
+宫(foo, "Foo");
+宫(bar, "Bar");
+令 bar 位于 foo 偏 (4cm, 3cm);
+
+draw foo; draw bar;
+
+四角十二门(foo, 隐);
+四角十二门(bar, 隐);
+path foo~bar; foo~bar := foo.卯门 纬转 bar.午门;
+drawarrowpath foo~bar;
+标注("逢山开路", "北", .3) foo~bar;
+标注("\rotate[rotation=90]{遇水搭桥}", "西", .76) foo~bar;
+\stopuseMPgraphic
+
+\startTEXpage[offset=4pt]
+\useMPgraphic{foo}
+\stopTEXpage

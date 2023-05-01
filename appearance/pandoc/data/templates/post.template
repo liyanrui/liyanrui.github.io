@@ -34,9 +34,9 @@ $endif$
 $for(include-before)$
 $include-before$
 $endfor$
-$if(homeback)$
-<div class="homeback">
-<a href="$homeback$">返回首页</a>
+$if(category)$
+<div class="category">
+<a href="$category$">回上级页面</a>
 </div>
 $endif$
 $if(title)$

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>蜗牛</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">蜗牛</h1>
+<p class="date">2023 年 04 月 28 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#跬步">跬步</a></li>
+<li><a href="#走四方">走四方</a></li>
+<li><a href="#路径的终点">路径的终点</a></li>
+<li><a href="#向">向</a></li>
+<li><a href="#从">从</a></li>
+<li><a href="#附录">附录</a></li>
+</ul>
+</nav>
+<blockquote>
+<p>下一篇：<a href="framed-text.html">框文</a></p>
+</blockquote>
+<p>当我又一次颇为认真地学习 MetaPost 语言和 MetaFun 宏包时，我发现几年前的我好像很懂它们。那一年，我用 MetaFun 写了一个叫作「蜗牛」的模块 <a href="https://github.com/liyanrui/snail">snail.mp</a> 用于绘制程序流程图，然而它的代码，我现在已经不甚明白了。现在我要为 snail.mp 补上一篇文档，并且希望该工作能够让我有可能学会 snail.mp 里没有的知识。</p>
+<h1 id="跬步">跬步</h1>
+<p>在 MetaPost 语言里，从一个点到另一个点，称为路径（path），例如</p>
+<pre class="metapost"><code>path a;
+a := (0, 0) -- (1cm, 0);</code></pre>
+<p>路径 <code>a</code> 从原点开始，向右或向东走 1 cm。用 <code>draw</code> 命令（可将其理解为 MetaPost 预定义的宏）可绘制路径，例如</p>
+<pre class="metapost"><code>draw a;</code></pre>
+<p>若将上述代码嵌入至 ConTeXt 排版代码，例如</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="co">% foo.tex</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>path a;</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>a := (0, 0) -- (1cm, 0);</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>draw a;</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<p>使用 <code>context</code> 命令编译上述 ConTeXt 排版代码：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>$ <span class="ex">context</span> foo.tex</span></code></pre></div>
+<p>便可将 MetaPost 图形显示于 ConTeXt 输出的 PDF 页面。结果如下图所示：</p>
+<figure>
+<img src="../../figures/metafun/snail/01.png" alt="" /><figcaption>向右或向东走 1 cm</figcaption>
+</figure>
+<p>MetaFun 提供了两个更友好的宏，<code>drawpath</code> 和 <code>drawpoints</code>，前者用于画出路径，后者用于画出路径的节点，例如：</p>
+<pre class="metapost"><code>path a;
+a := (0, 0) -- (1cm, 0);
+drawpath a; 
+drawpoints a;</code></pre>
+<p>结果为</p>
+<figure>
+<img src="../../figures/metafun/snail/02.png" alt="" /><figcaption>向右或向东走 1 cm</figcaption>
+</figure>
+<h1 id="走四方">走四方</h1>
+<p>现在试着让蜗牛爬出一个正方形吧……</p>
+<pre class="metapost"><code>path a;
+a := (0, 0) -- (1cm, 0) -- (1cm, 1cm) -- (0, 1cm) -- (0, 0);
+drawpath a;
+drawpoints a;</code></pre>
+<figure>
+<img src="../../figures/metafun/snail/03.png" alt="" /><figcaption>正方形</figcaption>
+</figure>
+<p>上述图形，我画错了几次，因为需要将我习以为常的空间概念在脑海里转换为点的坐标。</p>
+<p>MetaPost 提供了几个更直观的宏，便于走路，它们是 <code>left</code>，<code>right</code>，<code>up</code>，<code>down</code>，若用它们来走出一个正方形，需要定义一个变量，用于记录蜗牛在路径里的当前位置，该变量姑且叫作 <code>snail</code>：</p>
+<pre class="metapost"><code>path a;
+pair snail;
+snail := (0, 0);
+a := snail;</code></pre>
+<p>让 <code>snail</code> 向右走 1 cm 并将其新的位置添加至路径：</p>
+<pre class="metapost"><code>snail := snail shifted (right * 1cm);
+a := a -- snail;</code></pre>
+<p>可以继续让蜗牛一步一步走下去，直至它回到路径的起点：</p>
+<pre class="metapost"><code>snail := snail shifted (up * 1cm);
+a := a -- snail;
+snail := snail shifted (left * 1cm);
+a := a -- snail;
+snail := snail shifted (down * 1cm);
+a := a -- snail;</code></pre>
+<p><code>left</code>，<code>right</code>，<code>up</code>，<code>down</code> 是 <code>(-1, 0)</code>，<code>(1, 0)</code>，<code>(0, 1)</code>，<code>(0, -1)</code> 的名字，使用它们的好处是，可以更为方便地让蜗牛在当前位置向四个方向的其中一个方向走一步。</p>
+<p>如果按照地图方位，上北下南，左西右东，可从上帝视角去控制蜗牛的爬动方向。首选需要定义 4 个 MetaPost 宏：</p>
+<pre class="metapost"><code>def 北 expr a = (up * (a)) enddef;
+def 南 expr a = (down * (a)) enddef;
+def 西 expr a = (left * (a)) enddef;
+def 东 expr a = (right * (a)) enddef;</code></pre>
+<p>注意：</p>
+<ul>
+<li>MetaPost 允许以汉字作为宏名；</li>
+<li>在宏定义中，倘若担心宏的参数在计算中陷入不可预料的境况，无需吝啬于使用括号。</li>
+</ul>
+<p>用上述定义的东西南北宏重新表达蜗牛的正方形爬痕：</p>
+<pre class="metapost"><code>snail := (0, 0);
+a := snail;
+snail := snail shifted (东 1cm);
+a := a -- snail;
+snail := snail shifted (北 1cm);
+a := a -- snail;
+snail := snail shifted (西 1cm);
+a := a -- snail;
+snail := snail shifted (南 1cm);
+a := a -- snail;</code></pre>
+<p>上述代码与之前的硬性代码</p>
+<pre class="metapost"><code>a := (0, 0) -- (1cm, 0) -- (1cm, 1cm) -- (0, 1cm) -- (0, 0);</code></pre>
+<p>相比，在规模上多出了数倍。下面考虑如何令其简洁。</p>
+<h1 id="路径的终点">路径的终点</h1>
+<p>上一节里用于记录蜗牛之前爬过的路径终点的 <code>snail</code> 变量并非必需，因为该任务可基于 MetaPost 宏 <code>point ... of ...</code> 及 <code>length</code> 实现。</p>
+<p>假设一条路径</p>
+<pre class="metapost"><code>path a;
+a := (0, 0) -- (1cm, 0) -- (2cm ,3cm);</code></pre>
+<p><code>point 0 of a</code> 便是 <code>a</code> 的起点 <code>(0, 0)</code>，而 <code>point 2 of a</code> 是 <code>a</code> 的终点 <code>(2cm, 3cm)</code>。</p>
+<p>一条路径由多少个点构成，可通过 <code>length</code> 获得。例如上述路径 <code>a</code>，它由 <code>(length a) + 1</code> 个点构成。因此，借助 <code>length</code>，可以用更一般的方式获得路径的终点，例如</p>
+<pre class="metapost"><code>point (length a) of a</code></pre>
+<p>基于上述知识，尝试消除变量 <code>snail</code>。首先，有</p>
+<pre class="metapost"><code>path a;
+a := (0, 0);</code></pre>
+<p>向东走一步：</p>
+<pre class="metapost"><code>a := a -- (point (length a) of a) shifted (东 1cm);</code></pre>
+<p>再向北走一步：</p>
+<pre class="metapost"><code>a := a -- (point (length a) of a) shifted (北 1cm);</code></pre>
+<p>类推下去，有</p>
+<pre class="metapost"><code>a := a -- (point (length a) of a) shifted (西 1cm);
+a := a -- (point (length a) of a) shifted (南 1cm);</code></pre>
+<p>路径 <code>a</code> 经过上述重构后，代码规模并未减少，但是我们完美地消除了一个变量。</p>
+<h1 id="向">向</h1>
+<p>若蜗牛爬行的路径可表达为</p>
+<pre class="metapost"><code>path a;
+a := (0, 0) 向 (东 1cm) 向 (北 1cm) 向 (西 1cm) 向 (南 1cm);</code></pre>
+<p>或</p>
+<pre class="metapost"><code>path a;
+a := (0, 0) 向 (东 1cm) 向 (北 1cm);  % 停了下来
+a := a 向 (西 1cm) 向 (南 1cm);       % 继续走</code></pre>
+<p>我会有些担心，你会因此沉迷于 MetaPost 宏而不能自拔。</p>
+<p>的确能够以 <code>向</code> 为名定义一个宏，只是在形式上与 <code>def</code> 定义的宏不同。<code>向</code> 的参数是在其两侧，这种形式的宏称为运算符。MetaPost 的运算符宏有三个级别，分别使用 <code>primarydef</code>，<code>secondarydef</code> 和 <code>tertiarydef</code> 进行定义。运算符宏的级别越高，在运算过程中的优先级越高。</p>
+<p>下面是使用 <code>teriarydef</code> 定义运算符宏 <code>向</code>：</p>
+<pre class="metapost"><code>tertiarydef a 向 b =
+enddef;</code></pre>
+<p>现在 <code>向</code> 宏的定义是空的，下面开始为它逐步添加定义。</p>
+<p>根据上述我想要的路径表达式，可以发现，<code>向</code> 的两个参数，有时是同一类型，有时是不同类型，但它们无非是 <code>pair</code> 或 <code>path</code>。因此，在 <code>向</code> 的定义里，首先需要区分参数类型，以便酌情处理。参数 <code>a</code> 可能是 <code>pair</code>，也可能是 <code>path</code>，而 <code>b</code> 的类型一直是 <code>pair</code>，因此可在 <code>向</code> 的定义中按以下方式判断参数类型：</p>
+<pre class="metapost"><code>tertiarydef a 向 b =
+  if pair a:
+    ... ...
+  elseif path a:
+    ... ...
+  else:
+  fi
+enddef;</code></pre>
+<p><code>if pair a</code> 分支该如何写？由于 <code>a</code> 是一个点，<code>向</code> 宏展开的结果应当是：</p>
+<pre class="metapost"><code>a -- (a shifted b)</code></pre>
+<p>至于 <code>elseif path a</code> 分支，由于 <code>a</code> 是一条路径，它要衔接的对象是一个点，该点是 <code>a</code> 的终经过 <code>shifted b</code> 变换的结果，于是可写出</p>
+<pre class="metapost"><code>a -- (point (length a) of a) shifted b</code></pre>
+<p>至此可以得出 <code>向</code> 的完整定义，如下：</p>
+<pre class="metapost"><code>tertiarydef a 向 b =
+  if pair a:
+    a -- (a shifted b)
+  elseif path a:
+    a -- (point (length a) of a) shifted b
+  else:
+  fi
+enddef;</code></pre>
+<p>试试 <code>向</code> 能否工作：</p>
+<pre class="metapost"><code>path a;
+a := (0, 0) 向 (西 1cm) 向 (南 .5cm);
+a := a 向 (东 2cm) 向 (北 1cm) 向 (西 2cm);
+drawpath a;
+drawpoints a;</code></pre>
+<p>结果为</p>
+<figure>
+<img src="../../figures/metafun/snail/04.png" alt="" /><figcaption>走向何方</figcaption>
+</figure>
+<h1 id="从">从</h1>
+<p>若定义一个无为的宏 <code>从</code>，会令蜗牛的爬行更为优雅：</p>
+<pre class="metapost"><code>def 从 = enddef;
+
+path a;
+a := 从 (0, 0) 向 (西 1cm) 向 (南 .5cm);
+a := 从 a 向 (东 2cm) 向 (北 1cm) 向 (西 2cm);</code></pre>
+<h1 id="附录">附录</h1>
+<p>完整的代码：</p>
+<pre class="metapost"><code>\startuseMPgraphic{foo}
+def 北 expr a = (up * (a)) enddef;
+def 南 expr a = (down * (a)) enddef;
+def 西 expr a = (left * (a)) enddef;
+def 东 expr a = (right * (a)) enddef;
+
+def 从 = enddef;
+
+tertiarydef a 向 b =
+  if pair a:
+    a -- (a shifted b)
+  elseif path a:
+    a -- (point (length a) of a) shifted b
+  else:
+  fi
+enddef;
+
+path a;
+a := 从 (0, 0) 向 (西 1cm) 向 (南 .5cm);
+a := 从 a 向 (东 2cm) 向 (北 1cm) 向 (西 2cm);
+drawpath a; 
+drawpoints a;
+\stopuseMPgraphic
+
+\startTEXpage[offset=4pt]
+\useMPgraphic{foo}
+\stopTEXpage</code></pre>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

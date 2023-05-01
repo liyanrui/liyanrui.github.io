@@ -4,7 +4,7 @@
 }
 @media screen and (max-width:720px) {
     body {max-width: 80% !important;}
-    div.homeback {right: .5em !important;}
+    div.category {right: .5em !important;}
 }
 
 html {
@@ -51,7 +51,7 @@ p.subtitle {
     top: 6em;
     overflow: hidden;
 }
-div.homeback {
+div.category {
     font-size: 1em;
     width: 1em;
     text-color:white;
@@ -74,18 +74,18 @@ hr {
     size: 10;
 }
 
-div.homeback a {
+div.category a {
     text-decoration: none;
 }
-div.homeback a:link {
+div.category a:link {
     color: white;
     font-weight: bold;
 }
-div.homeback a:hover {
+div.category a:hover {
     color: white;
     text-decoration: none;
 }
-div.homeback a:visited {
+div.category a:visited {
     color: white;
     text-decoration: none;
 }
@@ -105,9 +105,10 @@ img {
     margin: 0 0;
     max-width: 100%;
 }
-figure figcaption {
+figcaption {
     font-size: 0.9em;
     text-align: center;
+    display: none;
 }
 
 pre {

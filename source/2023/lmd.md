@@ -13,7 +13,7 @@ lmd 是一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档并通
 
 * tree：以树状结构显示目录；
 * realpath：用于获取文件或目录的绝对路径，属于 coreutils 包；
-* awk：用于解析和处理文本文件。
+* sed 和 awk：用于解析和处理文本文件。
 
 欲用 lmd，请确认系统中是否已包含上述工具。
 
@@ -128,14 +128,14 @@ $ cd ../source
 
 原因是，文集根目录下的 figures 和 output 目录（分别简称为文集 figures 目录和文集 output 目录）的子目录结构必须与 source 相同，前者用于存放 source 目录中的 Markdown 文件里所用的插图，后者用于存放 Markdown 文件的输出结果。
 
-`lmd new category` 命令与上述的 `mkdir`等效，简化了文章分类的创建过程。例如
+`lmd new category` 命令与上述的 `mkdir`等效，简化了文章分类的创建过程。例如在当前目录下创建文章分类：
 
 ```bash
 $ cd source
 $ lmd new category "2023 年" 2023
 ```
 
-上述命令可在当前目录创建子目录 2023 且该目录内含有 2023.md 文件，用于制作分类文章目录，详见后文「制作文集目录」一节。
+上述命令可创建目录 2023 且在该目录内创建 2023.md 文件，后者可用于制作分类文章目录，详见后文「制作文集目录」一节。
 
 `lmd delete category` 命令可删除当前目录下的文章分类目录，例如
 
