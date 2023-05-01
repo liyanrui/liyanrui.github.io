@@ -88,65 +88,66 @@ system          >   min     150000   10000000     150000     150000    2000000  
 system          >   set     500000   10000000     250000     250000   50000000   10000000   10000000     100000       2000      10000     100000     500000     100000        250        250        250
 system          >   stp     100000    1000000     100000     100000     500000     250000    1000000      10000        250       1000      10000      10000        250        250         50         25
 system          > 
-system          >   mem     150000     957612     150000               2000000    1000000    1000000      10000        500       1000      20000      10000    6445888         96       1200        320
-system          >   all    2400000     957612    2400000              18000000    8000000    1000000     320000      16000      72000      80000     160000    6445888         96      28800      10240
+system          >   mem     150000     957653     150000               2000000    1000000    1000000      10000        500       1000      20000      10000    6445888         96       1200        320
+system          >   all    2400000     957653    2400000              18000000    8000000    1000000     320000      16000      72000      80000     160000    6445888         96      28800      10240
 system          > 
 system          >   ini    2145405     913516          0      48237          0     529124                                                                                       0                      
-system          >   ptr      50126                  9991      50110                565008          0          0          0          0          0          0          7          0          0          7
-system          >   top      50127                806391     131074       4574     586668        340         42          6         12         39        443        250        250         50         10
+system          >   ptr      50129                  9994      50113                565179          0          0          0          0          0          0          7          0          0          7
+system          >   top      50130                806391     131074       5703     586682        334         42          6         12         39        443        250        250         50         10
 system          >   -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 system          > 
 system          >   current input type    : initial
 system          > 
-system          >   approximate memory    : 43233068 (41 MB)
+system          >   approximate memory    : 43233109 (41 MB)
 system          > 
 system          >   expansion depth       : min: 10000, max: 1000000, set: 10000, top: 5
 system          > 
 system          >   luabytecode registers : 1010
 system          >   luabytecode bytes     : 16176 (0 MB)
-system          >   luastate bytes now    : 64666713 (61 MB)
-system          >   luastate bytes max    : 64666713 (61 MB)
+system          >   luastate bytes now    : 64965829 (61 MB)
+system          >   luastate bytes max    : 64965829 (61 MB)
 system          > 
-system          >   file callbacks        : 317
-system          >   saved callbacks       : 203
+system          >   file callbacks        : 324
+system          >   saved callbacks       : 268
 system          >   direct callbacks      : 3
-system          >   function callbacks    : 1132
+system          >   function callbacks    : 1194
 system          >   value callbacks       : 2
 system          >   message callbacks     : 0
 system          >   bytecode callbacks    : 615
 system          > 
 system          >   mp instances          : 1
-system          >   mp estimated memory   : 4187968 (3 MB)
-system          >   mp file callbacks     : 13699
+system          >   mp estimated memory   : 4202176 (4 MB)
+system          >   mp file callbacks     : 13706
 system          >   mp text callbacks     : 0
-system          >   mp script callbacks   : 396
-system          >   mp log callbacks      : 19
+system          >   mp script callbacks   : 443
+system          >   mp log callbacks      : 25
 system          > 
-system          >   total callbacks       : 2272
-system          >   mp total callbacks    : 14114
+system          >   total callbacks       : 2406
+system          >   mp total callbacks    : 14174
 system          >   backend callbacks     : 0
 system          > 
 mkiv lua stats  > used config file: selfautoparent:/texmf/web2c/texmfcnf.lua
 mkiv lua stats  > used cache path: /home/garfileo/opt/context/tex/texmf-cache/luametatex-cache/context/5fe67e0bfe781ce0dde776fb1556f32e
 mkiv lua stats  > resource resolver: loadtime 0.005 seconds, 0 scans with scantime 0.000 seconds, 0 shared scans, 35 found files, scanned paths: <none>
-mkiv lua stats  > stored bytecode data: 510 modules (0.222 sec), 105 tables (0.012 sec), 615 chunks (0.234 sec)
-mkiv lua stats  > traced context: maxstack: 1700, freed: 2, unreachable: 1698
-mkiv lua stats  > cleaned up reserved nodes: 73 nodes, 7 lists of 435
+mkiv lua stats  > stored bytecode data: 510 modules (0.221 sec), 105 tables (0.012 sec), 615 chunks (0.233 sec)
+mkiv lua stats  > traced context: maxstack: 1701, freed: 3, unreachable: 1698
+mkiv lua stats  > cleaned up reserved nodes: 76 nodes, 8 lists of 435
 mkiv lua stats  > node memory usage: 15 attribute, 3 glue, 120 gluespec, 3 kern, 645 mathspec, 4 penalty, 2 temp
-mkiv lua stats  > node list callback tasks: 16 unique task lists, 10 instances (re)created, 37 calls
+mkiv lua stats  > node list callback tasks: 16 unique task lists, 11 instances (re)created, 49 calls
 mkiv lua stats  > used backend: pdf
 mkiv lua stats  > jobdata time: 0.001 seconds saving, 0.000 seconds loading
-mkiv lua stats  > callbacks: file: 317, saved: 203, direct: 3, function: 1132, value: 2, message: 0, bytecode: 615, late 0, total: 2272 (2272 per page)
+mkiv lua stats  > callbacks: file: 324, saved: 268, direct: 3, function: 1194, value: 2, message: 0, bytecode: 615, late 0, total: 2406 (2406 per page)
 mkiv lua stats  > randomizer: resumed with value 0.026486756058081
 mkiv lua stats  > loaded patterns: en::1, load time: 0.000
 mkiv lua stats  > loaded fonts: 2 files: latinmodern-math.otf, lmroman10-regular.otf
-mkiv lua stats  > font engine: otf 3.133, afm 1.513, tfm 1.000, 7 instances, 3 shared in backend, 3 common vectors, 0 common hashes, load time 0.240 seconds 
-mkiv lua stats  > metapost: 0.002 seconds, loading: 0.032, execution: 0.002, n: 3, average: 0.012, instances: 1, luacalls: 14114 (file: 13699, text: 0, script: 396, log: 19), memory: 3.994 M
+mkiv lua stats  > font engine: otf 3.133, afm 1.513, tfm 1.000, 7 instances, 3 shared in backend, 3 common vectors, 0 common hashes, load time 0.238 seconds 
+mkiv lua stats  > metapost: 0.003 seconds, loading: 0.033, execution: 0.003, n: 4, average: 0.010, instances: 1, luacalls: 14174 (file: 13706, text: 0, script: 443, log: 25), memory: 4.008 M
 mkiv lua stats  > math tweaking time: 0.076 seconds, 12 math goodie tables
+mkiv lua stats  > font embedding time: 0.001 seconds, 1 fonts
 mkiv lua stats  > result saved in file: foo.pdf, compresslevel 1, objectcompresslevel 3
 mkiv lua stats  > positions: 4 collected, 0 deltas, 0 shared partials, 0 partial entries
 mkiv lua stats  > used platform: linux-64, type: unix, binary subtree: texmf-linux-64
 mkiv lua stats  > used engine: luametatex version: 2.1009, functionality level: 20230427, format id: 689, compiler: gcc
-mkiv lua stats  > tex properties: 806391 hash slots used of 2097152, 50110 control sequences, approximate memory usage: 41 MB
-mkiv lua stats  > lua properties: engine: lua 5.4, used memory: 64 MB, ctx: 61 MB, max: 61 MB, symbol mask: utf (τεχ)
+mkiv lua stats  > tex properties: 806391 hash slots used of 2097152, 50113 control sequences, approximate memory usage: 41 MB
+mkiv lua stats  > lua properties: engine: lua 5.4, used memory: 64 MB, ctx: 62 MB, max: 62 MB, symbol mask: utf (τεχ)
 mkiv lua stats  > runtime: 0.587 seconds, 1 processed pages, 1 shipped pages, 1.704 pages/second

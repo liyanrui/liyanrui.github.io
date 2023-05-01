@@ -1,17 +1,24 @@
 \input snail
-\startuseMPgraphic{foo}
-path p; p := (0, 0);
-numeric s; s := .125cm;
-for i = 1 upto 7:
-    for j = "北行", "西行", "南行", "东行":
-      s := s + .125cm;
-      p := 从 p 向 (scantokens(j) s);
-    endfor;
-endfor;
-设 "配置.玩笑 = '4pt'";
-流向 p;
+\startuseMPgraphic{foo-1}
+宫(foo, "Foo");
+宫(bar, "Bar");
+令 bar 位于 foo 偏 (3cm, 0);
+
+draw foo; draw bar;
+流向 foo => bar;
+\stopuseMPgraphic
+
+\startuseMPgraphic{foo-2}
+宫(foo, "Foo");
+宫(bar, "Bar");
+令 bar 位于 foo 偏 (3cm, 0);
+
+draw foo; draw bar;
+串联 foo => bar;
 \stopuseMPgraphic
 
 \startTEXpage[offset=4pt]
-\useMPgraphic{foo}
+\useMPgraphic{foo-1}
+\blank
+\useMPgraphic{foo-2}
 \stopTEXpage
