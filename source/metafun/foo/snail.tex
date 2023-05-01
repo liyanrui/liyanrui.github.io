@@ -211,3 +211,35 @@ def 标注 (expr tag, anchor, c) text p =
   endgroup;
 enddef;
 \stopMPinclusions
+
+\startMPinclusions[+]
+def 开启虚线模式 =
+  drawpathoptions(dashed (evenly scaled .625(获 "配置.路径.线宽"))
+                  withpen pencircle scaled (获 "配置.路径.线宽")
+                  withcolor (获 "配置.路径.颜色"));
+enddef;
+def 关闭虚线模式 =
+  drawpathoptions(withpen pencircle scaled (获 "配置.路径.线宽")
+                  withcolor (获 "配置.路径.颜色"));
+enddef;
+% 默认关闭虚线模式
+关闭虚线模式;
+\stopMPinclusions
+
+\startMPinclusions[+]
+def 北 = up enddef; def 南 = down enddef;
+def 西 = left enddef; def 东 = right enddef;
+def 北行 expr a = (北 * (a)) enddef;
+def 南行 expr a = (南 * (a)) enddef;
+def 西行 expr a = (西 * (a)) enddef;
+def 东行 expr a = (东 * (a)) enddef;
+
+def 从 = enddef;
+tertiarydef a 向 b =
+  if pair a:
+    a -- (a shifted b)
+  elseif path a:
+    a -- (point (length a) of a) shifted (b)
+  fi
+enddef;
+\stopMPinclusions

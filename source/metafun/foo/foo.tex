@@ -1,18 +1,15 @@
-\usemodule[zhfonts]
 \input snail
 \startuseMPgraphic{foo}
-宫(foo, "Foo");
-宫(bar, "Bar");
-令 bar 位于 foo 偏 (4cm, 3cm);
-
-draw foo; draw bar;
-
-四角十二门(foo, 隐);
-四角十二门(bar, 隐);
-path foo~bar; foo~bar := foo.卯门 纬转 bar.午门;
-drawarrowpath foo~bar;
-标注("逢山开路", "北", .3) foo~bar;
-标注("\rotate[rotation=90]{遇水搭桥}", "西", .76) foo~bar;
+path p; p := (0, 0);
+numeric s; s := .125cm;
+for i = 1 upto 7:
+    for j = "北行", "西行", "南行", "东行":
+      s := s + .125cm;
+      p := 从 p 向 (scantokens(j) s);
+    endfor;
+endfor;
+设 "配置.玩笑 = '4pt'";
+流向 p;
 \stopuseMPgraphic
 
 \startTEXpage[offset=4pt]

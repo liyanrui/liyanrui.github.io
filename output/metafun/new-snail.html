@@ -98,6 +98,8 @@
 <li><a href="#转弯">转弯</a></li>
 <li><a href="#直联">直联</a></li>
 <li><a href="#路径标注">路径标注</a></li>
+<li><a href="#虚线模式">虚线模式</a></li>
+<li><a href="#自由行走">自由行走</a></li>
 </ul>
 </nav>
 <blockquote>
@@ -499,6 +501,82 @@ enddef;
 <span id="cb19-18"><a href="#cb19-18" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
 <figure>
 <img src="../../figures/metafun/new-snail/09.png" alt="" /><figcaption>标注</figcaption>
+</figure>
+<h1 id="虚线模式">虚线模式</h1>
+<pre class="metapost"><code>\startMPinclusions[+]
+def 开启虚线模式 =
+  drawpathoptions(dashed (evenly scaled .625(获 &quot;配置.路径.线宽&quot;))
+                  withpen pencircle scaled (获 &quot;配置.路径.线宽&quot;)
+                  withcolor (获 &quot;配置.路径.颜色&quot;));
+enddef;
+def 关闭虚线模式 =
+  drawpathoptions(withpen pencircle scaled (获 &quot;配置.路径.线宽&quot;)
+                  withcolor (获 &quot;配置.路径.颜色&quot;));
+enddef;
+% 默认关闭虚线模式
+关闭虚线模式;
+\stopMPinclusions</code></pre>
+<p>测试用例：</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a><span class="fu">\input</span> snail</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true"></a>宫(foo, &quot;Foo&quot;);</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true"></a>宫(bar, &quot;Bar&quot;);</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true"></a>令 bar 位于 foo 偏 (3cm, 2cm);</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true"></a>draw foo; draw bar;</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true"></a>四角十二门(foo, 隐);</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true"></a>四角十二门(bar, 隐);</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true"></a>开启虚线模式;</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true"></a>drawarrowpath foo.卯门 纬转 bar.午门;</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true"></a>关闭虚线模式;</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true"></a>drawarrowpath foo.子门 经转 bar.酉门;</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<figure>
+<img src="../../figures/metafun/new-snail/10.png" alt="" /><figcaption>虚线</figcaption>
+</figure>
+<h1 id="自由行走">自由行走</h1>
+<p>倘若上述一切设施无助于构造路径，可考虑使用以下更为自由构造路径的宏：</p>
+<pre class="metapost"><code>\startMPinclusions[+]
+def 北 = up enddef; def 南 = down enddef;
+def 西 = left enddef; def 东 = right enddef;
+def 北行 expr a = (北 * (a)) enddef;
+def 南行 expr a = (南 * (a)) enddef;
+def 西行 expr a = (西 * (a)) enddef;
+def 东行 expr a = (东 * (a)) enddef;
+
+def 从 = enddef;
+tertiarydef a 向 b =
+  if pair a:
+    a -- (a shifted b)
+  elseif path a:
+    a -- (point (length a) of a) shifted (b)
+  fi
+enddef;
+\stopMPinclusions</code></pre>
+<p>测试用例：</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true"></a><span class="fu">\input</span> snail</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true"></a>path p; p := (0, 0);</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true"></a>numeric s; s := .125cm;</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true"></a>for i = 1 upto 7:</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true"></a>    for j = &quot;北行&quot;, &quot;西行&quot;, &quot;南行&quot;, &quot;东行&quot;:</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true"></a>      s := s + .125cm;</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true"></a>      p := 从 p 向 (scantokens(j) s);</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true"></a>    endfor;</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true"></a>endfor;</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true"></a>设 &quot;配置.玩笑 = &#39;4pt&#39;&quot;;</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true"></a>流向 p;</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true"></a></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<figure>
+<img src="../../figures/metafun/new-snail/11.png" alt="" /><figcaption>漩涡路径</figcaption>
 </figure>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>

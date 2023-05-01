@@ -480,7 +480,97 @@ drawarrowpath foo~bar;
 
 ![标注][09]
 
+# 虚线模式
 
+```MetaPost
+\startMPinclusions[+]
+def 开启虚线模式 =
+  drawpathoptions(dashed (evenly scaled .625(获 "配置.路径.线宽"))
+                  withpen pencircle scaled (获 "配置.路径.线宽")
+                  withcolor (获 "配置.路径.颜色"));
+enddef;
+def 关闭虚线模式 =
+  drawpathoptions(withpen pencircle scaled (获 "配置.路径.线宽")
+                  withcolor (获 "配置.路径.颜色"));
+enddef;
+% 默认关闭虚线模式
+关闭虚线模式;
+\stopMPinclusions
+```
+
+测试用例：
+
+```TEX
+\input snail
+\startuseMPgraphic{foo}
+宫(foo, "Foo");
+宫(bar, "Bar");
+令 bar 位于 foo 偏 (3cm, 2cm);
+draw foo; draw bar;
+
+四角十二门(foo, 隐);
+四角十二门(bar, 隐);
+开启虚线模式;
+drawarrowpath foo.卯门 纬转 bar.午门;
+关闭虚线模式;
+drawarrowpath foo.子门 经转 bar.酉门;
+\stopuseMPgraphic
+
+\startTEXpage[offset=4pt]
+\useMPgraphic{foo}
+\stopTEXpage
+```
+
+![虚线][10]
+
+
+# 自由行走
+
+倘若上述一切设施无助于构造路径，可考虑使用以下更为自由构造路径的宏：
+
+```MetaPost
+\startMPinclusions[+]
+def 北 = up enddef; def 南 = down enddef;
+def 西 = left enddef; def 东 = right enddef;
+def 北行 expr a = (北 * (a)) enddef;
+def 南行 expr a = (南 * (a)) enddef;
+def 西行 expr a = (西 * (a)) enddef;
+def 东行 expr a = (东 * (a)) enddef;
+
+def 从 = enddef;
+tertiarydef a 向 b =
+  if pair a:
+    a -- (a shifted b)
+  elseif path a:
+    a -- (point (length a) of a) shifted (b)
+  fi
+enddef;
+\stopMPinclusions
+```
+
+测试用例：
+
+```TEX
+\input snail
+\startuseMPgraphic{foo}
+path p; p := (0, 0);
+numeric s; s := .125cm;
+for i = 1 upto 7:
+    for j = "北行", "西行", "南行", "东行":
+      s := s + .125cm;
+      p := 从 p 向 (scantokens(j) s);
+    endfor;
+endfor;
+设 "配置.玩笑 = '4pt'";
+流向 p;
+\stopuseMPgraphic
+
+\startTEXpage[offset=4pt]
+\useMPgraphic{foo}
+\stopTEXpage
+```
+
+![漩涡路径][11]
 
 
 [01]: ../../figures/metafun/new-snail/01.png
@@ -492,3 +582,5 @@ drawarrowpath foo~bar;
 [07]: ../../figures/metafun/new-snail/07.png
 [08]: ../../figures/metafun/new-snail/08.png
 [09]: ../../figures/metafun/new-snail/09.png
+[10]: ../../figures/metafun/new-snail/10.png
+[11]: ../../figures/metafun/new-snail/11.png
