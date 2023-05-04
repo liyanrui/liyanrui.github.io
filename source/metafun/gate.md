@@ -160,7 +160,7 @@ drawarrowpath 外环路;
 
 ![外环路-1][04]
 
-路径太粗了，导致箭头失常，可通过 MetaFun 宏 `drawpathoption` 进行调整：
+路径太粗了，导致箭头失常，可通过 MetaFun 宏 `drawpathoptions` 进行调整：
 
 ```MetaPost
 drawpathoptions(withpen pencircle scaled 2pt withcolor darkred);

@@ -95,3 +95,15 @@ end
   \blank[halfline]%
 }
 
+% 带圈数字
+\startuseMPgraphic{foo}
+path p;
+p := fullcircle scaled 12pt;
+draw p withpen pencircle scaled .4pt
+withcolor darkred;
+\stopuseMPgraphic
+\defineoverlay[rsquare][\useMPgraphic{foo}]
+\def\fooframe#1{%
+  \framed[frame=off,background=rsquare,offset=0pt,strut=no,width=12pt]{\small #1}%
+}
+\defineconversion[foo][\fooframe]

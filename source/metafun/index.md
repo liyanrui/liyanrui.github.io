@@ -3,7 +3,7 @@ title: MetaFun
 homeback: ../../index.html
 lang: zh-CN
 date: 2023 年 04 月 28 日
-abstract: 
+abstract: 写一个流程图模块便可学会 MetaPost。
 category: ../../index.html
 footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...

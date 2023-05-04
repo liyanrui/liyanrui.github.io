@@ -83,500 +83,209 @@
 </div>
 <header id="title-block-header">
 <h1 class="title">新蜗牛</h1>
-<p class="date">2023 年 04 月 30 日</p>
+<p class="date">2023 年 05 月 04 日</p>
 </header>
 <hr />
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#样式参数">样式参数</a></li>
-<li><a href="#宫">宫</a></li>
-<li><a href="#廷">廷</a></li>
-<li><a href="#城">城</a></li>
-<li><a href="#景物">景物</a></li>
-<li><a href="#四角十二门">四角十二门</a></li>
-<li><a href="#定位">定位</a></li>
-<li><a href="#转弯">转弯</a></li>
-<li><a href="#直联">直联</a></li>
-<li><a href="#路径标注">路径标注</a></li>
-<li><a href="#虚线模式">虚线模式</a></li>
-<li><a href="#自由行走">自由行走</a></li>
+<li><a href="#依赖">依赖</a></li>
+<li><a href="#获取和安装">获取和安装</a></li>
+<li><a href="#基本用法">基本用法</a></li>
+<li><a href="#宫廷景">宫，廷，景</a></li>
+<li><a href="#粗略定位">粗略定位</a></li>
+<li><a href="#锚点">锚点</a></li>
+<li><a href="#精确定位">精确定位</a></li>
+<li><a href="#路">路</a></li>
+<li><a href="#蜗界参数">蜗界参数</a></li>
 </ul>
 </nav>
 <blockquote>
 <p>上一篇：<a href="config-and-module.html">配置文件与模块</a></p>
 </blockquote>
-<p>基于前面五篇文章的摸索，现在已基本具备了写一个新的蜗牛模块的能力。与旧的<a href="https://github.com/liyanrui/snail">蜗牛模块</a>相比，新模块带有一些中文编程的特征，可能会令人有所不适，但我觉得，除了我，可能也没人会考虑使用它，故而请容许我牵黄擎苍，聊以自娱。</p>
-<h1 id="样式参数">样式参数</h1>
-<p>建立空文件 snail.tex，令其内容为</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode lua"><code class="sourceCode lua"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>\startluacode</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="kw">local</span> 配置 <span class="op">=</span> <span class="op">{}</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>配置<span class="op">.</span>字号 <span class="op">=</span> <span class="st">&quot;BodyFontSize&quot;</span> <span class="co">-- ConTeXt 正文字体所用字号</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>配置 <span class="op">=</span> <span class="op">{</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>    字号 <span class="op">=</span> 配置<span class="op">.</span>字号<span class="op">,</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>    文字 <span class="op">=</span> <span class="op">{</span>颜色 <span class="op">=</span> <span class="st">&quot;black&quot;</span><span class="op">},</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a>    框形 <span class="op">=</span> <span class="st">&quot;fullsquare&quot;</span><span class="op">,</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a>    框 <span class="op">=</span> <span class="op">{</span>余地 <span class="op">=</span> 配置<span class="op">.</span>字号<span class="op">,</span> 线宽 <span class="op">=</span> <span class="st">&quot;.175&quot;</span> <span class="op">..</span> 配置<span class="op">.</span>字号<span class="op">,</span> 颜色 <span class="op">=</span> <span class="st">&quot;darkgray&quot;</span><span class="op">,</span> 各向同性 <span class="op">=</span> <span class="st">&quot;false&quot;</span><span class="op">},</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a>    背景 <span class="op">=</span> <span class="op">{</span> 颜色 <span class="op">=</span> <span class="st">&quot;lightgray&quot;</span> <span class="op">},</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a>    路径 <span class="op">=</span> <span class="op">{</span> 线宽 <span class="op">=</span> <span class="st">&quot;.2&quot;</span> <span class="op">..</span> 配置<span class="op">.</span>字号<span class="op">,</span> 颜色 <span class="op">=</span> <span class="st">&quot;darkgray&quot;</span><span class="op">},</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a>    圆角 <span class="op">=</span> 配置<span class="op">.</span>字号<span class="op">,</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a>    玩笑 <span class="op">=</span> <span class="st">&quot;0&quot;</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a><span class="op">}</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true"></a>table<span class="op">.</span>save<span class="op">(</span><span class="st">&quot;snail.conf&quot;</span><span class="op">,</span> 配置<span class="op">)</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true"></a>\stopluacode</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true"></a>\startMPinclusions</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true"></a>lua<span class="op">(</span><span class="st">&quot;配置 = table.load(&#39;snail.conf&#39;)&quot;</span><span class="op">);</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true"></a>def 获 expr a <span class="op">=</span> lua<span class="op">(</span><span class="st">&quot;mp.print(&quot;</span> <span class="op">&amp;</span> a <span class="op">&amp;</span> <span class="st">&quot;)&quot;</span><span class="op">)</span> enddef<span class="op">;</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true"></a>def 设 expr a <span class="op">=</span> lua<span class="op">(</span>a<span class="op">)</span> enddef<span class="op">;</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true"></a>def 恢复默认配置 <span class="op">=</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true"></a>  lua<span class="op">(</span><span class="st">&quot;配置 = table.load(&#39;snail.conf&#39;)&quot;</span><span class="op">)</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true"></a>enddef<span class="op">;</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true"></a>\stopMPinclusions</span></code></pre></div>
-<h1 id="宫">宫</h1>
-<p>我将带有常规外框（矩形、椭圆、菱形等）的文字称为「宫」，并为之定义宏 <code>宫</code>：</p>
-<pre class="metapost"><code>\startMPinclusions[+]
-def 宫 (suffix name) (expr a) =
-  picture name;
-  begingroup
-    save 框, 文, w, h, s;
-    path 框; picture 文; numeric w, h, s;
-    文 := textext(a);
-    w := bbwidth 文; h := bbheight 文;
-    if (获 &quot;配置.框.各向同性&quot;):
-      if w &gt; h: s = w; else: s = h; fi;
-      框 := fullsquare xysized (s, s) enlarged ((获 &quot;配置.框.余地&quot;) * (1, 1));
-    else:
-      框 := fullsquare xysized (w, h) enlarged ((获 &quot;配置.框.余地&quot;) * (1, 1));
-    fi;
-    框 := (获 &quot;配置.框形&quot;) xysized (bbwidth 框, bbheight 框);
-    if (获 &quot;配置.玩笑&quot;) &gt; 0: 框 := 框 randomized (获 &quot;配置.玩笑&quot;); fi;
-    name := image (fill 框 withcolor (获 &quot;配置.背景.颜色&quot;);
-                   draw 框 withpen pencircle scaled (获 &quot;配置.框.线宽&quot;)
-                           withcolor (获 &quot;配置.框.颜色&quot;);
-                   draw 文 withcolor (获 &quot;配置.文字.颜色&quot;););
-  endgroup;
-enddef;
-\stopMPinclusions</code></pre>
-<p><code>宫</code> 是目前为止最为健全的框文宏，其基本用法示例如下：</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="fu">\input</span> snail</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo-1}</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>宫(ConTeXt, &quot;<span class="fu">\ConTeXt</span>&quot;);</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>draw ConTeXt;</span>
+<p>基于前面五篇文章的摸索，现在已基本具备了写一个新的蜗牛模块的能力。与旧的<a href="https://github.com/liyanrui/snail/tree/master/obsolete">蜗牛模块</a>相比，新模块带带有一些中文编程特征，可能会令人有所不适，但我觉得，除了我可能也没人会考虑使用它，故而请容许我牵黄擎苍，聊以自娱。</p>
+<h1 id="依赖">依赖</h1>
+<p>snail.tex 适用于 ConTeXt LMTX 版本中的 MetaPost 环境，只需安装 <a href="https://wiki.contextgarden.net/Installation">ConTeXt LMTX 独立包</a>便可拥有该环境。对于 TeX Live 用户，亦可尝试安装 ConTeXt LMTX 获得该环境，只是版本通常落后于 ConTeXt LMTX 包。</p>
+<h1 id="获取和安装">获取和安装</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>$ <span class="fu">git</span> clone https://github.com/liyanrui/snail.git</span></code></pre></div>
+<p>将所得 snail 目录移动至 ConTeXt 第三方模块目录（例如 $TEXROOT/texmf-local/tex/context/third 目录），然后执行</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>$ <span class="ex">context</span> --generate</span></code></pre></div>
+<p>亦可将 snail 目录内的 snail.tex 文件复制到你正在编写的 ConTeXt 源文件所在目录直接使用。</p>
+<h1 id="基本用法">基本用法</h1>
+<p>倘若仅仅是体验 snail 模块，可使用以下 ConTeXt 源码框架：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="fu">\usemodule</span>[zhfonts] <span class="co">% 该模块提供中文排版支持</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="fu">\input</span> snail.tex    <span class="co">% 载入 snail.tex 文件</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="co">% 名字为 foo 的 MetaPost 作图环境</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="co">% 此间放置 MetaPost 作图代码</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo-2}</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a>设 &quot;配置.框形 = &#39;fullcircle&#39;&quot;;</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a>宫(ConTeXt, &quot;<span class="fu">\ConTeXt</span>&quot;);</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a>draw ConTeXt;</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo-3}</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a>设 &quot;配置.框.各向同性 = &#39;true&#39;&quot;;</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a>宫(ConTeXt, &quot;<span class="fu">\ConTeXt</span>&quot;);</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a>draw ConTeXt;</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true"></a></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true"></a><span class="fu">\hbox</span>{<span class="fu">\useMPgraphic</span>{foo-1}<span class="fu">\quad\useMPgraphic</span>{foo-2}<span class="fu">\quad\useMPgraphic</span>{foo-3}}</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo} <span class="co">% 将 MetaPost 作图代码转化为插图</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<p>如果是在正在编写的文档中使用 snail，ConTeXt 源码框架通常为</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="fu">\usemodule</span>[zhfonts]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="fu">\input</span> snail.tex</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="co">% 此间放置 MetaPost 作图代码</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a><span class="fu">\startext</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a><span class="fu">\placefigure</span>[here][引用标记]{插图标题}{<span class="fu">\useMPgraphic</span>{foo}}</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a><span class="fu">\stoptext</span></span></code></pre></div>
+<h1 id="宫廷景">宫，廷，景</h1>
+<p>带框的文字为「宫」，不带框的文字为「廷」，插图为「景」。</p>
+<p>以下示例，构造了一个名为「甲」的宫，文字内容为「蜗居」：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="fu">\usemodule</span>[zhfonts]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a><span class="fu">\input</span> snail.tex</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a>宫(甲, &quot;蜗居&quot;);</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a>呜呼 甲;</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
 <figure>
 <img src="../../figures/metafun/new-snail/01.png" alt="" /><figcaption>宫</figcaption>
 </figure>
-<h1 id="廷">廷</h1>
-<p>廷是无边框文字，但是文字外围需要留有一些余地，可使用 ConTeXt 的 <code>\framed</code> 宏辅助构造：</p>
-<pre class="metapost"><code>\defineframed[snailframe][offset=1em,frame=off]
-\startMPinclusions[+]
-  def 廷 (suffix name) (expr a) =
-    picture name;
-    begingroup
-    save 文; picture 文; 文 := textext(&quot;\snailframe{&quot; &amp; a &amp; &quot;}&quot;);
-    name := image (draw 文 withcolor (获 &quot;配置.文字.颜色&quot;););
-    endgroup;
-enddef;
-\stopMPinclusions</code></pre>
-<p>以下为测试用例：</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="fu">\input</span> snail</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a><span class="fu">\setupframed</span>[snailframed][offset=1cm]</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a>廷(ConTeXt, &quot;<span class="fu">\ConTeXt</span>&quot;);</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a>draw ConTeXt;</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt,frame=on]</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<p>上述代码中的「<code>呜呼 甲;</code>」可画出 <code>甲</code>，将 <code>呜呼</code> 理解为动词「画」即可，之所以不用 <code>画</code> 或 <code>画出</code>，是因为 <code>呜呼</code> 像是在念一句神秘的咒语。</p>
+<p><code>甲</code> 是 MetaPost 的一个变量，其类型为 <code>picture</code>。用 <code>甲</code> 是我个人偏好，你可以用任何其他名字，只要遵守 MetaPost 变量命名规则，例如</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>宫(foo, <span class="st">&quot;蜗居&quot;</span>);</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>呜呼 foo;</span></code></pre></div>
+<p>廷的构造语句与宫相似，例如</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>廷(甲, <span class="st">&quot;蜗居&quot;</span>);</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>呜呼 甲;</span></code></pre></div>
 <figure>
 <img src="../../figures/metafun/new-snail/02.png" alt="" /><figcaption>廷</figcaption>
 </figure>
-<h1 id="城">城</h1>
-<p>城是组合结构。多个宫或廷可组合为一个城。<code>城</code> 的定义如下：</p>
-<pre class="metapost"><code>\startMPinclusions[+]
-def 宫廷 (suffix a) (expr b) = picture a; a := b; enddef;
-def 城 (suffix a) (text b) =
-  宫廷(a, nullpicture);
-  for i = b: addto a also image(draw i); endfor;
-enddef;
-\stopMPinclusions</code></pre>
-<p><code>城</code> 的测试用例：</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="fu">\usemodule</span>[zhfonts]</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a><span class="fu">\input</span> snail</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a><span class="fu">\setupframed</span>[snailframed][frame=on,offset=1cm]</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a>宫(a, &quot;阿房宫&quot;);</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true"></a>廷(b, &quot;篱笆院&quot;);</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true"></a>城(c, a, b shifted (3cm, 0));</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true"></a>draw c rotated 30;</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true"></a></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt,frame=on]</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<p>构造景物，需要有外部插图文件。假设插图文件为 snail.png 且与使用它的 ConTeXt 源文件位于同一目录，则以下语句可构造景物：</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="co">% 载入插图 snail.png，令其宽度为 4cm，高度由 snail 自动确定</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>景(甲, <span class="st">&quot;snail.png&quot;</span>, <span class="fl">4cm</span>, <span class="st">&quot;auto&quot;</span>);</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a>呜呼 甲;</span></code></pre></div>
 <figure>
-<img src="../../figures/metafun/new-snail/03.png" alt="" /><figcaption>城</figcaption>
+<img src="../../figures/metafun/new-snail/03.png" alt="" /><figcaption>景</figcaption>
 </figure>
-<h1 id="景物">景物</h1>
-<p>外部图片称为景物，相应的宏定义如下：</p>
-<pre class="metapost"><code>\startMPinclusions[+]
-def 景物 (suffix name) (expr a, w, h) =
-  picture name;
-  begingroup;
-  save p, s; picture p; numeric s;
-  p := externalfigure a;
-  s := (bbwidth p) / (bbheight p);
-  if numeric w and numeric h:
-    name := image(draw externalfigure a xysized (w, h););
-  else:
-    if numeric w:
-      name := image(draw externalfigure a xysized (w, w / s););
-    fi;
-    if numeric h:
-       name := image(draw externalfigure a xysized (h * s, h););
-    fi;
-  fi;
-  endgroup;
-enddef;
-\stopMPinclusions</code></pre>
-<p>测试用例：</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="fu">\input</span> snail</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a>景物(代码, &quot;demo.png&quot;, 8cm, &quot;auto&quot;);</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true"></a>draw 代码 rotated -15;</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<h1 id="粗略定位">粗略定位</h1>
+<p>定义宫、廷、景等对象时，其中心默认是坐标原点，可根据即有对象进行相对定位。例如</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a>宫(甲, <span class="st">&quot;蜗居&quot;</span>);</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a>廷(乙, <span class="st">&quot;蜗院&quot;</span>) 位于 甲 偏 (东 <span class="fl">3cm</span>);</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a>景(丙, <span class="st">&quot;snail.png&quot;</span>, <span class="fl">2cm</span>, <span class="st">&quot;auto&quot;</span>) 位于 乙 偏 (东 <span class="fl">3cm</span> <span class="op">+</span> 北 <span class="fl">1.5</span>cm);</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true"></a>呜呼 甲, 乙, 丙;</span></code></pre></div>
 <figure>
-<img src="../../figures/metafun/new-snail/04.png" alt="" /><figcaption>景物</figcaption>
+<img src="../../figures/metafun/new-snail/04.png" alt="" /><figcaption>定位</figcaption>
 </figure>
-<p>需要注意的是，可能是 DPI 不一致的缘故，MetaPost 载入的位图，在我的机器上，尺寸约为图片原始尺寸的 1/3，ConTeXt 也是如此。</p>
-<h1 id="四角十二门">四角十二门</h1>
-<pre class="metapost"><code>\startMPinclusions[+]
-def 显 = true enddef;
-def 隐 = false enddef;
-def 四角十二门 (suffix foo) (expr 或显或隐) = 
-  forsuffixes i = 东北角, 东南角, 西南角, 西北角,
-                  子门, 卯门, 午门, 酉门,
-                  丑门, 寅门, 辰门, 巳门, 未门, 申门, 戌门, 亥门:
-    pair foo.i;
-  endfor;
-  foo.西北角 := (ulcorner foo); 
-  foo.东北角 := (urcorner foo);
-  foo.东南角 := (lrcorner foo);
-  foo.西南角 := (llcorner foo);
-  foo.子门 := .5[foo.西北角, foo.东北角];
-  foo.午门 := .5[foo.西南角, foo.东南角];
-  foo.卯门 := .5[foo.东南角, foo.东北角];
-  foo.酉门 := .5[foo.西南角, foo.西北角];
-  foo.丑门 := .5[foo.子门, foo.东北角];
-  foo.寅门 := .5[foo.卯门, foo.东北角];
-  foo.辰门 := .5[foo.卯门, foo.东南角];
-  foo.巳门 := .5[foo.午门, foo.东南角];
-  foo.未门 := .5[foo.午门, foo.西南角];
-  foo.申门 := .5[foo.酉门, foo.西南角];
-  foo.戌门 := .5[foo.酉门, foo.西北角];
-  foo.亥门 := .5[foo.子门, foo.西北角];
-  if 或显或隐:
-    forsuffixes i = 东北角, 东南角, 西南角, 西北角:
-      draw foo.i withpen pensquare scaled 4pt withcolor darkblue;
-    endfor;
-    forsuffixes i = 子门, 卯门, 午门, 酉门:
-      draw foo.i withpen pencircle scaled 4pt withcolor darkred;
-    endfor;
-    forsuffixes i = 丑门, 寅门, 辰门, 巳门, 未门, 申门, 戌门, 亥门:
-      draw foo.i
-        withpen pencircle scaled 3pt withcolor darkgreen;
-    endfor;
-  fi;
-enddef;
-\stopMPinclusions</code></pre>
-<p>测试用例：</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="fu">\usemodule</span>[zhfonts]</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a><span class="fu">\input</span> snail</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a>设 &quot;配置.框.余地 = &#39;1cm&#39;&quot;;</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true"></a>设 &quot;配置.框.线宽 = &#39;4pt&#39;&quot;;</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true"></a>宫(foo, &quot;淄博八大局便民市场&quot;);</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true"></a>draw foo;</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true"></a>四角十二门(foo, 显);  <span class="co">% 将「显」换为「隐」可隐藏四角十二门</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true"></a></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<p>宫、廷、景的构造语句后若存有类似 <code>位于 某对象 偏 (某方向 多少距离)</code> 的语句，可将其理解为所构造的对象，令其其中心与 <code>某对象</code> 重合，再沿某个方向偏移 <code>多少距离</code>。上述代码中的 <code>东 3cm + 北 1.5cm</code> 表示，向东偏移 3cm 之后，再向北偏移 1.5cm。此外，上述代码也展示了，<code>呜呼</code> 可用于绘制多个对象。</p>
+<h1 id="锚点">锚点</h1>
+<p><code>宫</code>，<code>廷</code>，<code>景</code> 构造的对象，定位后，会自动带有 24 个锚点，使用 <code>关防要塞</code> 可显示所有锚点，例如</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>廷(乙, <span class="st">&quot;蜗院&quot;</span>);</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>呜呼 乙;</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a>关防要塞 乙;</span></code></pre></div>
 <figure>
-<img src="../../figures/metafun/new-snail/05.png" alt="" /><figcaption>八大局</figcaption>
+<img src="../../figures/metafun/new-snail/05.png" alt="" /><figcaption>关防要塞</figcaption>
 </figure>
-<h1 id="定位">定位</h1>
-<pre class="metapost"><code>\startMPinclusions[+]
-def 偏 expr a = shifted a enddef;
-tertiarydef a 位于 b = a 偏 (center b - center a) enddef;
-def 令 suffix a = 令之体(a) enddef;
-def 令之体 (suffix a) text b = a := a b enddef;
-\stopMPinclusions</code></pre>
-<p>测试用例：</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a><span class="fu">\input</span> snail</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a>宫(foo, &quot;Foo&quot;);</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a>宫(bar, &quot;Bar&quot;);</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a>令 bar 位于 foo 偏 (4cm, 2cm);</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true"></a>draw foo; draw bar;</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<p>每个锚点皆有唯一的中文名称，倘若对中国传统文化常识有所了解，记住它们并不难。</p>
+<p>内层锚点，共计 16 个，首先按照现代地图方位，上北下南，左西右东，内层锚点中四个角点的名称分别为东北角，西北角，西南角，东南角，剩下的 12 个锚点按十二天干命名，分别为子门，丑门，寅门，卯门，辰门，巳门，午门，未门，申门，酉门，戌门，亥门，其中子门在正北，午门在正南，卯门在正东，酉门在正西，其他各门按序可知，不作赘述。</p>
+<p>外层锚点共计 8 个，按八卦命名，对应方位为先天八卦方位，乾位正南，坤位正北，坎位正西，离位正东，艮位西北，兑位东南，震位东北，巽位西南。</p>
+<h1 id="精确定位">精确定位</h1>
+<p>基于锚点，可实现 <code>宫</code>，<code>廷</code>，<code>景</code> 所构造对象的精确定位。例如</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>宫(甲, <span class="st">&quot;蜗居&quot;</span>);</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>廷(乙, <span class="st">&quot;蜗院&quot;</span>);</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a>景(丙, <span class="st">&quot;snail.png&quot;</span>, <span class="fl">2cm</span>, <span class="st">&quot;auto&quot;</span>);</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a>定位(乙, 乙.坎位 位于 甲.离位);</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a>定位(丙, 丙.酉门 位于 乙.兑位);</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true"></a>呜呼 甲, 乙, 丙;</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true"></a>关防要塞 甲, 乙, 丙;</span></code></pre></div>
 <figure>
-<img src="../../figures/metafun/new-snail/07.png" alt="" /><figcaption>相对定位</figcaption>
+<img src="../../figures/metafun/new-snail/06.png" alt="" /><figcaption>精确定位</figcaption>
 </figure>
-<h1 id="转弯">转弯</h1>
-<pre class="metapost"><code>\startMPinclusions[+]
-pair 竖亥;
-tertiarydef a 经转 b =
-  hide(竖亥 := (xpart (if path a: point (length a) of a else: a fi), ypart (b)))
-  a -- (point -(获 &quot;配置.路径.圆角&quot;) on (a -- 竖亥))
-    .. controls 竖亥 .. (point (获 &quot;配置.路径.圆角&quot;) on (竖亥 -- b)) -- b
-enddef;
-tertiarydef a 纬转 b =
-  hide(竖亥 := (xpart (b), ypart (if path a: point (length a) of a else: a fi)))
-  a -- (point -(获 &quot;配置.路径.圆角&quot;) on (a -- 竖亥))
-    .. controls 竖亥 .. (point (获 &quot;配置.路径.圆角&quot;) on (竖亥 -- b)) -- b
-enddef;
-\stopMPinclusions</code></pre>
-<p>MetaPost 的 <code>hide</code> 宏，其参数不会参与宏展开。</p>
-<p>测试用例：</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="fu">\input</span> snail</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a>宫(foo, &quot;Foo&quot;);</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true"></a>宫(bar, &quot;Bar&quot;);</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true"></a>bar := bar shifted (4cm, 2cm);</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true"></a>draw foo; draw bar;</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true"></a></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true"></a>四角十二门(foo, 隐); 四角十二门(bar, 隐);</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true"></a>drawpathoptions(withpen pencircle scaled 2pt withcolor darkgray);</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true"></a>drawarrowpath foo.子门 经转 bar.酉门;</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true"></a>drawarrowpath foo.卯门 纬转 bar.午门;</span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true"></a></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
-<figure>
-<img src="../../figures/metafun/new-snail/06.png" alt="" /><figcaption>foo-&gt;bar</figcaption>
-</figure>
-<h1 id="直联">直联</h1>
-<pre class="metapost"><code>\startMPinclusions[+]
-tertiarydef a =&gt; b =
-  begingroup
-    save outgoing, incoming, va, vb, do_nothing;
-    pair outgoing, incoming, va[], vb[];
-    boolean do_nothing; do_nothing := false;
-    va[1] := if pair a: a else: llcorner a fi;
-    va[2] := if pair a: a else: urcorner a fi;
-    vb[1] := if pair b: b else: llcorner b fi;
-    vb[2] := if pair b: b else: urcorner b fi;
-    if xpart va[2] &lt; xpart vb[1]: % a 在 b 的左侧
-      outgoing := if pair a: a else: 0.5[lrcorner a, urcorner a] fi;
-      incoming  := (xpart vb[1], ypart outgoing);
-    elseif xpart va[1] &gt; xpart vb[2]: % a 在 b 的右侧
-      outgoing := if pair a: a else: 0.5[llcorner a, ulcorner a] fi;
-      incoming  := (xpart vb[2], ypart outgoing);
-    elseif ypart va[1] &gt; ypart vb[2]: % a 在 b 的上方
-      outgoing := if pair a: a else: 0.5[llcorner a, lrcorner a] fi;
-      incoming  := (xpart outgoing, ypart vb[2]);
-    elseif ypart va[2] &lt; ypart vb[1]: % a 在 b 的下方
-      outgoing := if pair a: a else: 0.5[ulcorner a, urcorner a] fi;
-      incoming  := (xpart outgoing, ypart vb[1]);
-    else:
-      do_nothing := true;
-    fi;
-    if do_nothing: nullpicture else: outgoing -- incoming fi
-  endgroup
-enddef;
+<h1 id="路">路</h1>
+<p>锚点在构造路径方面至关重要。例如构造一条由甲至乙再至丙的路径：</p>
+<pre class="metapost"><code>宫(甲, &quot;蜗居&quot;);
+廷(乙, &quot;蜗院&quot;); 定位(乙, 乙.坎位 位于 甲.离位);
+景(丙, &quot;snail.png&quot;, 2cm, &quot;auto&quot;); 定位(丙, 丙.酉门 位于 乙.兑位);
+呜呼 甲, 乙, 丙;
+关防要塞 甲, 乙, 丙;
 
-drawpathoptions(withpen pencircle scaled (获 &quot;配置.路径.线宽&quot;) withcolor (获 &quot;配置.路径.颜色&quot;));
-def 流向 text a =
-  drawarrowpath if (获 &quot;配置.玩笑&quot;) &gt; 0: (a) randomized (获 &quot;配置.玩笑&quot;) else: a fi;
-enddef;
-def 串联 text a =
-  drawpath if (获 &quot;配置.玩笑&quot;) &gt; 0: (a) randomized (获 &quot;配置.玩笑&quot;) else: a fi;  
-enddef;</code></pre>
-<p>测试用例：</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="fu">\input</span> snail</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo-1}</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true"></a>宫(foo, &quot;Foo&quot;);</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true"></a>宫(bar, &quot;Bar&quot;);</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true"></a>令 bar 位于 foo 偏 (3cm, 0);</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true"></a></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true"></a>draw foo; draw bar;</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true"></a>流向 foo =&gt; bar;</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true"></a></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo-2}</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true"></a>宫(foo, &quot;Foo&quot;);</span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true"></a>宫(bar, &quot;Bar&quot;);</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true"></a>令 bar 位于 foo 偏 (3cm, 0);</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true"></a></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true"></a>draw foo; draw bar;</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true"></a>串联 foo =&gt; bar;</span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true"></a></span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo-1}</span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true"></a><span class="fu">\blank</span></span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo-2}</span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+路(甲乙, 甲.酉门 -- 甲.坎位 -- 甲.艮位 -- 乙.坤位 -- 乙.子门);
+路(乙丙, 乙.午门 -- 乙.乾位 -- 丙.坎位 -- 丙.巽位 -- 丙.兑位 -- 丙.离位 -- 丙.卯门);</code></pre>
 <figure>
-<img src="../../figures/metafun/new-snail/08.png" alt="" /><figcaption>直联</figcaption>
+<img src="../../figures/metafun/new-snail/07.png" alt="" /><figcaption>路</figcaption>
 </figure>
-<h1 id="路径标注">路径标注</h1>
-<pre class="metapost"><code>\startMPinclusions[+]
-def 标注 (expr tag, anchor, c) text p =
-  begingroup
-    save formatted_tag, pos, offset, t;
-    pair pos; numeric offset; string t, formatted_tag;
-    formatted_tag := &quot;\tfx&quot; &amp; tag;
-    pos := point c along (p);
-    offset := .25(获 &quot;配置.字号&quot;);
-    if anchor = &quot;北&quot;:
-      pos := pos shifted (0, offset);
-      t := &quot;thetextext&quot; &amp; &quot;.top&quot;;
-    elseif anchor = &quot;东&quot;:
-      pos := pos shifted (offset, 0);
-      t := &quot;thetextext&quot; &amp; &quot;.rt&quot;;
-    elseif anchor = &quot;南&quot;:
-      pos := pos shifted (0, -offset);
-      t := &quot;thetextext&quot; &amp; &quot;.bot&quot;;
-    elseif anchor = &quot;西&quot;:
-      pos := pos shifted (-offset, 0);
-      t := &quot;thetextext&quot; &amp; &quot;.lft&quot;;
-    fi;
-    draw scantokens(t)(formatted_tag, pos);
-  endgroup;
-enddef;
-\stopMPinclusions</code></pre>
-<p>测试用例：</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a><span class="fu">\usemodule</span>[zhfonts]</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true"></a><span class="fu">\input</span> snail</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true"></a>宫(foo, &quot;Foo&quot;);</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true"></a>宫(bar, &quot;Bar&quot;);</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true"></a>令 bar 位于 foo 偏 (4cm, 3cm);</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true"></a>draw foo; draw bar;</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true"></a></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true"></a>四角十二门(foo, 隐); 四角十二门(bar, 隐);</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true"></a>path foo~bar; foo~bar := foo.卯门 纬转 bar.午门;</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true"></a>drawarrowpath foo~bar;</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true"></a>标注(&quot;逢山开路&quot;, &quot;北&quot;, .3) foo~bar;</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true"></a>标注(&quot;<span class="fu">\rotate</span>[rotation=90]{遇水搭桥}&quot;, &quot;西&quot;, .76) foo~bar;</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true"></a></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<p>上述代码构造的两条路径，虽然非常准确，但是过于繁琐。snail 提供了 <code>经转</code> 和 <code>纬转</code> 宏，可简化直角转弯路段的构造过程。所谓 <code>经转</code> 即沿着经向（南北走向）前进时垂直于该走向转弯抵达目的地点，所谓 <code>经转</code> 即沿着纬向（东西走向）前进时垂直于该走向转弯抵达目的地点。例如上述两条路径 <code>甲乙</code> 和 <code>乙丙</code> 的构造语句可简化为</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a>宫(甲, <span class="st">&quot;蜗居&quot;</span>);</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a>廷(乙, <span class="st">&quot;蜗院&quot;</span>); 定位(乙, 乙.坎位 位于 甲.离位);</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a>景(丙, <span class="st">&quot;snail.png&quot;</span>, <span class="fl">2cm</span>, <span class="st">&quot;auto&quot;</span>); 定位(丙, 丙.酉门 位于 乙.兑位);</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a>呜呼 甲, 乙, 丙;</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true"></a>路(甲乙, 甲.酉门 纬转 甲.艮位 纬转 乙.子门);</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true"></a>路(乙丙, 乙.午门 经转 丙.坎位 经转 丙.兑位 经转 丙.卯门);</span></code></pre></div>
 <figure>
-<img src="../../figures/metafun/new-snail/09.png" alt="" /><figcaption>标注</figcaption>
+<img src="../../figures/metafun/new-snail/08.png" alt="" /><figcaption>经纬转向</figcaption>
 </figure>
-<h1 id="虚线模式">虚线模式</h1>
-<pre class="metapost"><code>\startMPinclusions[+]
-def 开启虚线模式 =
-  drawpathoptions(dashed (evenly scaled .625(获 &quot;配置.路径.线宽&quot;))
-                  withpen pencircle scaled (获 &quot;配置.路径.线宽&quot;)
-                  withcolor (获 &quot;配置.路径.颜色&quot;));
-enddef;
-def 关闭虚线模式 =
-  drawpathoptions(withpen pencircle scaled (获 &quot;配置.路径.线宽&quot;)
-                  withcolor (获 &quot;配置.路径.颜色&quot;));
-enddef;
-% 默认关闭虚线模式
-关闭虚线模式;
-\stopMPinclusions</code></pre>
-<p>测试用例：</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a><span class="fu">\input</span> snail</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true"></a>宫(foo, &quot;Foo&quot;);</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true"></a>宫(bar, &quot;Bar&quot;);</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true"></a>令 bar 位于 foo 偏 (3cm, 2cm);</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true"></a>draw foo; draw bar;</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true"></a></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true"></a>四角十二门(foo, 隐);</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true"></a>四角十二门(bar, 隐);</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true"></a>开启虚线模式;</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true"></a>drawarrowpath foo.卯门 纬转 bar.午门;</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true"></a>关闭虚线模式;</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true"></a>drawarrowpath foo.子门 经转 bar.酉门;</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true"></a></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<p>还有两个宏，<code>经至</code> 和 <code>纬至</code>，有时也能简化路径的构造。例如，从山东淄博向正西前进，至西安所在的经度，该路径可使用 <code>经至</code> 构造：</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a>宫(甲, <span class="st">&quot;淄博&quot;</span>);</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a>宫(乙, <span class="st">&quot;西安&quot;</span>) 位于 乙 偏 (西 <span class="fl">5cm</span> <span class="op">+</span> 北 <span class="fl">.5</span>cm);</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a>呜呼 甲, 乙;</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true"></a>关防要塞 甲, 乙;</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true"></a>路(甲乙, 甲.酉门 经至 乙.离位 经转 乙.卯门);</span></code></pre></div>
 <figure>
-<img src="../../figures/metafun/new-snail/10.png" alt="" /><figcaption>虚线</figcaption>
+<img src="../../figures/metafun/new-snail/09.png" alt="" /><figcaption>经至</figcaption>
 </figure>
-<h1 id="自由行走">自由行走</h1>
-<p>倘若上述一切设施无助于构造路径，可考虑使用以下更为自由构造路径的宏：</p>
-<pre class="metapost"><code>\startMPinclusions[+]
-def 北 = up enddef; def 南 = down enddef;
-def 西 = left enddef; def 东 = right enddef;
-def 北行 expr a = (北 * (a)) enddef;
-def 南行 expr a = (南 * (a)) enddef;
-def 西行 expr a = (西 * (a)) enddef;
-def 东行 expr a = (东 * (a)) enddef;
-
-def 从 = enddef;
-tertiarydef a 向 b =
-  if pair a:
-    a -- (a shifted b)
-  elseif path a:
-    a -- (point (length a) of a) shifted (b)
-  fi
-enddef;
-\stopMPinclusions</code></pre>
-<p>测试用例：</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true"></a><span class="fu">\input</span> snail</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true"></a>path p; p := (0, 0);</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true"></a>numeric s; s := .125cm;</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true"></a>for i = 1 upto 7:</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true"></a>    for j = &quot;北行&quot;, &quot;西行&quot;, &quot;南行&quot;, &quot;东行&quot;:</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true"></a>      s := s + .125cm;</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true"></a>      p := 从 p 向 (scantokens(j) s);</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true"></a>    endfor;</span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true"></a>endfor;</span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true"></a>设 &quot;配置.玩笑 = &#39;4pt&#39;&quot;;</span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true"></a>流向 p;</span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true"></a></span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<p>可以位路径增加标注。snail 会自动选择路径中最长的路段放标注文本。例如</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a>宫(甲, <span class="st">&quot;淄博&quot;</span>);</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a>宫(乙, <span class="st">&quot;西安&quot;</span>) 位于 乙 偏 (西 <span class="fl">5cm</span> <span class="op">+</span> 北 <span class="fl">.5</span>cm);</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a>呜呼 甲, 乙;</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true"></a>路(甲乙, 甲.酉门 经至 乙.离位 经转 乙.卯门) 标注(<span class="st">&quot;火车需要 18 个小时&quot;</span>, <span class="st">&quot;北&quot;</span>);</span></code></pre></div>
 <figure>
-<img src="../../figures/metafun/new-snail/11.png" alt="" /><figcaption>漩涡路径</figcaption>
+<img src="../../figures/metafun/new-snail/10.png" alt="" /><figcaption>路径标注</figcaption>
+</figure>
+<h1 id="蜗界参数">蜗界参数</h1>
+<p>snail.tex 默认的蜗界参数存储于一个 Lua 表：</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode lua"><code class="sourceCode lua"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="kw">local</span> 蜗界 <span class="op">=</span> <span class="op">{}</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a>蜗界<span class="op">.</span>字号 <span class="op">=</span> <span class="st">&quot;BodyFontSize&quot;</span> <span class="co">-- ConTeXt 正文字体所用字号</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true"></a>蜗界 <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true"></a>    字号 <span class="op">=</span> 蜗界<span class="op">.</span>字号<span class="op">,</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true"></a>    文字 <span class="op">=</span> <span class="op">{</span>颜色 <span class="op">=</span> <span class="st">&quot;black&quot;</span><span class="op">},</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true"></a>    框形 <span class="op">=</span> <span class="st">&quot;fullsquare&quot;</span><span class="op">,</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true"></a>    框 <span class="op">=</span> <span class="op">{</span>余地 <span class="op">=</span> 蜗界<span class="op">.</span>字号<span class="op">,</span> </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true"></a>          线宽 <span class="op">=</span> <span class="st">&quot;.175&quot;</span> <span class="op">..</span> 蜗界<span class="op">.</span>字号<span class="op">,</span> </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true"></a>          颜色 <span class="op">=</span> <span class="st">&quot;darkgray&quot;</span><span class="op">,</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true"></a>          各向同性 <span class="op">=</span> <span class="st">&quot;false&quot;</span><span class="op">,</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true"></a>          郊 <span class="op">=</span> <span class="st">&quot;1.5&quot;</span> <span class="op">..</span> 蜗界<span class="op">.</span>字号<span class="op">},</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true"></a>    背景 <span class="op">=</span> <span class="op">{</span>颜色 <span class="op">=</span> <span class="st">&quot;lightgray&quot;</span><span class="op">},</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true"></a>    路径 <span class="op">=</span> <span class="op">{</span>线宽 <span class="op">=</span> <span class="st">&quot;.2&quot;</span> <span class="op">..</span> 蜗界<span class="op">.</span>字号<span class="op">,</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true"></a>            颜色 <span class="op">=</span> <span class="st">&quot;darkgray&quot;</span><span class="op">,</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true"></a>            有向 <span class="op">=</span> <span class="st">&quot;true&quot;</span><span class="op">,</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true"></a>            圆角 <span class="op">=</span> <span class="st">&quot;.25&quot;</span> <span class="op">..</span> 蜗界<span class="op">.</span>字号<span class="op">},</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true"></a>    玩笑 <span class="op">=</span> <span class="st">&quot;0pt&quot;</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
+<p>在使用 snail 模块时，该 Lua 表会自动被载入。通过 <code>获</code> 和 <code>设</code> 以及 <code>恢复默认蜗界</code> 等宏可以控制绘图样式。例如，可以更改宫的外框形状：</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框形 = &#39;fullcircle&#39;&quot;</span>;</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框.各向同性 = &#39;true&#39;&quot;</span>;</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true"></a>宫(甲, <span class="st">&quot;蜗居&quot;</span>);</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true"></a>呜呼 甲;</span></code></pre></div>
+<figure>
+<img src="../../figures/metafun/new-snail/11.png" alt="" /><figcaption>圆形蜗居</figcaption>
+</figure>
+<p>定义一个异形框体作为框形并不困难。例如</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a><span class="dt">numeric</span> t; t <span class="op">:=</span> <span class="fl">0.38197</span>;</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a><span class="dt">path</span> 五角星; </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true"></a>五角星 <span class="op">:=</span> (<span class="dv">0</span>, <span class="dv">1</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="fu">cosd</span> <span class="dv">54</span>, <span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> (<span class="fu">cosd</span> <span class="dv">18</span>, <span class="fu">sind</span> <span class="dv">18</span>) </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true"></a>  <span class="op">--</span> t <span class="op">*</span> (<span class="fu">cosd</span> <span class="dv">18</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">18</span>) <span class="op">--</span> (<span class="fu">cosd</span> <span class="dv">54</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true"></a>  <span class="op">--</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">54</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">18</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">18</span>) <span class="op">--</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">18</span>, <span class="fu">sind</span> <span class="dv">18</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true"></a>  <span class="op">--</span> t <span class="op">*</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">54</span>, <span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> cycle;</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框形 = &#39;五角星&#39;&quot;</span>;</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框.余地 = &#39;1cm&#39;&quot;</span>;</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框.各向同性 = &#39;true&#39;&quot;</span>;</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true"></a>宫(甲, <span class="st">&quot;蜗居&quot;</span>);</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true"></a>恢复默认蜗界;</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true"></a>宫(乙, <span class="st">&quot;另一个蜗居&quot;</span>) 位于 甲 偏 (东 <span class="fl">5cm</span>);</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true"></a>呜呼 甲, 乙;</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true"></a>关防要塞 甲, 乙;</span></code></pre></div>
+<figure>
+<img src="../../figures/metafun/new-snail/12.png" alt="" /><figcaption>五角星蜗居</figcaption>
 </figure>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>

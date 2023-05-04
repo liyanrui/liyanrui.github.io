@@ -167,7 +167,7 @@ def 设 expr a = lua(a) enddef;</code></pre>
 <p>例如，<code>获</code> 可将以下语句</p>
 <pre class="metapost"><code>draw lua(&quot;mp.print(配置.形状)&quot;) scaled 2cm withcolor lua(&quot;mp.print(配置.颜色)&quot;);</code></pre>
 <p>简化为</p>
-<pre class="metapost"><code>draw (获 &quot;配置.形状&quot;) scaled 2cm withcolor (^&quot;配置.颜色&quot;);</code></pre>
+<pre class="metapost"><code>draw (获 &quot;配置.形状&quot;) scaled 2cm withcolor (获 &quot;配置.颜色&quot;);</code></pre>
 <h1 id="模块">模块</h1>
 <p>框文样式配置得到大幅简化后，便可考虑将一些自定义的宏归并至一份 ConTeXt 源文件，使之可重复使用。例如</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="co">% snail.tex</span></span>

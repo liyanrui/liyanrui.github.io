@@ -1,0 +1,65 @@
+\environment xxxenv
+\setupfootertexts[If you worry, you suffer twice.]
+\defineoverlay[foo][{\externalfigure[figures/1106826218.jpg][width=.4\textwidth]}]
+\defineframed[bar][frame=off,background={foo}]
+\starttext
+\title{\bar{函数}}
+
+\startitemize[n,inmargin]
+\item 函数 $y = \sqrt{7 + 6x - x^2}$ 的定义域是\blankbar
+\vfill
+\item 已知函数 $f(x + 1)$ 的定义域为 $(-2, 0)$，则 $f(2x - 1)$ 的定义域为\blankbar
+\startoptions[m]
+* (-1, 0)
+* (-2, 0)
+* (0, 1)
+* \left(-\dfrac{1}{2}, 0\right)
+\stopoptions
+\vfill
+\item 设函数 $f(x)=\startcases[align={right,left},distance=3pt]\NC 1 + \log_2(2-x)\NC,\, x < 1\NR\NC 2^{x-1}\NC,\, x\ge 1\NR\stopcases$，则 $f(-2) + f(\log_2 12)=$\blankbar
+\vfill
+\item 设 $f(x)$ 是定义域为 $\mathcal{R}$ 的奇函数，且 $f(1+x) = f(-x)$，若 $f\left(-\dfrac{1}{3}\right)=\dfrac{1}{3}$，则 $f\left(\dfrac{5}{3}\right)=$\blankbar
+\startoptions[m]
+* -\dfrac{5}{3}
+* -\dfrac{1}{3}
+* \dfrac{1}{3}
+* \dfrac{5}{3}
+\stopoptions
+\vfill
+\stopitemize
+\page
+\startitemize[n,continue,inmargin]
+\item 设复数 $z$ 满足 $\vert z - i\vert = 1$，$z$ 在复平面内对应的点为 $(x, y)$，则
+\startoptions[m]
+* (x + 1)^2 + y^2 = 1
+* (x - 1)^2 + y^2 = 1
+* x^2 + (y - 1)^2 = 1
+* x^2 + (y + 1)^2 = 1
+\stopoptions
+\vfill
+\item 已知 $a = \log_2 0.2$，$b = 2^{0.2}$，$c = 0.2^{0.3}$，则
+\startoptions[m]
+* a < b < c
+* a < c < b
+* c < a < b
+* b < c < a
+\stopoptions
+\vfill
+\item 已知非零向量 ${\bf a}$，${\bf b}$ 满足 $\vert{\bf a}\vert = 2\vert{\bf b}\vert$，且 $({\bf a} - {\bf b})\perp{\bf b}$，则 ${\bf a}$ 与 ${\bf b}$ 的夹角为
+\startoptions[m]
+* \dfrac{\pi}{6}
+* \dfrac{\pi}{3}
+* \dfrac{2\pi}{3}
+* \dfrac{5\pi}{6}
+\stopoptions
+\vfill
+\item 已知椭圆 $C$ 的焦点为 $F_1(-1, 0)$，$F_2(1, 0)$，过 $F_2$ 的直线与 $C$ 交于 $A$，$B$ 两点，若 $\vert AF_2\vert = 2\vert F_2B\vert$，$\vert AB\vert = \vert BF_1\vert$，则 $C$ 的方程为
+\startoptions[m]
+* \dfrac{x^2}{2} + y^2 = 1
+* \dfrac{x^2}{3} + \dfrac{y^2}{2} = 1
+* \dfrac{x^2}{4} + \dfrac{y^2}{3} = 1
+* \dfrac{x^2}{5} + \dfrac{y^2}{4} = 1
+\stopoptions
+\vfill
+\stopitemize
+\stoptext

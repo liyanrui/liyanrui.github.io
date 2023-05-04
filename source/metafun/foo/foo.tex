@@ -1,24 +1,26 @@
+\usemodule[zhfonts]
 \input snail
-\startuseMPgraphic{foo-1}
-宫(foo, "Foo");
-宫(bar, "Bar");
-令 bar 位于 foo 偏 (3cm, 0);
+\startuseMPgraphic{foo}
+尺寸(里, 1cm);
+宫(甲, "初始状态");
+宫(乙, "可能是续行符"); 定位(乙, 乙.酉门 位于 甲.卯门 偏 (东 2里)); % 基于门的相对位置进行定位
+宫(丙, "代码片段") 位于 乙 偏 (东 5里 + 北 2里);
+宫(丁, "文档片段") 位于 乙 偏 (东 5里 + 南 1.5里);
+呜呼 甲, 乙, 丙, 丁;
 
-draw foo; draw bar;
-流向 foo => bar;
-\stopuseMPgraphic
+forsuffixes i = 甲, 乙, 丙, 丁:
+    中央四角十二门(i, 显); 郊(i, 显);
+endfor;
 
-\startuseMPgraphic{foo-2}
-宫(foo, "Foo");
-宫(bar, "Bar");
-令 bar 位于 foo 偏 (3cm, 0);
-
-draw foo; draw bar;
-串联 foo => bar;
+路(甲甲, 甲.子门 纬至 甲.坤 经至 甲.艮 经转 甲.酉门) 标注("其他字符", "北");
+路(甲丙, 甲.丑门 经转 丙.酉门) 标注("其他字符", "北");
+路(甲乙, 甲.卯门 => 乙.酉门) 标注("{\tt\backslash}", "北");
+路(乙乙, 乙.子门 纬至 乙.坤 经至 乙.震 经转 乙.寅门) 标注("空格或制表符", "北");
+路(乙甲, 乙.未门 向 (南行 纬距(乙.午门, 丁.酉门)) 纬转 甲.午门) 标注("{\tt\backslash n}", "北");
+路(乙丙, 乙.卯门 纬转 丙.午门) 标注("{\tt\char`\#}", "北");
+路(乙丁, 乙.午门 经转 丁.酉门) 标注("其他字符", "北");
 \stopuseMPgraphic
 
 \startTEXpage[offset=4pt]
-\useMPgraphic{foo-1}
-\blank
-\useMPgraphic{foo-2}
+\useMPgraphic{foo}
 \stopTEXpage

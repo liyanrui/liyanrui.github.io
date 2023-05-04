@@ -120,7 +120,7 @@ draw lua("mp.print(配置.形状)") scaled 2cm withcolor lua("mp.print(配置.�
 简化为
 
 ```MetaPost
-draw (获 "配置.形状") scaled 2cm withcolor (^"配置.颜色");
+draw (获 "配置.形状") scaled 2cm withcolor (获 "配置.颜色");
 ```
 
 # 模块
