@@ -9,13 +9,13 @@ footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.c
 
 > 上一篇：[配置文件与模块](config-and-module.html)
 
-基于前面五篇文章的摸索，现在已基本具备了写一个新的蜗牛模块的能力。与旧的[蜗牛模块](https://github.com/liyanrui/snail/tree/master/obsolete)相比，新模块带带有一些中文编程特征，可能会令人有所不适，但我觉得，除了我可能也没人会考虑使用它，故而请容许我牵黄擎苍，聊以自娱。
-
-# 依赖
-
-snail.tex 适用于 ConTeXt LMTX 版本中的 MetaPost 环境，只需安装 [ConTeXt LMTX 独立包](https://wiki.contextgarden.net/Installation)便可拥有该环境。对于 TeX Live 用户，亦可尝试安装 ConTeXt LMTX 获得该环境，只是版本通常落后于 ConTeXt LMTX 包。 
+基于前面五篇文章的摸索，现在已基本具备了写一个新的 snail（蜗牛）模块的能力。与旧的 [snail](https://github.com/liyanrui/snail/tree/master/obsolete) 相比，新模块带有一些中文编程特征，可能会令人有所不适，但我觉得，除了我可能也没人会考虑使用它，故而请容许我牵黄擎苍，聊以自娱。
 
 # 获取和安装
+
+snail 适用于 ConTeXt LMTX 版本中的 MetaPost 环境，只需安装 [ConTeXt LMTX 独立包](https://wiki.contextgarden.net/Installation)便可拥有该环境。对于 TeX Live 用户，亦可尝试安装 ConTeXt LMTX 获得该环境，只是版本通常落后于 ConTeXt LMTX 包。 
+
+获取 snail：
 
 ```bash
 $ git clone https://github.com/liyanrui/snail.git
@@ -213,6 +213,20 @@ $ context --generate
 
 ![路径标注][10]
 
+# 直达
+
+snail 定义的 `=>` 运算符可简化两个对象间直达路径的构造。直达路径只能连接对象的子、卯、午、酉门。例如
+
+```MetaFont
+宫(甲, "张店");
+宫(乙, "周村") 位于 甲 偏 (西 3cm);
+呜呼 甲, 乙;
+路(甲乙, 甲 => 乙) 标注("96 路", "北");
+```
+
+![直达][a]
+
+
 # 蜗界参数
 
 snail.tex 默认的蜗界参数存储于一个 Lua 表：
@@ -244,7 +258,9 @@ local 蜗界 = {}
 设 "蜗界.框形 = 'fullcircle'";
 设 "蜗界.框.各向同性 = 'true'";
 宫(甲, "蜗居");
-呜呼 甲;
+恢复默认蜗界;
+宫(乙, "另一个蜗居") 位于 甲 偏 (东 4cm);
+呜呼 甲, 乙;
 ```
 
 ![圆形蜗居][11]
@@ -261,15 +277,56 @@ path 五角星;
 设 "蜗界.框形 = '五角星'";
 设 "蜗界.框.余地 = '1cm'";
 设 "蜗界.框.各向同性 = 'true'";
-宫(甲, "蜗居");
-恢复默认蜗界;
-宫(乙, "另一个蜗居") 位于 甲 偏 (东 5cm);
-呜呼 甲, 乙;
-关防要塞 甲, 乙;
+设 "蜗界.文字.颜色 = 'darkred'";
+宫(甲, "\ss 蜗居");
+呜呼 甲;
+关防要塞 甲;
 ```
 
 ![五角星蜗居][12]
 
+若异形框体需频繁使用，可为之定义专用的宫。例如，在 snail.tex 文件中添加以下定义
+
+```MetaFont
+def 五角星宫 (suffix name) (expr a) text 定位语句 =
+  begingroup % 局部变量环境
+  save t, 五角星; numeric t; path 五角星;
+  t := 0.38197;
+  五角星 := (0, 1) -- t * (cosd 54, sind 54) -- (cosd 18, sind 18) 
+    -- t * (cosd 18, -sind 18) -- (cosd 54, -sind 54) -- t * (0, -1)
+    -- (-cosd 54, -sind 54) -- t * (-cosd 18, -sind 18) -- (-cosd 18, sind 18)
+    -- t * (-cosd 54, sind 54) -- cycle;
+  设 "蜗界.框形 = '五角星'";
+  设 "蜗界.框.余地 = '1cm'";
+  设 "蜗界.框.各向同性 = 'true'";
+  宫(name, a) 定位语句;
+  恢复默认蜗界;
+  endgroup;
+enddef;
+```
+
+`五角星宫` 的用法与 `宫` 相同：
+
+```MetaFont
+五角星宫(甲, "蜗居") 位于 原点;
+呜呼 甲;
+关防要塞 甲;
+```
+
+对于蜗界而言，框体形状无穷无尽，但是取决于你的想象力以及在单位圆空间（圆心为原点，半径为 0.5）中构造图形的能力。
+
+若不想一本正经，可通过设置 `蜗界.玩笑` 参数，随机轻微扰动宫和路的线条，以实现似手绘风格。例如
+
+```MetaFont
+设 "蜗界.玩笑 = '6pt'";
+五角星宫(甲, "蜗居") 位于 原点;
+恢复默认蜗界;
+
+呜呼 甲;
+关防要塞 甲;
+```
+
+![玩笑][13]
 
 
 [01]: ../../figures/metafun/new-snail/01.png
@@ -284,3 +341,5 @@ path 五角星;
 [10]: ../../figures/metafun/new-snail/10.png
 [11]: ../../figures/metafun/new-snail/11.png
 [12]: ../../figures/metafun/new-snail/12.png
+[13]: ../../figures/metafun/new-snail/13.png
+[a]: ../../figures/metafun/new-snail/a.png

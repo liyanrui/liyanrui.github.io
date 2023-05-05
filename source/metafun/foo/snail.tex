@@ -323,7 +323,7 @@ vardef 简化 (expr p) =
 enddef;
 
 vardef 柔和 (expr p) =
-  save n, nodes, n, new_p, 圆角; 
+  save n, nodes, new_p, 圆角; 
   numeric n, 圆角; pair nodes[]; path new_p;
   n := length p;
   for i = 0 upto n:
@@ -385,18 +385,18 @@ def 标注之体 (expr tag, anchor, c) text p =
 enddef;
 vardef 标注(expr tag, anchor) text p =
   标注之体 (tag, anchor, -1) (p);
-  ""
+  (0, 0) -- (0, 0)
 enddef;
 vardef 定位标注(expr tag, anchor, c) text p =
   标注之体 (tag, anchor, c) (p);
-  ""
+  (0, 0) -- (0, 0)
 enddef;
 \stopMPinclusions
 
 \startMPinclusions[+]
 def 路 (suffix name) (expr p) text label =
   begingroup
-  save hack; string hack;
+  save hack; path hack;
   path name; name := 柔和(简化(p));
   if (获 "蜗界.路径.有向"):
     流向 name;
