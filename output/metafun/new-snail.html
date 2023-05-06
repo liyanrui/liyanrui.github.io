@@ -95,6 +95,7 @@
 <li><a href="#锚点">锚点</a></li>
 <li><a href="#精确定位">精确定位</a></li>
 <li><a href="#路">路</a></li>
+<li><a href="#弯路">弯路</a></li>
 <li><a href="#直达">直达</a></li>
 <li><a href="#蜗界参数">蜗界参数</a></li>
 </ul>
@@ -241,88 +242,101 @@
 <figure>
 <img src="../../figures/metafun/new-snail/10.png" alt="" /><figcaption>路径标注</figcaption>
 </figure>
+<h1 id="弯路">弯路</h1>
+<p>折线路径可转化为弯路。例如</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a>宫(甲, <span class="st">&quot;甲&quot;</span>);</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a>宫(乙, <span class="st">&quot;乙&quot;); 定位(乙, 乙.巽位 位于 甲.震位 偏 (东 1cm));</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true"></a><span class="st">呜呼 甲, 乙;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true"></a><span class="st">小弯路(甲甲, 甲.子门 经转 甲.艮位 经转 甲.酉门);</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true"></a><span class="st">弯路(甲乙, 甲.卯门 -- 甲.离位 经转 乙.乾位 -- 乙.午门) 定位标注(&quot;</span>奔赴<span class="st">&quot;, &quot;</span>北<span class="st">&quot;, .5);</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true"></a><span class="st">小弯路(乙甲, 乙.酉门 纬转 甲.丑门);</span></span></code></pre></div>
+<figure>
+<img src="../../figures/metafun/new-snail/b.png" alt="" /><figcaption>弯路</figcaption>
+</figure>
+<p><code>小弯路</code> 较 <code>弯路</code> 更接近于折线路径。上述示例也演示了 <code>定位标注</code> 的用法 。与 <code>标注</code> 相比，<code>定位标注</code> 可在自行指定曲线参数对应的点位置放置标注文本。 曲线参数取值范围为 [0, 1]。</p>
 <h1 id="直达">直达</h1>
 <p>snail 定义的 <code>=&gt;</code> 运算符可简化两个对象间直达路径的构造。直达路径只能连接对象的子、卯、午、酉门。例如</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a>宫(甲, <span class="st">&quot;张店&quot;</span>);</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a>宫(乙, <span class="st">&quot;周村&quot;</span>) 位于 甲 偏 (西 <span class="fl">3cm</span>);</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true"></a>呜呼 甲, 乙;</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true"></a>路(甲乙, 甲 <span class="op">=</span>&gt; 乙) 标注(<span class="st">&quot;96 路&quot;</span>, <span class="st">&quot;北&quot;</span>);</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a>宫(甲, <span class="st">&quot;张店&quot;</span>);</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true"></a>宫(乙, <span class="st">&quot;周村&quot;</span>) 位于 甲 偏 (西 <span class="fl">3cm</span>);</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true"></a>呜呼 甲, 乙;</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true"></a>路(甲乙, 甲 <span class="op">=</span>&gt; 乙) 标注(<span class="st">&quot;96 路&quot;</span>, <span class="st">&quot;北&quot;</span>);</span></code></pre></div>
 <figure>
 <img src="../../figures/metafun/new-snail/a.png" alt="" /><figcaption>直达</figcaption>
 </figure>
 <h1 id="蜗界参数">蜗界参数</h1>
 <p>snail.tex 默认的蜗界参数存储于一个 Lua 表：</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode lua"><code class="sourceCode lua"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="kw">local</span> 蜗界 <span class="op">=</span> <span class="op">{}</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true"></a>蜗界<span class="op">.</span>字号 <span class="op">=</span> <span class="st">&quot;BodyFontSize&quot;</span> <span class="co">-- ConTeXt 正文字体所用字号</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true"></a>蜗界 <span class="op">=</span> <span class="op">{</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true"></a>    字号 <span class="op">=</span> 蜗界<span class="op">.</span>字号<span class="op">,</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true"></a>    文字 <span class="op">=</span> <span class="op">{</span>颜色 <span class="op">=</span> <span class="st">&quot;black&quot;</span><span class="op">},</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true"></a>    框形 <span class="op">=</span> <span class="st">&quot;fullsquare&quot;</span><span class="op">,</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true"></a>    框 <span class="op">=</span> <span class="op">{</span>余地 <span class="op">=</span> 蜗界<span class="op">.</span>字号<span class="op">,</span> </span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true"></a>          线宽 <span class="op">=</span> <span class="st">&quot;.175&quot;</span> <span class="op">..</span> 蜗界<span class="op">.</span>字号<span class="op">,</span> </span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true"></a>          颜色 <span class="op">=</span> <span class="st">&quot;darkgray&quot;</span><span class="op">,</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true"></a>          各向同性 <span class="op">=</span> <span class="st">&quot;false&quot;</span><span class="op">,</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true"></a>          郊 <span class="op">=</span> <span class="st">&quot;1.5&quot;</span> <span class="op">..</span> 蜗界<span class="op">.</span>字号<span class="op">},</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true"></a>    背景 <span class="op">=</span> <span class="op">{</span>颜色 <span class="op">=</span> <span class="st">&quot;lightgray&quot;</span><span class="op">},</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true"></a>    路径 <span class="op">=</span> <span class="op">{</span>线宽 <span class="op">=</span> <span class="st">&quot;.2&quot;</span> <span class="op">..</span> 蜗界<span class="op">.</span>字号<span class="op">,</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true"></a>            颜色 <span class="op">=</span> <span class="st">&quot;darkgray&quot;</span><span class="op">,</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true"></a>            有向 <span class="op">=</span> <span class="st">&quot;true&quot;</span><span class="op">,</span></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true"></a>            圆角 <span class="op">=</span> <span class="st">&quot;.25&quot;</span> <span class="op">..</span> 蜗界<span class="op">.</span>字号<span class="op">},</span></span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true"></a>    玩笑 <span class="op">=</span> <span class="st">&quot;0pt&quot;</span></span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode lua"><code class="sourceCode lua"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a><span class="kw">local</span> 蜗界 <span class="op">=</span> <span class="op">{}</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a>蜗界<span class="op">.</span>字号 <span class="op">=</span> <span class="st">&quot;BodyFontSize&quot;</span> <span class="co">-- ConTeXt 正文字体所用字号</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true"></a>蜗界 <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true"></a>    字号 <span class="op">=</span> 蜗界<span class="op">.</span>字号<span class="op">,</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true"></a>    文字 <span class="op">=</span> <span class="op">{</span>颜色 <span class="op">=</span> <span class="st">&quot;black&quot;</span><span class="op">},</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true"></a>    框形 <span class="op">=</span> <span class="st">&quot;fullsquare&quot;</span><span class="op">,</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true"></a>    框 <span class="op">=</span> <span class="op">{</span>余地 <span class="op">=</span> 蜗界<span class="op">.</span>字号<span class="op">,</span> </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true"></a>          线宽 <span class="op">=</span> <span class="st">&quot;.175&quot;</span> <span class="op">..</span> 蜗界<span class="op">.</span>字号<span class="op">,</span> </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true"></a>          颜色 <span class="op">=</span> <span class="st">&quot;darkgray&quot;</span><span class="op">,</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true"></a>          各向同性 <span class="op">=</span> <span class="st">&quot;false&quot;</span><span class="op">,</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true"></a>          郊 <span class="op">=</span> <span class="st">&quot;1.5&quot;</span> <span class="op">..</span> 蜗界<span class="op">.</span>字号<span class="op">},</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true"></a>    背景 <span class="op">=</span> <span class="op">{</span>颜色 <span class="op">=</span> <span class="st">&quot;lightgray&quot;</span><span class="op">},</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true"></a>    路径 <span class="op">=</span> <span class="op">{</span>线宽 <span class="op">=</span> <span class="st">&quot;.2&quot;</span> <span class="op">..</span> 蜗界<span class="op">.</span>字号<span class="op">,</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true"></a>            颜色 <span class="op">=</span> <span class="st">&quot;darkgray&quot;</span><span class="op">,</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true"></a>            有向 <span class="op">=</span> <span class="st">&quot;true&quot;</span><span class="op">,</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true"></a>            圆角 <span class="op">=</span> <span class="st">&quot;.25&quot;</span> <span class="op">..</span> 蜗界<span class="op">.</span>字号<span class="op">},</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true"></a>    玩笑 <span class="op">=</span> <span class="st">&quot;0pt&quot;</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
 <p>在使用 snail 模块时，该 Lua 表会自动被载入。通过 <code>获</code> 和 <code>设</code> 以及 <code>恢复默认蜗界</code> 等宏可以控制绘图样式。例如，可以更改宫的外框形状：</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框形 = &#39;fullcircle&#39;&quot;</span>;</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框.各向同性 = &#39;true&#39;&quot;</span>;</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true"></a>宫(甲, <span class="st">&quot;蜗居&quot;</span>);</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true"></a>恢复默认蜗界;</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true"></a>宫(乙, <span class="st">&quot;另一个蜗居&quot;</span>) 位于 甲 偏 (东 <span class="fl">4cm</span>);</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true"></a>呜呼 甲, 乙;</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框形 = &#39;fullcircle&#39;&quot;</span>;</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框.各向同性 = &#39;true&#39;&quot;</span>;</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true"></a>宫(甲, <span class="st">&quot;蜗居&quot;</span>);</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true"></a>恢复默认蜗界;</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true"></a>宫(乙, <span class="st">&quot;另一个蜗居&quot;</span>) 位于 甲 偏 (东 <span class="fl">4cm</span>);</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true"></a>呜呼 甲, 乙;</span></code></pre></div>
 <figure>
 <img src="../../figures/metafun/new-snail/11.png" alt="" /><figcaption>圆形蜗居</figcaption>
 </figure>
 <p>定义一个异形框体作为框形并不困难。例如</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a><span class="dt">numeric</span> t; t <span class="op">:=</span> <span class="fl">0.38197</span>;</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true"></a><span class="dt">path</span> 五角星; </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true"></a>五角星 <span class="op">:=</span> (<span class="dv">0</span>, <span class="dv">1</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="fu">cosd</span> <span class="dv">54</span>, <span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> (<span class="fu">cosd</span> <span class="dv">18</span>, <span class="fu">sind</span> <span class="dv">18</span>) </span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true"></a>  <span class="op">--</span> t <span class="op">*</span> (<span class="fu">cosd</span> <span class="dv">18</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">18</span>) <span class="op">--</span> (<span class="fu">cosd</span> <span class="dv">54</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true"></a>  <span class="op">--</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">54</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">18</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">18</span>) <span class="op">--</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">18</span>, <span class="fu">sind</span> <span class="dv">18</span>)</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true"></a>  <span class="op">--</span> t <span class="op">*</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">54</span>, <span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> cycle;</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框形 = &#39;五角星&#39;&quot;</span>;</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框.余地 = &#39;1cm&#39;&quot;</span>;</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框.各向同性 = &#39;true&#39;&quot;</span>;</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.文字.颜色 = &#39;darkred&#39;&quot;</span>;</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true"></a>宫(甲, <span class="st">&quot;\ss 蜗居&quot;</span>);</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true"></a>呜呼 甲;</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true"></a>关防要塞 甲;</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a><span class="dt">numeric</span> t; t <span class="op">:=</span> <span class="fl">0.38197</span>;</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true"></a><span class="dt">path</span> 五角星; </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true"></a>五角星 <span class="op">:=</span> (<span class="dv">0</span>, <span class="dv">1</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="fu">cosd</span> <span class="dv">54</span>, <span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> (<span class="fu">cosd</span> <span class="dv">18</span>, <span class="fu">sind</span> <span class="dv">18</span>) </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true"></a>  <span class="op">--</span> t <span class="op">*</span> (<span class="fu">cosd</span> <span class="dv">18</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">18</span>) <span class="op">--</span> (<span class="fu">cosd</span> <span class="dv">54</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true"></a>  <span class="op">--</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">54</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">18</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">18</span>) <span class="op">--</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">18</span>, <span class="fu">sind</span> <span class="dv">18</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true"></a>  <span class="op">--</span> t <span class="op">*</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">54</span>, <span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> cycle;</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框形 = &#39;五角星&#39;&quot;</span>;</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框.余地 = &#39;1cm&#39;&quot;</span>;</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.框.各向同性 = &#39;true&#39;&quot;</span>;</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.文字.颜色 = &#39;darkred&#39;&quot;</span>;</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true"></a>宫(甲, <span class="st">&quot;\ss 蜗居&quot;</span>);</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true"></a>呜呼 甲;</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true"></a>关防要塞 甲;</span></code></pre></div>
 <figure>
 <img src="../../figures/metafun/new-snail/12.png" alt="" /><figcaption>五角星蜗居</figcaption>
 </figure>
 <p>若异形框体需频繁使用，可为之定义专用的宫。例如，在 snail.tex 文件中添加以下定义</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a><span class="kw">def</span> 五角星宫 (suffix name) (expr a) text 定位语句 <span class="op">=</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true"></a>  <span class="kw">begingroup</span> <span class="co">% 局部变量环境</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true"></a>  save t, 五角星; <span class="dt">numeric</span> t; <span class="dt">path</span> 五角星;</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true"></a>  t <span class="op">:=</span> <span class="fl">0.38197</span>;</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true"></a>  五角星 <span class="op">:=</span> (<span class="dv">0</span>, <span class="dv">1</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="fu">cosd</span> <span class="dv">54</span>, <span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> (<span class="fu">cosd</span> <span class="dv">18</span>, <span class="fu">sind</span> <span class="dv">18</span>) </span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true"></a>    <span class="op">--</span> t <span class="op">*</span> (<span class="fu">cosd</span> <span class="dv">18</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">18</span>) <span class="op">--</span> (<span class="fu">cosd</span> <span class="dv">54</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true"></a>    <span class="op">--</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">54</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">18</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">18</span>) <span class="op">--</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">18</span>, <span class="fu">sind</span> <span class="dv">18</span>)</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true"></a>    <span class="op">--</span> t <span class="op">*</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">54</span>, <span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> cycle;</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true"></a>  设 <span class="st">&quot;蜗界.框形 = &#39;五角星&#39;&quot;</span>;</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true"></a>  设 <span class="st">&quot;蜗界.框.余地 = &#39;1cm&#39;&quot;</span>;</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true"></a>  设 <span class="st">&quot;蜗界.框.各向同性 = &#39;true&#39;&quot;</span>;</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true"></a>  宫(name, a) 定位语句;</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true"></a>  恢复默认蜗界;</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true"></a>  <span class="kw">endgroup</span>;</span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true"></a><span class="kw">enddef</span>;</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a><span class="kw">def</span> 五角星宫 (suffix name) (expr a) text 定位语句 <span class="op">=</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a>  <span class="kw">begingroup</span> <span class="co">% 局部变量环境</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true"></a>  save t, 五角星; <span class="dt">numeric</span> t; <span class="dt">path</span> 五角星;</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true"></a>  t <span class="op">:=</span> <span class="fl">0.38197</span>;</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true"></a>  五角星 <span class="op">:=</span> (<span class="dv">0</span>, <span class="dv">1</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="fu">cosd</span> <span class="dv">54</span>, <span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> (<span class="fu">cosd</span> <span class="dv">18</span>, <span class="fu">sind</span> <span class="dv">18</span>) </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true"></a>    <span class="op">--</span> t <span class="op">*</span> (<span class="fu">cosd</span> <span class="dv">18</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">18</span>) <span class="op">--</span> (<span class="fu">cosd</span> <span class="dv">54</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true"></a>    <span class="op">--</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">54</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> t <span class="op">*</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">18</span>, <span class="op">-</span><span class="fu">sind</span> <span class="dv">18</span>) <span class="op">--</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">18</span>, <span class="fu">sind</span> <span class="dv">18</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true"></a>    <span class="op">--</span> t <span class="op">*</span> (<span class="op">-</span><span class="fu">cosd</span> <span class="dv">54</span>, <span class="fu">sind</span> <span class="dv">54</span>) <span class="op">--</span> cycle;</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true"></a>  设 <span class="st">&quot;蜗界.框形 = &#39;五角星&#39;&quot;</span>;</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true"></a>  设 <span class="st">&quot;蜗界.框.余地 = &#39;1cm&#39;&quot;</span>;</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true"></a>  设 <span class="st">&quot;蜗界.框.各向同性 = &#39;true&#39;&quot;</span>;</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true"></a>  宫(name, a) 定位语句;</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true"></a>  恢复默认蜗界;</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true"></a>  <span class="kw">endgroup</span>;</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true"></a><span class="kw">enddef</span>;</span></code></pre></div>
 <p><code>五角星宫</code> 的用法与 <code>宫</code> 相同：</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a>五角星宫(甲, <span class="st">&quot;蜗居&quot;</span>) 位于 原点;</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a>呜呼 甲;</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true"></a>关防要塞 甲;</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true"></a>五角星宫(甲, <span class="st">&quot;蜗居&quot;</span>) 位于 原点;</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true"></a>呜呼 甲;</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true"></a>关防要塞 甲;</span></code></pre></div>
 <p>对于蜗界而言，框体形状无穷无尽，但是取决于你的想象力以及在单位圆空间（圆心为原点，半径为 0.5）中构造图形的能力。</p>
 <p>若不想一本正经，可通过设置 <code>蜗界.玩笑</code> 参数，随机轻微扰动宫和路的线条，以实现似手绘风格。例如</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.玩笑 = &#39;6pt&#39;&quot;</span>;</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true"></a>五角星宫(甲, <span class="st">&quot;蜗居&quot;</span>) 位于 原点;</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true"></a>呜呼 甲;</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true"></a>关防要塞 甲;</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true"></a>设 <span class="st">&quot;蜗界.玩笑 = &#39;6pt&#39;&quot;</span>;</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true"></a>五角星宫(甲, <span class="st">&quot;蜗居&quot;</span>) 位于 原点;</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true"></a>呜呼 甲;</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true"></a>关防要塞 甲;</span></code></pre></div>
 <figure>
 <img src="../../figures/metafun/new-snail/13.png" alt="" /><figcaption>玩笑</figcaption>
 </figure>

@@ -5,6 +5,6 @@ lang: zh-CN
 footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
 
-* [Bash](output/bash/index.html)：我写的一些 Bash 脚本。
 * [MetaFun](output/metafun/index.html)：写一个流程图模块便可学会 MetaPost。
+* [Bash](output/bash/index.html)：我写的一些 Bash 脚本。
 * [旧文](before-2020/index.html)：2020 年之前的一些文章。

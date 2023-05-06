@@ -364,7 +364,7 @@ def 标注之体 (expr tag, anchor, c) text p =
     if c < 0:
       pos := 最长一段的中点 p;
     else:
-      pos := point c of p;
+      pos := point c along p;
     fi;
     offset := .25(获 "蜗界.字号");
     if anchor = "北":
@@ -398,6 +398,144 @@ def 路 (suffix name) (expr p) text label =
   begingroup
   save hack; path hack;
   path name; name := 柔和(简化(p));
+  if (获 "蜗界.路径.有向"):
+    流向 name;
+  else:
+    串联 name;
+  fi;
+  hack := label name;
+  if path hack: fi;
+  endgroup;
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+vardef 二阶曲线 (expr p) =
+  (point 0 of p .. point 1 of p)
+enddef;
+vardef 三阶曲线 (expr p) =
+  (point 0 of p .. controls (point 1 of p) .. point 2 of p)
+enddef;
+vardef 四阶曲线 (expr p) =
+  (point 0 of p .. controls (point 1 of p) and (point 2 of p) .. point 3 of p)
+enddef;
+vardef 小曲线 (expr p) =
+  save m, n, k, new_p, nodes, segments;
+  numeric m, n, k; path new_p, segments[]; pair nodes[];
+  n := length p;
+  if n = 1:
+    new_p := 二阶曲线(p);
+  elseif n = 2:
+    new_p := 三阶曲线(p);
+  elseif n = 3:
+    new_p := 四阶曲线(p);
+  else:
+    new_p := 简化(p);
+    m := length new_p;
+    for i = 0 upto m:
+      nodes[i] := point i of p;
+    endfor;
+    % 分段
+    k := 0;
+    n := m - 2;
+    for i = 0 step 2 until n:
+      if i = 0:
+        segments[k] := nodes[i] 
+          .. controls nodes[i + 1]
+          .. .5[nodes[i + 1], nodes[i + 2]]
+          .. controls nodes[i + 2]
+          .. .5[nodes[i + 2], nodes[i + 3]];
+      elseif i + 2 = m:
+        segments[k] := .5[nodes[i], nodes[i + 1]]
+          .. controls nodes[i + 1]
+          .. nodes[i + 2];
+      elseif i + 3 = m:
+        segments[k] := .5[nodes[i], nodes[i + 1]] 
+          .. controls nodes[i + 1]
+          .. .5[nodes[i + 1], nodes[i + 2]]
+          .. controls nodes[i + 2]
+          .. nodes[i + 3];
+      else:
+        segments[k] := .5[nodes[i], nodes[i + 1]] 
+          .. controls nodes[i + 1]
+          .. .5[nodes[i + 1], nodes[i + 2]]
+          .. controls nodes[i + 2]
+          .. .5[nodes[i + 2], nodes[i + 3]];
+      fi;
+      k := k + 1;
+    endfor;
+    % 合并
+    new_p := segments[0];
+    for i = 1 upto k - 1:
+      new_p := new_p .. segments[i];
+    endfor;
+  fi;
+  new_p
+enddef;
+vardef 曲线 (expr p) =
+  save m, n, k, new_p, nodes, segments;
+  numeric m, n, k; path new_p, segments[]; pair nodes[];
+  n := length p;
+  if n = 1:
+    new_p := 二阶曲线(p);
+  elseif n = 2:
+    new_p := 三阶曲线(p);
+  elseif n = 3:
+    new_p := 四阶曲线(p);
+  else:
+    new_p := 简化(p);
+    m := length new_p;
+    for i = 0 upto m:
+      nodes[i] := point i of p;
+    endfor;
+    % 分段
+    k := 0;
+    n := m - 2;
+    for i = 0 step 2 until n:
+      if i = 0:
+        segments[k] := nodes[i] 
+          .. controls nodes[i + 1] and nodes[i + 2] 
+          .. .5[nodes[i + 2], nodes[i + 3]];
+      elseif i + 2 = m:
+        segments[k] := .5[nodes[i], nodes[i + 1]] 
+          .. controls nodes[i + 1]
+          .. nodes[i + 2];
+      elseif i + 3 = m:
+        segments[k] := .5[nodes[i], nodes[i + 1]] 
+          .. controls nodes[i + 1] and nodes[i + 2] 
+          .. nodes[i + 3];
+      else:
+        segments[k] := .5[nodes[i], nodes[i + 1]] 
+          .. controls nodes[i + 1] and nodes[i + 2] 
+          .. .5[nodes[i + 2], nodes[i + 3]];
+      fi;
+      k := k + 1;
+    endfor;
+    % 合并
+    new_p := segments[0];
+    for i = 1 upto k - 1:
+      new_p := new_p .. segments[i];
+    endfor;
+  fi;
+  new_p
+enddef;
+def 小弯路 (suffix name) (expr p) text label =
+  begingroup
+  save hack; path hack;
+  path name; name := 小曲线(简化(p));
+  if (获 "蜗界.路径.有向"):
+    流向 name;
+  else:
+    串联 name;
+  fi;
+  hack := label name;
+  if path hack: fi;
+  endgroup;
+enddef;
+def 弯路 (suffix name) (expr p) text label =
+  begingroup
+  save hack; path hack;
+  path name; name := 曲线(简化(p));
   if (获 "蜗界.路径.有向"):
     流向 name;
   else:
