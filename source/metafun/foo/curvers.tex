@@ -2,21 +2,24 @@
 \input snail
 \startuseMPgraphic{foo}
 path p, q;
-p := ((0, 0) -- (1cm, 0) -- (1cm, 1cm)) shifted (0, 6cm);
-q := 曲线(p); draw p withcolor darkgray; drawpath q; drawpoints q;
+p := ((0, 0) -- (1cm, 0) -- (1cm, 1cm)) shifted (0, 8cm);
+q := 小曲线(p); draw p withcolor darkgray; drawpath q; drawpoints q;
 
-p := ((0, 0) -- (1cm, 0) -- (1cm, 1cm) -- (2cm, 1cm)) shifted (0, 4cm);
-q := 曲线(p); draw p withcolor darkgray; drawpath q; drawpoints q;
+p := ((0, 0) -- (1cm, 0) -- (1cm, 1cm) -- (2cm, 1cm)) shifted (0, 6cm);
+q := 小曲线(p); draw p withcolor darkgray; drawpath q; drawpoints q;
+
+p := ((0, 0) -- (1cm, 0) -- (1cm, 1cm) -- (2cm, 1cm) -- (2cm, 0)) shifted (0, 4cm);
+q := 小曲线(p); draw p withcolor darkgray; drawpath q; drawpoints q;
 
 p := ((0, 0) -- (1cm, 0) -- (1cm, 1cm) -- (2cm, 1cm) -- (2cm, 0) -- (3cm, 0)) shifted (0, 2cm);
-q := 曲线(p); draw p withcolor darkgray; drawpath q; drawpoints q;
+q := 小曲线(p); draw p withcolor darkgray; drawpath q; drawpoints q;
 
 p := (0, 0) -- (1cm, 0) -- (1cm, 1cm) -- (2cm, 1cm) -- (2cm, 0) -- (3cm, 0) -- (3cm, 1cm) -- (4cm, 1cm) -- (4cm, 0) -- (5cm, 0) -- (5cm, 1cm) -- (6cm, 1cm) -- (6cm, 0) -- (7cm, 0);
-q := 曲线(p); draw p withcolor darkgray; drawpath q; drawpoints q;
+q := 小曲线(p); draw p withcolor darkgray; drawpath q; drawpoints q;
 
 p := ((0, 4cm) -- (1cm, 4cm) -- (1cm, 1cm) -- (4cm, 1cm) 
   -- (4cm, 2cm) -- (3cm, 2cm) -- (3cm, 3cm) -- (7cm, 3cm)) shifted (0, -5cm);
-q := 曲线(p); draw p withcolor darkgray; drawpath q; drawpoints q;
+q := 小曲线(p); draw p withcolor darkgray; drawpath q; drawpoints q;
 \stopuseMPgraphic
 
 \startTEXpage[offset=4pt]

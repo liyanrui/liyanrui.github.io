@@ -13,4 +13,6 @@ footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.c
 * [山海经](./shanhai-jing.html)
 * [门](./gate.html)
 * [配置文件与模块](./config-and-module.html)
-* [新蜗牛](./new-snail.html)
+* [新蜗牛 · 基本对象](./new-snail.html)
+* [新蜗牛 · 路](./road.html)
+* [新蜗牛 · 秘密](./secret.html)

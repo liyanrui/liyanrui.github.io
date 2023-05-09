@@ -1,5 +1,5 @@
 system          > 
-system          > ConTeXt  ver: 2023.04.27 17:04 LMTX  fmt: 2023.5.4  int: english/english
+system          > ConTeXt  ver: 2023.05.05 18:39 LMTX  fmt: 2023.5.6  int: english/english
 system          > 
 system          > 'cont-new.mkxl' loaded
 open source     > level 1, order 1, name '/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkxl/cont-new.mkxl'
@@ -31,10 +31,10 @@ system          > start used files
 system          > text: curvers
 system          > stop used files
 system          > start used files
-system          >    1: filename=publ-imp-default.lua filetype=scripts foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/publ-imp-default.lua fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/publ-imp-default.lua usedmethod=database
+system          >    1: filename=publ-imp-default.lua filetype=lua foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/publ-imp-default.lua fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/publ-imp-default.lua usedmethod=database
 system          >    2: filename=cont-new.mkxl filetype=tex foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkxl/cont-new.mkxl fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkxl/cont-new.mkxl usedmethod=database
-system          >    3: filename=lang-exc.lua filetype=scripts foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/lang-exc.lua fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/lang-exc.lua usedmethod=database
-system          >    4: filename=lang-us.lua filetype=scripts foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/patterns/mkiv/lang-us.lua fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/patterns/mkiv/lang-us.lua usedmethod=database
+system          >    3: filename=lang-exc.lua filetype=lua foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/lang-exc.lua fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/base/mkiv/lang-exc.lua usedmethod=database
+system          >    4: filename=lang-us.lua filetype=lua foundname=/home/garfileo/opt/context/tex/texmf-context/tex/context/patterns/mkiv/lang-us.lua fullname=/home/garfileo/opt/context/tex/texmf-context/tex/context/patterns/mkiv/lang-us.lua usedmethod=database
 system          >    5: filename=/home/garfileo/documents/liyanrui.github.io/source/metafun/foo/curvers.tex format=tex foundname=/home/garfileo/documents/liyanrui.github.io/source/metafun/foo/curvers.tex fullname=/home/garfileo/documents/liyanrui.github.io/source/metafun/foo/curvers.tex usedmethod=direct
 system          >    6: filename=t-zhfonts.mkiv filetype=tex foundname=/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.mkiv fullname=/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.mkiv usedmethod=database
 system          >    7: filename=t-zhfonts.lua filetype=tex format=tex foundname=/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.lua fullname=/home/garfileo/opt/context/tex/texmf-local/tex/context/third/zhfonts/t-zhfonts.lua usedmethod=database
@@ -96,26 +96,26 @@ system          >   min     150000   10000000     150000     150000    2000000  
 system          >   set     500000   10000000     250000     250000   50000000   10000000   10000000     100000       2000      10000     100000     500000     100000        250        250        250
 system          >   stp     100000    1000000     100000     100000     500000     250000    1000000      10000        250       1000      10000      10000        250        250         50         25
 system          > 
-system          >   mem     150000     954155     150000               2000000    1000000    1000000      10000        500       1000      20000      10000    8289560        144       1200        320
-system          >   all    2400000     954155    2400000              18000000    8000000    1000000     320000      16000      72000      80000     160000    8289560        144      28800      10240
+system          >   mem     150000     957382     150000               2000000    1000000    1000000      10000        500       1000      20000      10000    8289584        144       1200        320
+system          >   all    2400000     957382    2400000              18000000    8000000    1000000     320000      16000      72000      80000     160000    8289584        144      28800      10240
 system          > 
-system          >   ini    2145405     913516          0      48237          0     529122                                                                                       0                      
-system          >   ptr      49997                  9992      49981                568769          0          0          0          0          0          0          8          0          0          7
-system          >   top      49998                806391     131074       4940     599707        340         34          8         12         29        446        250        250         50         10
+system          >   ini    2145557     916743          0      48389          0     530773                                                                                       0                      
+system          >   ptr      50149                 10045      50133                570576          0          0          0          0          0          0          8          0          0          7
+system          >   top      50150                806391     131074       4940     601696        340         34          8         12         29        446        250        250         50         10
 system          >   -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 system          > 
 system          >   current input type    : initial
 system          > 
-system          >   approximate memory    : 45341619 (43 MB)
+system          >   approximate memory    : 45344870 (43 MB)
 system          > 
 system          >   expansion depth       : min: 10000, max: 1000000, set: 10000, top: 5
 system          > 
 system          >   luabytecode registers : 1010
 system          >   luabytecode bytes     : 16176 (0 MB)
-system          >   luastate bytes now    : 95650817 (91 MB)
-system          >   luastate bytes max    : 95835047 (91 MB)
+system          >   luastate bytes now    : 95674630 (91 MB)
+system          >   luastate bytes max    : 95858901 (91 MB)
 system          > 
-system          >   file callbacks        : 813
+system          >   file callbacks        : 859
 system          >   saved callbacks       : 281
 system          >   direct callbacks      : 5
 system          >   function callbacks    : 1335
@@ -124,14 +124,14 @@ system          >   message callbacks     : 0
 system          >   bytecode callbacks    : 615
 system          > 
 system          >   mp instances          : 1
-system          >   mp estimated memory   : 4326016 (4 MB)
+system          >   mp estimated memory   : 4321048 (4 MB)
 system          >   mp file callbacks     : 13699
 system          >   mp text callbacks     : 0
-system          >   mp script callbacks   : 399
+system          >   mp script callbacks   : 402
 system          >   mp log callbacks      : 19
 system          > 
-system          >   total callbacks       : 3051
-system          >   mp total callbacks    : 14117
+system          >   total callbacks       : 3097
+system          >   mp total callbacks    : 14120
 system          >   backend callbacks     : 0
 system          > 
 mkiv lua stats  > used config file: selfautoparent:/texmf/web2c/texmfcnf.lua
@@ -144,19 +144,19 @@ mkiv lua stats  > node memory usage: 15 attribute, 3 glue, 120 gluespec, 3 kern,
 mkiv lua stats  > node list callback tasks: 16 unique task lists, 11 instances (re)created, 42 calls
 mkiv lua stats  > used backend: pdf
 mkiv lua stats  > jobdata time: 0.001 seconds saving, 0.000 seconds loading
-mkiv lua stats  > callbacks: file: 813, saved: 281, direct: 5, function: 1335, value: 2, message: 0, bytecode: 615, late 0, total: 3051 (3051 per page)
-mkiv lua stats  > randomizer: resumed with value 0.97507645957272
+mkiv lua stats  > callbacks: file: 859, saved: 281, direct: 5, function: 1335, value: 2, message: 0, bytecode: 615, late 0, total: 3097 (3097 per page)
+mkiv lua stats  > randomizer: resumed with value 0.79758687598918
 mkiv lua stats  > loaded tex modules: 1 requested, all found (*-zhfonts)
 mkiv lua stats  > loaded patterns: cn::58 en::1, load time: 0.000
 mkiv lua stats  > loaded fonts: 3 files: simsun.ttc, latinmodern-math.otf, lmroman10-regular.otf
-mkiv lua stats  > font engine: otf 3.133, afm 1.513, tfm 1.000, 8 instances, 3 shared in backend, 3 common vectors, 0 common hashes, load time 0.414 seconds 
-mkiv lua stats  > metapost: 0.003 seconds, loading: 0.031, execution: 0.003, n: 3, average: 0.012, instances: 1, luacalls: 14117 (file: 13699, text: 0, script: 399, log: 19), memory: 4.126 M
-mkiv lua stats  > math tweaking time: 0.077 seconds, 12 math goodie tables
-mkiv lua stats  > font embedding time: 0.018 seconds, 2 fonts
+mkiv lua stats  > font engine: otf 3.133, afm 1.513, tfm 1.000, 8 instances, 3 shared in backend, 3 common vectors, 0 common hashes, load time 0.425 seconds 
+mkiv lua stats  > metapost: 0.003 seconds, loading: 0.031, execution: 0.002, n: 3, average: 0.012, instances: 1, luacalls: 14120 (file: 13699, text: 0, script: 402, log: 19), memory: 4.121 M
+mkiv lua stats  > math tweaking time: 0.078 seconds, 12 math goodie tables
+mkiv lua stats  > font embedding time: 0.019 seconds, 2 fonts
 mkiv lua stats  > result saved in file: curvers.pdf, compresslevel 1, objectcompresslevel 3
 mkiv lua stats  > positions: 4 collected, 0 deltas, 0 shared partials, 0 partial entries
 mkiv lua stats  > used platform: linux-64, type: unix, binary subtree: texmf-linux-64
 mkiv lua stats  > used engine: luametatex version: 2.1009, functionality level: 20230427, format id: 689, compiler: gcc
-mkiv lua stats  > tex properties: 806391 hash slots used of 2097152, 49981 control sequences, approximate memory usage: 43 MB
-mkiv lua stats  > lua properties: engine: lua 5.4, used memory: 94 MB, ctx: 91 MB, max: 91 MB, symbol mask: utf (τεχ)
-mkiv lua stats  > runtime: 0.786 seconds, 1 processed pages, 1 shipped pages, 1.272 pages/second
+mkiv lua stats  > tex properties: 806391 hash slots used of 2097152, 50133 control sequences, approximate memory usage: 43 MB
+mkiv lua stats  > lua properties: engine: lua 5.4, used memory: 95 MB, ctx: 91 MB, max: 91 MB, symbol mask: utf (τεχ)
+mkiv lua stats  > runtime: 0.799 seconds, 1 processed pages, 1 shipped pages, 1.251 pages/second

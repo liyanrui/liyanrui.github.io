@@ -1,15 +1,32 @@
 \usemodule[zhfonts]
-\input snail.tex
-\startuseMPgraphic{foo}
-宫(甲, "蜗居");
-廷(乙, "蜗院"); 定位(乙, 乙.坎位 位于 甲.离位);
-景(丙, "snail.png", 2cm, "auto"); 定位(丙, 丙.酉门 位于 乙.兑位);
-呜呼 甲, 乙, 丙;
+\def\旋转[#1]#2{\rotate[rotation=#1]{#2}}
+%\input snail.tex
+\startMPinclusions[+]
+def 路标 text a =
+  path hack; hack := 标注 a;
+enddef;
 
-小弯路(甲乙, 甲.酉门 -- 甲.坎位 -- 甲.艮位 -- 乙.坤位 -- 乙.子门);
-弯路(乙丙, 乙.午门 -- 乙.乾位 -- 丙.坎位 -- 丙.巽位 -- 丙.兑位 -- 丙.离位 -- 丙.卯门);
+def 标注 expr a =
+  作标注(a)
+enddef;
+
+vardef 作标注(expr a) text b =
+  draw textext(a) shifted (point .5 along b + (0, 6pt));
+  ""
+enddef;
+
+def 路 (suffix name) text label =
+  path name;
+  name := origin -- (3cm, 0);
+  draw name;
+  show tostring name;
+enddef;
+\stopMPinclusions
+
+\startuseMPgraphic{foo}
+路(p) 标注 "foo";
 \stopuseMPgraphic
 
 \startTEXpage[offset=4pt]
-\useMPgraphic{foo}
+\hfill\useMPgraphic{foo}
 \stopTEXpage
