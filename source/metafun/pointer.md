@@ -9,7 +9,7 @@ footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.c
 
 > 上一篇：[新蜗牛 · 秘密](secret.html)
 
-> 下一篇：[新蜗牛 · 其他](misc.html)
+> 下一篇：[新蜗牛 · 其他](others.html)
 
 基于指针（或引用）可以间接访问某个变量。例如，在 C 语言中，
 
