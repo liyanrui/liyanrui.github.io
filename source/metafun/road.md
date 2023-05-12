@@ -8,6 +8,7 @@ footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.c
 ...
 
 > 上一篇：[新蜗牛 · 基本对象](new-snail.html)
+
 > 下一篇：[新蜗牛 · 秘密](secret.html)
 
 本篇主要介绍如何为蜗界基本对象构造各种连线并对其进行文字标注。

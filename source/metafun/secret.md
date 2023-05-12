@@ -9,6 +9,8 @@ footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.c
 
 > 上一篇：[新蜗牛 · 路](road.html)
 
+> 下一篇：[新蜗牛 · 指针](pointer.html)
+
 MetaPost 的宏定义非常灵活，以致于有时会像脑筋急转弯那般容易让人翻车。在写 snail 模块时，为了追求绘图「语法」接近中文形式，我用了一些有些诡异的宏定义形式，简记于此，以作备忘。
 
 # 无括号参数
@@ -218,9 +220,7 @@ def 路 (suffix name) text label =
 enddef;
 ```
 
-`tostring` 可将其参数转化为字符串。当 `label` 为空时，`tostring` 将 `path` 类型的变量 `name` 转化为字符串。若 `label` 不为空，则 `label name` 的展开结果是空字串 `""`， `tostring` 将其转化为其本身。
-
-由于字符串指可作为孤立表达式，直接使用 `标注` 宏，也不会导致 MetaPost 编译器出错，故而无需再定义一个 `路标` 宏。
+`tostring` 可将其参数转化为字符串。当 `label` 为空时，`tostring` 将 `path` 类型的变量 `name` 转化为字符串。若 `label` 不为空，则 `label name` 的展开结果是空字串 `""`， `tostring` 将其转化为其本身。亦可将 `tostring` 换为 `quote`或 `quotation`。由于字符串指可作为孤立表达式，直接使用 `标注` 宏，也不会导致 MetaPost 编译器出错，故而无需再定义一个 `路标` 宏。
 
 或许还有更好的解决方案，但愿在我遇到它时，我尚未将 MetaPost 忘光。
 

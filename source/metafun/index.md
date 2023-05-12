@@ -16,3 +16,5 @@ footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.c
 * [新蜗牛 · 基本对象](./new-snail.html)
 * [新蜗牛 · 路](./road.html)
 * [新蜗牛 · 秘密](./secret.html)
+* [新蜗牛 · 指针](./pointer.html)
+* [新蜗牛 · 其他](./others.html)
