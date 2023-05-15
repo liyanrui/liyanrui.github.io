@@ -15,7 +15,7 @@ local 蜗界 = {}
             颜色 = "darkgray",
             有向 = "true",
             标注偏距 = ".5" .. 蜗界.字号,
-            圆角 = ".3" .. 蜗界.字号},
+            圆角 = ".2" .. 蜗界.字号},
     玩笑 = "0pt",
     调试 = "false"
 }
@@ -181,7 +181,7 @@ def 宫之体 (suffix name) (expr content, w, h) =
     if (获 "蜗界.玩笑") > 0: name.框 := name.框 randomized (获 "蜗界.玩笑"); fi;
     name := image (fill name.框 withcolor (获 "蜗界.背景.颜色");
                    draw name.框 withpen pencircle scaled 线宽
-                   withcolor (获 "蜗界.框.颜色");
+                                withcolor (获 "蜗界.框.颜色");
                    draw name.文 withcolor (获 "蜗界.文字.颜色"););
   endgroup
 enddef;
@@ -201,13 +201,20 @@ enddef;
 \stopMPinclusions
 
 \startMPinclusions[+]
-def 宫廷 (suffix a) (expr b) = picture a; a := b; enddef;
 def 城 (suffix a) text b =
-  if unknown a:
-    宫廷(a, nullpicture);
-  fi;
-  for i = b: addto a also image(draw i); endfor;
-  中央四角十二门(a); 郊(a);
+  begingroup
+    save t;
+    picture a, t; 
+    t := nullpicture;
+    for i = b: addto t also image(draw i); endfor;
+    path a.框; 
+    a.框 := fullsquare xysized (bbwidth t, bbheight t) 
+            enlarged ((获 "蜗界.框.余地") * (1, 1));
+    a.框 := a.框 shifted (center t - center a.框);
+    a := image (fill a.框 withcolor (获 "蜗界.背景.颜色");
+                draw t;);
+    中央四角十二门(a); 郊(a);
+  endgroup
 enddef;
 \stopMPinclusions
 
@@ -469,7 +476,10 @@ def 路 (suffix name) (expr p) text label =
     串联 name;
   fi;
   quote label name;
-  if 获 "蜗界.调试": drawpoints name; fi;
+  if 获 "蜗界.调试": 
+    drawpoints name 
+      withpen pencircle scaled .5(获 "蜗界.路径.线宽"); 
+  fi;
   endgroup
 enddef;
 \stopMPinclusions
@@ -585,7 +595,10 @@ def 弯路之体 (suffix name) (expr p, 方法) text label =
     串联 name;
   fi;
   quote label name;
-  if 获 "蜗界.调试": drawpoints name; fi;
+  if 获 "蜗界.调试": 
+    drawpoints name 
+      withpen pencircle scaled .5(获 "蜗界.路径.线宽"); 
+  fi;
   endgroup
 enddef;
 def 小弯路 (suffix name) (expr p) text label =
@@ -656,12 +669,33 @@ def 旋 = rotated enddef;
 def 令 suffix a = 令之体(a) enddef;
 def 令之体 (suffix a) text b =
   a := a b;
+  a.框 := a.框 b;
   forsuffixes i = 中央, 东北角, 东南角, 西南角, 西北角,
                   子门, 卯门, 午门, 酉门, 
                   丑门, 寅门, 辰门, 巳门, 未门, 申门, 戌门, 亥门,
                   乾位, 坤位, 艮位, 兑位, 巽位, 震位, 坎位, 离位:
     if known a.i: a.i := a.i b; fi;
   endfor;
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+numeric 竖亥直径;
+path 竖亥圆, 竖亥前路, 竖亥后路, 竖亥路;
+pair 竖亥前点, 竖亥后点, 竖亥跃点, 竖亥走向;
+tertiarydef a 越过 b =
+  hide(竖亥 := a intersectionpoint b;
+       竖亥直径 := 获 "蜗界.字号";
+       竖亥圆 := fullcircle scaled 竖亥直径 偏 竖亥;
+       竖亥前路 := a cutafter b cutafter 竖亥圆;
+       竖亥后路 := a cutbefore b cutbefore 竖亥圆;
+       竖亥前点 := point 1 along 竖亥前路;
+       竖亥后点 := point 0 along 竖亥后路;
+       竖亥走向 := unitvector(竖亥后点 - 竖亥前点);
+       竖亥跃点 := .5[竖亥前点, 竖亥后点] 
+                 偏 (.5竖亥直径 * (竖亥走向 rotated angle()));
+       竖亥路 := 竖亥前路 .. 竖亥跃点 .. 竖亥后路;)
+    竖亥路
 enddef;
 \stopMPinclusions
 
