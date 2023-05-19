@@ -2,7 +2,7 @@
 title: zhe：用中文编写 m4 宏
 lang: zh-CN
 date: 2023 年 05 月 19 日
-abstract: 
+abstract: zhe 是 bash 脚本，可用于简化中文 m4 宏的展开。
 category: ./index.html
 footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
