@@ -286,17 +286,17 @@ enddef;
 \stopMPinclusions
 
 \startMPinclusions[+]
-def 开启虚线模式 =
+def 用虚线 =
   drawpathoptions(dashed (evenly scaled .625(获 "蜗界.路径.线宽"))
                   withpen pencircle scaled (获 "蜗界.路径.线宽")
                   withcolor (获 "蜗界.路径.颜色"));
 enddef;
-def 关闭虚线模式 =
+def 用实线 =
   drawpathoptions(withpen pencircle scaled (获 "蜗界.路径.线宽")
                   withcolor (获 "蜗界.路径.颜色"));
 enddef;
 % 默认关闭虚线模式
-关闭虚线模式;
+用实线;
 \stopMPinclusions
 
 \startMPinclusions[+]
@@ -680,22 +680,38 @@ enddef;
 \stopMPinclusions
 
 \startMPinclusions[+]
-numeric 竖亥直径;
-path 竖亥圆, 竖亥前路, 竖亥后路, 竖亥路;
-pair 竖亥前点, 竖亥后点, 竖亥跃点, 竖亥走向;
+path 竖亥.新路;
 tertiarydef a 越过 b =
-  hide(竖亥 := a intersectionpoint b;
-       竖亥直径 := 获 "蜗界.字号";
-       竖亥圆 := fullcircle scaled 竖亥直径 偏 竖亥;
-       竖亥前路 := a cutafter b cutafter 竖亥圆;
-       竖亥后路 := a cutbefore b cutbefore 竖亥圆;
-       竖亥前点 := point 1 along 竖亥前路;
-       竖亥后点 := point 0 along 竖亥后路;
-       竖亥走向 := unitvector(竖亥后点 - 竖亥前点);
-       竖亥跃点 := .5[竖亥前点, 竖亥后点] 
-                 偏 (.5竖亥直径 * (竖亥走向 rotated angle()));
-       竖亥路 := 竖亥前路 .. 竖亥跃点 .. 竖亥后路;)
-    竖亥路
+  hide(竖亥.新路 := 路径局部跃迁(a, b);)
+  竖亥.新路
 enddef;
+
+vardef 路径局部跃迁 (expr a, b) =
+  save 直径, 圆, 前路, 后路,
+       旁路前段, 旁路后段, 前点, 后点, 
+       跃点, 走向, 偏向;
+  numeric 直径;
+  path 圆, 前路, 后路, 旁路前段, 旁路后段;
+  pair 前点, 后点, 跃点, 走向, 偏向;
+  竖亥 := a intersectionpoint b;
+  直径 := 获 "蜗界.字号";
+  圆 := fullcircle scaled 直径 偏 竖亥;
+  前路 := a cutafter b cutafter 圆;
+  后路 := a cutbefore b cutbefore 圆;
+  前点 := point 1 along 前路;
+  后点 := point 0 along 后路;
+  走向 := unitvector(后点 - 前点);
+  旁路前段 := b cutafter a cutafter 圆;
+  旁路后段 := b cutbefore a cutbefore 圆;
+  偏向 := unitvector((point 0 along 旁路后段) - (point 1 along 旁路前段));
+  if ((走向 rotated 90) dotprod 偏向) < 0:
+    走向 := 走向 rotated -90;
+  else:
+    走向 := 走向 rotated 90;
+  fi;
+  跃点 := .5[前点, 后点] 偏 (.5直径 * 走向);
+  前路 .. 跃点 .. 后路
+enddef;
+def 逆转 = reverse enddef;
 \stopMPinclusions
 

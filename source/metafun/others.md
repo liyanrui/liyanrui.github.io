@@ -120,9 +120,9 @@ path 甲 := fullsquare scaled 2cm;
 ![越过][05]
 
 
+[a]: ../../figures/metafun/others/a.png
 [01]: ../../figures/metafun/others/01.png
 [02]: ../../figures/metafun/others/02.pngt
 [03]: ../../figures/metafun/others/03.png
 [04]: ../../figures/metafun/others/04.png
 [05]: ../../figures/metafun/others/05.png
-[a]: ../../figures/metafun/others/a.png
