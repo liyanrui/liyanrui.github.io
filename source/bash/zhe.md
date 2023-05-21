@@ -1,5 +1,5 @@
 ---
-title: zhe：用中文编写 m4 宏
+title: zhe：有时想写中文宏……
 lang: zh-CN
 date: 2023 年 05 月 19 日
 abstract: zhe 是 bash 脚本，可用于简化中文 m4 宏的展开。
@@ -120,8 +120,6 @@ define(`测试', `这是测试 $1。')
 有参数的宏：这是测试 2。
 ```
 
-**特别提醒：目前，zhe 尚不支持嵌套形式的中文宏调用，例如 `（甲，‘乙’，（丙，‘丁’））`。下一个版本将实现该功能。**
-
 # 缘由
 
 m4 的宏调用语法是迎合英文习惯，英文单词之间是有空格作为间隔的，在视觉上容易分辨出普通文字和宏调用语句的区别。例如
@@ -231,6 +229,57 @@ $ zhe -i macros.m4 foo.txt
 
 ```m4
 当我们看到 0.333 时，能意识到它是（计算，1/3）的产物吗？
+```
+
+## 嵌套宏调用
+
+zhe 支持嵌套形式的中文宏调用，例如 `（甲，‘乙’，（丙，‘丁’））`。有了嵌套宏调用，便可以做复杂一些的任务了。例如，汉化 ConTeXt。
+
+macro.m4：
+
+```m4
+divert(-1)
+define(`%中文',
+`\usemodule[zhfonts][size=$2]
+\setupzhfonts[serif][regular=$1]'
+)
+define(`%宋体', `simsun')
+define(`%小四', `11pt')
+define(`%文始', `\starttext')
+define(`%文终', `\stoptext')
+define(`%插图', `\placefigure[here][]{$1}{\externalfigure[$2][$3]}')
+define(`*版宽', `\textwidth')
+define(`%宽', `width=$1')
+divert(0)dnl
+@宏开
+```
+
+foo.txt：
+
+```TeX
+（%中文，%宋体，%小四）
+%文始
+你好，\CONTEXT！
+（%插图，标题，foo.pdf，（%宽，0.5*版宽））
+%文终
+```
+
+以下命令
+
+```bash
+$ zhe -i macros.m4 foo.txt
+```
+
+的输出为
+
+```TeX
+\usemodule[zhfonts][size=11pt]
+\setupzhfonts[serif][regular=simsun]
+
+\starttext
+你好，\CONTEXT！
+\placefigure[here][]{标题}{\externalfigure[foo.pdf][width=0.5\textwidth]}
+\stoptext
 ```
 
 [01]: ../../figures/bash/zhe/01.png
