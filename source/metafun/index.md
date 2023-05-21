@@ -19,3 +19,4 @@ footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.c
 * [新蜗牛 · 指针](./pointer.html)
 * [新蜗牛 · 其他](./others.html)
 * [新蜗牛 · 后记](./postscript.html)
+* [新蜗牛 · 附录](./appendix.html)
