@@ -2,7 +2,7 @@
 title: zhe：有时想写中文宏……
 lang: zh-CN
 date: 2023 年 05 月 19 日
-abstract: zhe 是 bash 脚本，可用于简化中文 m4 宏的展开。
+abstract: 用于简化中文 m4 宏的展开。
 category: ./index.html
 footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
@@ -281,5 +281,9 @@ $ zhe -i macros.m4 foo.txt
 \placefigure[here][]{标题}{\externalfigure[foo.pdf][width=0.5\textwidth]}
 \stoptext
 ```
+
+## 野蛮和优雅
+
+见「[新蜗牛 · 附录](../metafun/appendix.html)」。
 
 [01]: ../../figures/bash/zhe/01.png

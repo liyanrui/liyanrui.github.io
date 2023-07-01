@@ -1,0 +1,49 @@
+\usemodule[zhfonts]
+\setuptyping[before=,after=]
+\startbuffer[all]
+以下 Rust 程序
+@ hello world #
+fn main() {
+    println!("Hello world!");
+}
+@
+可在终端打印「Hello world!」。
+\stopbuffer
+
+\startbuffer[hello]
+hello world #
+fn main() {
+    println!("Hello world!");
+}
+\stopbuffer
+
+\startbuffer[foo]
+fn main() {
+    println!("Hello world!");
+}
+\stopbuffer
+
+\input snail.tex
+\startuseMPgraphic{foo}
+宫(根, "\startTEXpage\typebuffer[all]\stopTEXpage");
+宫(甲, "\type{以下 Rust 程序}");
+宫(乙, "\startTEXpage\typebuffer[hello]\stopTEXpage") 位于 根 偏 (南 5cm);
+宫(丙, "\type{可在终端打印「Hello world!」。}");
+宫(丁, "\type{hello world}");
+宫(戊, "\startTEXpage\typebuffer[foo]\stopTEXpage");
+定位(甲, 甲.卯门 位于 乙.酉门 偏 (西 2cm));
+定位(丙, 丙.酉门 位于 乙.卯门 偏 (东 2cm));
+定位(丁, 丁 位于 .5[甲.中央, 乙.中央] 偏 (南 4cm));
+定位(戊, 戊 位于 .5[乙.中央, 丙.中央] 偏 (南 4cm));
+呜呼 根, 甲, 乙, 丙, 丁, 戊;
+
+弯路(根甲, 根.午门 -- 根.乾位 纬转 甲.子门);
+弯路(根乙, 根.午门 -- 乙.子门);
+弯路(根丙, 根.午门 -- 根.乾位 纬转 丙.子门);
+弯路(乙丁, 乙.午门 -- 乙.乾位 纬转 丁.子门);
+弯路(乙戊, 乙.午门 -- 乙.乾位 纬转 戊.子门);
+\stopuseMPgraphic
+
+\startTEXpage[offset=4pt]
+\useMPgraphic{foo}
+\stopTEXpage
