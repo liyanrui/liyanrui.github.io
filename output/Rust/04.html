@@ -89,7 +89,7 @@
 <li><a href="#unsafe">unsafe</a></li>
 <li><a href="#拥抱原始指针">拥抱原始指针</a></li>
 <li><a href="#链表">链表</a></li>
-<li><a href="#结构体的静态方法">结构体的静态方法</a></li>
+<li><a href="#结构体的方法">结构体的方法</a></li>
 <li><a href="#堆空间指针">堆空间指针</a></li>
 <li><a href="#c-版本">C 版本</a></li>
 <li><a href="#小结">小结</a></li>
@@ -226,7 +226,7 @@
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true"></a><span class="pp">println!</span>(<span class="st">&quot;root: {:?}</span><span class="sc">\n</span><span class="st">a: {:?}</span><span class="sc">\n</span><span class="st">b: {:?}&quot;</span><span class="op">,</span> root<span class="op">,</span> a<span class="op">,</span> b)<span class="op">;</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true"></a><span class="co">// 打印结点的内存地址</span></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true"></a><span class="pp">println!</span>(<span class="st">&quot;root: {:p}, a: {:p}, b: {:p}&quot;</span><span class="op">,</span> <span class="op">&amp;</span>root<span class="op">,</span> <span class="op">&amp;</span>a<span class="op">,</span> <span class="op">&amp;</span>b)<span class="op">;</span></span></code></pre></div>
-<h1 id="结构体的静态方法">结构体的静态方法</h1>
+<h1 id="结构体的方法">结构体的方法</h1>
 <p>上一节构建树结点的代码有较多重复。由于 <code>TreeNode</code> 是结构体类型，可为其定义一个关联函数，例如 <code>new</code>，用于简化结构体实例的构建过程。像这样的关联函数，在 Rust 语言里称为结构体的方法。</p>
 <p>以下代码为 <code>TreeNode</code> 类型定义了 <code>new</code> 方法：</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a><span class="kw">impl</span> TreeNode <span class="op">{</span></span>
