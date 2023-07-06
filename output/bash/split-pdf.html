@@ -93,7 +93,7 @@
 <p>上述命令可在当前目录生成 demo-page-1.pdf, demo-page-2.pdf…单页文件名的 <code>%d</code> 是页码通配符。</p>
 <p>对于生成的单页文件可使用以下命令进行排序：</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>$ <span class="fu">ls</span> demo-page-*.pdf <span class="kw">|</span> <span class="fu">sort</span> -V</span></code></pre></div>
-<p>将上述命令与 <code>pdfunit</code> 结合，便可 PDF 单页文件合并为一份 PDF 文件：</p>
+<p>将上述命令与 pdfunite 结合，便可 PDF 单页文件合并为一份 PDF 文件：</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>$ <span class="ex">pdfunite</span> <span class="va">$(</span><span class="fu">ls</span> demo-page-*.pdf <span class="kw">|</span> <span class="fu">sort</span> -V<span class="va">)</span> output.pdf</span></code></pre></div>
 <p>一旦确定将目标 PDF 文件分割为几份，便可将 pdfseparate 生成的单页文件，按照文件名所含的页码将其复制到单独的目录。文件分割几份，便构建相应数量的存放单页文件的目录，然后在每个目录下使用 pdfunite 生成分割结果。该过程可以通过 Bash 脚本实现自动化，不过倘若不需要对大量文件进行分割，使用上述命令手动分割也不甚费时。</p>
 <hr />

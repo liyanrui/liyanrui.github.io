@@ -25,7 +25,7 @@ $ pdfseparate demo.pdf demo-page-%d.pdf
 $ ls demo-page-*.pdf | sort -V
 ```
 
-将上述命令与 `pdfunit` 结合，便可 PDF 单页文件合并为一份 PDF 文件：
+将上述命令与 pdfunite 结合，便可 PDF 单页文件合并为一份 PDF 文件：
 
 ```bash
 $ pdfunite $(ls demo-page-*.pdf | sort -V) output.pdf
