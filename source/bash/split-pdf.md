@@ -7,7 +7,7 @@ category: ./index.html
 footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
 
-对于 Kindle 设备，对 PDF 文件进行拆分尤为需要。Kindle 支持以电子邮件的方式向设备发送电子书，而扫描版的 PDF 文件通常超出邮箱附件容量限制（通常不超过 50 MB），只有将其分割为一组小文件方可作为邮件附件发送给设备。
+对于 Kindle 设备，对 PDF 文件进行拆分尤为需要。Kindle 支持以电子邮件的方式向设备发送电子书，而扫描版的 PDF 文件通常超出邮箱附件容量限制（通常不超过 50 MB），需要将其分割为一组小文件方可作为邮件附件发送给设备。
 
 Linux 环境中的 PDF 解析库 poppler（大多数 Linux 发行版自带）提供了一些处理 PDF 文件的程序，其中 pdfseparate 和 pdfunite 可用于拆分 PDF 文件。pdfseparate 可抽取 PDF 文件的每一页保存为单独的 PDF 文件。pdfunit 将指定的一组 PDF 单页文件合并为一份 PDF 文件。
 
