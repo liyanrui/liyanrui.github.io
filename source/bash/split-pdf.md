@@ -7,9 +7,9 @@ category: ./index.html
 footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
 
-Linux 环境中的 PDF 解析库 poppler 提供了一些处理 PDF 文件的程序，其中一些程序可用于拆分 PDF 文件。对于 Kindle 设备，对 PDF 文件进行拆分尤为需要。因为 Kindle 支持以电子邮件的方式向设备发送电子书。一些扫描版的 PDF 文件通常超出邮箱附件容量限制（通常不超过 50 MB），只有将其分割为一组小文件方可作为邮件附件发送给设备。
+对于 Kindle 设备，对 PDF 文件进行拆分尤为需要。Kindle 支持以电子邮件的方式向设备发送电子书，而扫描版的 PDF 文件通常超出邮箱附件容量限制（通常不超过 50 MB），只有将其分割为一组小文件方可作为邮件附件发送给设备。
 
-分割 PDF 文件需要三个程序，pdfseparate，sort 和 pdfunite。pdfseparate 可抽取 PDF 文件的每一页保存为单独的 PDF 文件。sort 程序用于对 PDF 单页文件名进行排序。pdfunit 将指定的一组 PDF 单页文件合并为一份 PDF 文件。pdfseparate 和 pdfunit 皆为 poppler 库提供的程序。sort 是 Linux 基本命令。这三个程序，大多数 Linux 系统自带。
+Linux 环境中的 PDF 解析库 poppler（大多数 Linux 发行版自带）提供了一些处理 PDF 文件的程序，其中 pdfseparate 和 pdfunite 可用于拆分 PDF 文件。pdfseparate 可抽取 PDF 文件的每一页保存为单独的 PDF 文件。pdfunit 将指定的一组 PDF 单页文件合并为一份 PDF 文件。
 
 假设待分割的 PDF 文件为 demo.pdf，首先使用 pdfseparate 对其进行拆分：
 
