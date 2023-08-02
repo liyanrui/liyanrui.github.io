@@ -262,14 +262,14 @@
 <p>结构体类型的实例方法定义中，<code>&amp;self</code> 实际上是 Rust 语法糖，它是 <code>self: &amp;Self</code> 的简写，而 <code>Self</code> 是结构体类型的代称。对于 <code>TreeNode</code> 类型而言，<code>self: &amp;Self</code> 即 <code>self: &amp;TreeNode</code>。</p>
 <h1 id="堆空间指针">堆空间指针</h1>
 <p>上述示例构造的原始指针所指变量的值皆位于栈空间。事实上，原始指针也能以智能指针为中介指向堆空间中的值。例如</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true"></a><span class="kw">let</span> <span class="kw">mut</span> root <span class="op">=</span> <span class="dt">Box</span><span class="pp">::</span>into_raw(<span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">TreeNode::</span>new(<span class="st">&quot;Root&quot;</span>)))<span class="op">;</span></span>
+<div class="sourceCode" id="cb26"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true"></a><span class="kw">let</span> root <span class="op">=</span> <span class="dt">Box</span><span class="pp">::</span>into_raw(<span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">TreeNode::</span>new(<span class="st">&quot;Root&quot;</span>)))<span class="op">;</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true"></a><span class="kw">unsafe</span> <span class="op">{</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true"></a>    (<span class="op">*</span>root)<span class="op">.</span>display()<span class="op">;</span></span>
 <span id="cb26-4"><a href="#cb26-4" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
 <p>上述代码中的 <code>root</code> 的类型为 <code>*mut TreeNode</code>，因为 <code>Box::into_raw</code> 方法可将一个 <code>Box&lt;T&gt;</code> 指针转化为原始指针类型。</p>
 <p>需要注意的是，在上述代码中，堆空间中的值所占用的内存区域是由智能指针分配，但是 <code>Box::into_raw</code> 会将 <code>Box&lt;T&gt;</code> 指针消耗掉，并将其分配的内存区域所有权移交于原始指针。这块区域的释放，需由原始指针的使用者负责，因此上述代码实际上存在着内存泄漏，因为 <code>root</code> 指向的内存区域并未被释放。</p>
 <p>释放 <code>root</code> 所指内存区域的最简单的方法是，将其所指内存区域归还于智能指针，由该智能指针负责释放。例如</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true"></a><span class="kw">let</span> <span class="kw">mut</span> root <span class="op">=</span> <span class="dt">Box</span><span class="pp">::</span>into_raw(<span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">TreeNode::</span>new(<span class="st">&quot;Root&quot;</span>)))<span class="op">;</span></span>
+<div class="sourceCode" id="cb27"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true"></a><span class="kw">let</span> root <span class="op">=</span> <span class="dt">Box</span><span class="pp">::</span>into_raw(<span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">TreeNode::</span>new(<span class="st">&quot;Root&quot;</span>)))<span class="op">;</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true"></a><span class="kw">unsafe</span> <span class="op">{</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true"></a>     <span class="kw">let</span> x <span class="op">=</span> <span class="dt">Box</span><span class="pp">::</span>from_raw(root)<span class="op">;</span></span>
 <span id="cb27-4"><a href="#cb27-4" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
@@ -316,7 +316,7 @@
 <span id="cb32-6"><a href="#cb32-6" aria-hidden="true"></a>}</span></code></pre></div>
 <h1 id="小结">小结</h1>
 <p>目前多数 Rust 教程吝啬于对原始指针及其用法给出全面且深入的介绍，甚至将原始指针归于 Rust 语言高级进阶知识，我认为这是非常不明智的做法。原始指针不仅应当尽早介绍，甚至应当鼓励初学者多加使用。特别在构造链表（包括栈、堆、队列等结构）、树、图等形式的数据结构时，不应该让所谓的程序安全性凌驾于数据结构的易用性（易于访问和修改）之上。</p>
-<p>对于 Rust 语言初学者而言，引用、智能指针和原始指针这三者的学习次序，我的建议是原始指针 -&gt; 智能指针 -&gt; 引用，而非多数 Rust 教程建议的引用 -&gt; 智能指针 -&gt; 原始指针。至于这三种指针的用法，我也是推荐先使用原始指针，在遇到难以克服的安全性问题时，再考虑使用智能指针或引用对代码进行重构。</p>
+<p>对于 Rust 语言初学者而言，引用、智能指针和原始指针这三者的学习次序，我的建议是原始指针 -&gt; 智能指针 -&gt; 引用，而非多数 Rust 教程建议的引用 -&gt; 智能指针 -&gt; 原始指针。至于这三种指针的用法，我也是推荐先使用原始指针，在遇到难以克服的安全性问题时，再考虑使用智能指针或引用对代码进行重构，否则初学者何以知悉智能指针和引用出现和存在的原因呢？</p>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
 </body>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>全局变量</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">全局变量</h1>
+<p class="date">2023 年 07 月 05 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#问题">问题</a></li>
+<li><a href="#失败的全局原始指针">失败的全局原始指针</a></li>
+<li><a href="#optiont-于事无补"><code>Option&lt;T&gt;</code> 于事无补</a></li>
+<li><a href="#结构体屏障">结构体屏障</a></li>
+<li><a href="#制造内存泄漏">制造内存泄漏</a></li>
+<li><a href="#延迟初始化">延迟初始化</a></li>
+<li><a href="#值的所有权转移">值的所有权转移</a></li>
+<li><a href="#小结">小结</a></li>
+</ul>
+</nav>
+<h1 id="问题">问题</h1>
+<p>在前面一些章节里，在使用正则表达式对文本进行分割时，皆使用局部变量存储正则表达式，且皆为硬代码——在程序运行时无法修改正则表达式。本章尝试构造一个可在运行时被修改的全局变量用以表达正则表达式。</p>
+<h1 id="失败的全局原始指针">失败的全局原始指针</h1>
+<p>倘若将原始指针作为全局变量，在程序运行时，可以令其指向与其类型相匹配的任何一个值，这是我想要的全局变量。于是，试着写出以下代码：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">use</span> <span class="pp">regex::</span>Regex<span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="kw">use</span> <span class="pp">std::ptr::</span>null_mut<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="kw">let</span> a<span class="op">:</span> <span class="op">*</span><span class="kw">mut</span> Regex <span class="op">=</span> null_mut()<span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>    a <span class="op">=</span> <span class="dt">Box</span><span class="pp">::</span>into_raw(<span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">Regex::</span>new(<span class="st">&quot; *@ *&quot;</span>)))<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a>    <span class="kw">let</span> v <span class="op">=</span> (<span class="op">*</span>a)<span class="op">.</span>unwrap()<span class="op">.</span>split(<span class="st">&quot;num@ 123@456  @ 789&quot;</span>)<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a>    <span class="kw">for</span> i <span class="kw">in</span> v <span class="op">{</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a>        <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a>    <span class="op">}</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
+<p>Rust 编译器编译上述代码时会报错，建议使用 <code>const</code> 或 <code>static</code> 代替全局变量 <code>a</code> 的定义语句中的 <code>let</code>，亦即 Rust 语言不允许使用 <code>let</code> 定义全局变量。<code>const</code> 修饰的全局变量，其值不可修改。<code>static</code> 修饰的全局变量，其值可修改。故而，我将变量 <code>a</code> 的定义修改为</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">static</span> a<span class="op">:</span> <span class="op">*</span><span class="kw">mut</span> Regex <span class="op">=</span> null_mut()<span class="op">;</span></span></code></pre></div>
+<p>Rust 编译器依然报错，称 <code>*mut regex::Regex</code> 类型的值不能被不同的线程安全共享，虽不甚知其意，但也应知此路不通了。</p>
+<p>也许在素有经验的 Rust 程序员看来，上述代码会令他一言难尽，但是如果我说通过以上代码可以看出 Rust 语言并不希望程序员使用全局变量，料想不会引起他的反对。Rust 不希望什么，那是它的事，而我却需要它。现在的问题是，无法构造全局原始指针。Rust 编译器给出的建议是，如果想让 <code>*mut regex::Regex</code> 类型的指针作为全局变量，前提是需要为该类型实现 <code>Sync</code> 特性。这个建议对于目前的我来说是超纲的，所以我完全可以认为，在 Rust 语言中不允许出现全局原始指针。</p>
+<h1 id="optiont-于事无补"><code>Option&lt;T&gt;</code> 于事无补</h1>
+<p>在表示空值方面，<code>Option&lt;T&gt;</code> 类型可以代替原始指针，用该类型封装原始指针是否能作为全局变量呢？试试看：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="kw">static</span> foo<span class="op">:</span> <span class="dt">Option</span><span class="op">&lt;*</span><span class="kw">mut</span> <span class="dt">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="cn">None</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a>    <span class="kw">let</span> a <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>    foo <span class="op">=</span> <span class="cn">Some</span>(<span class="op">&amp;</span>a <span class="kw">as</span> <span class="op">*</span><span class="kw">mut</span> <span class="dt">i32</span>)<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a>    <span class="pp">println!</span>(<span class="st">&quot;{:?}&quot;</span><span class="op">,</span> foo)<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
+<p>答案是否定的。Rust 编译器依然称：</p>
+<pre><code>`*mut i32` cannot be shared between threads safely</code></pre>
+<p>并建议</p>
+<pre><code>shared static variables must have a type that implements `Sync`</code></pre>
+<p>此路依然不通。</p>
+<h1 id="结构体屏障">结构体屏障</h1>
+<p>无论是直接用原始指针，还是用 <code>Option&lt;T&gt;</code> 封装原始指针，在构造全局变量时，都会导致原始指针直接暴露在 Rust 编译器面前，而编译器坚持认为，所有的全局变量类型都应该实现 <code>Sync</code> 特性。现在，换一个思路，倘若将原始指针类型封装在结构体中，是否可以骗过编译器呢？</p>
+<p>以下代码将 <code>*mut i32</code> 类型的指针封装在一个结构体类型中，并使用该结构体类型构造全局变量：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Debug</span><span class="at">)]</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="kw">struct</span> Foo <span class="op">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>    data<span class="op">:</span> <span class="op">*</span><span class="kw">mut</span> <span class="dt">i32</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a><span class="op">}</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a><span class="kw">static</span> <span class="kw">mut</span> A<span class="op">:</span> Foo <span class="op">=</span> Foo<span class="op">{</span>data<span class="op">:</span> <span class="pp">std::ptr::</span>null_mut()<span class="op">};</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a>    <span class="kw">unsafe</span> <span class="op">{</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a>        <span class="pp">println!</span>(<span class="st">&quot;{:?}&quot;</span><span class="op">,</span> A)<span class="op">;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a>    <span class="op">}</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
+<p>上述程序可以通过编译，其输出为</p>
+<pre><code>Foo { data: 0x0 }</code></pre>
+<p>以下代码尝试能否修改 <code>A.data</code> 的值：</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="kw">let</span> <span class="kw">mut</span> a <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a><span class="kw">unsafe</span> <span class="op">{</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a>    A<span class="op">.</span>data <span class="op">=</span> <span class="op">&amp;</span><span class="kw">mut</span> a <span class="kw">as</span> <span class="op">*</span><span class="kw">mut</span> <span class="dt">i32</span><span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a>    <span class="pp">println!</span>(<span class="st">&quot;{:?}&quot;</span><span class="op">,</span> A)<span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a>    <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> <span class="op">*</span>A<span class="op">.</span>data)<span class="op">;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
+<p>依然能通过编译，其输出结果与以下结果类似：</p>
+<pre><code>Foo { data: 0x7fff64cdecb4 }
+3</code></pre>
+<p>这样骗编译器，好么？我不知道。Rust 标准库在 <code>std::marker::Sync</code> 的文档中提到，所有的基本类型，复合类型（元组、结构体和枚举），引用，<code>Vec&lt;T&gt;</code>，<code>Box&lt;T</code> 以及大多数集合类型等皆实现了 <code>Sync</code> 特性，所以上述手法并不能称为「骗」。</p>
+<p>回到本章开始的问题，现在可写出以下代码：</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="kw">use</span> <span class="pp">regex::</span>Regex<span class="op">;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a><span class="kw">use</span> <span class="pp">std::ptr::</span>null_mut<span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Debug</span><span class="at">)]</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a><span class="kw">struct</span> Foo <span class="op">{</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a>    data<span class="op">:</span> <span class="op">*</span><span class="kw">mut</span> Regex</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a><span class="op">}</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true"></a><span class="kw">static</span> <span class="kw">mut</span> A<span class="op">:</span> Foo <span class="op">=</span> Foo<span class="op">{</span>data<span class="op">:</span> null_mut()<span class="op">};</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true"></a>    <span class="kw">unsafe</span> <span class="op">{</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true"></a>        A <span class="op">=</span> Foo <span class="op">{</span>data<span class="op">:</span> <span class="dt">Box</span><span class="pp">::</span>into_raw(<span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">Regex::</span>new(<span class="st">&quot; *@ *&quot;</span>)<span class="op">.</span>unwrap()))<span class="op">};</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true"></a>        <span class="kw">let</span> v <span class="op">=</span> (<span class="op">*</span>A<span class="op">.</span>data)<span class="op">.</span>split(<span class="st">&quot;num@ 123@456  @ 789&quot;</span>)<span class="op">;</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true"></a>        <span class="kw">for</span> i <span class="kw">in</span> v <span class="op">{</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true"></a>            <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true"></a>        <span class="op">}</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true"></a>        <span class="kw">let</span> _ <span class="op">=</span> <span class="dt">Box</span><span class="pp">::</span>from_raw(A<span class="op">.</span>data)<span class="op">;</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true"></a>    <span class="op">}</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
+<p>注意，上述代码中的 <code>let _ = ...</code> 表示不关心右侧函数调用的返回值，但是该行代码可将 <code>A.data</code> 指向的内存空间归还于 Rust 的智能指针管理系统，从而实现自动释放。</p>
+<h1 id="制造内存泄漏">制造内存泄漏</h1>
+<p>上述基于原始指针的全局变量构造方法似乎并不为 Rust 开发者欣赏，因为在他们眼里，任何一个原始指针都像一个不知道什么时候会被一脚踩上去的地雷，他们更喜欢是引用。</p>
+<p>下面尝试使用引用构造全局变量。由于引用不具备空值，所以必须使用 <code>Option&lt;T&gt;</code> 进行封装，例如</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="kw">use</span> <span class="pp">regex::</span>Regex<span class="op">;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a><span class="kw">static</span> <span class="kw">mut</span> A<span class="op">:</span> <span class="dt">Option</span><span class="op">&lt;&amp;</span>Regex<span class="op">&gt;</span> <span class="op">=</span> <span class="cn">None</span><span class="op">;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a>    <span class="kw">unsafe</span> <span class="op">{</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true"></a>        <span class="kw">let</span> re <span class="op">=</span> <span class="pp">Regex::</span>new(<span class="st">&quot; *@ *&quot;</span>)<span class="op">.</span>unwrap()<span class="op">;</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true"></a>        A <span class="op">=</span> <span class="cn">Some</span>(<span class="op">&amp;</span>re)<span class="op">;</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true"></a>        <span class="co">// ... 待补充</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true"></a>    <span class="op">}</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
+<p>Rust 编译器对上述代码给出的错误信息是，<code>re</code> 被一个全局变量借用，但是前者的寿命短于后者，亦即当后者还存在时，前者已经死亡，导致后者引用失效。在 C 语言中，这种错误就是鼎鼎有名的「悬垂指针」错误，Rust 编译器会尽自己最大能力去阻止此类错误。</p>
+<p>不过，Rust 标准库给我们留了一个后门，使用 <code>Box&lt;T&gt;</code> 的 <code>leak</code> 方法可将位于堆空间的值的寿命提升为全局变量级别的寿命：</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="kw">unsafe</span> <span class="op">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>    <span class="kw">let</span> re <span class="op">=</span> <span class="dt">Box</span><span class="pp">::</span>new(<span class="pp">Regex::</span>new(<span class="st">&quot; *@ *&quot;</span>)<span class="op">.</span>unwrap())<span class="op">;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>    A <span class="op">=</span> <span class="cn">Some</span>(<span class="dt">Box</span><span class="pp">::</span>leak(re))<span class="op">;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a>    <span class="kw">let</span> v <span class="op">=</span> A<span class="op">.</span>unwrap()<span class="op">.</span>split(<span class="st">&quot;num@ 123@456  @ 789&quot;</span>)<span class="op">;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a>    <span class="kw">for</span> i <span class="kw">in</span> v <span class="op">{</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a>        <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true"></a>    <span class="op">}</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
+<p>需要注意的是，<code>Box::leak</code> 名副其实，会导致内存泄漏，因为堆空间的值其寿命经 <code>Box::leak</code> 提升后，与程序本身相同，无法回收。Rust 官方说，如果你介意这样的内存泄漏，那就需要考虑走原始指针路线。</p>
+<h1 id="延迟初始化">延迟初始化</h1>
+<p>对于支持运行时修改的全局变量，还有一类方法是将全局变量的初始化推迟在程序运行时，但该类方法要么依赖第三方库（crate），例如 lazy_static，要么是标准库目前尚未稳定的功能 OnceCell，此外该类方法只能对全局变量完成一次赋值。这些方法，rzeo 并不打算使用，故而略过。</p>
+<h1 id="值的所有权转移">值的所有权转移</h1>
+<p>基于值的所有权转移也能实现在程序的运行时修改全局变量的值。例如</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a><span class="kw">use</span> <span class="pp">regex::</span>Regex<span class="op">;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a><span class="kw">static</span> <span class="kw">mut</span> A<span class="op">:</span> <span class="dt">Option</span><span class="op">&lt;</span>Regex<span class="op">&gt;</span> <span class="op">=</span> <span class="cn">None</span><span class="op">;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a>    <span class="kw">unsafe</span> <span class="op">{</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true"></a>        <span class="kw">let</span> re <span class="op">=</span> <span class="pp">Regex::</span>new(<span class="st">&quot; *@ *&quot;</span>)<span class="op">.</span>unwrap()<span class="op">;</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true"></a>        A <span class="op">=</span> <span class="cn">Some</span>(re)<span class="op">;</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true"></a>        <span class="kw">let</span> v <span class="op">=</span> A<span class="op">.</span>unwrap()<span class="op">.</span>split(<span class="st">&quot;num@ 123@456  @ 789&quot;</span>)<span class="op">;</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true"></a>        <span class="kw">for</span> i <span class="kw">in</span> v <span class="op">{</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true"></a>            <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true"></a>        <span class="op">}</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true"></a>    <span class="op">}</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
+<p>不过，上述代码无法通过编译，原因是 <code>Option&lt;T&gt;</code> 的实例方法 <code>unwrap</code> 需要转移实例的所有权——消耗一个临时变量，但是上述代码中的 <code>Option&lt;T&gt;</code> 的实例 <code>A</code> 是全局变量，与程序同寿，其所有权无法转移。有两种方法可规避该错误，一种是</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="kw">unsafe</span> <span class="op">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a>    <span class="kw">let</span> re <span class="op">=</span> <span class="pp">Regex::</span>new(<span class="st">&quot; *@ *&quot;</span>)<span class="op">.</span>unwrap()<span class="op">;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a>    A <span class="op">=</span> <span class="cn">Some</span>(re)<span class="op">;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true"></a>    <span class="kw">match</span> A <span class="op">{</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true"></a>        <span class="cn">Some</span>(<span class="kw">ref</span> b) <span class="op">=&gt;</span> <span class="op">{</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true"></a>            <span class="kw">let</span> v <span class="op">=</span> b<span class="op">.</span>split(<span class="st">&quot;num@ 123@456  @ 789&quot;</span>)<span class="op">;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true"></a>            <span class="kw">for</span> i <span class="kw">in</span> v <span class="op">{</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true"></a>                <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true"></a>            <span class="op">}</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true"></a>        <span class="op">},</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true"></a>        <span class="cn">None</span> <span class="op">=&gt;</span> <span class="pp">panic!</span>(<span class="st">&quot;...&quot;</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true"></a>    <span class="op">}</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
+<p>另一种是使用 <code>Option&lt;T&gt;</code> 的 <code>as_ref</code> 方法，将类型 <code>&amp;Option&lt;T&gt;</code> 转换为类型 <code>Option&lt;&amp;T&gt;</code>，然后使用 <code>Option&lt;&amp;T&gt;</code> 的 <code>unwrap</code> 方法：</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode rust"><code class="sourceCode rust"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="kw">unsafe</span> <span class="op">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a>    <span class="kw">let</span> re <span class="op">=</span> <span class="pp">Regex::</span>new(<span class="st">&quot; *@ *&quot;</span>)<span class="op">.</span>unwrap()<span class="op">;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a>    A <span class="op">=</span> <span class="cn">Some</span>(re)<span class="op">;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true"></a>    <span class="kw">let</span> v <span class="op">=</span> A<span class="op">.</span>as_ref()<span class="op">.</span>unwrap()<span class="op">.</span>split(<span class="st">&quot;num@ 123@456  @ 789&quot;</span>)<span class="op">;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true"></a>    <span class="kw">for</span> i <span class="kw">in</span> v <span class="op">{</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true"></a>        <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true"></a>    <span class="op">}</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
+<p>不妨将 <code>as_ref</code> 方法视为上述模式匹配代码的简化。</p>
+<h1 id="小结">小结</h1>
+<p>全局变量是构成程序的不安全因素之一，但它并非洪水猛兽，只要保证程序在任一时刻全局变量不会被多个线程同时修改即可。如果全局变量给程序带来了灾难，这往往意味着是程序的设计出现了严重问题。我认为 Rust 对全局变量的限制太过于严厉，特别是在禁止直接将原始指针作为全局变量这一方面，毕竟即使不使用原始指针，对全局变量的修改在 Rust 语言看来，也是不安全的。既然都不安全，何必五十步笑百步。</p>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>
