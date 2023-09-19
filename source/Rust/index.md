@@ -1,8 +1,8 @@
 ---
-title: 第三次学习 Rust
+title: Rust 小品
 lang: zh-CN
 date: 2023 年 06 月 14 日
-abstract: 事不过三。
+abstract: 小情境中的 Rust。
 category: ../../index.html
 footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
@@ -16,3 +16,4 @@ footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.c
 * [配置文件](./06.html)
 * [UTF-8](./07.html)
 * [命令行界面](./08.html)
+* [后记](./09.html)
