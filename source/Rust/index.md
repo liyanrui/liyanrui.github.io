@@ -16,4 +16,5 @@ footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.c
 * [配置文件](./06.html)
 * [UTF-8](./07.html)
 * [命令行界面](./08.html)
-* [后记](./09.html)
+* [中间文件](./09.html)
+* [后记](./10.html)
