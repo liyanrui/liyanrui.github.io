@@ -79,6 +79,9 @@
   <link rel="stylesheet" href="../../appearance/lmd.css" />
 </head>
 <body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
 <header id="title-block-header">
 <h1 class="title">中间文件</h1>
 <p class="date">2023 年 09 月 22 日</p>
@@ -376,7 +379,8 @@ class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb14-1"><a href=
 结构体里的 <code>#[serde(Default)]</code> 标记。</p>
 <h1 id="小结">小结</h1>
 <p>与 Rust 库 serde_cyaml 相比，C 库 libcyaml
-库用起来颇为晦涩，且遇到非常规的 YAML 格式，只能使用更为底层的库 libyaml
+库用起来颇为晦涩，且遇到非常规的 YAML 格式，只能使用更为底层的库 <a
+href="https://www.wpsoftware.net/andrew/pages/libyaml.html">libyaml</a>
 进行半自动解析。在 C 程序的数据交换文件格式选择方面，我不推荐
 YAML，更好的方案是将 Lua 解释器嵌入 C 程序，然后将 Lua
 表作为数据交换格式。</p>
