@@ -5,6 +5,7 @@ lang: zh-CN
 footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
 
+* [三维重建](output/3d-reconstruction/index.html)：干点正经事。
 * [Rust 小品](output/Rust/index.html)：小情境中的 Rust。
 * [MetaFun](output/metafun/index.html)：写一个流程图模块便可学会 MetaPost。
 * [Bash](output/bash/index.html)：我写的一些 Bash 脚本。
