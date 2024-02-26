@@ -121,3 +121,7 @@ $ TextureMesh sfm_data_dense.mvs --mesh-file sfm_data_dense_mesh.ply
 上述命令在当前目录生成 sfm_data_dense_texture.ply 文件，在 MeshLab 中显示为
 
 ![纹理映射](../../figures/3d-reconstruction/openmvg_mvs/texture.png)
+
+# 体会
+
+目前，基于多个视角的照片数据重建三维场景（单目视觉）已经具备较为成熟的开源环境，构造具体的应用程序并不困难，但 SfM 三维重建结果缺失物理尺寸信息，重建结果的精确性依赖照片数量和质量，且仅适合静物场景重建。

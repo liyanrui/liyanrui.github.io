@@ -93,6 +93,7 @@
 <li><a href="#构建稠密点集">构建稠密点集</a></li>
 <li><a href="#网格化">网格化</a></li>
 <li><a href="#纹理映射">纹理映射</a></li>
+<li><a href="#体会">体会</a></li>
 </ul>
 </nav>
 <p>OpenMVG 库实现了增量式和全局式 SFM（Structure from Motion）算法。OpenMVS 库可基于 openMVG 库估计的相机参数和特征点集，生成稠密点云及其网格模型。二者皆提供了一些程序，基于这些程序可构造出易于使用的三维重建管线，本文仅介绍该管线在 Linux 系统中的基本用法。</p>
@@ -153,6 +154,8 @@ $ openMVG_main_openMVG2openMVS -i sfm_data.bin -o sfm_data.mvs</code></pre>
 <figure>
 <img src="../../figures/3d-reconstruction/openmvg_mvs/texture.png" alt="" /><figcaption>纹理映射</figcaption>
 </figure>
+<h1 id="体会">体会</h1>
+<p>目前，基于多个视角的照片数据重建三维场景（单目视觉）已经具备较为成熟的开源环境，构造具体的应用程序并不困难，但 SfM 三维重建结果缺失物理尺寸信息，重建结果的精确性依赖照片数量和质量，且仅适合静物场景重建。</p>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
 </body>
