@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>YAML 简介</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">YAML 简介</h1>
+<p class="date">2024 年 03 月 02 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#文档起止">文档起止</a></li>
+<li><a href="#映射">映射</a></li>
+<li><a href="#标量">标量</a></li>
+<li><a href="#字符串">字符串</a></li>
+<li><a href="#序列">序列</a></li>
+</ul>
+</nav>
+<p>对于大多数工具，我们通常有八成的机会用到它二成的功能。YAML 应该也遵守这样的二八法则。</p>
+<h1 id="文档起止">文档起止</h1>
+<p>一份规范的 YAML 文档，从三个「<code>-</code>」 开始：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="pp">---</span></span></code></pre></div>
+<p>结束于三个「<code>.</code>」：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="co">...</span></span></code></pre></div>
+<p>对于一份单独的 YAML 文档，即其内容皆为 YAML 标记，则文档的起止标记并非必要，但多份 YAML 文档存于一份文件中，则文档起始标记 <code>---</code> 可作为文档分割符使用，例如</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="pp">---</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> 文档 1</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="pp">---</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> 文档 2</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="pp">---</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="fu">name</span><span class="kw">:</span><span class="at"> 文档 3</span></span></code></pre></div>
+<p>YAML 文档结束标记也并非必要，但是在一份文件（流）中，若 YAML 文档之后还有其他非 YAML 文档内容，则文档结束标记可使得 YAML 解析器适时终止工作。例如下面提供给 pandoc 程序的输入文件，其首部嵌入了一份 YAML 文档：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="pp">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> YAML 简介</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> 2024 年 03 月 02 日</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="co">...</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="co">对于一个工具，通常我们只需要学习它的 20% 的功能，便可以获得它 80% 的价值了，YAML 并不例外……</span></span></code></pre></div>
+<h1 id="映射">映射</h1>
+<p>在上一节最后一个示例中，YAML 文档的内容除了起止标记，剩下的内容是两个映射：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> YAML 简介</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> 2024 年 03 月 02 日</span></span></code></pre></div>
+<p>在 YAML 中，映射即键值对，冒号的左侧为键，右侧为值，且冒号与值之间至少存在一个空格。</p>
+<h1 id="标量">标量</h1>
+<p>YAML 的标量有空值、布尔值、整型数、浮点数、日期、时间、字符串，它们皆可作为映射中的值，以与编程语言里的基本类型对应，例如</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="fu">parent</span><span class="kw">:</span><span class="at"> </span><span class="ch">~</span><span class="co"> # 或 null，空值</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="fu">display</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co"> # 或 false，布尔值</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="fu">width</span><span class="kw">:</span><span class="at"> </span><span class="dv">600</span><span class="co"> # 整型数</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a><span class="fu">height</span><span class="kw">:</span><span class="at"> </span><span class="dv">400</span><span class="co"> # 整型数</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a><span class="fu">weight</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.9</span><span class="co"> # 浮点数</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> 2024-03-03</span><span class="co"> # 日期，iso8601 格式</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a><span class="fu">time</span><span class="kw">:</span><span class="at"> 2024-03-03T07:36+08:00</span><span class="co"> # 时间，iso8601 格式</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> 这是一个窗口</span><span class="co"> # 字符串</span></span></code></pre></div>
+<p>在 YAML 文档中，「<code>#</code>」及其之后的内容是注释。</p>
+<h1 id="字符串">字符串</h1>
+<p>字符串标量较其他标量复杂一些，故专门开设一节予以探讨。</p>
+<p>一般情况下，字符串不需要使用引号包围。例如</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="fu">foo</span><span class="kw">:</span><span class="at"> 我能吞下玻璃而不伤身体</span></span></code></pre></div>
+<p>若字符串中包含特殊符号，则该字符串需要用引号包围。例如</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="fu">foo</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;width: 300&#39;</span></span></code></pre></div>
+<p>或</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="fu">foo</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;width: 300&quot;</span></span></code></pre></div>
+<p>字符串可以呈多行，但是从第二行开始必须至少缩进一个空格，且换行符会被转为空格。例如</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="fu">foo</span><span class="kw">:</span><span class="at"> 这是多行</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a><span class="at"> 字符串</span></span></code></pre></div>
+<p>YAML 解析器可将 <code>foo</code> 对应的值解析为</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="at">这是多行 字符串</span></span></code></pre></div>
+<p>多行字符串可使用「<code>|</code>」 符号保留换行符，也可以使用「<code>&gt;</code>」符号消除换行符。例如</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="fu">foo</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>  这是多行</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>  字符串</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a><span class="fu">bar</span><span class="kw">: </span><span class="ch">&gt;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a>  这是多行</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a>  字符串</span></code></pre></div>
+<p><code>foo</code> 和 <code>bar</code> 的值可分别被解析为</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a><span class="at">这是多行\n字符串\n</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a><span class="at">这是多行 字符串\n</span></span></code></pre></div>
+<p>其中「<code>\n</code>」表示换行符。</p>
+<p>「<code>+</code>」可用于保留多行字符串末尾的换行符，「<code>-</code>」可用于删除字符串末尾的换行符。例如</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="pp">---</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a><span class="fu">foo-1</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a>  这是多行</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true"></a>  字符串</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true"></a>  </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true"></a><span class="fu">foo-2</span><span class="kw">: </span><span class="ch">|+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true"></a>  这是多行</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true"></a>  字符串</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true"></a>  </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true"></a><span class="fu">foo-3</span><span class="kw">: </span><span class="ch">|-</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true"></a>  这是多行</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true"></a>  字符串</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true"></a>  </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true"></a><span class="co">...</span></span></code></pre></div>
+<p>上述三个标量的值可分别被解析为</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="at">这是多行\n字符串\n</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a><span class="at">这是多行\n字符串\n\n</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a><span class="at">这是多行\n字符串</span></span></code></pre></div>
+<h1 id="序列">序列</h1>
+<p>一组以「<code>-</code>」和空格开头的行构成一个序列。</p>
+<p>一组标量可构成序列：</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="dv">3</span></span></code></pre></div>
+<p>YAML 解析器可将上例解析为数组</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="kw">[</span><span class="dv">1</span><span class="kw">,</span><span class="at"> </span><span class="dv">2</span><span class="kw">,</span><span class="at"> </span><span class="dv">3</span><span class="kw">]</span></span></code></pre></div>
+<p>一组映射也可以构成序列。例如</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">foo</span><span class="kw">:</span><span class="at"> hello foo!</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a><span class="kw">-</span><span class="at"> </span><span class="fu">bar</span><span class="kw">:</span><span class="at"> hello bar!</span></span></code></pre></div>
+<p>YAML 解析器可将其解析为</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a>[{<span class="st">&#39;foo&#39;</span>: <span class="st">&#39;hello foo!&#39;</span>}, {<span class="st">&#39;bar&#39;</span>: <span class="st">&#39;hello bar!&#39;</span>}]</span></code></pre></div>
+<p>序列也可以构成映射。例如</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a><span class="fu">foo</span><span class="kw">:</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="dv">3</span></span></code></pre></div>
+<p>解析结果为</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a><span class="kw">{</span><span class="fu">&#39;foo&#39;</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="dv">1</span><span class="kw">,</span><span class="at"> </span><span class="dv">2</span><span class="kw">,</span><span class="at"> </span><span class="dv">3</span><span class="kw">]}</span></span></code></pre></div>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>
