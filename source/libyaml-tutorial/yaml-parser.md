@@ -142,3 +142,5 @@ error:
 ```text
 {郯城, 118.374, 34.619}
 ```
+
+若觉 LibYAML 解析 YAML 文档的过程过于繁琐，且所解析的 YAML 文档中规中矩，建议使用 LibCYAML 库，可参考「<https://github.com/tlsa/libcyaml/blob/main/docs/guide.md>」。
