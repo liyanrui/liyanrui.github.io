@@ -461,8 +461,11 @@ x，orez 能够将该语言标记自动传播给与 x 同名的片段，被 x
 符号的有名片段格式：</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>@ 片段名字 # <span class="op">[</span>语言标记<span class="op">]</span> <span class="op">&lt;</span>与本片段同名的某个片段标签<span class="op">&gt;</span> <span class="op">+</span> 或 <span class="op">^+</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>本片段标签<span class="op">&gt;</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="op">...</span> 片段内容 <span class="op">...</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>@</span></code></pre></div>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">对其他 \</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="er">  片段的引用 @</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>@</span></code></pre></div>
 <h1 id="自定义符号">自定义符号</h1>
 <p>上述内容所涉及的 orez 符号皆为默认符号，但这些符号可由用户通过 YAML
 格式的配置文件予以修改。例如，若希望像下面这样定义有名片段</p>
