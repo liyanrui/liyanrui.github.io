@@ -159,8 +159,7 @@ orez 会将生成的 YAML 文档内容发送到标准输出，亦即屏幕。上
 ```yaml
 - type: snippet
   content: |-
-    '\usemodule[zhfonts]
-    \startTEXpage[offset=1cm]
+    '\starttext
     我是一个文学化的程序“hello world”：'
 - type: snippet with name
   name: |-
@@ -178,7 +177,7 @@ orez 会将生成的 YAML 文档内容发送到标准输出，亦即屏幕。上
         }'
 - type: snippet
   content: |-
-    '\stopTEXpage'
+    '\stoptext'
 ```
 
 若看不懂 orez 生成的排版元文档，可阅读「[YAML 简介](../libyaml-tutorial/yaml-intro.html)」一文。
