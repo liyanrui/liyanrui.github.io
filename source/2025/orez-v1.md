@@ -3,7 +3,7 @@ title: Orez 1.0 指南
 lang: zh-CN
 date: 2025 年 01 月 03 日
 homeback: ../../index.html
-abstract: 我的文学编程工具 orez，在 2024 年重写了，增加了用户自定义符号的功能。
+abstract: 我多年前写的文学编程工具 orez，于 2024 年重写并增加了用户自定义符号的功能。
 category: ../../index.html
 footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
