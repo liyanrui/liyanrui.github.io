@@ -115,6 +115,8 @@ id="toc-排版元文档生成weave">排版元文档生成（weave）</a></li>
 <li><a href="#语言标记" id="toc-语言标记">语言标记</a></li>
 <li><a href="#orez-所有符号" id="toc-orez-所有符号">orez
 所有符号</a></li>
+<li><a href="#片段名字续行符"
+id="toc-片段名字续行符">片段名字续行符</a></li>
 <li><a href="#自定义符号" id="toc-自定义符号">自定义符号</a></li>
 <li><a href="#编辑器" id="toc-编辑器">编辑器</a></li>
 <li><a href="#总结" id="toc-总结">总结</a></li>
@@ -410,7 +412,7 @@ foo”，而该需求无法通过算符 <code>^+</code> 和 <code>+</code>
 我是 3 号 foo。
 @</code></pre>
 <p>然后，再定义一个 <code>foo</code>
-片段，将其追加到含有指定标签的片段之前：</p>
+片段，通过标签引用形式将其追加到含有相应标签的片段之前：</p>
 <pre><code>@ foo # &lt;foo 3&gt; ^+
 我是 2 号 foo。
 @</code></pre>
@@ -432,6 +434,17 @@ x，orez 能够将该语言标记自动传播给与 x 同名的片段，被 x
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>本片段标签<span class="op">&gt;</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="op">...</span> 片段内容 <span class="op">...</span></span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>@</span></code></pre></div>
+<h1 id="片段名字续行符">片段名字续行符</h1>
+<p>有时，片段的名字可能很长，会影响后续文档排版的美观，可使用续行符
+<code>\</code>，将其断行。例如</p>
+<pre><code>@ 我是名字很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的片段 #
+... ... ...
+@</code></pre>
+<p>可写为</p>
+<pre><code>@ 我是名字很长很长很长很长很长很长很长很长 \
+  很长很长很长很长很长很长很长的片段 #
+... ... ...
+@</code></pre>
 <h1 id="自定义符号">自定义符号</h1>
 <p>上述内容所涉及的 orez 符号皆为默认符号，但这些符号可由用户通过 YAML
 格式的配置文件予以修改。例如，若希望像下面这样定义有名片段</p>
@@ -446,15 +459,27 @@ x，orez 能够将该语言标记自动传播给与 x 同名的片段，被 x
 我是 bar。
 &gt;&gt;&gt;</code></pre>
 <p>只需构造以下配置文件</p>
-<div class="sourceCode" id="cb27"><pre
-class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 这份文档的文件名为 foobar.conf</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_delimiter</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;&gt;&gt;&gt;&quot;</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_name_delimiter</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;|||&quot;</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_reference_beginning_mark</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;|&quot;</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_reference_end_mark</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;&gt;&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 这份文档的文件名为 foobar.conf</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_delimiter</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;&gt;&gt;&gt;&quot;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_name_delimiter</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;|||&quot;</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_reference_beginning_mark</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;|&quot;</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_reference_end_mark</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;&gt;&quot;</span></span></code></pre></div>
 <p>在 orez 的 <code>-c</code>
 参数中提供配置文件的名字，便可令其内容生效，例如：</p>
 <pre class="console"><code>$ orez -c foobar.conf -t foobar.orz -e &quot;foobar&quot; -o foobar.txt</code></pre>
+<p>orez 支持的全部符号的配置键名及其释义如下：</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>snippet_delimiter：片段界限符</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>snippet_name_delimiter：片段名字界限符</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>snippet_name_continuation：片段名字续行符</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>language_beginning_mark：语言标记起始符</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>language_end_mark：语言标记终止符</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>snippet_appending_mark：前向追加算符</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>snippet_prepending_mark：后向追加算符</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>tag_beginning_mark：标签起始符</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>tag_end_mark：标签终结符</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>snippet_reference_beginning_mark：标签引用起始符</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>snippet_reference_end_mark：标签引用终结符</span></code></pre></div>
 <h1 id="编辑器">编辑器</h1>
 <p>与 orez 相关的文本编辑器，目前尚不存在，我建议用 Emacs 或 Vim
 这类编辑器。对这些编辑器足够熟悉，会有很多办法解决 orez

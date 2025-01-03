@@ -332,7 +332,7 @@ typedef struct {
 @
 ```
 
-然后，再定义一个 `foo` 片段，将其追加到含有指定标签的片段之前：
+然后，再定义一个 `foo` 片段，通过标签引用形式将其追加到含有相应标签的片段之前：
 
 ```
 @ foo # <foo 3> ^+
@@ -361,6 +361,25 @@ typedef struct {
 @ 片段名字 # [语言标记] <与本片段同名的某个片段标签> + 或 ^+
 <本片段标签>
 ... 片段内容 ...
+@
+```
+
+# 片段名字续行符
+
+有时，片段的名字可能很长，会影响后续文档排版的美观，可使用续行符 `\`，将其断行。例如
+
+```
+@ 我是名字很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的片段 #
+... ... ...
+@
+```
+
+可写为
+
+```
+@ 我是名字很长很长很长很长很长很长很长很长 \
+  很长很长很长很长很长很长很长的片段 #
+... ... ...
 @
 ```
 
@@ -395,6 +414,22 @@ snippet_reference_end_mark: ">"
 
 ```console
 $ orez -c foobar.conf -t foobar.orz -e "foobar" -o foobar.txt
+```
+
+orez 支持的全部符号的配置键名及其释义如下：
+
+```c
+snippet_delimiter：片段界限符
+snippet_name_delimiter：片段名字界限符
+snippet_name_continuation：片段名字续行符
+language_beginning_mark：语言标记起始符
+language_end_mark：语言标记终止符
+snippet_appending_mark：前向追加算符
+snippet_prepending_mark：后向追加算符
+tag_beginning_mark：标签起始符
+tag_end_mark：标签终结符
+snippet_reference_beginning_mark：标签引用起始符
+snippet_reference_end_mark：标签引用终结符
 ```
 
 # 编辑器
