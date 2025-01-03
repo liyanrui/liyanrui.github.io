@@ -430,17 +430,17 @@ $ orez -c foobar.conf -t foobar.orz -e "foobar" -o foobar.txt
 orez 支持的全部符号的配置键名及其释义如下：
 
 ```YAML
-snippet_delimiter：片段界限符
-snippet_name_delimiter：片段名字界限符
-snippet_name_continuation：片段名字续行符
-language_beginning_mark：语言标记起始符
-language_end_mark：语言标记终止符
-snippet_appending_mark：前向追加算符
-snippet_prepending_mark：后向追加算符
-tag_beginning_mark：标签起始符
-tag_end_mark：标签终结符
-snippet_reference_beginning_mark：标签引用起始符
-snippet_reference_end_mark：标签引用终结符
+snippet_delimiter: 片段界限符
+snippet_name_delimiter: 片段名字界限符
+snippet_name_continuation: 片段名字续行符
+language_beginning_mark: 语言标记起始符
+language_end_mark: 语言标记终止符
+snippet_appending_mark: 前向追加算符
+snippet_prepending_mark: 后向追加算符
+tag_beginning_mark: 标签起始符
+tag_end_mark: 标签终结符
+snippet_reference_beginning_mark: 标签引用起始符
+snippet_reference_end_mark: 标签引用终结符
 ```
 
 # 编辑器
