@@ -1,7 +1,7 @@
 ---
 title: lmd 脚本
 homeback: ../../index.html
-lang: zh-CN
+lang: zh-Hans
 date: 2023 年 04 月 19 日
 abstract: 一份 Bash 脚本，用于撰写和管理 Markdown 格式的文档并通过 [Pandoc](https://www.pandoc.org) 将其转换为 HTML 格式。
 category: ./index.html
@@ -112,6 +112,8 @@ $ lmd view index.md
 ```bash
 $ lmd convert index.md
 ```
+
+这两个命令同样可以用于“[创建和删除文章](#创建和删除文章)”一节中创建的文章。
 
 # 创建/删除文章分类
 
