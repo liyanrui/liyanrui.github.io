@@ -1,5 +1,5 @@
 ---
-title: "Orez 1.0 指南"
+title: Orez 1.0 指南
 lang: zh-CN
 date: 2025 年 01 月 03 日
 homeback: ../../index.html
