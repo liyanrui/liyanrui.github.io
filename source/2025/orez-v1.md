@@ -429,7 +429,7 @@ $ orez -c foobar.conf -t foobar.orz -e "foobar" -o foobar.txt
 
 orez 支持的全部符号的配置键名及其释义如下：
 
-```c
+```YAML
 snippet_delimiter：片段界限符
 snippet_name_delimiter：片段名字界限符
 snippet_name_continuation：片段名字续行符
