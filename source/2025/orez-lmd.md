@@ -433,7 +433,7 @@ foo
 $ lmd appear index.md $(lmd root)/index.md
 ```
 
-`$(lmd root)` 可在当前工作目录中获得 foo 目录的相对路径，从而找到 foo/index.md，将当前目录中 index.md 对应的 foo/output/hello-world/index.html 路径写入 foo/index.html。
+形如 `$(lmd root)` 的命令，在 Bash 中称为子 Shell 命令，即在当前的 Shell 中开启一个新的 Shell 并执行某些命令，并将所得结果回传于当前的 Shell。`lmd root` 命令可在当前工作目录中获得 foo 目录的相对路径，然后以 `$(lmd root)` 这种子 Shell 命令形式将该结果递于当前 Shell，使得 lmd 脚本根据 foo 目录的相对路径，找到 foo/index.md，将当前目录中 index.md 对应的 foo/output/hello-world/index.html 路径写入 foo/index.html。
 
 现在可再次查看 foo 目录的结构：
 
