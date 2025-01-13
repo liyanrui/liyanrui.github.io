@@ -154,7 +154,7 @@ int main(void)
 现在，使用以下命令处理 main.md：
 
 ```console
-$ mv main.md main.orz # 重命名
+$ mv main.md main.orz
 $ orez -w main.orz | orez-md > main.md
 ```
 
