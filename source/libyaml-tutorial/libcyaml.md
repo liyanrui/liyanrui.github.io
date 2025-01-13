@@ -190,6 +190,101 @@ if (err != CYAML_OK) {
 
 LibCYAML 开发者已为 YAML 数据的解析提供了一篇简单的入门文档，我无需越俎代庖，详见「<https://github.com/tlsa/libcyaml/blob/main/docs/guide.md>」。
 
+不过，有一个困扰我很久的问题，即如何解析无名的映射序列。LibCYAML 作者在该项目的 issue 列表中回答了这个问题，他的答案为
+
+```c
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
+#include <cyaml/cyaml.h>
+
+enum gender {
+	MALE, FEMALE, UNKNOWN
+};
+
+struct person {
+	char *name;
+	unsigned age;
+	enum gender gdr;
+};
+
+static const cyaml_strval_t gender_strings[] = {
+	{"male", MALE},
+	{"female", FEMALE},
+	{"unknown", UNKNOWN},
+};
+
+static const cyaml_schema_field_t entry_fields_schema[] = {
+	CYAML_FIELD_STRING_PTR("name", CYAML_FLAG_POINTER,
+			struct person, name, 0, CYAML_UNLIMITED),
+	CYAML_FIELD_UINT("age", CYAML_FLAG_DEFAULT,
+			struct person, age),
+	CYAML_FIELD_ENUM("gender", CYAML_FLAG_DEFAULT,
+			struct person, gdr, gender_strings,
+			CYAML_ARRAY_LEN(gender_strings)),
+	CYAML_FIELD_END
+};
+
+static const cyaml_schema_value_t entry_schema = {
+	CYAML_VALUE_MAPPING(CYAML_FLAG_DEFAULT,
+			struct person, entry_fields_schema),
+};
+
+static const cyaml_schema_value_t people_schema = {
+	CYAML_VALUE_SEQUENCE(CYAML_FLAG_POINTER, struct person,
+			&entry_schema, 0, CYAML_UNLIMITED)
+};
+
+int main(void)
+{
+	cyaml_err_t err;
+	struct person *people;
+	unsigned people_count;
+	static const char *yaml =
+			"- name: \"Jason\"\n"
+			"  age: 23\n"
+			"  gender: male\n"
+			"- name: \"Lisa\"\n"
+			"  age: 26\n"
+			"  gender: female\n"
+			"- name: \"A\"\n"
+			"  age: 20\n"
+			"  gender: unknown\n";
+	static const cyaml_config_t config = {
+			.log_level = CYAML_LOG_NOTICE,
+			.mem_fn = cyaml_mem,
+			.log_fn = cyaml_log,
+			.flags = CYAML_CFG_IGNORED_KEY_WARNING,
+	};
+
+	err = cyaml_load_data(
+			(uint8_t *)yaml, strlen(yaml),
+			&config, &people_schema,
+			(void **)&people, &people_count);
+	if (err != CYAML_OK) {
+		fprintf(stderr, "ERROR: %s\n", cyaml_strerror(err));
+		return EXIT_FAILURE;
+	}
+
+	printf("People count: %u\n", people_count);
+	for (unsigned i = 0; i < people_count; i++) {
+		printf("Person:\n");
+		printf("\tname: %s\n", people[i].name);
+		printf("\tage: %u\n", people[i].age);
+		printf("\tgender: %i\n", people[i].gdr);
+
+		free(people[i].name);
+	}
+
+	free(people);
+
+	return EXIT_SUCCESS;
+}
+```
+
 # 若想知道更多……
 
 请参考 cyaml.h 中的注释。此外， Zrythm 项目也为 LibCYAML 的用法给出了一些介绍，详见「<https://docs.zrythm.org/cyaml_schemas.html>」。
