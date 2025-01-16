@@ -14,7 +14,7 @@ footer: 我的联系方式：<lyr.m2@live.cn> 或在
 
 大概是在 2020 年，我在学习 Bash 语言，想写个脚本练手，恰好我又略懂号称[文档格式转换界的瑞士军刀——pandoc](https://pandoc.org/) 的用法，于是基于 Bash 和 pandoc 写了个脚本，取名为 gar，它能够借助 pandoc 将 Markdown 文档转化为网页，并且提供了文章基本管理功能。gar 脚本虽然简陋，但是它让我意识到，实现一个静态网站构建工具，并不需要流行的静态网站构建工具所表现出的那般复杂。当然，它们的复杂有它们的理由，只是那些理由不是我的。
 
-2023 年，我在又一次温习 Bash 和 Awk 时，对 gar 脚本进行了改进，基于 Awk 脚本为其实现了a文档目录管理的功能，并将 gar 更名为 lmd，并写了一份文档，介绍了[它的用法](https://liyanrui.github.io/output/bash/lmd.html)。
+2023 年，我在又一次温习 Bash 和 Awk 时，对 gar 脚本进行了改进，基于 Awk 脚本为其实现了文档目录管理的功能，并将 gar 更名为 lmd，并写了一份文档，介绍了[它的用法](https://liyanrui.github.io/output/bash/lmd.html)。
 
 今年，我在为 [orez 的新版本](https://liyanrui.github.io/output/2025/orez-v1.html)构造 Markdown 后端时，尝试将它与 lmd 脚本配合起来，以静态网站的形式发布文学程序的文档，详见「[orez + lmd = ?](https://liyanrui.github.io/output/2025/orez-lmd.html)」一文。在此过程中，我发现 lmd 脚本外围的部分 Awk 代码与 Ubuntu 系的发行版默认使用的 mawk 不兼容，在修改这部分 Awk 代码时，发现我对 lmd 脚本里的代码也感觉非常陌生。于是，我决定重新实现 lmd，以文学编程的方式，除了作为文学编程以及 orez 的 Markdown 后端是否可用的一次实践，也用于防备很久以后再次阅读 lmd 脚本里的代码再度觉得陌生。
 
@@ -203,6 +203,10 @@ $ bash lmd/lmd-init-test.sh "Site demo" demo
 ```
 
 上述命令生成的 demo 目录里，仅存在 appearance 目录，亦即命令的 "Site demo" 参数并未用到，原因是网站的名字是为网站首页准备的，下一节探讨如何初始化网站首页内容。
+
+# 初始化网站首页
+
+在形式上，网站首页与网站里的文章，本质上并无区别，区别主要是在页面排版方面，其次在初始化网站时，网站首页的部分内容应当是确定的，例如网站的名字，语言、站长的联系方式等。
 
 # 附录
 
