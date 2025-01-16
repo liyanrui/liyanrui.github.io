@@ -39,7 +39,7 @@ foo
 └── source
 ```
 
-在进行后续操作前，闲将 lmd.conf 的内容根据自己的情况修改一下。该文件实际上是一个 Bash 脚本，默认内容是一组变量的定义：
+在进行后续操作前，先将 lmd.conf 的内容根据自己的情况修改一下。该文件实际上是一个 Bash 脚本，默认内容是一组变量的定义：
 
 ```bash
 MARKDOWN_EXT='.md' # markdown 文件扩展名
@@ -81,8 +81,8 @@ foo
 ├── output
 │   └── hello-world    # 项目的文档的排版结果在这个目录
 └── source
-    └── hello-world
-        └── index.md
+    └── hello-world   # 新建
+        └── index.md  # 新建
 ```
 
 # 文学编程
@@ -120,7 +120,7 @@ foo
 │               └── post.template
 ├── figures
 │   └── hello-world
-│       └── main
+│       └── main       # 新建
 ├── index.md
 ├── lmd.conf
 ├── output
@@ -128,7 +128,7 @@ foo
 └── source
     └── hello-world
         ├── index.md
-        └── main.md
+        └── main.md    # 新建
 ```
 
 现在，将以下内容
