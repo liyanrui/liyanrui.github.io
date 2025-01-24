@@ -1,7 +1,7 @@
 ---
 title: lmd 的设计与实现
 lang: zh-CN
-date: 2025 年 01 月 13 日
+date: 2025 年 01 月 24 日
 abstract: 
 category: 
 footer: 我的联系方式：<lyr.m2@live.cn> 或在
