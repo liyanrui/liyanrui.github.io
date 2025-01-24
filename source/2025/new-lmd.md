@@ -16,7 +16,7 @@ footer: 我的联系方式：<lyr.m2@live.cn> 或在
 
 2023 年，我在又一次温习 Bash 和 Awk 时，对 gar 脚本进行了改进，基于 Awk 脚本为其实现了文档目录管理的功能，并将 gar 更名为 lmd，并写了一份文档，介绍了[它的用法](https://liyanrui.github.io/output/bash/lmd.html)。
 
-今年，我在为 [orez 的新版本](https://liyanrui.github.io/output/2025/orez-v1.html)构造 Markdown 后端时，尝试将它与 lmd 脚本配合起来，以静态网站的形式发布文学程序的文档，详见「[orez + lmd = ?](https://liyanrui.github.io/output/2025/orez-lmd.html)」一文。在此过程中，我发现 lmd 脚本外围的部分 Awk 代码与 Ubuntu 系的发行版默认使用的 mawk 不兼容，在修改这部分 Awk 代码时，发现我对 lmd 脚本里的代码也感觉非常陌生。于是，我决定重新实现 lmd，以文学编程的方式，除了作为文学编程以及 orez 的 Markdown 后端是否可用的一次实践，也用于防备很久以后再次阅读 lmd 脚本里的代码再度觉得陌生。
+今年，我在为 [orez 的新版本](https://liyanrui.github.io/output/2025/orez-v1.html)构造 Markdown 后端时，尝试将它与 lmd 脚本配合起来，以静态网站的形式发布文学程序的文档，详见「[orez + lmd = ?](https://liyanrui.github.io/output/2025/orez-lmd.html)」一文。在此过程中，我发现 lmd 脚本外围的部分 Awk 代码与 Ubuntu 系的发行版默认使用的 mawk 不兼容，在修改这部分 Awk 代码时，发现我对 lmd 脚本里的代码也感觉非常陌生。于是，决定重新实现 lmd，以文学编程的方式，除了作为文学编程以及 orez 的 Markdown 后端是否可用的一次实践，也用于防备以后再次阅读 lmd 脚本里的代码觉得陌生。
 
 # pandoc
 
