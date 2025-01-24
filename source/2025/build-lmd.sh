@@ -1,5 +1,5 @@
 #!/bin/bash
-NAME=design-and-implementation-of-lmd
+NAME=new-lmd
 orez -w ${NAME}.orz -o t-${NAME}.orz
 sed -i 's/ESC_LEFT_ANGLE */</g;
         s/ *ESC_RIGHT_ANGLE/>/g;
