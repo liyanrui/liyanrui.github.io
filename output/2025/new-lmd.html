@@ -88,9 +88,6 @@
   <link rel="stylesheet" href="../../appearance/lmd.css" />
 </head>
 <body>
-<div class="category">
-<a href="../../index.html">回上级页面</a>
-</div>
 <header id="title-block-header">
 <h1 class="title">lmd 的设计与实现</h1>
 <p class="date">2025 年 01 月 13 日</p>
@@ -241,7 +238,6 @@ lmd.css 文件，假设它与 pandoc 生成的 foo.html
 │           └── templates
 │               ├── homepage.template
 │               └── post.template
-├── index.md
 └── lmd.conf</code></pre>
 <p>上述结构中，appearence
 用于定制网站页面的外观，所包含的文件皆在上一节出现过，它们的用途在此不再赘述。index.md
@@ -487,6 +483,7 @@ lmd.conf 中的一些信息，可是如何找到 lmd.conf
 lmd_load_conf
 <span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$current_path</span><span class="s2">&quot;</span>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd_new_category待续" class="proc-emissions-name">lmd_new_category 待续</a>
+<span class="orez-symbol">=&gt;</span> <a href="#删除分类" class="proc-emissions-name">删除分类</a>
 <span class="orez-symbol">=&gt;</span> <a href="#创建新文章" class="proc-emissions-name">创建新文章</a>
 <span class="orez-symbol">=&gt;</span> <a href="#文章->HTML文件" class="proc-emissions-name">文章 -> HTML 文件</a>
 <span class="orez-symbol">=&gt;</span> <a href="#删除文章" class="proc-emissions-name">删除文章</a>
@@ -674,27 +671,34 @@ Awk 脚本如下：</p>
 <p>上述脚本中的变量 <code>title</code>，<code>date</code> 以及
 <code>post_path</code> 及它们的值皆由 lmd 脚本在调用 awk
 时以参数的形式定义并传入。</p>
-<p>以下代码片段可向分类首页追加字段，生成临时分类首页文档：</p>
-<pre id="向分类首页和上级分类首页的首部追加字段" class="orez-snippet-with-name">
-<span class="orez-snippet-name">@ 向分类首页和上级分类首页的首部追加字段 #</span>
-awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">category</span><span class="o">=</span><span class="s2">&quot;../index.html&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-v<span class="w"> </span><span class="nv">lang</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$LANG</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-v<span class="w"> </span><span class="nv">footer</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$FOOTER</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/append-meta-data.awk&quot;</span><span class="w"> </span><span class="s2">&quot;index</span><span class="nv">$MARKDOWN_EXT</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span>
-<span class="nb">cd</span><span class="w"> </span>..
-<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;lmd.conf&quot;</span><span class="w"> </span><span class="o">]</span>
+<p>向网络首页或分类首页追加字段的代码如下：</p>
+<pre id="向网站首页或分类首页追加字段->.tmp_index.md" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 向网站首页或分类首页追加字段 -> .tmp_index.md #</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;lmd.conf&quot;</span><span class="w"> </span><span class="o">]</span>
 <span class="k">then</span><span class="w"> </span><span class="c1"># 若当前分类未在根目录，需要为其上级分类首页构造返回上级的上级的链接</span>
+<span class="w">    </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">lang</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$LANG</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-v<span class="w"> </span><span class="nv">footer</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$FOOTER</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/append-meta-data.awk&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span><span class="s2">&quot;index</span><span class="nv">$MARKDOWN_EXT</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span>
+<span class="k">else</span>
 <span class="w">    </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">category</span><span class="o">=</span><span class="s2">&quot;../index.html&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>-v<span class="w"> </span><span class="nv">lang</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$LANG</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>-v<span class="w"> </span><span class="nv">footer</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$FOOTER</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/append-meta-data.awk&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span><span class="s2">&quot;index</span><span class="nv">$MARKDOWN_EXT</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span>
-<span class="k">else</span>
-<span class="w">    </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">lang</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$LANG</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>-v<span class="w"> </span><span class="nv">footer</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$FOOTER</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/append-meta-data.awk&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span><span class="s2">&quot;index</span><span class="nv">$MARKDOWN_EXT</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span>
 <span class="k">fi</span>
+<span class="orez-symbol">=&gt;</span> <a href="#向分类首页和上级分类首页的首部追加字段" class="proc-emissions-name">向分类首页和上级分类首页的首部追加字段</a>
+<span class="orez-symbol">=&gt;</span> <a href="#向分类首页和上级分类首页的首部追加字段" class="proc-emissions-name">向分类首页和上级分类首页的首部追加字段</a>
+<span class="orez-symbol">=&gt;</span> <a href="#删除分类" class="proc-emissions-name">删除分类</a>
+<span class="orez-symbol">=&gt;</span> <a href="#向文章和分类首页的首部追加字段" class="proc-emissions-name">向文章和分类首页的首部追加字段</a>
+<span class="orez-symbol">=&gt;</span> <a href="#删除文章" class="proc-emissions-name">删除文章</a>
+</pre>
+<p>以下代码片段可向分类首页追加字段，生成临时分类首页文档：</p>
+<pre id="向分类首页和上级分类首页的首部追加字段" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 向分类首页和上级分类首页的首部追加字段 #</span>
+<a href="#向网站首页或分类首页追加字段->.tmp_index.md" class="orez-callee-link"># 向网站首页或分类首页追加字段 -> .tmp_index.md @</a>
+<span class="nb">cd</span><span class="w"> </span>..
+<a href="#向网站首页或分类首页追加字段->.tmp_index.md" class="orez-callee-link"># 向网站首页或分类首页追加字段 -> .tmp_index.md @</a>
 <span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
 <span class="orez-symbol">=&gt;</span> <a href="#构建分类首页与上级分类首页的关联并将其转换为HTML文件" class="proc-emissions-name">构建分类首页与上级分类首页的关联并将其转换为 HTML 文件</a>
 </pre>
@@ -703,6 +707,12 @@ awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">category</
 <span class="orez-snippet-name">@ 将分类首页添加至上级分类首页中的分类列表 #</span>
 <span class="nb">local</span><span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-title.awk&quot;</span><span class="w"> </span>index<span class="nv">$MARKDOWN_EXT</span><span class="k">)</span>
 <span class="nb">local</span><span class="w"> </span><span class="nv">exist</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/find-post.awk&quot;</span><span class="w"> </span>../index<span class="nv">$MARKDOWN_EXT</span><span class="k">)</span>
+<a href="#向分类首页添加链接" class="orez-callee-link"># 向分类首页添加链接 @</a>
+<span class="orez-symbol">=&gt;</span> <a href="#构建分类首页与上级分类首页的关联并将其转换为HTML文件" class="proc-emissions-name">构建分类首页与上级分类首页的关联并将其转换为 HTML 文件</a>
+</pre>
+<p>上述代码中，向分类首页添加链接的过程如下：</p>
+<pre id="向分类首页添加链接" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 向分类首页添加链接 #</span>
 <span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>exist<span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="w"> </span><span class="o">]</span>
 <span class="k">then</span>
 <span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">post_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">/index.html&quot;</span>
@@ -710,8 +720,10 @@ awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">category</
 <span class="w">        </span>-v<span class="w"> </span><span class="nv">post_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$post_path</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/add-post.awk&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>../.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>&gt;<span class="w"> </span>../.tmp_0_index<span class="nv">$MARKDOWN_EXT</span>
+<span class="w">    </span>mv<span class="w"> </span>../.tmp_0_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>../.tmp_index<span class="nv">$MARKDOWN_EXT</span>
 <span class="k">fi</span>
-<span class="orez-symbol">=&gt;</span> <a href="#构建分类首页与上级分类首页的关联并将其转换为HTML文件" class="proc-emissions-name">构建分类首页与上级分类首页的关联并将其转换为 HTML 文件</a>
+<span class="orez-symbol">=&gt;</span> <a href="#将分类首页添加至上级分类首页中的分类列表" class="proc-emissions-name">将分类首页添加至上级分类首页中的分类列表</a>
+<span class="orez-symbol">=&gt;</span> <a href="#将文章添加到分类首页或网站首页" class="proc-emissions-name">将文章添加到分类首页或网站首页</a>
 </pre>
 <p>最后，使用 pandoc，将上述代码生成的临时 Markdown 文档转换为 HTML
 文件，但是 pandoc 需要知道 lmd.css
@@ -748,44 +760,47 @@ lmd.css 和文章模板的路径。函数 <code>lmd_path_to_start</code>
 <span class="nb">local</span><span class="w"> </span><span class="nv">current_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>
 <span class="nb">local</span><span class="w"> </span><span class="nv">path_to_root</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>lmd_path_to_start<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="k">)</span><span class="s2">&quot;</span>
 <span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$current_path</span><span class="s2">&quot;</span>
-<span class="orez-symbol">=&gt;</span> <a href="#分类首页->网页1" class="proc-emissions-name">分类首页 -> 网页</a>
-<span class="orez-symbol">=&gt;</span> <a href="#上级分类首页->网页1" class="proc-emissions-name">上级分类首页 -> 网页</a>
-<span class="orez-symbol">=&gt;</span> <a href="#删除分类" class="proc-emissions-name">删除分类</a>
+<span class="orez-symbol">=&gt;</span> <a href="#将网站首页或分类首页转化为网页" class="proc-emissions-name">将网站首页或分类首页转化为网页</a>
 <span class="orez-symbol">=&gt;</span> <a href="#$tmp_file->网页" class="proc-emissions-name">$tmp_file -> 网页</a>
-<span class="orez-symbol">=&gt;</span> <a href="#删除文章" class="proc-emissions-name">删除文章</a>
 </pre>
-<p>以下代码片段，将当前分类首页转化为 HTML 文件：</p>
-<pre id="分类首页->网页1" class="orez-snippet-with-name">
-<span class="orez-snippet-name">@ 分类首页 -> 网页 #</span>
-<a href="#安全构造从当前目录到网站根目录的路径->path_to_root" class="orez-callee-link"># 安全构造从当前目录到网站根目录的路径 -> path_to_root @</a>
-pandoc<span class="w">  </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="se">\</span>
-<span class="w">       </span>--css<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$path_to_root</span><span class="s2">/appearance/lmd.css&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">       </span>--data-dir<span class="o">=</span><span class="s2">&quot;</span><span class="nv">$path_to_root</span><span class="s2">/appearance/pandoc/data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">       </span>--template<span class="o">=</span>post.template<span class="w"> </span>-o<span class="w"> </span>index.html
-<span class="orez-symbol">=&gt;</span> <a href="#构建分类首页与上级分类首页的关联并将其转换为HTML文件" class="proc-emissions-name">构建分类首页与上级分类首页的关联并将其转换为 HTML 文件</a>
-</pre>
-<p>以下代码片段，将上级分类首页转化为 HTML 文件：</p>
-<pre id="上级分类首页->网页1" class="orez-snippet-with-name">
-<span class="orez-snippet-name">@ 上级分类首页 -> 网页 #</span>
-<span class="nb">cd</span><span class="w"> </span>../
+<p>将网站首页或分类首页转化为 HTML 文件的代码如下：</p>
+<pre id="将网站首页或分类首页转化为网页" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 将网站首页或分类首页转化为网页 #</span>
 <a href="#安全构造从当前目录到网站根目录的路径->path_to_root" class="orez-callee-link"># 安全构造从当前目录到网站根目录的路径 -> path_to_root @</a>
 <span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$path_to_root</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="o">]</span>
 <span class="k">then</span>
 <span class="w">    </span><span class="nv">path_to_root</span><span class="o">=</span><span class="s2">&quot;.&quot;</span>
-<span class="w">    </span>pandoc<span class="w"> </span>.tmp_0_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>pandoc<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span><span class="se">\</span>
 <span class="w">       </span>--css<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$path_to_root</span><span class="s2">/appearance/lmd.css&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">       </span>--data-dir<span class="o">=</span><span class="s2">&quot;</span><span class="nv">$path_to_root</span><span class="s2">/appearance/pandoc/data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">       </span>--template<span class="o">=</span>homepage.template<span class="w"> </span><span class="se">\</span>
 <span class="w">       </span>-o<span class="w"> </span><span class="s2">&quot;index.html&quot;</span>
 <span class="k">else</span>
-<span class="w">    </span>pandoc<span class="w"> </span>.tmp_0_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>pandoc<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span><span class="se">\</span>
 <span class="w">       </span>--css<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$path_to_root</span><span class="s2">/appearance/lmd.css&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">       </span>--data-dir<span class="o">=</span><span class="s2">&quot;</span><span class="nv">$path_to_root</span><span class="s2">/appearance/pandoc/data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">       </span>--template<span class="o">=</span>post.template<span class="w"> </span><span class="se">\</span>
 <span class="w">       </span>-o<span class="w"> </span><span class="s2">&quot;index.html&quot;</span>
 <span class="k">fi</span>
+<span class="orez-symbol">=&gt;</span> <a href="#分类首页->网页1" class="proc-emissions-name">分类首页 -> 网页</a>
+<span class="orez-symbol">=&gt;</span> <a href="#上级分类首页->网页1" class="proc-emissions-name">上级分类首页 -> 网页</a>
+</pre>
+<p>以下代码片段，将当前分类首页转化为 HTML 文件：</p>
+<pre id="分类首页->网页1" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 分类首页 -> 网页 #</span>
+<a href="#将网站首页或分类首页转化为网页" class="orez-callee-link"># 将网站首页或分类首页转化为网页 @</a>
 <span class="orez-symbol">=&gt;</span> <a href="#构建分类首页与上级分类首页的关联并将其转换为HTML文件" class="proc-emissions-name">构建分类首页与上级分类首页的关联并将其转换为 HTML 文件</a>
 <span class="orez-symbol">=&gt;</span> <a href="#删除分类" class="proc-emissions-name">删除分类</a>
+<span class="orez-symbol">=&gt;</span> <a href="#删除文章" class="proc-emissions-name">删除文章</a>
+</pre>
+<p>以下代码片段，将上级分类首页转化为 HTML 文件：</p>
+<pre id="上级分类首页->网页1" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 上级分类首页 -> 网页 #</span>
+<span class="nb">cd</span><span class="w"> </span>../
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-e<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+    <a href="#将网站首页或分类首页转化为网页" class="orez-callee-link"># 将网站首页或分类首页转化为网页 @</a>
+<span class="k">fi</span>
+<span class="orez-symbol">=&gt;</span> <a href="#构建分类首页与上级分类首页的关联并将其转换为HTML文件" class="proc-emissions-name">构建分类首页与上级分类首页的关联并将其转换为 HTML 文件</a>
 <span class="orez-symbol">=&gt;</span> <a href="#文章->HTML文件" class="proc-emissions-name">文章 -> HTML 文件</a>
 </pre>
 <p>还需要考虑一个问题，临时的分类首页文档及其上级分类首页文档，在 pandoc
@@ -818,23 +833,32 @@ append-meta-data.awk 脚本所添加信息的 Awk 脚本如下：</p>
     <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
 <span class="p">}</span>
 </pre>
-<p>删除临时分类首页里的数据：</p>
-<pre id="分类首页->网页2" class="orez-snippet-with-name">
-<span class="orez-snippet-name">@ 分类首页 -> 网页 #</span>  <span class="orez-symbol">+</span>
+<p>从临时的网站首页或分类首页删除
+<code>category</code>，<code>lang</code> 和 <code>footer</code>
+字段的代码如下：</p>
+<pre id="保持网站首页或分类首页的简洁" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 保持网站首页或分类首页的简洁 #</span>
 awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/delete-meta-data.awk&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>&gt;<span class="w"> </span>index<span class="nv">$MARKDOWN_EXT</span>
 rm<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span>
-<span class="orez-symbol">=&gt;</span> <a href="#构建分类首页与上级分类首页的关联并将其转换为HTML文件" class="proc-emissions-name">构建分类首页与上级分类首页的关联并将其转换为 HTML 文件</a>
+<span class="orez-symbol">=&gt;</span> <a href="#分类首页->网页2" class="proc-emissions-name">分类首页 -> 网页</a>
+<span class="orez-symbol">=&gt;</span> <a href="#上级分类首页->网页2" class="proc-emissions-name">上级分类首页 -> 网页</a>
 </pre>
-<p>删除临时的上级分类首页里的数据：</p>
-<pre id="上级分类首页->网页2" class="orez-snippet-with-name">
-<span class="orez-snippet-name">@ 上级分类首页 -> 网页 #</span>  <span class="orez-symbol">+</span>
-awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/delete-meta-data.awk&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>.tmp_0_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>&gt;<span class="w"> </span>index<span class="nv">$MARKDOWN_EXT</span>
-rm<span class="w"> </span>.tmpindex<span class="nv">$MARKDOWN_EXT</span>
-rm<span class="w"> </span>.tmp_0_index<span class="nv">$MARKDOWN_EXT</span>
+<p>基于上述代码，删除临时分类首页里的字段：</p>
+<pre id="分类首页->网页2" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 分类首页 -> 网页 #</span>  <span class="orez-symbol">+</span>
+<a href="#保持网站首页或分类首页的简洁" class="orez-callee-link"># 保持网站首页或分类首页的简洁 @</a>
 <span class="orez-symbol">=&gt;</span> <a href="#构建分类首页与上级分类首页的关联并将其转换为HTML文件" class="proc-emissions-name">构建分类首页与上级分类首页的关联并将其转换为 HTML 文件</a>
 <span class="orez-symbol">=&gt;</span> <a href="#删除分类" class="proc-emissions-name">删除分类</a>
+<span class="orez-symbol">=&gt;</span> <a href="#删除文章" class="proc-emissions-name">删除文章</a>
+</pre>
+<p>删除临时的上级分类首页里的字段：</p>
+<pre id="上级分类首页->网页2" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 上级分类首页 -> 网页 #</span>  <span class="orez-symbol">+</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-e<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+    <a href="#保持网站首页或分类首页的简洁" class="orez-callee-link"># 保持网站首页或分类首页的简洁 @</a>
+<span class="k">fi</span>
+<span class="orez-symbol">=&gt;</span> <a href="#构建分类首页与上级分类首页的关联并将其转换为HTML文件" class="proc-emissions-name">构建分类首页与上级分类首页的关联并将其转换为 HTML 文件</a>
 <span class="orez-symbol">=&gt;</span> <a href="#文章->HTML文件" class="proc-emissions-name">文章 -> HTML 文件</a>
 </pre>
 <p>将上述代码片段组装起来，便可实现 <code>lmd_new_category</code>
@@ -867,11 +891,12 @@ $ bash ../lmd/lmd-new-category-test.sh &quot;日志&quot; blog</code></pre>
 <pre id="删除分类" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ 删除分类 #</span>
 <span class="k">function</span><span class="w"> </span>lmd_delete_category<span class="w"> </span><span class="o">{</span>
-<span class="w">    </span>rm<span class="w"> </span>-rf<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+    <a href="#安全载入配置文件lmd.conf" class="orez-callee-link"># 安全载入配置文件 lmd.conf @</a>
     <a href="#在上级分类首页中删除链接->.tmp_index$MARKDOWN_EXT" class="orez-callee-link"># 在上级分类首页中删除链接 -> .tmp_index$MARKDOWN_EXT @</a>
-    <a href="#安全构造从当前目录到网站根目录的路径->path_to_root" class="orez-callee-link"># 安全构造从当前目录到网站根目录的路径 -> path_to_root @</a>
-    cp<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>index<span class="nv">$MARKDOWN_EXT</span>
-    <span class="orez-callee-text"># 上级分类首页 -> 网页 @</span> <a href="#上级分类首页->网页1">[1]</a> <a href="#上级分类首页->网页2">[2]</a>
+    mv<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>index<span class="nv">$MARKDOWN_EXT</span>
+    <a href="#向网站首页或分类首页追加字段->.tmp_index.md" class="orez-callee-link"># 向网站首页或分类首页追加字段 -> .tmp_index.md @</a>
+    <span class="orez-callee-text"># 分类首页 -> 网页 @</span> <a href="#分类首页->网页1">[1]</a> <a href="#分类首页->网页2">[2]</a>
+    rm<span class="w"> </span>-rf<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd" class="proc-emissions-name">lmd</a>
 </pre>
@@ -891,7 +916,8 @@ $ bash ../lmd/lmd-new-category-test.sh &quot;日志&quot; blog</code></pre>
 <p>基于上述 Awk 脚本，从上级分类首页中删除链接：</p>
 <pre id="在上级分类首页中删除链接->.tmp_index$MARKDOWN_EXT" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ 在上级分类首页中删除链接-> .tmp_index$MARKDOWN_EXT #</span>
-awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="nb">local</span><span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-title.awk&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">/index</span><span class="nv">$MARKDOWN_EXT</span><span class="s2">&quot;</span><span class="k">)</span>
+awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$title</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/delete-item.awk&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>&gt;<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span>
 <span class="orez-symbol">=&gt;</span> <a href="#删除分类" class="proc-emissions-name">删除分类</a>
@@ -972,19 +998,7 @@ awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">category</
 <span class="w">    </span>-v<span class="w"> </span><span class="nv">footer</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$FOOTER</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/append-meta-data.awk&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$tmp_file</span><span class="s2">&quot;</span>
 <span class="nb">cd</span><span class="w"> </span>..<span class="w">  </span><span class="c1"># 处理分类首页</span>
-<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;lmd.conf&quot;</span><span class="w"> </span><span class="o">]</span>
-<span class="k">then</span><span class="w"> </span><span class="c1"># 若当前分类未在根目录，需要为其上级分类首页构造返回上级的上级的链接</span>
-<span class="w">    </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">category</span><span class="o">=</span><span class="s2">&quot;../index.html&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>-v<span class="w"> </span><span class="nv">lang</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$LANG</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>-v<span class="w"> </span><span class="nv">footer</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$FOOTER</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/append-meta-data.awk&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span><span class="s2">&quot;index</span><span class="nv">$MARKDOWN_EXT</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span>
-<span class="k">else</span>
-<span class="w">    </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">lang</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$LANG</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>-v<span class="w"> </span><span class="nv">footer</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$FOOTER</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/append-meta-data.awk&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span><span class="s2">&quot;index</span><span class="nv">$MARKDOWN_EXT</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span>
-<span class="k">fi</span>
+<a href="#向网站首页或分类首页追加字段->.tmp_index.md" class="orez-callee-link"># 向网站首页或分类首页追加字段 -> .tmp_index.md @</a>
 <span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">1</span><span class="p">%</span><span class="nv">$MARKDOWN_EXT</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="orez-symbol">=&gt;</span> <a href="#文章->HTML文件" class="proc-emissions-name">文章 -> HTML 文件</a>
 </pre>
@@ -993,17 +1007,7 @@ awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">category</
 <span class="orez-snippet-name">@ 将文章添加到分类首页或网站首页 #</span>
 <span class="nb">local</span><span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-title.awk&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="k">)</span>
 <span class="nb">local</span><span class="w"> </span><span class="nv">exist</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/find-post.awk&quot;</span><span class="w"> </span><span class="s2">&quot;../index.md&quot;</span><span class="k">)</span>
-<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>exist<span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="w"> </span><span class="o">]</span>
-<span class="k">then</span>
-<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">date</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-date.awk&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="k">)</span>
-<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">post_filename</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">1</span><span class="p">%</span><span class="nv">$MARKDOWN_EXT</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">post_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$post_filename</span><span class="s2">/</span><span class="si">${</span><span class="nv">post_filename</span><span class="si">}</span><span class="s2">.html&quot;</span>
-<span class="w">    </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$title</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>-v<span class="w"> </span><span class="nv">date</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$date</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>-v<span class="w"> </span><span class="nv">post_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$post_path</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/add-post.awk&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>../.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>&gt;<span class="w"> </span>../.tmp_0_index<span class="nv">$MARKDOWN_EXT</span>
-<span class="k">fi</span>
+<a href="#向分类首页添加链接" class="orez-callee-link"># 向分类首页添加链接 @</a>
 <span class="orez-symbol">=&gt;</span> <a href="#文章->HTML文件" class="proc-emissions-name">文章 -> HTML 文件</a>
 </pre>
 <p>上述代码中，应用了 Bash 字符串处理的小技巧，即
@@ -1050,18 +1054,15 @@ $ bash /tmp/lmd/lmd-convert-test.sh first-post.md</code></pre>
 <pre id="删除文章" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ 删除文章 #</span>
 <span class="k">function</span><span class="w"> </span>lmd_delete_post<span class="w"> </span><span class="o">{</span>
-<span class="w">    </span>rm<span class="w"> </span>-rf<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
     <a href="#安全载入配置文件lmd.conf" class="orez-callee-link"># 安全载入配置文件 lmd.conf @</a>
-    awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+    <span class="nb">local</span><span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-title.awk&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">/</span><span class="nv">$1$MARKDOWN_EXT</span><span class="s2">&quot;</span><span class="k">)</span>
+<span class="w">    </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$title</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/delete-item.awk&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>&gt;<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span>
-    <a href="#安全构造从当前目录到网站根目录的路径->path_to_root" class="orez-callee-link"># 安全构造从当前目录到网站根目录的路径 -> path_to_root @</a>
-    pandoc<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span><span class="se">\</span>
-<span class="w">           </span>--css<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$path_to_root</span><span class="s2">/appearance/lmd.css&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">           </span>--data-dir<span class="o">=</span><span class="s2">&quot;</span><span class="nv">$path_to_root</span><span class="s2">/appearance/pandoc/data&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">           </span>--template<span class="o">=</span>homepage.template<span class="w"> </span><span class="se">\</span>
-<span class="w">           </span>-o<span class="w"> </span><span class="s2">&quot;index.html&quot;</span>
 <span class="w">    </span>mv<span class="w"> </span>.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>index<span class="nv">$MARKDOWN_EXT</span>
+    <a href="#向网站首页或分类首页追加字段->.tmp_index.md" class="orez-callee-link"># 向网站首页或分类首页追加字段 -> .tmp_index.md @</a>
+    <span class="orez-callee-text"># 分类首页 -> 网页 @</span> <a href="#分类首页->网页1">[1]</a> <a href="#分类首页->网页2">[2]</a>
+    rm<span class="w"> </span>-rf<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-delete-post-test.sh" class="proc-emissions-name">lmd-delete-post-test.sh</a>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd" class="proc-emissions-name">lmd</a>
@@ -1080,7 +1081,10 @@ lmd_delete_post<span class="w"> </span><span class="s2">&quot;</span><span class
 <pre id="lmd界面" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ lmd 界面 #</span>
 <span class="k">case</span><span class="w"> </span><span class="nv">$1</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>
-<span class="w">    </span>init<span class="o">)</span><span class="w"> </span>lmd_init<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">;;</span>
+<span class="w">    </span>init<span class="o">)</span>
+<span class="w">        </span>lmd_init<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$3</span><span class="s2">&quot;</span>
+<span class="w">        </span>lmd_init_index<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+<span class="w">        </span><span class="p">;;</span>
 <span class="w">    </span>new<span class="o">)</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;category&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
 <span class="w">            </span>lmd_new_category<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">3</span><span class="si">}</span><span class="s2">&quot;</span>
