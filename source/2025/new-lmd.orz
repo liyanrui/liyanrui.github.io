@@ -540,14 +540,15 @@ cd "$2"
 
 @ 将分类首页添加至上级分类首页中的分类列表 #
 local title=$(awk -f "$LMD_SELF_PATH/helper/get-title.awk" index$MARKDOWN_EXT)
-local exist=$(awk -f "$LMD_SELF_PATH/helper/find-post.awk" ../index$MARKDOWN_EXT)
+local exist=$(awk -v title="$title" \
+                  -f "$LMD_SELF_PATH/helper/find-post.awk" ../index$MARKDOWN_EXT)
 # 向分类首页添加链接 @
 @
 
 上述代码中，向分类首页添加链接的过程如下：
 
 @ 向分类首页添加链接 #
-if [ exist != "true" ]
+if [ "$exist" != "true" ]
 then
     local post_path="$2/index.html"
     awk -v title="$title" \
@@ -825,8 +826,18 @@ cd "${1%$MARKDOWN_EXT}"
 
 @ 将文章添加到分类首页或网站首页 #
 local title=$(awk -f "$LMD_SELF_PATH/helper/get-title.awk" "$1")
-local exist=$(awk -f "$LMD_SELF_PATH/helper/find-post.awk" "../index.md")
-# 向分类首页添加链接 @
+local exist=$(awk -v title="$title" \
+                  -f "$LMD_SELF_PATH/helper/find-post.awk" "../index.md")
+if [ "$exist" != "true" ]
+then
+    local post="${1%$MARKDOWN_EXT}"
+    local post_path="$post/${post}.html"
+    awk -v title="$title" \
+        -v post_path="$post_path" \
+        -f "$LMD_SELF_PATH/helper/add-post.awk" \
+        ../.tmp_index$MARKDOWN_EXT > ../.tmp_0_index$MARKDOWN_EXT
+    mv ../.tmp_0_index$MARKDOWN_EXT ../.tmp_index$MARKDOWN_EXT
+fi
 @
 
 上述代码中，应用了 Bash 字符串处理的小技巧，即 `${1%$MARKDOWN_EXT}`，表示将参数 `$1` 中包含的 Markdown 扩展名消除。`%` 是消除字符串指定后缀的运算符。例如，假设 Bash 变量 `FOO=foobar`，`${FOO%bar}` 结果为 `foo`。消除指定的前缀，运算符是 `#`。
