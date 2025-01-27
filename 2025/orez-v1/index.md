@@ -203,7 +203,7 @@ $ context foo.tex
 
 最终可得 foo.pdf，它便是文学化程序源码 foo.orz 的排版结果，如下图所示：
 
-![“hello world”程序的排版结果](../../figures/2025/orez-v1/01.png)
+![“hello world”程序的排版结果](figures/01.png)
 
 对于其他排版系统，只要它支持纯文本形式的排版文档，可根据 orez 生成的排版元文档格式，模仿 orez-ctx 和 orez-md 脚本进行编写相应的后端程序。
 

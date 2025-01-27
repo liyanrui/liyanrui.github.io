@@ -1,7 +1,6 @@
 ---
-title: lmd 脚本的设计与实现
-subtitle: 
-date: 2025 年 01 月 27 日
+title: lmd 的设计与实现
+date: 2025 年 01 月 24 日
 ...
 
 # 前言
@@ -161,7 +160,6 @@ lmd.conf 文件中定义了网站的一些基本信息：
 <pre id="lmd.conf" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ lmd.conf #</span>
 <span class="nv">LMD_LANGUAGE</span><span class="o">=</span><span class="s2">&quot;zh-CN&quot;</span><span class="w">   </span><span class="c1"># 文章语言为简体中文</span>
-<span class="nv">LMD_DATE</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>date<span class="w"> </span>+<span class="s1">&#39;%Y 年 %m 月 %d 日&#39;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w">  </span><span class="c1"># 文章时间戳</span>
 <span class="nv">LMD_EMAIL</span><span class="o">=</span><span class="s1">&#39;lyr.m2@live.cn&#39;</span><span class="w">  </span><span class="c1"># 站长邮箱</span>
 <span class="nv">LMD_ISSUES</span><span class="o">=</span><span class="s1">&#39;... ... ...&#39;</span><span class="w"> </span><span class="c1"># 讨论区</span>
 <span class="c1"># 页脚内容</span>
@@ -423,13 +421,13 @@ lmd.conf 文件中定义了网站的一些基本信息：
 <span class="w">    </span>lmd_append_meta_data<span class="w">  </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
 <span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">appearance_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>lmd_path_to_root<span class="k">)</span><span class="s2">/appearance&quot;</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$appearance_path</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;./appearance&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">        </span>pandoc<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>pandoc<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span>--standalone<span class="w"> </span><span class="se">\</span>
 <span class="w">            </span>--css<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$appearance_path</span><span class="s2">/lmd.css&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">            </span>--data-dir<span class="o">=</span><span class="s2">&quot;</span><span class="nv">$appearance_path</span><span class="s2">/pandoc/data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">            </span>--template<span class="o">=</span>homepage.template<span class="w"> </span><span class="se">\</span>
 <span class="w">            </span>-o<span class="w"> </span><span class="s2">&quot;index.html&quot;</span>
 <span class="w">    </span><span class="k">else</span>
-<span class="w">        </span>pandoc<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>pandoc<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span>--standalone<span class="w"> </span>--table-of-contents<span class="w"> </span><span class="se">\</span>
 <span class="w">            </span>--css<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$appearance_path</span><span class="s2">/lmd.css&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">            </span>--data-dir<span class="o">=</span><span class="s2">&quot;</span><span class="nv">$appearance_path</span><span class="s2">/pandoc/data&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">            </span>--template<span class="o">=</span>post.template<span class="w"> </span><span class="se">\</span>
@@ -528,7 +526,7 @@ lmd.conf 文件中定义了网站的一些基本信息：
 <span class="w">    </span>build<span class="o">)</span><span class="w"> </span>lmd_build_post<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>lmd_build_upper_post<span class="w"> </span><span class="p">;;</span>
 <span class="w">    </span>root<span class="o">)</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="k">$(</span>lmd_path_to_start<span class="k">)</span><span class="w"> </span><span class="p">;;</span>
 <span class="w">    </span>tree<span class="o">)</span>
-<span class="w">        </span><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>lmd_path_to_start<span class="k">)</span><span class="s2">&quot;</span>
+<span class="w">        </span><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>lmd_path_to_root<span class="k">)</span><span class="s2">&quot;</span>
 <span class="w">        </span><span class="nv">WORKS</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>basename<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">))</span><span class="s2">&quot;</span>
 <span class="w">        </span><span class="nb">cd</span><span class="w"> </span>../
 <span class="w">        </span>tree<span class="w"> </span><span class="si">${</span><span class="p">@:</span><span class="nv">2</span><span class="si">}</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$WORKS</span><span class="s2">&quot;</span>
