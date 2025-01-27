@@ -1,6 +1,7 @@
 ---
 title: 新的 lmd 脚本的用法
 date: 2025 年 01 月 28 日
+abstract: 近日，重写了 lmd 脚本。新版本更为简单和易用。
 ...
 
 近日，重写了 lmd 脚本，详见「[lmd 脚本的设计与实现](../best-lmd/index.html)」。新的 lmd 脚本比[它的上个版本](../../old-posts/output/bash/lmd.html)更为简单，我觉得也更为易用，本文介绍它的用法。

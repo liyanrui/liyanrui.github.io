@@ -1,6 +1,7 @@
 ---
 title: Orez 1.0 指南
 subtitle: 
+abstract: 介绍重写的文学编程工具 orez 的用法。
 date: 2025 年 01 月 03 日
 ...
 

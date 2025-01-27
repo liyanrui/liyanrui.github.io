@@ -1,7 +1,7 @@
 ---
 title: orez + lmd = ?
-subtitle: 
 date: 2025 年 01 月 27 日
+abstract: 介绍如何基于 orez 和 lmd 脚本发布文学程序。
 ...
 
 现在，我有了[新的 orez](../orez-v1/index.html)，还有我写的用于制作静态网站的 [Bash 脚本 lmd](../how-to-use-lmd/index.html)，这两个工具组合起来，会产生怎样的化学反应呢？我也不清楚，可以试试看，但我知道，在 Linux 环境里，反应的结果肯定是一个能够用于发布文学程序文档的静态网站。

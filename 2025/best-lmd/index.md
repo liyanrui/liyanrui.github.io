@@ -1,6 +1,7 @@
 ---
 title: lmd 的设计与实现
 date: 2025 年 01 月 24 日
+abstract: 文学程序，实现了静态网站的构建脚本。
 ...
 
 # 前言
@@ -98,6 +99,7 @@ $ pandoc foo.md --standalone \
 <span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;---&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>index.md
 <span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;title: </span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>index.md
 <span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;subtitle: </span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>index.md
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;abstract: &quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>index.md
 <span class="w">    </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;...\n&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>index.md
 <span class="w">    </span>mkdir<span class="w"> </span>figures
 <span class="o">}</span>
@@ -239,13 +241,13 @@ lmd.conf 文件中定义了网站的一些基本信息：
 <pre id="载入lmd.conf" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ 载入 lmd.conf #</span>
 <span class="nb">source</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>lmd_path_to_root<span class="k">)</span><span class="s2">/lmd.conf&quot;</span>
-<span class="orez-symbol">=&gt;</span> <a href="#函数：向文件首部追加category、date和footer字段" class="proc-emissions-name">函数：向文件首部追加 category、date 和 footer 字段</a>
+<span class="orez-symbol">=&gt;</span> <a href="#函数：向文件首部追加category、lang和footer字段" class="proc-emissions-name">函数：向文件首部追加 category、lang 和 footer 字段</a>
 </pre>
 
 基于 lmd.conf 里的变量，便可实现向文章首部追加字段的代码，如下：
 
-<pre id="函数：向文件首部追加category、date和footer字段" class="orez-snippet-with-name">
-<span class="orez-snippet-name">@ 函数：向文件首部追加 category、date 和 footer 字段 #</span>
+<pre id="函数：向文件首部追加category、lang和footer字段" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：向文件首部追加 category、lang 和 footer 字段 #</span>
 <span class="k">function</span><span class="w"> </span>lmd_append_meta_data<span class="w"> </span><span class="o">{</span>
     <a href="#载入lmd.conf" class="orez-callee-link"># 载入 lmd.conf @</a>
     <span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-e<span class="w"> </span>lmd.conf<span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
@@ -264,7 +266,7 @@ lmd.conf 文件中定义了网站的一些基本信息：
 <span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
-向文件首部追加的 category、date 和 footer 字段，可通过以下 Awk 脚本予以清除：
+向文件首部追加的 category、lang 和 footer 字段，可通过以下 Awk 脚本予以清除：
 
 <pre id="delete-meta-data.awk" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ delete-meta-data.awk #</span>
@@ -295,20 +297,26 @@ lmd.conf 文件中定义了网站的一些基本信息：
 
 与上述 Awk 脚本配合的 Bash 代码如下：
 
-<pre id="函数：从文件首部删除category、date和footer字段" class="orez-snippet-with-name">
-<span class="orez-snippet-name">@ 函数：从文件首部删除 category、date 和 footer 字段 #</span>
+<pre id="函数：从文件首部删除category、lang和footer字段" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：从文件首部删除 category、lang 和 footer 字段 #</span>
 <span class="k">function</span><span class="w"> </span>lmd_delete_meta_data<span class="w"> </span><span class="o">{</span>
 <span class="w">    </span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/delete-meta-data.awk&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">1</span><span class="p">#.tmp_</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
-为了建立与上级文章的关联，还需要考虑如何将文章的路径添加到上级文章里。以下 Awk 脚本用于解决该问题：
+为了建立与上级文章的关联，还需要考虑如何将文章的路径、摘要以及时间戳（假如存在）添加到上级文章里。以下 Awk 脚本用于解决该问题：
 
 <pre id="add-post.awk" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ add-post.awk #</span>
 <span class="nb">BEGIN</span> <span class="p">{</span>
-    <span class="nx">item</span> <span class="o">=</span> <span class="s2">&quot;* [&quot;</span> <span class="nx">title</span> <span class="s2">&quot;](&quot;</span> <span class="nx">post_path</span> <span class="s2">&quot;)&quot;</span>
+    <span class="nx">post_date</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">date</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">sub</span><span class="p">(</span><span class="sr">/.+年/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">date</span><span class="p">)</span>
+        <span class="nx">post_date</span> <span class="o">=</span> <span class="s2">&quot;&lt;span class=\&quot;post-date\&quot;&gt;&quot;</span> <span class="nx">date</span> <span class="s2">&quot;&lt;/span&gt;&quot;</span>
+    <span class="p">}</span>
+    <span class="nx">item</span> <span class="o">=</span> <span class="s2">&quot;* &quot;</span> <span class="nx">post_date</span> <span class="s2">&quot;[&quot;</span> <span class="nx">title</span> <span class="s2">&quot;](&quot;</span> <span class="nx">post_path</span> <span class="s2">&quot;)&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">abstract</span><span class="p">)</span> <span class="nx">item</span> <span class="o">=</span> <span class="nx">item</span> <span class="s2">&quot;：&quot;</span> <span class="nx">abstract</span>
     <span class="nx">metadata_beginning</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="nx">in_metadata</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="nx">before_text</span> <span class="o">=</span> <span class="mi">0</span>
@@ -350,7 +358,7 @@ lmd.conf 文件中定义了网站的一些基本信息：
 <span class="p">}</span>
 </pre>
 
-为了能在 awk 命令中传入上述脚本需要的 `date` 和 `title` 变量，还需要下面两个 Awk 脚本从文章首部中提取 `date` 和 `title` 字段的值：
+为了能在 awk 命令中传入上述脚本需要的 `title`、`date` 和 `abstract` 变量，还需要下面的 Awk 脚本从文章首部中这些字段的值：
 
 <pre id="get-title.awk" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ get-title.awk #</span>
@@ -374,16 +382,27 @@ lmd.conf 文件中定义了网站的一些基本信息：
 <span class="p">}</span>
 </pre>
 
+<pre id="get-abstract.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ get-abstract.awk #</span>
+<span class="sr">/^ *abstract:.*$/</span> <span class="p">{</span>
+    <span class="nx">s</span> <span class="o">=</span> <span class="o">$</span><span class="mi">0</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/[ \t]*abstract:[ \t]*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/[ \t]*$/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="kr">print</span> <span class="nx">s</span>
+    <span class="k">exit</span> <span class="mi">0</span>
+<span class="p">}</span>
+</pre>
+
 至于 add-post.awk 脚本中的 `post_path` 可在 lmd 脚本中结合工作目录的路径进行构造。
 
 向上级文章添加文章链接时，需要事先判定文章是否已在上级页面出现。find-post.awk 脚本用于解决该问题，其实现如下：
 
 <pre id="find-post.awk" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ find-post.awk #</span>
-<span class="sr">/^\*[ \t]*\[[^\]]*\]\(.*\)/</span> <span class="p">{</span>
+<span class="sr">/\[[^\]]*\]\(.*\)/</span> <span class="p">{</span>
     <span class="nx">s</span> <span class="o">=</span> <span class="o">$</span><span class="mi">0</span>
-    <span class="kr">sub</span><span class="p">(</span><span class="sr">/^\*[ \t]*\[[ \t]*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
-    <span class="kr">sub</span><span class="p">(</span><span class="sr">/[ \t]*\].*$/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/^.*\[/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/\].*$/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">s</span> <span class="o">==</span> <span class="nx">title</span><span class="p">)</span> <span class="p">{</span>
         <span class="kr">print</span> <span class="s2">&quot;true&quot;</span>
         <span class="k">exit</span> <span class="mi">0</span>
@@ -398,15 +417,59 @@ lmd.conf 文件中定义了网站的一些基本信息：
 <span class="k">function</span><span class="w"> </span>lmd_add_post<span class="w"> </span><span class="o">{</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-e<span class="w"> </span>../index.md<span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
 <span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-title.awk&quot;</span><span class="w"> </span>index.md<span class="k">)</span>
+<span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nv">date</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-date.awk&quot;</span><span class="w"> </span>index.md<span class="k">)</span>
+<span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nv">abstract</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-abstract.awk&quot;</span><span class="w"> </span>index.md<span class="k">)</span>
 <span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nv">exist</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$title</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">                          </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/find-post.awk&quot;</span><span class="w"> </span>../index.md<span class="k">)</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$exist</span><span class="s2">&quot;</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
 <span class="w">            </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$title</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                </span>-v<span class="w"> </span><span class="nv">date</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$date</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                </span>-v<span class="w"> </span><span class="nv">abstract</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$abstract</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">                </span>-v<span class="w"> </span><span class="nv">post_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>basename<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">))</span><span class="s2">/index.html&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">                </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/add-post.awk&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">                </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
 <span class="w">        </span><span class="k">fi</span>
 <span class="w">    </span><span class="k">fi</span>
+<span class="o">}</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+
+很多时候，需要文章带有写作日期的时间戳，但是当文章只用于存放下级文章的链接时，它不需要时间戳，所以下面的 Awk 脚本可以为文章增加时间戳，但是什么时机使用，由用户决定。该 Awk 脚本内容如下：
+
+<pre id="add-timestamp.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ add-timestamp.awk #</span>
+<span class="nb">BEGIN</span> <span class="p">{</span>
+    <span class="nx">beginning</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="nx">meta_data</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">}</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">beginning</span> <span class="o">&amp;&amp;</span> <span class="o">$</span><span class="mi">0</span> <span class="o">~</span> <span class="sr">/^--- *$/</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+        <span class="nx">meta_data</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="kr">next</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">meta_data</span> <span class="o">&amp;&amp;</span> <span class="o">$</span><span class="mi">0</span> <span class="o">~</span> <span class="sr">/^\.\.\. *$/</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">date</span><span class="p">)</span> <span class="kr">print</span> <span class="s2">&quot;date: &quot;</span> <span class="nx">date</span>
+        <span class="nx">beginning</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="nx">meta_data</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># 略过原有的时间戳</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="mi">0</span><span class="p">,</span> <span class="sr">/^date:/</span><span class="p">))</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+        <span class="kr">next</span>
+    <span class="p">}</span>
+    <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+<span class="p">}</span>
+</pre>
+
+与 add-timestamp.awk 配合的 Bash 代码如下：
+
+<pre id="函数：为文章增加时间戳" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：为文章增加时间戳 #</span>
+<span class="k">function</span><span class="w"> </span>lmd_add_timestamp<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">date</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>date<span class="w"> </span>+<span class="s1">&#39;%m 月 %d 日&#39;</span><span class="k">)</span><span class="s2">&quot;</span>
+<span class="w">    </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">date</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$date</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/add-timestamp.awk&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>index.md<span class="w"> </span>&gt;<span class="w"> </span>.tmp_index.md
+<span class="w">    </span>mv<span class="w"> </span>.tmp_index.md<span class="w"> </span>index.md
 <span class="o">}</span>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
@@ -468,7 +531,7 @@ lmd.conf 文件中定义了网站的一些基本信息：
 
 # 删除文章
 
-除删除文章目录之外，还要从所述分类首页上删除该文章的链接：
+除删除文章目录之外，还要从上级文章里删除该文章的链接：
 
 <pre id="函数：删除文章" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ 函数：删除文章 #</span>
@@ -507,8 +570,9 @@ lmd.conf 文件中定义了网站的一些基本信息：
 <a href="#函数：获取当前目录到网站根目录的相对路径" class="orez-callee-link"># 函数：获取当前目录到网站根目录的相对路径 @</a>
 <a href="#函数：创建文章" class="orez-callee-link"># 函数：创建文章 @</a>
 <a href="#函数：网站初始化" class="orez-callee-link"># 函数：网站初始化 @</a>
-<a href="#函数：向文件首部追加category、date和footer字段" class="orez-callee-link"># 函数：向文件首部追加 category、date 和 footer 字段 @</a>
-<a href="#函数：从文件首部删除category、date和footer字段" class="orez-callee-link"># 函数：从文件首部删除 category、date 和 footer 字段 @</a>
+<a href="#函数：向文件首部追加category、lang和footer字段" class="orez-callee-link"># 函数：向文件首部追加 category、lang 和 footer 字段 @</a>
+<a href="#函数：从文件首部删除category、lang和footer字段" class="orez-callee-link"># 函数：从文件首部删除 category、lang 和 footer 字段 @</a>
+<a href="#函数：为文章增加时间戳" class="orez-callee-link"># 函数：为文章增加时间戳 @</a>
 <a href="#函数：向上级文章添加文章链接" class="orez-callee-link"># 函数：向上级文章添加文章链接 @</a>
 <a href="#函数：构建网页" class="orez-callee-link"># 函数：构建网页 @</a>
 <a href="#函数：将文章转化为网页" class="orez-callee-link"># 函数：将文章转化为网页 @</a>
@@ -523,6 +587,11 @@ lmd.conf 文件中定义了网站的一些基本信息：
 <span class="w">    </span>init<span class="o">)</span><span class="w"> </span>lmd_init<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">;;</span>
 <span class="w">    </span>new<span class="o">)</span><span class="w"> </span>lmd_new_post<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">;;</span>
 <span class="w">    </span>delete<span class="o">)</span><span class="w"> </span>lmd_delete_post<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">;;</span>
+<span class="w">    </span>add<span class="o">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;timestamp&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">            </span>lmd_add_timestamp
+<span class="w">        </span><span class="k">fi</span>
+<span class="w">        </span><span class="p">;;</span>
 <span class="w">    </span>build<span class="o">)</span><span class="w"> </span>lmd_build_post<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>lmd_build_upper_post<span class="w"> </span><span class="p">;;</span>
 <span class="w">    </span>root<span class="o">)</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="k">$(</span>lmd_path_to_start<span class="k">)</span><span class="w"> </span><span class="p">;;</span>
 <span class="w">    </span>tree<span class="o">)</span>
@@ -723,7 +792,7 @@ pandoc 的文档模板，除了 HTML 标记之外，还有一些变量，例如 
 <span class="w">    </span><span class="k">font-size</span><span class="p">:</span><span class="mf">1.2</span><span class="kt">em</span><span class="p">;</span>
 <span class="w">    </span><span class="k">text-align</span><span class="p">:</span><span class="w"> </span><span class="kc">center</span><span class="p">;</span>
 <span class="p">}</span>
-<span class="nt">span</span><span class="p">.</span><span class="nc">index-date</span><span class="w"> </span><span class="p">{</span><span class="k">margin-left</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="kt">em</span><span class="p">;</span><span class="w"> </span><span class="k">margin-right</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="kt">em</span><span class="p">;}</span>
+<span class="nt">span</span><span class="p">.</span><span class="nc">post-date</span><span class="w"> </span><span class="p">{</span><span class="k">margin-right</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="kt">em</span><span class="p">;</span><span class="w"> </span><span class="n">text-color</span><span class="p">:</span><span class="w"> </span><span class="kc">darkgray</span><span class="p">}</span>
 <span class="p">#</span><span class="nn">TOC</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="kt">em</span><span class="w"> </span><span class="mf">.5</span><span class="kt">em</span><span class="p">;</span>
 <span class="w">    </span><span class="k">border</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="kt">pt</span><span class="w"> </span><span class="kc">solid</span><span class="w"> </span><span class="kc">darkgray</span><span class="p">;</span>

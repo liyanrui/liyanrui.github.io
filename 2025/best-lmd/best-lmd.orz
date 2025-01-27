@@ -101,6 +101,7 @@ function lmd_new_post {
     echo "---" > index.md
     echo "title: $1" >> index.md
     echo "subtitle: $2" >> index.md
+    echo "abstract: " >> index.md
     echo -e "...\n" >> index.md
     mkdir figures
 }
@@ -234,7 +235,7 @@ source "$(lmd_path_to_root)/lmd.conf"
 
 基于 lmd.conf 里的变量，便可实现向文章首部追加字段的代码，如下：
 
-@ 函数：向文件首部追加 category、date 和 footer 字段 #
+@ 函数：向文件首部追加 category、lang 和 footer 字段 #
 function lmd_append_meta_data {
     # 载入 lmd.conf @
     if [ -e lmd.conf ]; then
@@ -252,7 +253,7 @@ function lmd_append_meta_data {
 }
 @
 
-向文件首部追加的 category、date 和 footer 字段，可通过以下 Awk 脚本予以清除：
+向文件首部追加的 category、lang 和 footer 字段，可通过以下 Awk 脚本予以清除：
 
 @ delete-meta-data.awk # [awk]
 BEGIN {
@@ -282,21 +283,23 @@ BEGIN {
 
 与上述 Awk 脚本配合的 Bash 代码如下：
 
-@ 函数：从文件首部删除 category、date 和 footer 字段 #
+@ 函数：从文件首部删除 category、lang 和 footer 字段 #
 function lmd_delete_meta_data {
     awk -f "$LMD_SELF_PATH/helper/delete-meta-data.awk" "$1" > "${1#.tmp_}"
 }
 @
 
-为了建立与上级文章的关联，还需要考虑如何将文章的路径以及时间戳（假如存在）添加到上级文章里。以下 Awk 脚本用于解决该问题：
+为了建立与上级文章的关联，还需要考虑如何将文章的路径、摘要以及时间戳（假如存在）添加到上级文章里。以下 Awk 脚本用于解决该问题：
 
 @ add-post.awk # [awk]
 BEGIN {
     post_date = ""
     if (date) {
+        sub(/.+年/, "", date)
         post_date = "<span class=\"post-date\">" date "</span>"
     }
-    item = "* [" title "](" post_path ")" post_date
+    item = "* " post_date "[" title "](" post_path ")"
+    if (abstract) item = item "：" abstract
     metadata_beginning = 1
     in_metadata = 0
     before_text = 0
@@ -338,7 +341,7 @@ END {
 }
 @
 
-为了能在 awk 命令中传入上述脚本需要的 `title` 和 `date` 变量，还需要下面的 Awk 脚本从文章首部中提取 `title` 和 `date` 字段的值：
+为了能在 awk 命令中传入上述脚本需要的 `title`、`date` 和 `abstract` 变量，还需要下面的 Awk 脚本从文章首部中这些字段的值：
 
 @ get-title.awk # [awk]
 /^ *title:.*$/ {
@@ -360,15 +363,25 @@ END {
 }
 @
 
+@ get-abstract.awk # [awk]
+/^ *abstract:.*$/ {
+    s = $0
+    sub(/[ \t]*abstract:[ \t]*/, "", s)
+    sub(/[ \t]*$/, "", s)
+    print s
+    exit 0
+}
+@
+
 至于 add-post.awk 脚本中的 `post_path` 可在 lmd 脚本中结合工作目录的路径进行构造。
 
 向上级文章添加文章链接时，需要事先判定文章是否已在上级页面出现。find-post.awk 脚本用于解决该问题，其实现如下：
 
 @ find-post.awk # [awk]
-/^\*[ \t]*\[[^\]]*\]\(.*\)/ {
+/\[[^\]]*\]\(.*\)/ {
     s = $0
-    sub(/^\*[ \t]*\[[ \t]*/, "", s)
-    sub(/[ \t]*\].*$/, "", s)
+    sub(/^.*\[/, "", s)
+    sub(/\].*$/, "", s)
     if (s == title) {
         print "true"
         exit 0
@@ -383,11 +396,13 @@ function lmd_add_post {
     if [ -e ../index.md ]; then
         local title=$(awk -f "$LMD_SELF_PATH/helper/get-title.awk" index.md)
         local date=$(awk -f "$LMD_SELF_PATH/helper/get-date.awk" index.md)
+        local abstract=$(awk -f "$LMD_SELF_PATH/helper/get-abstract.awk" index.md)
         local exist=$(awk -v title="$title" \
                           -f "$LMD_SELF_PATH/helper/find-post.awk" ../index.md)
         if [ "$exist" != "true" ]; then
             awk -v title="$title" \
                 -v date="$date" \
+                -v abstract="$abstract" \
                 -v post_path="$(basename $(pwd))/index.html" \
                 -f "$LMD_SELF_PATH/helper/add-post.awk" \
                 "$1" > "$2"
@@ -425,7 +440,7 @@ BEGIN {
 
 @ 函数：为文章增加时间戳 #
 function lmd_add_timestamp {
-    local date="$(date +'%Y 年 %m 月 %d 日')"
+    local date="$(date +'%m 月 %d 日')"
     awk -v date="$date" \
         -f "$LMD_SELF_PATH/helper/add-timestamp.awk" \
         index.md > .tmp_index.md
@@ -520,8 +535,8 @@ function lmd_delete_post {
 # 函数：获取当前目录到网站根目录的相对路径 @
 # 函数：创建文章 @
 # 函数：网站初始化 @
-# 函数：向文件首部追加 category、date 和 footer 字段 @
-# 函数：从文件首部删除 category、date 和 footer 字段 @
+# 函数：向文件首部追加 category、lang 和 footer 字段 @
+# 函数：从文件首部删除 category、lang 和 footer 字段 @
 # 函数：为文章增加时间戳 @
 # 函数：向上级文章添加文章链接 @
 # 函数：构建网页 @
@@ -734,7 +749,7 @@ p.subtitle {
     font-size:1.2em;
     text-align: center;
 }
-span.post-date {margin-left: 1em; margin-right: 1em;}
+span.post-date {margin-right: 1em; text-color: darkgray}
 #TOC {
     padding: 0em .5em;
     border: 2pt solid darkgray;
