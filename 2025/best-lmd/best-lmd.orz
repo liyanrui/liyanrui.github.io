@@ -288,11 +288,15 @@ function lmd_delete_meta_data {
 }
 @
 
-为了建立与上级文章的关联，还需要考虑如何将文章的路径添加到上级文章里。以下 Awk 脚本用于解决该问题：
+为了建立与上级文章的关联，还需要考虑如何将文章的路径以及时间戳（假如存在）添加到上级文章里。以下 Awk 脚本用于解决该问题：
 
 @ add-post.awk # [awk]
 BEGIN {
-    item = "* [" title "](" post_path ")"
+    post_date = ""
+    if (date) {
+        post_date = "<span class=\"post-date\">" date "</span>"
+    }
+    item = "* [" title "](" post_path ")" post_date
     metadata_beginning = 1
     in_metadata = 0
     before_text = 0
@@ -334,7 +338,7 @@ END {
 }
 @
 
-为了能在 awk 命令中传入上述脚本需要的 `date` 和 `title` 变量，还需要下面两个 Awk 脚本从文章首部中提取 `date` 和 `title` 字段的值：
+为了能在 awk 命令中传入上述脚本需要的 `title` 和 `date` 变量，还需要下面的 Awk 脚本从文章首部中提取 `title` 和 `date` 字段的值：
 
 @ get-title.awk # [awk]
 /^ *title:.*$/ {
@@ -378,15 +382,54 @@ END {
 function lmd_add_post {
     if [ -e ../index.md ]; then
         local title=$(awk -f "$LMD_SELF_PATH/helper/get-title.awk" index.md)
+        local date=$(awk -f "$LMD_SELF_PATH/helper/get-date.awk" index.md)
         local exist=$(awk -v title="$title" \
                           -f "$LMD_SELF_PATH/helper/find-post.awk" ../index.md)
         if [ "$exist" != "true" ]; then
             awk -v title="$title" \
+                -v date="$date" \
                 -v post_path="$(basename $(pwd))/index.html" \
                 -f "$LMD_SELF_PATH/helper/add-post.awk" \
                 "$1" > "$2"
         fi
     fi
+}
+@
+
+很多时候，需要文章带有写作日期的时间戳，但是当文章只用于存放下级文章的链接时，它不需要时间戳，所以下面的 Awk 脚本可以为文章增加时间戳，但是什么时机使用，由用户决定。该 Awk 脚本内容如下：
+
+@ add-timestamp.awk # [awk]
+BEGIN {
+    beginning = 1
+    meta_data = 0
+}
+{
+    if (beginning && $0 ~ /^--- *$/) {
+        print $0
+        meta_data = 1
+        next
+    }
+    if (meta_data && $0 ~ /^\.\.\. *$/) {
+        if (date) print "date: " date
+        beginning = 0
+        meta_data = 0
+        # 略过原有的时间戳
+        if (!match($0, /^date:/)) print $0
+        next
+    }
+    print $0
+}
+@
+
+与 add-timestamp.awk 配合的 Bash 代码如下：
+
+@ 函数：为文章增加时间戳 #
+function lmd_add_timestamp {
+    local date="$(date +'%Y 年 %m 月 %d 日')"
+    awk -v date="$date" \
+        -f "$LMD_SELF_PATH/helper/add-timestamp.awk" \
+        index.md > .tmp_index.md
+    mv .tmp_index.md index.md
 }
 @
 
@@ -441,7 +484,7 @@ function lmd_build_upper_post {
 
 # 删除文章
 
-除删除文章目录之外，还要从所述分类首页上删除该文章的链接：
+除删除文章目录之外，还要从上级文章里删除该文章的链接：
 
 @ 函数：删除文章 #
 function lmd_delete_post {
@@ -479,6 +522,7 @@ function lmd_delete_post {
 # 函数：网站初始化 @
 # 函数：向文件首部追加 category、date 和 footer 字段 @
 # 函数：从文件首部删除 category、date 和 footer 字段 @
+# 函数：为文章增加时间戳 @
 # 函数：向上级文章添加文章链接 @
 # 函数：构建网页 @
 # 函数：将文章转化为网页 @
@@ -492,6 +536,11 @@ case $1 in
     init) lmd_init "${@:2}" ;;
     new) lmd_new_post "${@:2}" ;;
     delete) lmd_delete_post "${@:2}" ;;
+    add)
+        if [ "$2" = "timestamp" ]; then
+            lmd_add_timestamp
+        fi
+        ;;
     build) lmd_build_post && lmd_build_upper_post ;;
     root) echo $(lmd_path_to_start) ;;
     tree)
@@ -685,7 +734,7 @@ p.subtitle {
     font-size:1.2em;
     text-align: center;
 }
-span.index-date {margin-left: 1em; margin-right: 1em;}
+span.post-date {margin-left: 1em; margin-right: 1em;}
 #TOC {
     padding: 0em .5em;
     border: 2pt solid darkgray;

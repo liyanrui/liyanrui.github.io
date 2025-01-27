@@ -95,6 +95,7 @@
 </div>
 <header id="title-block-header">
 <h1 class="title">新的 lmd 脚本的用法</h1>
+<p class="date">2025 年 01 月 28 日</p>
 </header>
 <hr />
 <nav id="TOC" role="doc-toc">
@@ -137,12 +138,12 @@ $ lmd init &quot;Foo&quot; &quot;this is foo.&quot; foo</code></pre>
 $ lmd tree
 foo
 ├── appearance
-│   ├── lmd.css
-│   └── pandoc
-│       └── data
-│           └── templates
-│               ├── homepage.template
-│               └── post.template
+│   ├── lmd.css
+│   └── pandoc
+│       └── data
+│           └── templates
+│               ├── homepage.template
+│               └── post.template
 ├── figures
 ├── index.md
 └── lmd.conf</code></pre>
@@ -164,6 +165,8 @@ $ lmd build</code></pre>
 <p>在 <code>2025</code> 目录里，创建本年度的一篇日志：</p>
 <pre class="console"><code>$ lmd new &quot;Hello world&quot; &quot;&quot; hello-world
 $ cd hell-world</code></pre>
+<p>执行以下命令可为文章增加时间戳：</p>
+<pre class="console"><code>$ lmd add timestamp</code></pre>
 <p>然后用你管用的文本编辑器，编辑 hello-world 目录里的 index.md
 文件，这份文件包含的便是文章内容。完成文章创作后，在 hello-world
 目录里执行</p>

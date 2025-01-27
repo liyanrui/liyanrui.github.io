@@ -1,6 +1,6 @@
 ---
 title: 新的 lmd 脚本的用法
-subtitle: 
+date: 2025 年 01 月 28 日
 ...
 
 近日，重写了 lmd 脚本，详见「[lmd 脚本的设计与实现](../best-lmd/index.html)」。新的 lmd 脚本比[它的上个版本](../../old-posts/output/bash/lmd.html)更为简单，我觉得也更为易用，本文介绍它的用法。
@@ -41,12 +41,12 @@ $ cd foo
 $ lmd tree
 foo
 ├── appearance
-│   ├── lmd.css
-│   └── pandoc
-│       └── data
-│           └── templates
-│               ├── homepage.template
-│               └── post.template
+│   ├── lmd.css
+│   └── pandoc
+│       └── data
+│           └── templates
+│               ├── homepage.template
+│               └── post.template
 ├── figures
 ├── index.md
 └── lmd.conf
@@ -81,6 +81,12 @@ $ lmd new "Hello world" "" hello-world
 $ cd hell-world
 ```
 
+执行以下命令可为文章增加时间戳：
+
+```console
+$ lmd add timestamp
+```
+
 然后用你管用的文本编辑器，编辑 hello-world 目录里的 index.md 文件，这份文件包含的便是文章内容。完成文章创作后，在 hello-world 目录里执行
 
 ```console
@@ -96,8 +102,6 @@ $ cd ..    # 从当前的 hello-world 目录转到上级目录
 $ lmd delete hello-world
 ```
 
-
 # 外观
 
 在文集的 appearance 目录里，lmd.css 用于定制 HTML 页面元素的外观。在 appearance/pandoc/data/templates 目录中有两份 pandoc 模板，homepage.template 和 post.template，前者为首页模板，后者为文章模板，若你熟悉 pandoc 的用法或者据其内容略加揣测，自行对页面应当出现哪些元素予以定制。
-
