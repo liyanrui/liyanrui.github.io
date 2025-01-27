@@ -123,7 +123,7 @@ lmd 脚本从如何初始化上述的网站结构开始。首先需要考虑一�
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-new-category-test.sh" class="proc-emissions-name">lmd-new-category-test.sh</a>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-convert-test.sh" class="proc-emissions-name">lmd-convert-test.sh</a>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-delete-post-test.sh" class="proc-emissions-name">lmd-delete-post-test.sh</a>
-<span class="orez-symbol">=&gt;</span> <a href="#lmd" class="proc-emissions-name">lmd</a>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
 以下脚本可用于验证上述代码是否可用：
@@ -184,7 +184,7 @@ lmd 所在目录
     <a href="#创建网站目录初始结构" class="orez-callee-link"># 创建网站目录初始结构 @</a>
 <span class="o">}</span>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-init-test.sh" class="proc-emissions-name">lmd-init-test.sh</a>
-<span class="orez-symbol">=&gt;</span> <a href="#lmd" class="proc-emissions-name">lmd</a>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
 `lmd_init` 函数可以作为 Bash 函数定义的一个简单示例，它接受一个参数，即 `$1`，是网站目录名。以下代码片段用于检测该参数是否为空目录是否已经存在：
@@ -255,7 +255,7 @@ $ bash lmd/lmd-init-test.sh demo
     <a href="#创建首页" class="orez-callee-link"># 创建首页 @</a>
 <span class="o">}</span>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-init-index-test.sh" class="proc-emissions-name">lmd-init-index-test.sh</a>
-<span class="orez-symbol">=&gt;</span> <a href="#lmd" class="proc-emissions-name">lmd</a>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
 根据 lmd.conf 中定义的 Markdown 文档扩展名，创建首页文件，并写入文档首部数据：
@@ -332,7 +332,7 @@ subtitle:
     <a href="#lmd_new_category待续" class="orez-callee-link"># lmd_new_category 待续 @</a>
 <span class="o">}</span>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-new-category-test.sh" class="proc-emissions-name">lmd-new-category-test.sh</a>
-<span class="orez-symbol">=&gt;</span> <a href="#lmd" class="proc-emissions-name">lmd</a>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
 函数 `lmd_new_category` 写到创建了分类目录（即 `$2`）后，便难以再写下去，因为接下来要在分类目录创建首页，但是该过程依赖位于网站根目录中的配置文件 lmd.conf 中的一些信息，可是如何找到 lmd.conf 呢？从当前目录递归上溯搜索上层目录即可，函数 `lmd_load_conf` 实现了这一过程：
@@ -356,7 +356,7 @@ subtitle:
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-new-post-test.sh" class="proc-emissions-name">lmd-new-post-test.sh</a>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-convert-test.sh" class="proc-emissions-name">lmd-convert-test.sh</a>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-delete-post-test.sh" class="proc-emissions-name">lmd-delete-post-test.sh</a>
-<span class="orez-symbol">=&gt;</span> <a href="#lmd" class="proc-emissions-name">lmd</a>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
 注意，`lmd_load_conf` 过程会将工作目录（当前目录）修改为网站根目录，故而在调用 `lmd_load_conf` 之前，需要保存工作目录，调用 `lmd_load_conf` 后再予以恢复：
@@ -516,11 +516,12 @@ Awk 脚本抓取的内容可通过子 Shell 命令即 `$(...)` 的形式传递�
 
 若当前分类首页在上级分类首页里未出现，则将其添加到分类首页里的分类列表，相应的 Awk 脚本如下：
 
-<pre id="add-post.awk" class="orez-snippet-with-name">
-<span class="orez-snippet-name">@ add-post.awk #</span>
+<pre id="add-category-or-post.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ add-category-or-post.awk #</span>
 <span class="nb">BEGIN</span> <span class="p">{</span>
-    <span class="nx">post_date</span> <span class="o">=</span> <span class="s2">&quot;&lt;span class=\&quot;index-date\&quot;&gt;&quot;</span> <span class="nx">date</span> <span class="s2">&quot;&lt;/span&gt;&quot;</span>
-    <span class="nx">post</span> <span class="o">=</span> <span class="s2">&quot;* [&quot;</span> <span class="nx">title</span> <span class="s2">&quot;](&quot;</span> <span class="nx">post_path</span> <span class="s2">&quot;)&quot;</span> <span class="nx">post_date</span>
+    <span class="nx">item_date</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">date</span><span class="p">)</span> <span class="nx">item_date</span> <span class="o">=</span> <span class="s2">&quot;&lt;span class=\&quot;index-date\&quot;&gt;&quot;</span> <span class="nx">date</span> <span class="s2">&quot;&lt;/span&gt;&quot;</span>
+    <span class="nx">item</span> <span class="o">=</span> <span class="s2">&quot;* [&quot;</span> <span class="nx">title</span> <span class="s2">&quot;](&quot;</span> <span class="nx">post_path</span> <span class="s2">&quot;)&quot;</span> <span class="nx">item_date</span>
     <span class="nx">metadata_beginning</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="nx">in_metadata</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="nx">metadata_end</span> <span class="o">=</span> <span class="mi">0</span>
@@ -543,15 +544,17 @@ Awk 脚本抓取的内容可通过子 Shell 命令即 `$(...)` 的形式传递�
     <span class="k">if</span> <span class="p">(</span><span class="nx">in_metadata</span><span class="p">)</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span><span class="p">;</span> <span class="kr">next</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">metadata_end</span><span class="p">)</span> <span class="p">{</span>
         <span class="c1"># 在正文区域遇到非空行，添加 post 链接</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">$</span><span class="mi">0</span> <span class="o">!~</span> <span class="sr">/^[ \t]*$/</span><span class="p">)</span> <span class="p">{</span>
-            <span class="kr">print</span> <span class="nx">post</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">$</span><span class="mi">0</span> <span class="o">~</span> <span class="sr">/^[ \t]*$/</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="kr">print</span> <span class="nx">item</span>
             <span class="nx">finished</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
 <span class="nb">END</span> <span class="p">{</span>
     <span class="c1"># 以防页面内容为空</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">finished</span><span class="p">)</span> <span class="kr">print</span> <span class="nx">post</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">finished</span><span class="p">)</span> <span class="kr">print</span> <span class="nx">item</span>
 <span class="p">}</span>
 </pre>
 
@@ -597,7 +600,8 @@ Awk 脚本抓取的内容可通过子 Shell 命令即 `$(...)` 的形式传递�
 <pre id="将分类首页添加至上级分类首页中的分类列表" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ 将分类首页添加至上级分类首页中的分类列表 #</span>
 <span class="nb">local</span><span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-title.awk&quot;</span><span class="w"> </span>index<span class="nv">$MARKDOWN_EXT</span><span class="k">)</span>
-<span class="nb">local</span><span class="w"> </span><span class="nv">exist</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/find-post.awk&quot;</span><span class="w"> </span>../index<span class="nv">$MARKDOWN_EXT</span><span class="k">)</span>
+<span class="nb">local</span><span class="w"> </span><span class="nv">exist</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$title</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                  </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/find-post.awk&quot;</span><span class="w"> </span>../index<span class="nv">$MARKDOWN_EXT</span><span class="k">)</span>
 <a href="#向分类首页添加链接" class="orez-callee-link"># 向分类首页添加链接 @</a>
 <span class="orez-symbol">=&gt;</span> <a href="#构建分类首页与上级分类首页的关联并将其转换为HTML文件" class="proc-emissions-name">构建分类首页与上级分类首页的关联并将其转换为 HTML 文件</a>
 </pre>
@@ -606,17 +610,16 @@ Awk 脚本抓取的内容可通过子 Shell 命令即 `$(...)` 的形式传递�
 
 <pre id="向分类首页添加链接" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ 向分类首页添加链接 #</span>
-<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>exist<span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="w"> </span><span class="o">]</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$exist</span><span class="s2">&quot;</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="w"> </span><span class="o">]</span>
 <span class="k">then</span>
 <span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">post_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">/index.html&quot;</span>
 <span class="w">    </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$title</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>-v<span class="w"> </span><span class="nv">post_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$post_path</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/add-post.awk&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/add-category-or-post.awk&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">        </span>../.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>&gt;<span class="w"> </span>../.tmp_0_index<span class="nv">$MARKDOWN_EXT</span>
 <span class="w">    </span>mv<span class="w"> </span>../.tmp_0_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>../.tmp_index<span class="nv">$MARKDOWN_EXT</span>
 <span class="k">fi</span>
 <span class="orez-symbol">=&gt;</span> <a href="#将分类首页添加至上级分类首页中的分类列表" class="proc-emissions-name">将分类首页添加至上级分类首页中的分类列表</a>
-<span class="orez-symbol">=&gt;</span> <a href="#将文章添加到分类首页或网站首页" class="proc-emissions-name">将文章添加到分类首页或网站首页</a>
 </pre>
 
 最后，使用 pandoc，将上述代码生成的临时 Markdown 文档转换为 HTML 文件，但是 pandoc 需要知道 lmd.css 以及文章模板的位置，而此时工作目录是在文章目录，需要确定工作目录到网站根目录的相对路径，基于该路径构造 lmd.css 和文章模板的路径。函数 `lmd_path_to_start` 可构造这样的路径，其定义如下：
@@ -641,7 +644,7 @@ Awk 脚本抓取的内容可通过子 Shell 命令即 `$(...)` 的形式传递�
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-new-category-test.sh" class="proc-emissions-name">lmd-new-category-test.sh</a>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-convert-test.sh" class="proc-emissions-name">lmd-convert-test.sh</a>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-delete-post-test.sh" class="proc-emissions-name">lmd-delete-post-test.sh</a>
-<span class="orez-symbol">=&gt;</span> <a href="#lmd" class="proc-emissions-name">lmd</a>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
 `lmd_path_to_start` 的实现与 `lmd_load_conf` 相似，前者只是在递归上溯搜寻 lmd.conf 的过程中记录了路径，但是同样会破坏工作目录，因此需要以下代码令其安全：
@@ -807,7 +810,7 @@ $ bash ../lmd/lmd-new-category-test.sh "日志" blog
     <span class="orez-callee-text"># 分类首页 -> 网页 @</span> <a href="#分类首页->网页1">[1]</a> <a href="#分类首页->网页2">[2]</a>
     rm<span class="w"> </span>-rf<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
 <span class="o">}</span>
-<span class="orez-symbol">=&gt;</span> <a href="#lmd" class="proc-emissions-name">lmd</a>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
 为了在上级分类首页中删除特定的下级分类首页链接，需要借助以下 Awk 脚本：
@@ -866,7 +869,7 @@ awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</spa
 <span class="w">    </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;...\n&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$post</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-new-post-test.sh" class="proc-emissions-name">lmd-new-post-test.sh</a>
-<span class="orez-symbol">=&gt;</span> <a href="#lmd" class="proc-emissions-name">lmd</a>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
 以下是 `lmd_new_post` 的测试代码：
@@ -911,7 +914,7 @@ abstract:
     <span class="orez-callee-text"># 上级分类首页 -> 网页 @</span> <a href="#上级分类首页->网页1">[1]</a> <a href="#上级分类首页->网页2">[2]</a>
 <span class="o">}</span>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-convert-test.sh" class="proc-emissions-name">lmd-convert-test.sh</a>
-<span class="orez-symbol">=&gt;</span> <a href="#lmd" class="proc-emissions-name">lmd</a>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
 下面逐一实现上述尚未实现的代码片段。首先，向 Markdown 文档首部追加字段：
@@ -933,8 +936,18 @@ awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">category</
 <pre id="将文章添加到分类首页或网站首页" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ 将文章添加到分类首页或网站首页 #</span>
 <span class="nb">local</span><span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-title.awk&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="k">)</span>
-<span class="nb">local</span><span class="w"> </span><span class="nv">exist</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/find-post.awk&quot;</span><span class="w"> </span><span class="s2">&quot;../index.md&quot;</span><span class="k">)</span>
-<a href="#向分类首页添加链接" class="orez-callee-link"># 向分类首页添加链接 @</a>
+<span class="nb">local</span><span class="w"> </span><span class="nv">exist</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$title</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                  </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/find-post.awk&quot;</span><span class="w"> </span><span class="s2">&quot;../index.md&quot;</span><span class="k">)</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$exist</span><span class="s2">&quot;</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="w"> </span><span class="o">]</span>
+<span class="k">then</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">post</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">1</span><span class="p">%</span><span class="nv">$MARKDOWN_EXT</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">post_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$post</span><span class="s2">/</span><span class="si">${</span><span class="nv">post</span><span class="si">}</span><span class="s2">.html&quot;</span>
+<span class="w">    </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$title</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-v<span class="w"> </span><span class="nv">post_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$post_path</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/add-category-or-post.awk&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>../.tmp_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>&gt;<span class="w"> </span>../.tmp_0_index<span class="nv">$MARKDOWN_EXT</span>
+<span class="w">    </span>mv<span class="w"> </span>../.tmp_0_index<span class="nv">$MARKDOWN_EXT</span><span class="w"> </span>../.tmp_index<span class="nv">$MARKDOWN_EXT</span>
+<span class="k">fi</span>
 <span class="orez-symbol">=&gt;</span> <a href="#文章->HTML文件" class="proc-emissions-name">文章 -> HTML 文件</a>
 </pre>
 
@@ -997,7 +1010,7 @@ $ bash /tmp/lmd/lmd-convert-test.sh first-post.md
     rm<span class="w"> </span>-rf<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd-delete-post-test.sh" class="proc-emissions-name">lmd-delete-post-test.sh</a>
-<span class="orez-symbol">=&gt;</span> <a href="#lmd" class="proc-emissions-name">lmd</a>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
 以下是 `lmd_delete_post` 的测试代码：
@@ -1053,7 +1066,7 @@ lmd 脚本的主要功能皆已实现，现在为这些功能构造简单的命�
 <span class="w">        </span><span class="c1">#exit -1</span>
 <span class="w">        </span><span class="p">;;</span>
 <span class="k">esac</span>
-<span class="orez-symbol">=&gt;</span> <a href="#lmd" class="proc-emissions-name">lmd</a>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
 上述代码中，使用了 Bash 数组切片的语法，例如 `${@:2}`，表示从命令行参数列表里截取第 2 个及其之后的参数。
@@ -1062,8 +1075,8 @@ lmd 脚本的主要功能皆已实现，现在为这些功能构造简单的命�
 
 将前文定义的代码片段组装起来，便可得到 lmd 脚本的全部内容：
 
-<pre id="lmd" class="orez-snippet-with-name">
-<span class="orez-snippet-name">@ lmd #</span>
+<pre id="lmd脚本" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ lmd 脚本 #</span>
 <span class="ch">#!/usr/bin/env bash</span>
 <a href="#确定脚本自身所在->LMD_SELF_PATH" class="orez-callee-link"># 确定脚本自身所在 -> LMD_SELF_PATH @</a>
 <a href="#搜索并加载lmd.conf" class="orez-callee-link"># 搜索并加载 lmd.conf @</a>
@@ -1077,6 +1090,86 @@ lmd 脚本的主要功能皆已实现，现在为这些功能构造简单的命�
 <a href="#删除文章" class="orez-callee-link"># 删除文章 @</a>
 <a href="#lmd界面" class="orez-callee-link"># lmd 界面 @</a>
 </pre>
+
+# 项目构建
+
+本文档的源文档名为 new-lmd.orz，下载地址：<http://liyanrui.github.io/source/2025/new-lmd.orz>
+
+下载 new-lmd.orz 文件后，使用 orez 提取 lmd 脚本、网页样式表和 pandoc 模板，便可构建 lmd 项目的目录。不过，需要注意，由于 orez 的文学编程语法未提供符号转义功能，网页样式表和 pandoc 模板的开头出现的 `@` 和尖括号与 orez 文学编程语法有冲突，故而在 new-lmd.orz 中，我使用 `ESC_AT`，`ESC_LEFT_ANGLE` 和 `ESC_RIGHT_ANGLE` 代替了这些符号，使用 orez 提取这部分内容后，需要用 sed 或 awk 之类的文本处理工具将这些代符号替换为相应符号。
+
+首先，假设在 $HOME/opt 目录（若无该目录，不妨自行建立）下建立 lmd 目录，并进入：
+
+```console
+$ cd $HOME/opt
+$ mkdir lmd
+$ cd lmd
+```
+
+将 new-lmd.orz 文件复制到 lmd 目录，然后执行以下命令便可从 new-lmd.orz 中获得 lmd 脚本和配置文件 lmd.conf，并赋予 lmd 脚本可执行权限：
+
+```console
+$ orez -t new-lmd.orz -e "lmd 脚本" -o lmd
+$ orez -t new-lmd.orz -e "lmd.conf"
+$ chmod +x lmd
+```
+
+抽取 lmd 脚本所需的 Awk 脚本：
+
+```console
+$ mkdir helper
+$ cd helper
+$ for i in {append-meta-data,get-title,\
+get-date,find-post,\
+add-category-or-post,delete-meta-data,delete-item}.awk; \
+do orez -t ../new-lmd.orz -e "$i"; done
+$ cd ..
+```
+
+抽取样式表，并替换 `ESC_AT`：
+
+```console
+$ mkdir -p data/appearance
+$ orez -t new-lmd.orz -e "lmd.css" -o data/appearance/lmd.css
+$ sed -i "s/ESC_AT /@/g" data/appearance/lmd.css
+```
+
+抽取 pandoc 模板，并替换 `ESC_LEFT_ANGLE` 和 `ESC_RIGHT_ANGLE`：
+
+```console
+$ mkdir -p data/appearance/pandoc/data/templates
+$ cd data/appearance/pandoc/data/templates
+$ orez -t $HOME/opt/lmd/new-lmd.orz -e "homepage.template"
+$ sed -i "s/ESC_LEFT_ANGLE /</g; s/ ESC_RIGHT_ANGLE/>/g" homepage.template
+$ orez -t $HOME/opt/lmd/new-lmd.orz -e "post.template"
+$ sed -i "s/ESC_LEFT_ANGLE /</g; s/ ESC_RIGHT_ANGLE/>/g" post.template
+```
+
+至此，完整的 lmd 脚本项目构建完毕。要使用 lmd 脚本，请将其路径填写到 Bash Shell 的 `PATH` 变量里，例如在 $HOME/.bashrc 文件中添加以下内容：
+
+```bash
+export PATH=$HOME/opt/lmd:$PATH
+```
+
+生效后，便可在 Bash Shell 中直接使用 `lmd` 命令了。例如，在 $HOME/documents 目录初始化网站 foo：
+
+```console
+$ cd $HOME/documents
+$ lmd init "Foo" foo
+$ cd foo
+$ lmd tree
+foo
+├── appearance
+│   ├── lmd.css
+│   └── pandoc
+│       └── data
+│           └── templates
+│               ├── homepage.template
+│               └── post.template
+├── index.md
+└── lmd.conf
+
+5 directories, 5 files
+```
 
 # 附录
 
