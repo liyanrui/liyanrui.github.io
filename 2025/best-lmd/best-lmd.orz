@@ -400,7 +400,7 @@ function build_post {
     lmd_append_meta_data  "$1" "$2"
     local appearance_path="$(lmd_path_to_root)/appearance"
     if [ "$appearance_path" = "./appearance" ]; then
-        pandoc "$2" --standalone \\
+        pandoc "$2" --standalone \
             --css "$appearance_path/lmd.css" \
             --data-dir="$appearance_path/pandoc/data" \
             --template=homepage.template \
@@ -496,7 +496,7 @@ case $1 in
     build) lmd_build_post && lmd_build_upper_post ;;
     root) echo $(lmd_path_to_start) ;;
     tree)
-        cd "$(lmd_path_to_start)"
+        cd "$(lmd_path_to_root)"
         WORKS="$(basename $(pwd))"
         cd ../
         tree ${@:2} "$WORKS"
