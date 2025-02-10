@@ -6,7 +6,7 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" 
         content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>zhe</title>
+  <title>zhe 的设计与实现</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -94,7 +94,7 @@
 <a href="../index.html">回上级页面</a>
 </div>
 <header id="title-block-header">
-<h1 class="title">zhe</h1>
+<h1 class="title">zhe 的设计与实现</h1>
 <p class="date">01 月 29 日</p>
 </header>
 <hr />
@@ -257,11 +257,10 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb13-1"><a href="#cb
 <pre><code>（宏二，你好）</code></pre>
 <p>若参数为多个，参数之间也是以全角逗号予以间隔。</p>
 <p>还需要考虑宏的逃逸问题，亦即有些文字，虽然是宏的调用形式，但希望它们被当成普通文本。M4
-可通过引号对宏进行逃逸。我也选择使用引号作为中文宏的逃逸标识。例如</p>
+可通过引号对宏进行逃逸。我也选择使用中文全角单引号作为中文宏的逃逸标识。例如</p>
 <div class="sourceCode" id="cb15"><pre
 class="sourceCode m4"><code class="sourceCode m4"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>宏二<span class="ch">,</span> `<span class="ch">$1</span>，我是宏一&#39;<span class="ch">)</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>用引号，对宏进行逃逸，‘（宏二，你好）’或 `（宏二，你好）&#39;。</span></code></pre></div>
-<p>即用英文或中文的单引号，都能让宏得到逃逸。</p>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>用引号，对宏进行逃逸，‘（宏二，你好）’。</span></code></pre></div>
 <h1 id="一念所动">一念所动</h1>
 <p>为中文宏构造间接调用形式以及宏的逃逸处理，必定是在遍历一行文本的过程中进行：</p>
 <pre id="有参数宏的处理过程" class="orez-snippet-with-name">

@@ -2,6 +2,7 @@
 title: 2025 年的日志
 ...
 
+* <span class="post-date">01 月 29 日</span>[zhe 的设计与实现](zhe/index.html)：以文学程序的形式，介绍中文宏处理器 zhe 的设计与实现。
 * <span class="post-date">01 月 29 日</span>[zhe](zhe/index.html)：文学程序，介绍中文宏处理器 zhe 的设计与实现。
 * <span class="post-date"> 01 月 27 日</span>[orez + lmd = ?](orez-with-lmd/index.html)：介绍如何基于 orez 和 lmd 脚本发布文学程序。
 * <span class="post-date"> 01 月 27 日</span>[新的 lmd 脚本的用法](how-to-use-lmd/index.html)
