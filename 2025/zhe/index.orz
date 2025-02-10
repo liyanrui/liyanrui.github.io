@@ -364,6 +364,41 @@ i = i + length(prefix)
 
 还需要注意的是，上述 AWK 脚本，性能很低，因为它没有词法分析和语法分析，亦即没有将文本组织成一种高效的数据结构，从而可以进行局部修改。上述脚本的做法是野蛮的，粗暴的，文本局部的每一次变动，都会波及整体。
 
+# 界面
+
+宏的定义与调用是分离的。可将宏的定义放在单独的 M4 文件，但是开头的 `divert(-1)` 和末尾的 `divert(0)dnl` 可以省略，在 bash 脚本中可以悄悄加上去。该 bash 脚本的第一个参数（即 `$1`）便是宏定义文件，以下代码可为该文件增加首部和尾部，并将文件内容保存为临时文件：
+
+@ 加载宏的定义文件 #
+ZHE_TMP=$(mktemp)
+awk 'BEGIN{print "divert(-1)"} {print $0} END{print "divert(0)dnl"}' "$1" > $ZHE_TMP
+@
+
+以下代码，将第 2 个参数（即 `$2`）——宏调用文件合并到 `$ZHE_TMP` 文件：
+
+@ 合并宏调用文件 #
+awk '{print $0}' "$2" >> $ZHE_TMP
+@
+
+用于构造中文宏间接调用的 AWK 脚本 zhe.awk，假设它位于上述 bash 脚本所在目录的 helper 目录，则 bash 脚本通过自身所在路径获取该脚本，用它处理 `$ZHE_TMP` 文件，并将结果转交于 m4，并将结果输出到 `$3`，假如它存在：
+
+@ 让 zhe.awk 发挥作用 #
+ZHE_SELF_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ $3 = "" ]]; then
+    awk -f "$ZHE_SELF_PATH/helper/zhe.awk" $ZHE_TMP | m4
+else
+    awk -f "$ZHE_SELF_PATH/helper/zhe.awk" $ZHE_TMP | m4 > "$3"
+fi
+@
+
+完整的 bash 脚本如下：
+
+@ zhe # [bash]
+#!/bin/bash
+# 加载宏的定义文件 @
+# 合并宏调用文件 @
+# 让 zhe.awk 发挥作用 @
+@
+
 # 参考
 
 1. [让这世界再多一份 GNU m4 教程](https://segmentfault.com/a/1190000004104696)

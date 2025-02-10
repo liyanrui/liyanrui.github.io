@@ -395,6 +395,48 @@ define(宏二, `$1，我是宏一')
 
 还需要注意的是，上述 AWK 脚本，性能很低，因为它没有词法分析和语法分析，亦即没有将文本组织成一种高效的数据结构，从而可以进行局部修改。上述脚本的做法是野蛮的，粗暴的，文本局部的每一次变动，都会波及整体。
 
+# 界面
+
+宏的定义与调用是分离的。可将宏的定义放在单独的 M4 文件，但是开头的 `divert(-1)` 和末尾的 `divert(0)dnl` 可以省略，在 bash 脚本中可以悄悄加上去。该 bash 脚本的第一个参数（即 `$1`）便是宏定义文件，以下代码可为该文件增加首部和尾部，并将文件内容保存为临时文件：
+
+<pre id="加载宏的定义文件" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 加载宏的定义文件 #</span>
+<span class="nv">ZHE_TMP</span><span class="o">=</span><span class="k">$(</span>mktemp<span class="k">)</span>
+awk<span class="w"> </span><span class="s1">&#39;BEGIN{print &quot;divert(-1)&quot;} {print $0} END{print &quot;divert(0)dnl&quot;}&#39;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="nv">$ZHE_TMP</span>
+<span class="orez-symbol">=&gt;</span> <a href="#zhe" class="proc-emissions-name">zhe</a>
+</pre>
+
+以下代码，将第 2 个参数（即 `$2`）——宏调用文件合并到 `$ZHE_TMP` 文件：
+
+<pre id="合并宏调用文件" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 合并宏调用文件 #</span>
+awk<span class="w"> </span><span class="s1">&#39;{print $0}&#39;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="nv">$ZHE_TMP</span>
+<span class="orez-symbol">=&gt;</span> <a href="#zhe" class="proc-emissions-name">zhe</a>
+</pre>
+
+用于构造中文宏间接调用的 AWK 脚本 zhe.awk，假设它位于上述 bash 脚本所在目录的 helper 目录，则 bash 脚本通过自身所在路径获取该脚本，用它处理 `$ZHE_TMP` 文件，并将结果转交于 m4，并将结果输出到 `$3`，假如它存在：
+
+<pre id="让zhe.awk发挥作用" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 让 zhe.awk 发挥作用 #</span>
+<span class="nv">ZHE_SELF_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>dirname<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">BASH_SOURCE</span><span class="p">[0]</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="nv">$3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$ZHE_SELF_PATH</span><span class="s2">/helper/zhe.awk&quot;</span><span class="w"> </span><span class="nv">$ZHE_TMP</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>m4
+<span class="k">else</span>
+<span class="w">    </span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$ZHE_SELF_PATH</span><span class="s2">/helper/zhe.awk&quot;</span><span class="w"> </span><span class="nv">$ZHE_TMP</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>m4<span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$3</span><span class="s2">&quot;</span>
+<span class="k">fi</span>
+<span class="orez-symbol">=&gt;</span> <a href="#zhe" class="proc-emissions-name">zhe</a>
+</pre>
+
+完整的 bash 脚本如下：
+
+<pre id="zhe" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ zhe #</span>
+<span class="ch">#!/bin/bash</span>
+<a href="#加载宏的定义文件" class="orez-callee-link"># 加载宏的定义文件 @</a>
+<a href="#合并宏调用文件" class="orez-callee-link"># 合并宏调用文件 @</a>
+<a href="#让zhe.awk发挥作用" class="orez-callee-link"># 让 zhe.awk 发挥作用 @</a>
+</pre>
+
 # 参考
 
 1. [让这世界再多一份 GNU m4 教程](https://segmentfault.com/a/1190000004104696)
