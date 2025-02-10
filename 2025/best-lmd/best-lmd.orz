@@ -97,17 +97,17 @@ $ pandoc foo.md --standalone \
 
 @ 函数：创建文章 #
 function lmd_new_post {
-    mkdir "$3" && cd "$3"
+    mkdir "$2" && cd "$2"
     echo "---" > index.md
     echo "title: $1" >> index.md
-    echo "subtitle: $2" >> index.md
+    echo "subtitle: " >> index.md
     echo "abstract: " >> index.md
     echo -e "...\n" >> index.md
     mkdir figures
 }
 @
 
-`lmd_new_post` 函数接受 3 个参数，前两个分别是文章的标题和副标题，第 3 个参数是文章目录。
+`lmd_new_post` 函数接受 2 个参数，第 1 个是文章的标题，第 2 个参数是文章目录。
 
 # 网站初始化
 
@@ -115,7 +115,7 @@ function lmd_new_post {
 
 @ 函数：网站初始化 #
 function lmd_init {
-    lmd_new_post "$1" "$2" "$3"
+    lmd_new_post "$1" "$2"
     # 从 lmd 脚本所在目录复制数据到网站根目录 @
 }
 @
