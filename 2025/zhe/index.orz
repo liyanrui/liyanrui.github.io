@@ -255,8 +255,8 @@ $0 = before macro after
 
 @ 将文本分为三个部分：before，macro 和 after #
 depth = 1
-for (j = 2; j <= n; j++) {
-    y = substr(x, j)
+for (j = 1; j < n; j++) {
+    y = substr(x, j + 1)
     if (index(y, "（") == 1) {
         depth++
     }
