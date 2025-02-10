@@ -119,7 +119,7 @@ for (i in macros) {
     before = ""
     while ((j = index(x, i)) > 0) {
         n = length(i)
-        before = before substr(x, 1, j - 1) "`'indir(`" i "')`'"
+        before = before substr(x, 1, j - 1) "`'indir(" i ")"
         after = substr(x, j + n)
         x = after
     }
@@ -139,7 +139,7 @@ $ awk -f foo.awk foo.m4
 divert(-1)
 define(宏一, 你好，我是宏一)
 divert(0)dnl
-`'indir(`宏一')`'！
+`'indir(宏一)！
 ```
 
 若使用 GNU m4 处理上述 M4 文件，即

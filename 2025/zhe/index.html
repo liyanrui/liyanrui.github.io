@@ -221,7 +221,7 @@ M4 语言中，中文宏名的非法性，会导致上述代码中定义的 <cod
     <span class="nx">before</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">while</span> <span class="p">((</span><span class="nx">j</span> <span class="o">=</span> <span class="kr">index</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">i</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">n</span> <span class="o">=</span> <span class="kr">length</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
-        <span class="nx">before</span> <span class="o">=</span> <span class="nx">before</span> <span class="kr">substr</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="s2">&quot;`&#39;indir(`&quot;</span> <span class="nx">i</span> <span class="s2">&quot;&#39;)`&#39;&quot;</span>
+        <span class="nx">before</span> <span class="o">=</span> <span class="nx">before</span> <span class="kr">substr</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="s2">&quot;`&#39;indir(&quot;</span> <span class="nx">i</span> <span class="s2">&quot;)&quot;</span>
         <span class="nx">after</span> <span class="o">=</span> <span class="kr">substr</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">j</span> <span class="o">+</span> <span class="nx">n</span><span class="p">)</span>
         <span class="nx">x</span> <span class="o">=</span> <span class="nx">after</span>
     <span class="p">}</span>
@@ -235,7 +235,7 @@ M4 语言中，中文宏名的非法性，会导致上述代码中定义的 <cod
 <div class="sourceCode" id="cb7"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>宏一<span class="ch">,</span> 你好，我是宏一<span class="ch">)</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>`&#39;indir<span class="ch">(</span>`宏一&#39;<span class="ch">)</span>`&#39;！</span></code></pre></div>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>`&#39;indir<span class="ch">(</span>宏一<span class="ch">)</span>！</span></code></pre></div>
 <p>若使用 GNU m4 处理上述 M4 文件，即</p>
 <pre class="console"><code>$ awk -f foo.awk foo.m4 | m4</code></pre>
 <p>结果为</p>

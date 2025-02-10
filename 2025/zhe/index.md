@@ -126,7 +126,7 @@ expanding i am i am i am i am i am i am ...
     <span class="nx">before</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">while</span> <span class="p">((</span><span class="nx">j</span> <span class="o">=</span> <span class="kr">index</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">i</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">n</span> <span class="o">=</span> <span class="kr">length</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
-        <span class="nx">before</span> <span class="o">=</span> <span class="nx">before</span> <span class="kr">substr</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="s2">&quot;`&#39;indir(`&quot;</span> <span class="nx">i</span> <span class="s2">&quot;&#39;)`&#39;&quot;</span>
+        <span class="nx">before</span> <span class="o">=</span> <span class="nx">before</span> <span class="kr">substr</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="s2">&quot;`&#39;indir(&quot;</span> <span class="nx">i</span> <span class="s2">&quot;)&quot;</span>
         <span class="nx">after</span> <span class="o">=</span> <span class="kr">substr</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">j</span> <span class="o">+</span> <span class="nx">n</span><span class="p">)</span>
         <span class="nx">x</span> <span class="o">=</span> <span class="nx">after</span>
     <span class="p">}</span>
@@ -147,7 +147,7 @@ $ awk -f foo.awk foo.m4
 divert(-1)
 define(宏一, 你好，我是宏一)
 divert(0)dnl
-`'indir(`宏一')`'！
+`'indir(宏一)！
 ```
 
 若使用 GNU m4 处理上述 M4 文件，即
