@@ -95,10 +95,10 @@ $ pandoc foo.md --standalone \
 <pre id="函数：创建文章" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ 函数：创建文章 #</span>
 <span class="k">function</span><span class="w"> </span>lmd_new_post<span class="w"> </span><span class="o">{</span>
-<span class="w">    </span>mkdir<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$3</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$3</span><span class="s2">&quot;</span>
+<span class="w">    </span>mkdir<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
 <span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;---&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>index.md
 <span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;title: </span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>index.md
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;subtitle: </span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>index.md
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;subtitle: &quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>index.md
 <span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;abstract: &quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>index.md
 <span class="w">    </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;...\n&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>index.md
 <span class="w">    </span>mkdir<span class="w"> </span>figures
@@ -106,7 +106,7 @@ $ pandoc foo.md --standalone \
 <span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
 </pre>
 
-`lmd_new_post` 函数接受 3 个参数，前两个分别是文章的标题和副标题，第 3 个参数是文章目录。
+`lmd_new_post` 函数接受 2 个参数，第 1 个是文章的标题，第 2 个参数是文章目录。
 
 # 网站初始化
 
@@ -115,7 +115,7 @@ $ pandoc foo.md --standalone \
 <pre id="函数：网站初始化" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ 函数：网站初始化 #</span>
 <span class="k">function</span><span class="w"> </span>lmd_init<span class="w"> </span><span class="o">{</span>
-<span class="w">    </span>lmd_new_post<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$3</span><span class="s2">&quot;</span>
+<span class="w">    </span>lmd_new_post<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
     <a href="#从lmd脚本所在目录复制数据到网站根目录" class="orez-callee-link"># 从 lmd 脚本所在目录复制数据到网站根目录 @</a>
 <span class="o">}</span>
 <span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
@@ -180,26 +180,16 @@ lmd.conf 文件中定义了网站的一些基本信息：
 
 <pre id="append-meta-data.awk" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ append-meta-data.awk #</span>
-<span class="nb">BEGIN</span> <span class="p">{</span>
-    <span class="nx">beginning</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="nx">meta_data</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="p">}</span>
+<span class="nb">BEGIN</span> <span class="p">{</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n\\.\\.\\.\n+&quot;</span> <span class="p">}</span>
 <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">beginning</span> <span class="o">&amp;&amp;</span> <span class="o">$</span><span class="mi">0</span> <span class="o">~</span> <span class="sr">/^--- *$/</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NR</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
         <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
-        <span class="nx">meta_data</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="kr">next</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">meta_data</span> <span class="o">&amp;&amp;</span> <span class="o">$</span><span class="mi">0</span> <span class="o">~</span> <span class="sr">/^\.\.\. *$/</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">category</span><span class="p">)</span> <span class="kr">print</span> <span class="s2">&quot;category: &quot;</span> <span class="nx">category</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">lang</span><span class="p">)</span> <span class="kr">print</span> <span class="s2">&quot;lang: &quot;</span> <span class="nx">lang</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">footer</span><span class="p">)</span> <span class="kr">print</span> <span class="s2">&quot;footer: &quot;</span> <span class="nx">footer</span>
-        <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
-        <span class="nx">beginning</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="nx">meta_data</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="kr">next</span>
-    <span class="p">}</span>
-    <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">category</span><span class="p">)</span> <span class="kr">print</span> <span class="s2">&quot;category:&quot;</span><span class="p">,</span> <span class="nx">category</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">lang</span><span class="p">)</span> <span class="kr">print</span> <span class="s2">&quot;lang:&quot;</span><span class="p">,</span> <span class="nx">lang</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">footer</span><span class="p">)</span> <span class="kr">print</span> <span class="s2">&quot;footer:&quot;</span><span class="p">,</span> <span class="nx">footer</span>
+        <span class="kr">print</span> <span class="s2">&quot;...\n&quot;</span>
+        <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
 <span class="p">}</span>
 </pre>
 
@@ -270,27 +260,18 @@ lmd.conf 文件中定义了网站的一些基本信息：
 
 <pre id="delete-meta-data.awk" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ delete-meta-data.awk #</span>
-<span class="nb">BEGIN</span> <span class="p">{</span>
-    <span class="nx">beginning</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="nx">meta_data</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="p">}</span>
+<span class="nb">BEGIN</span> <span class="p">{</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n\\.\\.\\.\n+&quot;</span><span class="p">;</span> <span class="nb">FS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span> <span class="p">}</span>
 <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">beginning</span> <span class="o">&amp;&amp;</span> <span class="o">$</span><span class="mi">0</span> <span class="o">~</span> <span class="sr">/^--- *$/</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
-        <span class="nx">meta_data</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="kr">next</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">meta_data</span> <span class="o">&amp;&amp;</span> <span class="o">$</span><span class="mi">0</span> <span class="o">~</span> <span class="sr">/^\.\.\. *$/</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
-        <span class="nx">beginning</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="nx">meta_data</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="kr">next</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">meta_data</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="mi">0</span><span class="p">,</span> <span class="sr">/^category:/</span><span class="p">))</span> <span class="kr">next</span>
-        <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="mi">0</span><span class="p">,</span> <span class="sr">/^lang:/</span><span class="p">))</span> <span class="kr">next</span>
-        <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="mi">0</span><span class="p">,</span> <span class="sr">/^footer:/</span><span class="p">))</span> <span class="kr">next</span>
-        <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NR</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">x</span> <span class="o">=</span> <span class="s2">&quot;---&quot;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="nb">NF</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="nx">i</span><span class="p">,</span> <span class="sr">/^category:/</span><span class="p">))</span> <span class="p">;</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="nx">i</span><span class="p">,</span> <span class="sr">/^lang:/</span><span class="p">))</span> <span class="p">;</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="nx">i</span><span class="p">,</span> <span class="sr">/^footer:/</span><span class="p">))</span> <span class="p">;</span>
+            <span class="k">else</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span> <span class="s2">&quot;\n&quot;</span> <span class="o">$</span><span class="nx">i</span>
+        <span class="p">}</span>
+        <span class="kr">print</span> <span class="nx">x</span> <span class="s2">&quot;\n...\n&quot;</span>
+        <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span><span class="p">;</span> <span class="nb">FS</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span>
     <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
 <span class="p">}</span>
 </pre>
@@ -310,51 +291,25 @@ lmd.conf 文件中定义了网站的一些基本信息：
 <pre id="add-post.awk" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ add-post.awk #</span>
 <span class="nb">BEGIN</span> <span class="p">{</span>
+    <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n\\.\\.\\.[ \t]*\n+&quot;</span>
     <span class="nx">post_date</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">date</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kr">sub</span><span class="p">(</span><span class="sr">/.+年/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">date</span><span class="p">)</span>
         <span class="nx">post_date</span> <span class="o">=</span> <span class="s2">&quot;&lt;span class=\&quot;post-date\&quot;&gt;&quot;</span> <span class="nx">date</span> <span class="s2">&quot;&lt;/span&gt;&quot;</span>
     <span class="p">}</span>
-    <span class="nx">item</span> <span class="o">=</span> <span class="s2">&quot;* &quot;</span> <span class="nx">post_date</span> <span class="s2">&quot;[&quot;</span> <span class="nx">title</span> <span class="s2">&quot;](&quot;</span> <span class="nx">post_path</span> <span class="s2">&quot;)&quot;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">abstract</span><span class="p">)</span> <span class="nx">item</span> <span class="o">=</span> <span class="nx">item</span> <span class="s2">&quot;：&quot;</span> <span class="nx">abstract</span>
-    <span class="nx">metadata_beginning</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="nx">in_metadata</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="nx">before_text</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="nx">finished</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nx">item</span> <span class="o">=</span> <span class="s2">&quot;* [&quot;</span> <span class="nx">title</span> <span class="s2">&quot;](&quot;</span> <span class="nx">post_path</span> <span class="s2">&quot;)&quot;</span> <span class="nx">post_date</span>
 <span class="p">}</span>
 <span class="p">{</span>
-    <span class="c1"># 跳过文档首部 metadata</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">metadata_beginning</span> <span class="o">&amp;&amp;</span> <span class="o">$</span><span class="mi">0</span> <span class="o">~</span> <span class="sr">/^--- *$/</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NR</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">print</span> <span class="s2">&quot;...\n\n&quot;</span> <span class="nx">item</span>
         <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
-        <span class="nx">in_metadata</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="nx">metadata_beginning</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="kr">next</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">in_metadata</span> <span class="o">&amp;&amp;</span> <span class="o">$</span><span class="mi">0</span> <span class="o">~</span> <span class="sr">/^\.\.\. *$/</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
-        <span class="nx">in_metadata</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="nx">before_text</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="kr">next</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">in_metadata</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
-        <span class="kr">next</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">before_text</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1"># 在正文区域遇到非空行，添加 post 链接</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">$</span><span class="mi">0</span> <span class="o">~</span> <span class="sr">/^[ \t]*$/</span><span class="p">)</span> <span class="p">{</span>
-            <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-            <span class="kr">print</span> <span class="nx">item</span>
-            <span class="nx">finished</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="nx">before_text</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">finished</span><span class="p">)</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+        <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
 <span class="p">}</span>
 <span class="nb">END</span> <span class="p">{</span>
-    <span class="c1"># 以防页面内容为空</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">finished</span><span class="p">)</span> <span class="kr">print</span> <span class="nx">item</span>
+    <span class="c1"># 页面内容为空</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NR</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">print</span> <span class="s2">&quot;...\n\n&quot;</span> <span class="nx">item</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 </pre>
 
@@ -438,25 +393,15 @@ lmd.conf 文件中定义了网站的一些基本信息：
 
 <pre id="add-timestamp.awk" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ add-timestamp.awk #</span>
-<span class="nb">BEGIN</span> <span class="p">{</span>
-    <span class="nx">beginning</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="nx">meta_data</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="p">}</span>
+<span class="nb">BEGIN</span> <span class="p">{</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n\\.\\.\\.\n+&quot;</span> <span class="p">}</span>
 <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">beginning</span> <span class="o">&amp;&amp;</span> <span class="o">$</span><span class="mi">0</span> <span class="o">~</span> <span class="sr">/^--- *$/</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NR</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">gsub</span><span class="p">(</span><span class="sr">/\n[ \t]*date:[^\n]*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">$</span><span class="mi">0</span><span class="p">)</span>
         <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
-        <span class="nx">meta_data</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="kr">next</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">meta_data</span> <span class="o">&amp;&amp;</span> <span class="o">$</span><span class="mi">0</span> <span class="o">~</span> <span class="sr">/^\.\.\. *$/</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span><span class="nx">date</span><span class="p">)</span> <span class="kr">print</span> <span class="s2">&quot;date: &quot;</span> <span class="nx">date</span>
-        <span class="nx">beginning</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="nx">meta_data</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># 略过原有的时间戳</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="mi">0</span><span class="p">,</span> <span class="sr">/^date:/</span><span class="p">))</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
-        <span class="kr">next</span>
-    <span class="p">}</span>
-    <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+        <span class="kr">print</span> <span class="s2">&quot;...\n&quot;</span>
+        <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
 <span class="p">}</span>
 </pre>
 
