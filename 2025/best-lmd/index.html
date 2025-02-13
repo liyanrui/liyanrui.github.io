@@ -357,9 +357,11 @@ Awk 脚本用于解决该问题：</p>
     <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n\\.\\.\\.[ \t]*\n+&quot;</span>
     <span class="nx">post_date</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">date</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">sub</span><span class="p">(</span><span class="sr">/.+年[ ]*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">date</span><span class="p">)</span>
         <span class="nx">post_date</span> <span class="o">=</span> <span class="s2">&quot;&lt;span class=\&quot;post-date\&quot;&gt;&quot;</span> <span class="nx">date</span> <span class="s2">&quot;&lt;/span&gt;&quot;</span>
     <span class="p">}</span>
-    <span class="nx">item</span> <span class="o">=</span> <span class="s2">&quot;* [&quot;</span> <span class="nx">title</span> <span class="s2">&quot;](&quot;</span> <span class="nx">post_path</span> <span class="s2">&quot;)&quot;</span> <span class="nx">post_date</span>
+    <span class="nx">item</span> <span class="o">=</span> <span class="s2">&quot;* &quot;</span> <span class="nx">post_date</span> <span class="s2">&quot;[&quot;</span> <span class="nx">title</span> <span class="s2">&quot;](&quot;</span> <span class="nx">post_path</span> <span class="s2">&quot;)&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">abstract</span><span class="p">)</span> <span class="nx">item</span> <span class="o">=</span> <span class="nx">item</span> <span class="s2">&quot;：&quot;</span> <span class="nx">abstract</span>
 <span class="p">}</span>
 <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="nb">NR</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
@@ -416,8 +418,8 @@ Awk 脚本用于解决该问题：</p>
 <span class="orez-snippet-name">@ find-post.awk #</span>
 <span class="sr">/\[[^\]]*\]\(.*\)/</span> <span class="p">{</span>
     <span class="nx">s</span> <span class="o">=</span> <span class="o">$</span><span class="mi">0</span>
-    <span class="kr">sub</span><span class="p">(</span><span class="sr">/^.*\[/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
-    <span class="kr">sub</span><span class="p">(</span><span class="sr">/\].*$/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/.*\[[ \t]*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/[ \t]*\].*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="nx">s</span> <span class="o">==</span> <span class="nx">title</span><span class="p">)</span> <span class="p">{</span>
         <span class="kr">print</span> <span class="s2">&quot;true&quot;</span>
         <span class="k">exit</span> <span class="mi">0</span>
