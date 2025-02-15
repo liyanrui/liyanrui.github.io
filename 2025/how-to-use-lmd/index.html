@@ -129,9 +129,8 @@ Awk 也并非难事。</p>
 foo，只需执行以下命令：</p>
 <pre class="console"><code>$ cd $HOME/documents
 $ lmd init &quot;Foo&quot; &quot;this is foo.&quot; foo</code></pre>
-<p>命令 <code>lmd init</code> 接受 3
-个参数，第一个参数是网站的标题；第二个参数是网站的副标题，若不需要，可用空字符串代替，既
-<code>""</code>；第三个参数是网站根目录名。</p>
+<p>命令 <code>lmd init</code> 接受 2
+个参数，第一个参数是网站的标题，第二个参数是网站根目录名。</p>
 <p>进入 foo 目录，使用 <code>lmd tree</code>
 命令可查看网站初始状态：</p>
 <pre class="console"><code>$ cd foo
@@ -156,18 +155,18 @@ foo
 <p>在网站根目录里，可以创建一篇文章，它可以是真正的文章，也可以作为一个分类，令其包含一些其他文章。</p>
 <p>例如，在 foo 目录下创建一篇名为「2025
 年的日志」的文章，用于包含本年度所有的日志：</p>
-<pre class="console"><code>$ lmd new &quot;2025 年的日志&quot; &quot;&quot; 2025
+<pre class="console"><code>$ lmd new &quot;2025 年的日志&quot; 2025
 $ cd 2025
 $ lmd build</code></pre>
-<p><code>lmd new</code> 也接受 3 个参数，且参数的含义与
+<p><code>lmd new</code> 也接受 2 个参数，且参数的含义与
 <code>lmd init</code> 的参数相同。<code>lmd build</code>
-命令用于将文章及其上级文章（在上例中，上级文章即网站首页）。</p>
+命令可将文章及其上级文章（在上例中，上级文章即网站首页）生成为网页。</p>
 <p>在 <code>2025</code> 目录里，创建本年度的一篇日志：</p>
-<pre class="console"><code>$ lmd new &quot;Hello world&quot; &quot;&quot; hello-world
+<pre class="console"><code>$ lmd new &quot;Hello world&quot; hello-world
 $ cd hell-world</code></pre>
 <p>执行以下命令可为文章增加时间戳：</p>
 <pre class="console"><code>$ lmd add timestamp</code></pre>
-<p>然后用你管用的文本编辑器，编辑 hello-world 目录里的 index.md
+<p>然后用你习惯的文本编辑器，编辑 hello-world 目录里的 index.md
 文件，这份文件包含的便是文章内容。完成文章创作后，在 hello-world
 目录里执行</p>
 <pre class="console"><code>$ lmd build</code></pre>
@@ -185,6 +184,6 @@ post.template，前者为首页模板，后者为文章模板，若你熟悉 pan
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
-href="...%20...%20...">讨论区</a>提问。</div>
+href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
 </body>
 </html>

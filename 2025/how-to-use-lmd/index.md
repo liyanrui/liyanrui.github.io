@@ -33,7 +33,7 @@ $ cd $HOME/documents
 $ lmd init "Foo" "this is foo." foo
 ```
 
-命令 `lmd init` 接受 3 个参数，第一个参数是网站的标题；第二个参数是网站的副标题，若不需要，可用空字符串代替，既 `""`；第三个参数是网站根目录名。
+命令 `lmd init` 接受 2 个参数，第一个参数是网站的标题，第二个参数是网站根目录名。
 
 进入 foo 目录，使用 `lmd tree` 命令可查看网站初始状态：
 
@@ -68,17 +68,17 @@ $ touch .nojekyll
 例如，在 foo 目录下创建一篇名为「2025 年的日志」的文章，用于包含本年度所有的日志：
 
 ```console
-$ lmd new "2025 年的日志" "" 2025
+$ lmd new "2025 年的日志" 2025
 $ cd 2025
 $ lmd build
 ```
 
-`lmd new` 也接受 3 个参数，且参数的含义与 `lmd init` 的参数相同。`lmd build` 命令用于将文章及其上级文章（在上例中，上级文章即网站首页）。
+`lmd new` 也接受 2 个参数，且参数的含义与 `lmd init` 的参数相同。`lmd build` 命令可将文章及其上级文章（在上例中，上级文章即网站首页）生成为网页。
 
 在 `2025` 目录里，创建本年度的一篇日志：
 
 ```console
-$ lmd new "Hello world" "" hello-world
+$ lmd new "Hello world" hello-world
 $ cd hell-world
 ```
 
@@ -88,7 +88,7 @@ $ cd hell-world
 $ lmd add timestamp
 ```
 
-然后用你管用的文本编辑器，编辑 hello-world 目录里的 index.md 文件，这份文件包含的便是文章内容。完成文章创作后，在 hello-world 目录里执行
+然后用你习惯的文本编辑器，编辑 hello-world 目录里的 index.md 文件，这份文件包含的便是文章内容。完成文章创作后，在 hello-world 目录里执行
 
 ```console
 $ lmd build
