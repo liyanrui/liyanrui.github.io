@@ -11,13 +11,13 @@ date: 02 月 15 日
 
 Awk 是小语言，能做很多小事。用 Awk 的人像农夫，平素话少，在一片土地上做着很多小事。文本，是 Awk 耕作的土地。人类不喜欢土地，故而不喜欢当农夫。人类也不喜欢文本，故而喜欢使用微软或金山的一系列办公软件和甲骨文公司的数据库，以取得与高楼大厦，宝马香车，西装革履，笙歌燕舞密切的联系，令人觉得先进，而在土地上耕作的生活，是落后的，徒劳的。
 
-在现代化进程下，大多数时候，有一些小事，我们做不好，甚至不会做了，于是觉得这些都是小事，不会做又何妨？这是不扫一屋也能扫天下的时代，只是想时常吃到让人放心的萝卜青菜，粗茶淡饭，却愈发变成奢求了。
+在现代化进程下，大多数时候，有一些小事，我们做不好，甚至不会做了，于是觉得这些都是小事，不会做又有何妨？这是不扫一屋也能扫天下的时代，只是想时常吃到让人放心的萝卜青菜，粗茶淡饭，却愈发变成奢求了。
 
 应该庆幸，土地还在，耕种土地的方法还在。只要愿意花点时间，学会如何做耕种方面的一些小事，身心便可得到有益的滋养。这就是在这次学习 Awk 语言的过程中，我颇为认真写下这份笔记的原因，并希望许多年后，我还知道 Awk 怎么用。
 
 # Awk 教程
 
-本文档只是 Awu 语言的学习笔记，并非面面俱到的教程。我曾经写过一篇文章，介绍了 Awk 语言的基本用法，详见「[Awk 小传](https://segmentfault.com/a/1190000016745490)」。
+本文档只是 Awk 语言的学习笔记，并非面面俱到的教程。我曾经写过一篇文章，介绍了 Awk 语言的基本用法，详见「[Awk 小传](https://segmentfault.com/a/1190000016745490)」。
 
 若需要更完整且更好的教程，请阅读 Awk 语言的三位作者所著的《The Awk programming language》。这是一本很薄的书，200 多页，第一版发布于 1988 年，第二版发布于 2023 年。这本书并非只是讲述如何使用 Awk 语言编写程序——这部分内容在全书只占不到 1/3，它更多地是基于 Awk 语言描述了数据库、虚拟机、编译器以及排序算法等计算机科学中的基本原理。在国内，不仅 Awk 语言长期被低估和冷落，这本书则更是被低估和冷落，出版社从未组织翻译。该书的第一版，近年有爱好者翻译并公开，详见「<https://github.com/wuzhouhui/awk>」。
 
@@ -62,13 +62,13 @@ $ awk -f 脚本 文本文件
 
 ```awk
 BEGIN {...}
-/模式/ {动作}
+模式 {动作}
 END {...}
 ```
 
-其中，`/模式/ {动作}` 部分用于处理文本，而 `BEGIN` 和 `END` 块的运行时机分别是处理文本之前和结束。
+其中，`模式 {动作}` 部分用于处理文本，而 `BEGIN` 和 `END` 块的运行时机分别是处理文本之前和结束。
 
-倘若只在 `BEGIN` 块中写一些代码，Awk 脚本便可无文本要处理的情况下得以运行，例如以下 Awk 脚本 hello.awk：
+倘若只在 `BEGIN` 块中写一些代码，Awk 脚本便可在无文本要处理的情况下得以运行，例如以下 Awk 脚本 hello.awk：
 
 ```awk
 BEGIN {
@@ -99,3 +99,196 @@ $ chmod +x hello.sh
 $ ./hello.sh
 Hello world!
 ```
+
+# 源码渲染
+
+使用 ConTeXt（若不了解 ConTeXt，可阅读《[ConTeXt 笔记](https://github.com/liyanrui/ConTeXt-notes)》）排版含有程序源码的文档时，由于 ConTeXt 用于排版源码的命令 `\starttyping ... \stoptyping` 在源码渲染方面对编程语言支持的种类过少，例如不支持 C 语言，故而只能将代码中的所有文字渲染为单一颜色。例如以下 C 语言源码：
+
+```plain
+\starttyping
+int main(void) {
+        printf("Hello world!\n");
+        return 0;
+}
+\stoptyping
+```
+
+上述代码对应的 ConTeXt 排版结果如下图所示：
+
+![C 语言源码在 ConTeXt 中的渲染结果](figures/c-hello.png)
+
+
+ConTeXt 提供了[源码渲染机制](https://segmentfault.com/a/1190000043405105)，用户可通过 Lua 语言的 lpeg 库，对能够以 BNF（巴科斯范式） 形式描述的语言进行解析，从而实现该语言的源码渲染。这种解析方式存在一个问题，它会导致无法在 `\starttyping ... \stoptyping` 环境中实现 TeX 逃逸。例如，以下代码以 TeX 逃逸的方式实现了在源码中排版数学公式：
+
+```plain
+\starttyping[escape=yes]
+/* 计算 /BTEX $a^2$ /ETEX */
+double /BTEX\inframed{foo}/ETEX(double a) {
+        return a * a;
+}
+\stoptyping
+```
+
+排版结果为
+
+![源码排版命令中的 TeX 逃逸](figures/tex-escape.png)
+
+在很多情况下，我既需要渲染源码，也需要在源码中插入以 TeX 逃逸方式实现的排版效果，二者如何兼得呢？很简单，只需以 TeX 逃逸的方式对源码进行渲染即可。只是含有 TeX 逃逸的源码会破坏源码所属编程语言的 BNF，无法再通过语法分析的方式渲染源码。事实上，这也是 ConTeXt 的源码渲染机制与 TeX 逃逸存在冲突的根源。我想出来的方案是不必强求语法的方案，如下：
+
+* 渲染注释
+* 渲染含有特殊标记的片段。
+* 渲染字符串；
+* 渲染基本类型；
+* 渲染关键词；
+
+上述方案中第 2 条，特殊标记是我自行定义的标记。例如
+
+```plain
+\starttyping
+/* 计算 $m{a^2} */
+double $fn{foo}(double $p{a}) {
+        return a * a;
+}
+\stoptyping
+```
+
+上述代码中的 `$m{...}`，`$fn{...}` 以及 `$p{...}` 便是特殊标记，分别用于表示数学公式、函数名和参数名。在源码渲染过程中，若遇到特殊标记，便将其转化为相应的 TeX 逃逸语句。下面，用 Awk 语言实现上述方案。
+
+首先，定义颜色映射文件：
+
+<pre id="c-color.map" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-color.map #</span>
+basic_type: GreenBlue
+keyword: ForestGreen
+string: Fuchsia
+comment: darkgray
+$fn: Maroon
+$t: GreenBlue
+$p:OutrageousOrange
+$c: darkgray
+</pre>
+
+简单起见，只为关键字、字符串、注释、函数名（$fn）、自定义类型（$t）、函数参数名（$p）以及语句内嵌注释（$c）定义了颜色。若日后需要更多的特殊标记，可对 c-color.map 进行扩充。
+
+在 Awk 程序的 `BEGIN` 块读入颜色文件，将其内容转化为 Awk 数组 color，并定义 C 语言的基本类型和常见关键词：
+
+<pre id="c-render.awk1" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-render.awk #</span>
+<span class="nb">BEGIN</span> <span class="p">{</span>
+    <span class="nb">FS</span> <span class="o">=</span> <span class="s2">&quot;:&quot;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="kr">getline</span> <span class="o">&lt;</span><span class="s2">&quot;c-color.map&quot;</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">gsub</span><span class="p">(</span><span class="sr">/[ \t]+/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">$</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 去除特殊标记的前后空白字符</span>
+        <span class="kr">gsub</span><span class="p">(</span><span class="sr">/[ \t]+/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">$</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># 去除颜色名的前后空白字符</span>
+        <span class="nx">color</span><span class="p">[</span><span class="o">$</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">$</span><span class="mi">2</span>
+    <span class="p">}</span>
+    <span class="nb">FS</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span>
+    <span class="nx">basic_types</span> <span class="o">=</span> <span class="s2">&quot;char|double|enum|float|int|long|short&quot;</span> <span class="err">\</span>
+                  <span class="s2">&quot;|signed|struct|union|unsigned|void|const&quot;</span>
+    <span class="nx">keywords</span> <span class="o">=</span> <span class="s2">&quot;static|volatile|typedef|sizeof|auto|break|case|continue&quot;</span> <span class="err">\</span>
+               <span class="s2">&quot;default|do|else|for|goto|if|return|switch|while&quot;</span>
+<span class="p">}</span>
+</pre>
+
+然后，探测 ConTeXt 源文件中源码排版区域，
+
+<pre id="c-render.awk2" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
+<span class="sr">/\\starttyping/</span> <span class="p">{</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span><span class="p">}</span>
+</pre>
+
+在源码排版区域，先对源码中的注释部分进行渲染，以防注释文本中出现与其他被渲染的元素相同的文本而被污染：
+
+<pre id="c-render.awk3" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
+<span class="nx">typing</span> <span class="o">&amp;&amp;</span> <span class="sr">/\/\*/</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="sr">/\*\//</span><span class="p">)</span> <span class="nx">in_comment</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="kr">gsub</span><span class="p">(</span><span class="sr">/\/\*.*/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\$m{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\\\m{\\1}&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span> <span class="c1"># 数学公式</span>
+    <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span>
+<span class="p">}</span>
+<span class="nx">typing</span> <span class="o">&amp;&amp;</span> <span class="nx">in_comment</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="sr">/\*\//</span><span class="p">)</span> <span class="nx">in_comment</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="kr">gsub</span><span class="p">(</span><span class="sr">/[^ \t].*/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\$m{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\\\m{\\1}&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span> <span class="c1"># 数学公式</span>
+    <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span>
+<span class="p">}</span>
+</pre>
+
+上述代码可对单行和多行注释进行渲染，渲染完成后，使用 `next` 让主循环进入下一次运转，以避免执行后续的模式-动作语句。
+
+接下来，渲染 C 语句及内嵌注释：
+
+<pre id="c-render.awk4" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
+<span class="nx">typing</span> <span class="p">{</span>
+    <span class="c1"># 渲染函数名</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\$fn{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;$fn&quot;</span><span class="p">]</span> <span class="s2">&quot;]{\\1}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="c1"># 渲染函数参数类型</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\$t{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;$t&quot;</span><span class="p">]</span> <span class="s2">&quot;]{\\1}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="c1"># 渲染函数参数</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\$p{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;$p&quot;</span><span class="p">]</span> <span class="s2">&quot;]{\\1}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="c1"># 渲染语句内嵌入的注释</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\$c{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;$c&quot;</span><span class="p">]</span> <span class="s2">&quot;]{/* \\1 */}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="c1"># 渲染字符串常量</span>
+    <span class="kr">gsub</span><span class="p">(</span><span class="sr">/&quot;[^&quot;]*&quot;/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
+    <span class="c1"># 渲染基本类型</span>
+    <span class="kr">gsub</span><span class="p">(</span><span class="s2">&quot;\\&lt;(&quot;</span> <span class="nx">basic_types</span> <span class="s2">&quot;)\\&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;basic_type&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
+    <span class="c1"># 渲染关键词</span>
+    <span class="kr">gsub</span><span class="p">(</span><span class="s2">&quot;\\&lt;(&quot;</span> <span class="nx">keywords</span> <span class="s2">&quot;)\\&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;keyword&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
+    <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span>
+<span class="p">}</span>
+</pre>
+
+与渲染注释过程相似，渲染过程结束后，使用 `next` 让主循环进入下一次运转。
+
+在遇到 `\stoptyping` 行时，将源码区域关闭：
+
+<pre id="c-render.awk5" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
+<span class="sr">/\\stoptyping/</span> <span class="p">{</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span><span class="p">}</span>
+</pre>
+
+对于非源码区域的内容，原样将其输出：
+
+<pre id="c-render.awk6" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
+<span class="p">{</span> <span class="kr">print</span> <span class="p">}</span>
+</pre>
+
+至此，支持在 ConTeXt 源码排版环境中渲染 C 语言源码的 Awk 脚本完成。
+
+使用 [orez 工具](../orez-v1/index.html) 从本文档（假设为 awk-notes.orz）中提取 c-color.map 和 c-render.awk 文件：
+
+```console
+$ orez -t awk-notes.orz -e "c-color.map"
+$ orez -t awk-notes.orz -e "c-render.map"
+```
+
+将以下 ConTeXt 源文件 foo.tex 作为示例，
+
+```text
+\usecolors[crayola]
+\starttext
+\starttyping[escape=yes]
+/* This is a program which can
+   print "hello world" in screen.
+   It can not print any mathematical formula,
+   e.g. $m{a^2 + b^2 = c^2} */
+int $fn{main}(int $p{argc} $c{foo}, char **$p{argv}) {
+        print("Hello world!\n");
+        return 0;
+}
+\stoptyping
+\stoptext
+```
+
+测试 c-render.awk 脚本：
+
+```console
+$ awk -f c-render.awk foo.tex > bar.tex
+$ context bar.tex
+```
+
+所得排版结果如下图所示：
+
+![C 语言源码渲染结果](figures/c-render-result.png)
