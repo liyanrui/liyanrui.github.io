@@ -180,10 +180,8 @@ BEGIN {
         color[$1] = $2
     }
     FS = " "
-    basic_types = "char|double|enum|float|int|long|short" \
-                  "|signed|struct|union|unsigned|void|const"
-    keywords = "static|volatile|typedef|sizeof|auto|break|case|continue" \
-               "default|do|else|for|goto|if|return|switch|while"
+    basic_types = "char|double|enum|float|int|long|short|signed|struct|union|unsigned|void|const"
+    keywords = "static|typedef|sizeof|break|case|continue|default|do|else|for|goto|if|return|switch|while"
 }
 @
 
