@@ -259,7 +259,7 @@ comment: darkgray
 
 至此，支持在 ConTeXt 源码排版环境中渲染 C 语言源码的 Awk 脚本完成。
 
-使用 [orez 工具](../orez-v1/index.html) 从本文档（假设为 awk-notes.orz）中提取 c-color.map 和 c-render.awk 文件：
+使用 [orez 工具](../orez-v1/index.html) 从本文档（[awk-notes.orz](awk-notes.orz)）中提取 c-color.map 和 c-render.awk 文件：
 
 ```console
 $ orez -t awk-notes.orz -e "c-color.map"
