@@ -145,14 +145,14 @@ double /BTEX\inframed{foo}/ETEX(double a) {
 
 ```plain
 \starttyping
-/* 计算 $m{a^2} */
-double $fn{foo}(double $p{a}) {
+/* 计算 \m{a^2} */
+double \fn{foo}(double \p{a}) {
         return a * a;
 }
 \stoptyping
 ```
 
-上述代码中的 `$m{...}`，`$fn{...}` 以及 `$p{...}` 便是特殊标记，分别用于表示数学公式、函数名和参数名。在源码渲染过程中，若遇到特殊标记，便将其转化为相应的 TeX 逃逸语句。下面，用 Awk 语言实现上述方案。
+上述代码中的 `\m{...}`，`\fn{...}` 以及 `\p{...}` 便是特殊标记，分别用于表示数学公式、函数名和参数名。在源码渲染过程中，若遇到特殊标记，便将其转化为相应的 TeX 逃逸语句。下面，用 Awk 语言实现上述方案。
 
 首先，定义颜色映射文件：
 
@@ -161,13 +161,13 @@ basic_type: GreenBlue
 keyword: ForestGreen
 string: Fuchsia
 comment: darkgray
-$fn: Maroon
-$t: GreenBlue
-$p:OutrageousOrange
-$c: darkgray
+\fn: Maroon
+\t: GreenBlue
+\p:OutrageousOrange
+\c: darkgray
 @
 
-简单起见，只为关键字、字符串、注释、函数名（$fn）、自定义类型（$t）、函数参数名（$p）以及语句内嵌注释（$c）定义了颜色。若日后需要更多的特殊标记，可对 c-color.map 进行扩充。
+简单起见，只为关键字、字符串、注释、函数名（\fn）、自定义类型（\t）、函数参数名（\p）以及语句内嵌注释（\c）定义了颜色。若日后需要更多的特殊标记，可对 c-color.map 进行扩充。
 
 在 Awk 程序的 `BEGIN` 块读入颜色文件，将其内容转化为 Awk 数组 color，并定义 C 语言的基本类型和常见关键词：
 
@@ -197,33 +197,37 @@ BEGIN {
 typing && /\/\*/ {
     if (!/\*\//) in_comment = 1
     gsub(/\/\*.*/, "/BTEX\\color[" color["comment"] "]{&}/ETEX")
-    $0 = gensub(/\$m{([^}]+)}/, "\\\\m{\\1}", "g") # 数学公式
+    $0 = gensub(/\\m{([^}]+)}/, "\\\\m{\\1}", "g") # 数学公式
     print; next
 }
 typing && in_comment {
     if (/\*\//) in_comment = 0
     gsub(/[^ \t].*/, "/BTEX\\color[" color["comment"] "]{&}/ETEX")
-    $0 = gensub(/\$m{([^}]+)}/, "\\\\m{\\1}", "g") # 数学公式
+    $0 = gensub(/\\m{([^}]+)}/, "\\\\m{\\1}", "g") # 数学公式
     print; next
 }
 @
 
-上述代码可对单行和多行注释进行渲染，渲染完成后，使用 `next` 让主循环进入下一次运转，以避免执行后续的模式-动作语句。
+上述代码可对单行和多行注释进行渲染，渲染完成后，使用 `next` 让主循环无需执行后续的模式-动作语句，提前进入下一次循环。
 
 接下来，渲染 C 语句及内嵌注释：
 
 @  c-render.awk # +
 typing {
     # 渲染函数名
-    $0 = gensub(/\$fn{([^}]+)}/, "/BTEX\\\\color[" color["$fn"] "]{\\1}/ETEX", "g")
+    $0 = gensub(/\\fn{([^}]+)}/, "/BTEX\\\\color[" color["\\fn"] "]{\\1}/ETEX", "g")
     # 渲染函数参数类型
-    $0 = gensub(/\$t{([^}]+)}/, "/BTEX\\\\color[" color["$t"] "]{\\1}/ETEX", "g")
+    $0 = gensub(/\\t{([^}]+)}/, "/BTEX\\\\color[" color["\\t"] "]{\\1}/ETEX", "g")
     # 渲染函数参数
-    $0 = gensub(/\$p{([^}]+)}/, "/BTEX\\\\color[" color["$p"] "]{\\1}/ETEX", "g")
+    $0 = gensub(/\\p{([^}]+)}/, "/BTEX\\\\color[" color["\\p"] "]{\\1}/ETEX", "g")
     # 渲染语句内嵌入的注释
-    $0 = gensub(/\$c{([^}]+)}/, "/BTEX\\\\color[" color["$c"] "]{/* \\1 */}/ETEX", "g")
+    $0 = gensub(/\\c{([^}]+)}/, "/BTEX\\\\color[" color["\\c"] "]{/* \\1 */}/ETEX", "g")
     # 渲染字符串常量
-    gsub(/"[^"]*"/, "/BTEX\\color[" color["string"] "]{&}/ETEX")
+    if (/"[^"]*"/) {
+        # 处理反斜线
+        gsub(/\\/, "\\backslash ")
+        gsub(/"[^"]*"/, "/BTEX\\color[" color["string"] "]{&}/ETEX")
+    }
     # 渲染基本类型
     gsub("\\<(" basic_types ")\\>", "/BTEX\\color[" color["basic_type"] "]{&}/ETEX")
     # 渲染关键词
@@ -232,7 +236,7 @@ typing {
 }
 @
 
-与渲染注释过程相似，渲染过程结束后，使用 `next` 让主循环进入下一次运转。
+与渲染注释过程相似，渲染过程结束后，使用 `next` 让主循环提前进入下一次运转。
 
 在遇到 `\stoptyping` 行时，将源码区域关闭：
 
@@ -248,7 +252,7 @@ typing {
 
 至此，支持在 ConTeXt 源码排版环境中渲染 C 语言源码的 Awk 脚本完成。
 
-使用 [orez 工具](../orez-v1/index.html) 从本文档的源文档（[awk-notes.orz](awk-notes.orz)）中提取 c-color.map 和 c-render.awk 文件：
+使用 [orez 工具](../orez-v1/index.html) 从本文档（假设为 awk-notes.orz）中提取 c-color.map 和 c-render.awk 文件：
 
 ```console
 $ orez -t awk-notes.orz -e "c-color.map"
@@ -264,8 +268,8 @@ $ orez -t awk-notes.orz -e "c-render.map"
 /* This is a program which can
    print "hello world" in screen.
    It can not print any mathematical formula,
-   e.g. $m{a^2 + b^2 = c^2} */
-int $fn{main}(int $p{argc} $c{foo}, char **$p{argv}) {
+   e.g. \m{a^2 + b^2 = c^2} */
+int \fn{main}(int \p{argc} \c{foo}, char **\p{argv}) {
         print("Hello world!\n");
         return 0;
 }
@@ -283,3 +287,134 @@ $ context bar.tex
 所得排版结果如下图所示：
 
 ![C 语言源码渲染结果](figures/c-render-result.png)
+
+源码排版区域所使用的特殊标记，若有删除需求，可通过以下脚本实现：
+
+@ c-demark.awk # [awk]
+/\\starttyping/ { typing = 1; print; next}
+typing {
+    $0 = gensub(/\\m{([^}]+)}/, "\\1", "g")
+    $0 = gensub(/\\fn{([^}]+)}/, "\\1", "g")
+    $0 = gensub(/\\t{([^}]+)}/, "\\1", "g")
+    $0 = gensub(/\\p{([^}]+)}/, "\\1", "g")
+    $0 = gensub(/\\c{([^}]+)}/, "\\1", "g")
+    if (/"[^"]*"/) {
+        gsub(/\\backslash[ \t]*/, "\\")
+    }
+    print; next
+}
+/\\stoptyping/ { typing = 0; print; next}
+{ print }
+@
+
+# sub、gsub 和 gensub
+
+上一节所写的脚本，频繁使用了 gawk 内置的字符串替换函数 `gsub` 和 `gensub`，常用的还有 `sub`。使用 Awk 解决各种文本处理问题，必须熟悉这三个函数的用法。
+
+`sub` 函数接受 3 个参数。第一个参数正则表达式。第二个参数是替换文本。第三个参数是可选的，即目标字符串，若未提供，`sub` 函数会将当前读入的一行文本 `$0` 作为该参数。例如，以下 Awk 脚本可去除文件中任何一行的前导空白字符：
+
+```awk
+{ sub(/^[ \t]*/, "") }
+```
+
+上述代码与以下代码等价
+
+```awk
+{ sub(/^[ \t]*/, "", $0) }
+```
+
+例如，对于 foo.txt 文件：
+
+```plain
+a
+    b
+        c
+```
+
+执行以下命令
+
+```console
+$ awk '{ sub(/^[ \t]*/, ""); print }' foo.txt
+```
+
+输出为
+
+```plain
+a
+b
+c
+```
+
+未向 `print` 函数提供参数时，它会打印 `$0`。始终都要记住，`$0` 是当前正在处理的文本行，在 `sub`、`gsub`、`gensub` 以及 `print` 函数中，它可以作为默认的输入参数，使得 Awk 代码更为简约，当然在不熟悉 Awk 语言的情况下，也会更让人觉得难懂。不必为此苛责 Awk 语言不友好，不直观，毕竟任何一种语言都有许多初学者不明就里的惯用法。
+
+上述代码中，`sub` 从 `$0` 中搜索第一次与正则表达式 `/^[ \t]*/` 匹配的部分，将其替换为空字符串。`/^[ \t]*/` 表示以一个或多个（`*`）空格或制表符（`\t`）作为开头（`^`）。关于正则表达式，我无力讲太多，因为关于它的知识足以写一本 700 多页的书。我建议在实际问题中去学习它的用法。需要注意的是，在 Awk 语言中，正则表达式可以写成 `/.../` 的形式，也可以写为字符串的形式，例如 `"^[ \t]*"`。
+
+`sub` 只能替换目标字符串中第一次与正则表达式匹配的部分，而 `gsub` 和 `gensub` 可以替换目标字符串中所有与正则表达式匹配的部分。gawk 实现的这三个 `sub` 函数，有着其他 Awk 语言的实现所不具备的功能，即正则表达式匹配过程中的捕获功能。例如，对于上述的 foo.txt，以下示例可为文件中每一行被捕获的部分增加花扩号：
+
+```awk
+$ awk '{ sub(/[^ \t]+/, "{&}"); print }' foo.txt
+{a}
+    {b}
+        {c}
+```
+
+上述代码中的正则表达式 `/[^ \t]+/` 表示一个或多个非空白字符，`sub` 函数匹配到的部分，在替换文本中表示为 `&`。
+
+现在，有文件 bar.txt：
+
+```plain
+A B C
+a b c
+1 2 3
+```
+
+以下命令使用 `gsub` 函数，为每个字符都增加花扩号：
+
+```console
+$ awk '{ gsub(/[^ \t]+/, "{&}"); print }' bar.txt
+{A} {B} {C}
+{a} {b} {c}
+{1} {2} {3}
+```
+
+`gensub` 函数与 `gsub` 相似，能够替换目标字符串中所有与正则表达式匹配的部分，但是扩展了捕获功能。`gensub` 在正则表达式中可使用 `(...)` 设置捕获区域，且捕获区域可以是多个，在替换文本中，使用 `\1`，`\2` ... 依序获得每个捕获区域匹配的文本，例如
+
+```console
+$ awk '{ print gensub(/([^ \t]+)[ \t]+(.*)/, "{\\1} {\\2}", "g") }' bar.txt
+{A} {B C}
+{a} {b c}
+{1} {2 3}
+```
+
+对于目标字符串，上述正则表达式中的 `([^ \t]+)` 用于捕获一个或个非空白字符构成的文本，`[ \t]+` 用于匹配 1 个或多个空白字符构成的文本，而 `(.*)` 用于捕获剩下的所有文本。`gensub` 第三个参数用于选择与正则表达式第 n 次匹配的文本参与替换，该参数为 "g" 表示与正则表达式匹配的文本全部参与替换。`gensub` 第 4 个参数是目标字符串，若未提供，则该参数为 `$0`。需要注意的是，`gensub` 与 `sub` 和 `gsub` 还有一点不同，它不修改目标字符串，而是返回替换结果，故而上例直接将其结果作为 `print` 的参数。
+
+标准的 Awk 实现，没有 `gensub`，另外 `sub` 和 `gsub` 皆不具备捕获功能。若使用标准 Awk 语言实现与以下命令等价的功能
+
+```console
+$ awk '{ sub(/^[ \t]*/, ""); print }' foo.txt
+```
+
+需要使用 `match` 函数进行文本匹配，获得与正则表达式匹配的文本的开始位置和文本长度。awk 解释器维护的全局变量 `RSTART` 和 `RLENGTH`，它们分别表示与正则表达式匹配的文本的开始位置和文本长度，由 `match` 函数予以设定。基于这两个全局变量，使用 `substr` 提取文本，从而模拟捕获。例如
+
+```awk
+{
+    if (match($0, /^[ \t]*/)) {
+        print substr($0, RSTART + RLENGTH)
+    }
+}
+```
+
+执行以下命令，便可消除 foo.txt 中每一行的前导空白：
+
+```console
+$ awk '{
+    if (match($0, /^[ \t]*/)) {
+        print substr($0, RSTART + RLENGTH)
+    }
+}' foo.txt
+a
+b
+c
+```
+
+基于 `match` 和 `substr` 也可以模拟 `gsub`，但是需要借助循环结构，逐步消解目标字符串，每一步都获得一个匹配结果并对其进行处理。在标准 Awk 实现中模拟 `gensub` 会更为困难。从应用 Awk 语言解决问题的角度，没必要为难自己，建议使用 gawk，让其他 Awk 实现安其天命。

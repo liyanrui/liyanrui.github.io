@@ -88,9 +88,6 @@
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../../appearance/lmd.css" />
-  <script
-  src="https://cdnbootcss.com/mathjax/3.2.2/es5/tex-mml-chtml.js"
-  type="text/javascript"></script>
 </head>
 <body>
 <div class="category">
@@ -108,6 +105,8 @@
 <li><a href="#选择-gawk" id="toc-选择-gawk">选择 gawk</a></li>
 <li><a href="#hello-world" id="toc-hello-world">Hello world!</a></li>
 <li><a href="#源码渲染" id="toc-源码渲染">源码渲染</a></li>
+<li><a href="#subgsub-和-gensub" id="toc-subgsub-和-gensub">sub、gsub 和
+gensub</a></li>
 </ul>
 </nav>
 <h1 id="前言">前言</h1>
@@ -245,13 +244,13 @@ BNF，无法再通过语法分析的方式渲染源码。事实上，这也是 C
 </ul>
 <p>上述方案中第 2 条，特殊标记是我自行定义的标记。例如</p>
 <pre class="plain"><code>\starttyping
-/* 计算 $m{a^2} */
-double $fn{foo}(double $p{a}) {
+/* 计算 \m{a^2} */
+double \fn{foo}(double \p{a}) {
         return a * a;
 }
 \stoptyping</code></pre>
-<p>上述代码中的 <code>$m{...}</code>，<code>$fn{...}</code> 以及
-<code>$p{...}</code>
+<p>上述代码中的 <code>\m{...}</code>，<code>\fn{...}</code> 以及
+<code>\p{...}</code>
 便是特殊标记，分别用于表示数学公式、函数名和参数名。在源码渲染过程中，若遇到特殊标记，便将其转化为相应的
 TeX 逃逸语句。下面，用 Awk 语言实现上述方案。</p>
 <p>首先，定义颜色映射文件：</p>
@@ -261,14 +260,12 @@ basic_type: GreenBlue
 keyword: ForestGreen
 string: Fuchsia
 comment: darkgray
-$fn: Maroon
-$t: GreenBlue
-$p:OutrageousOrange
-$c: darkgray
+\fn: Maroon
+\t: GreenBlue
+\p:OutrageousOrange
+\c: darkgray
 </pre>
-<p>简单起见，只为关键字、字符串、注释、函数名（<span
-class="math inline">\(fn）、自定义类型（\)</span>t）、函数参数名（<span
-class="math inline">\(p）以及语句内嵌注释（\)</span>c）定义了颜色。若日后需要更多的特殊标记，可对
+<p>简单起见，只为关键字、字符串、注释、函数名（）、自定义类型（、函数参数名（）以及语句内嵌注释（定义了颜色。若日后需要更多的特殊标记，可对
 c-color.map 进行扩充。</p>
 <p>在 Awk 程序的 <code>BEGIN</code> 块读入颜色文件，将其内容转化为 Awk
 数组 color，并定义 C 语言的基本类型和常见关键词：</p>
@@ -297,33 +294,37 @@ c-color.map 进行扩充。</p>
 <span class="nx">typing</span> <span class="o">&amp;&amp;</span> <span class="sr">/\/\*/</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="sr">/\*\//</span><span class="p">)</span> <span class="nx">in_comment</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="kr">gsub</span><span class="p">(</span><span class="sr">/\/\*.*/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\$m{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\\\m{\\1}&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span> <span class="c1"># 数学公式</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\m{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\\\m{\\1}&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span> <span class="c1"># 数学公式</span>
     <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span>
 <span class="p">}</span>
 <span class="nx">typing</span> <span class="o">&amp;&amp;</span> <span class="nx">in_comment</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="sr">/\*\//</span><span class="p">)</span> <span class="nx">in_comment</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="kr">gsub</span><span class="p">(</span><span class="sr">/[^ \t].*/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\$m{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\\\m{\\1}&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span> <span class="c1"># 数学公式</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\m{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\\\m{\\1}&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span> <span class="c1"># 数学公式</span>
     <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span>
 <span class="p">}</span>
 </pre>
 <p>上述代码可对单行和多行注释进行渲染，渲染完成后，使用
 <code>next</code>
-让主循环进入下一次运转，以避免执行后续的模式-动作语句。</p>
+让主循环无需执行后续的模式-动作语句，提前进入下一次循环。</p>
 <p>接下来，渲染 C 语句及内嵌注释：</p>
 <pre id="c-render.awk4" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
 <span class="nx">typing</span> <span class="p">{</span>
     <span class="c1"># 渲染函数名</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\$fn{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;$fn&quot;</span><span class="p">]</span> <span class="s2">&quot;]{\\1}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\fn{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;\\fn&quot;</span><span class="p">]</span> <span class="s2">&quot;]{\\1}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
     <span class="c1"># 渲染函数参数类型</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\$t{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;$t&quot;</span><span class="p">]</span> <span class="s2">&quot;]{\\1}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\t{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;\\t&quot;</span><span class="p">]</span> <span class="s2">&quot;]{\\1}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
     <span class="c1"># 渲染函数参数</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\$p{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;$p&quot;</span><span class="p">]</span> <span class="s2">&quot;]{\\1}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\p{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;\\p&quot;</span><span class="p">]</span> <span class="s2">&quot;]{\\1}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
     <span class="c1"># 渲染语句内嵌入的注释</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\$c{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;$c&quot;</span><span class="p">]</span> <span class="s2">&quot;]{/* \\1 */}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\c{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;\\c&quot;</span><span class="p">]</span> <span class="s2">&quot;]{/* \\1 */}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
     <span class="c1"># 渲染字符串常量</span>
-    <span class="kr">gsub</span><span class="p">(</span><span class="sr">/&quot;[^&quot;]*&quot;/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="sr">/&quot;[^&quot;]*&quot;/</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1"># 处理反斜线</span>
+        <span class="kr">gsub</span><span class="p">(</span><span class="sr">/\\/</span><span class="p">,</span> <span class="s2">&quot;\\backslash &quot;</span><span class="p">)</span>
+        <span class="kr">gsub</span><span class="p">(</span><span class="sr">/&quot;[^&quot;]*&quot;/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
     <span class="c1"># 渲染基本类型</span>
     <span class="kr">gsub</span><span class="p">(</span><span class="s2">&quot;\\&lt;(&quot;</span> <span class="nx">basic_types</span> <span class="s2">&quot;)\\&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;basic_type&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
     <span class="c1"># 渲染关键词</span>
@@ -332,7 +333,7 @@ c-color.map 进行扩充。</p>
 <span class="p">}</span>
 </pre>
 <p>与渲染注释过程相似，渲染过程结束后，使用 <code>next</code>
-让主循环进入下一次运转。</p>
+让主循环提前进入下一次运转。</p>
 <p>在遇到 <code>\stoptyping</code> 行时，将源码区域关闭：</p>
 <pre id="c-render.awk5" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
@@ -345,9 +346,8 @@ c-color.map 进行扩充。</p>
 </pre>
 <p>至此，支持在 ConTeXt 源码排版环境中渲染 C 语言源码的 Awk
 脚本完成。</p>
-<p>使用 <a href="../orez-v1/index.html">orez 工具</a>
-从本文档的源文档（<a href="awk-notes.orz">awk-notes.orz</a>）中提取
-c-color.map 和 c-render.awk 文件：</p>
+<p>使用 <a href="../orez-v1/index.html">orez 工具</a> 从本文档（假设为
+awk-notes.orz）中提取 c-color.map 和 c-render.awk 文件：</p>
 <pre class="console"><code>$ orez -t awk-notes.orz -e &quot;c-color.map&quot;
 $ orez -t awk-notes.orz -e &quot;c-render.map&quot;</code></pre>
 <p>将以下 ConTeXt 源文件 foo.tex 作为示例，</p>
@@ -357,8 +357,8 @@ $ orez -t awk-notes.orz -e &quot;c-render.map&quot;</code></pre>
 /* This is a program which can
    print &quot;hello world&quot; in screen.
    It can not print any mathematical formula,
-   e.g. $m{a^2 + b^2 = c^2} */
-int $fn{main}(int $p{argc} $c{foo}, char **$p{argv}) {
+   e.g. \m{a^2 + b^2 = c^2} */
+int \fn{main}(int \p{argc} \c{foo}, char **\p{argv}) {
         print(&quot;Hello world!\n&quot;);
         return 0;
 }
@@ -372,6 +372,137 @@ $ context bar.tex</code></pre>
 <img src="figures/c-render-result.png" alt="C 语言源码渲染结果" />
 <figcaption aria-hidden="true">C 语言源码渲染结果</figcaption>
 </figure>
+<p>源码排版区域所使用的特殊标记，若有删除需求，可通过以下脚本实现：</p>
+<pre id="c-demark.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-demark.awk #</span>
+<span class="sr">/\\starttyping/</span> <span class="p">{</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span><span class="p">}</span>
+<span class="nx">typing</span> <span class="p">{</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\m{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\1&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\fn{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\1&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\t{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\1&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\p{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\1&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\c{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\1&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="sr">/&quot;[^&quot;]*&quot;/</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">gsub</span><span class="p">(</span><span class="sr">/\\backslash[ \t]*/</span><span class="p">,</span> <span class="s2">&quot;\\&quot;</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span>
+<span class="p">}</span>
+<span class="sr">/\\stoptyping/</span> <span class="p">{</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span><span class="p">}</span>
+<span class="p">{</span> <span class="kr">print</span> <span class="p">}</span>
+</pre>
+<h1 id="subgsub-和-gensub">sub、gsub 和 gensub</h1>
+<p>上一节所写的脚本，频繁使用了 gawk 内置的字符串替换函数
+<code>gsub</code> 和 <code>gensub</code>，常用的还有
+<code>sub</code>。使用 Awk
+解决各种文本处理问题，必须熟悉这三个函数的用法。</p>
+<p><code>sub</code> 函数接受 3
+个参数。第一个参数正则表达式。第二个参数是替换文本。第三个参数是可选的，即目标字符串，若未提供，<code>sub</code>
+函数会将当前读入的一行文本 <code>$0</code> 作为该参数。例如，以下 Awk
+脚本可去除文件中任何一行的前导空白字符：</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]*/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">)</span> <span class="op">}</span></span></code></pre></div>
+<p>上述代码与以下代码等价</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]*/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> <span class="dt">$0</span><span class="op">)</span> <span class="op">}</span></span></code></pre></div>
+<p>例如，对于 foo.txt 文件：</p>
+<pre class="plain"><code>a
+    b
+        c</code></pre>
+<p>执行以下命令</p>
+<pre class="console"><code>$ awk &#39;{ sub(/^[ \t]*/, &quot;&quot;); print }&#39; foo.txt</code></pre>
+<p>输出为</p>
+<pre class="plain"><code>a
+b
+c</code></pre>
+<p>未向 <code>print</code> 函数提供参数时，它会打印
+<code>$0</code>。始终都要记住，<code>$0</code>
+是当前正在处理的文本行，在
+<code>sub</code>、<code>gsub</code>、<code>gensub</code> 以及
+<code>print</code> 函数中，它可以作为默认的输入参数，使得 Awk
+代码更为简约，当然在不熟悉 Awk
+语言的情况下，也会更让人觉得难懂。不必为此苛责 Awk
+语言不友好，不直观，毕竟任何一种语言都有许多初学者不明就里的惯用法。</p>
+<p>上述代码中，<code>sub</code> 从 <code>$0</code>
+中搜索第一次与正则表达式 <code>/^[ \t]*/</code>
+匹配的部分，将其替换为空字符串。<code>/^[ \t]*/</code>
+表示以一个或多个（<code>*</code>）空格或制表符（<code>\t</code>）作为开头（<code>^</code>）。关于正则表达式，我无力讲太多，因为关于它的知识足以写一本
+700 多页的书。我建议在实际问题中去学习它的用法。需要注意的是，在 Awk
+语言中，正则表达式可以写成 <code>/.../</code>
+的形式，也可以写为字符串的形式，例如 <code>"^[ \t]*"</code>。</p>
+<p><code>sub</code> 只能替换目标字符串中第一次与正则表达式匹配的部分，而
+<code>gsub</code> 和 <code>gensub</code>
+可以替换目标字符串中所有与正则表达式匹配的部分。gawk 实现的这三个
+<code>sub</code> 函数，有着其他 Awk
+语言的实现所不具备的功能，即正则表达式匹配过程中的捕获功能。例如，对于上述的
+foo.txt，以下示例可为文件中每一行被捕获的部分增加花扩号：</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>$ awk &#39;<span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/[^</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+/</span><span class="op">,</span> <span class="st">&quot;{&amp;}&quot;</span><span class="op">);</span> <span class="kw">print</span> <span class="op">}</span>&#39; foo.txt</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span>a<span class="op">}</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>b<span class="op">}</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>c<span class="op">}</span></span></code></pre></div>
+<p>上述代码中的正则表达式 <code>/[^ \t]+/</code>
+表示一个或多个非空白字符，<code>sub</code>
+函数匹配到的部分，在替换文本中表示为 <code>&amp;</code>。</p>
+<p>现在，有文件 bar.txt：</p>
+<pre class="plain"><code>A B C
+a b c
+1 2 3</code></pre>
+<p>以下命令使用 <code>gsub</code> 函数，为每个字符都增加花扩号：</p>
+<pre class="console"><code>$ awk &#39;{ gsub(/[^ \t]+/, &quot;{&amp;}&quot;); print }&#39; bar.txt
+{A} {B} {C}
+{a} {b} {c}
+{1} {2} {3}</code></pre>
+<p><code>gensub</code> 函数与 <code>gsub</code>
+相似，能够替换目标字符串中所有与正则表达式匹配的部分，但是扩展了捕获功能。<code>gensub</code>
+在正则表达式中可使用 <code>(...)</code>
+设置捕获区域，且捕获区域可以是多个，在替换文本中，使用
+<code>\1</code>，<code>\2</code> …
+依序获得每个捕获区域匹配的文本，例如</p>
+<pre class="console"><code>$ awk &#39;{ print gensub(/([^ \t]+)[ \t]+(.*)/, &quot;{\\1} {\\2}&quot;, &quot;g&quot;) }&#39; bar.txt
+{A} {B C}
+{a} {b c}
+{1} {2 3}</code></pre>
+<p>对于目标字符串，上述正则表达式中的 <code>([^ \t]+)</code>
+用于捕获一个或个非空白字符构成的文本，<code>[ \t]+</code> 用于匹配 1
+个或多个空白字符构成的文本，而 <code>(.*)</code>
+用于捕获剩下的所有文本。<code>gensub</code>
+第三个参数用于选择与正则表达式第 n 次匹配的文本参与替换，该参数为 “g”
+表示与正则表达式匹配的文本全部参与替换。<code>gensub</code> 第 4
+个参数是目标字符串，若未提供，则该参数为
+<code>$0</code>。需要注意的是，<code>gensub</code> 与 <code>sub</code>
+和 <code>gsub</code>
+还有一点不同，它不修改目标字符串，而是返回替换结果，故而上例直接将其结果作为
+<code>print</code> 的参数。</p>
+<p>标准的 Awk 实现，没有 <code>gensub</code>，另外 <code>sub</code> 和
+<code>gsub</code> 皆不具备捕获功能。若使用标准 Awk
+语言实现与以下命令等价的功能</p>
+<pre class="console"><code>$ awk &#39;{ sub(/^[ \t]*/, &quot;&quot;); print }&#39; foo.txt</code></pre>
+<p>需要使用 <code>match</code>
+函数进行文本匹配，获得与正则表达式匹配的文本的开始位置和文本长度。awk
+解释器维护的全局变量 <code>RSTART</code> 和
+<code>RLENGTH</code>，它们分别表示与正则表达式匹配的文本的开始位置和文本长度，由
+<code>match</code> 函数予以设定。基于这两个全局变量，使用
+<code>substr</code> 提取文本，从而模拟捕获。例如</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]*/</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="bu">RSTART</span> <span class="op">+</span> <span class="bu">RLENGTH</span><span class="op">)</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>执行以下命令，便可消除 foo.txt 中每一行的前导空白：</p>
+<pre class="console"><code>$ awk &#39;{
+    if (match($0, /^[ \t]*/)) {
+        print substr($0, RSTART + RLENGTH)
+    }
+}&#39; foo.txt
+a
+b
+c</code></pre>
+<p>基于 <code>match</code> 和 <code>substr</code> 也可以模拟
+<code>gsub</code>，但是需要借助循环结构，逐步消解目标字符串，每一步都获得一个匹配结果并对其进行处理。在标准
+Awk 实现中模拟 <code>gensub</code> 会更为困难。从应用 Awk
+语言解决问题的角度，没必要为难自己，建议使用 gawk，让其他 Awk
+实现安其天命。</p>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
