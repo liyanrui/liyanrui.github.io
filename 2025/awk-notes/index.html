@@ -472,7 +472,12 @@ a b c
 <code>$0</code>。需要注意的是，<code>gensub</code> 与 <code>sub</code>
 和 <code>gsub</code>
 还有一点不同，它不修改目标字符串，而是返回替换结果，故而上例直接将其结果作为
-<code>print</code> 的参数。</p>
+<code>print</code> 的参数。还需要注意的是，获取捕获区域文本的符号
+<code>\1</code>，<code>\2</code>，…，在 <code>gensub</code> 中需要对
+<code>\</code> 进行转义，故而形式是
+<code>\\1</code>，<code>\\2</code>，…倘若未对 <code>\</code> 转义，awk
+会认为像 <code>\1</code> 这样的形式是对 <code>1</code> 进行转义，结果为
+<code>1</code>。</p>
 <p>标准的 Awk 实现，没有 <code>gensub</code>，另外 <code>sub</code> 和
 <code>gsub</code> 皆不具备捕获功能。若使用标准 Awk
 语言实现与以下命令等价的功能</p>
@@ -503,6 +508,17 @@ c</code></pre>
 Awk 实现中模拟 <code>gensub</code> 会更为困难。从应用 Awk
 语言解决问题的角度，没必要为难自己，建议使用 gawk，让其他 Awk
 实现安其天命。</p>
+<p>最后，观察上一节的 Awk 代码，在 <code>gensub</code>
+的替换文本参数中，出现了 <code>\\\\color</code>
+的形式，虽然它对应的替换后的文本是
+<code>\corlor</code>，但是在参数中必须写成至少 4 个
+<code>\</code>，否则替换后的文本就是
+<code>color</code>。原因是，<code>gensub</code>
+的参数会被多次处理，每次处理便会丢失一个用于逃逸的
+<code>\</code>，详情见「<a
+href="https://www.gnu.org/software/gawk/manual/gawk.html#Gory-Details">More
+about ‘’ and ‘&amp;’ with sub(), gsub(), and
+gensub()</a>」，但是，对此也无需过于严肃，在实践中，尝试几次便可获得够用的经验了。</p>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
