@@ -107,6 +107,10 @@
 <li><a href="#源码渲染" id="toc-源码渲染">源码渲染</a></li>
 <li><a href="#subgsub-和-gensub" id="toc-subgsub-和-gensub">sub、gsub 和
 gensub</a></li>
+<li><a href="#匹配-c-函数的定义" id="toc-匹配-c-函数的定义">匹配 C
+函数的定义</a></li>
+<li><a href="#正则表达式的局限性"
+id="toc-正则表达式的局限性">正则表达式的局限性</a></li>
 </ul>
 </nav>
 <h1 id="前言">前言</h1>
@@ -398,8 +402,9 @@ $ context bar.tex</code></pre>
 解决各种文本处理问题，必须熟悉这三个函数的用法。</p>
 <p><code>sub</code> 函数接受 3
 个参数。第一个参数正则表达式。第二个参数是替换文本。第三个参数是可选的，即目标字符串，若未提供，<code>sub</code>
-函数会将当前读入的一行文本 <code>$0</code> 作为该参数。例如，以下 Awk
-脚本可去除文件中任何一行的前导空白字符：</p>
+函数会将当前读入的一行文本 <code>$0</code> 作为该参数。Awk
+程序读入的一行文本，称为一条记录。以下 Awk
+脚本可去除任何一条记录的前导空白字符：</p>
 <div class="sourceCode" id="cb16"><pre
 class="sourceCode awk"><code class="sourceCode awk"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]*/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">);</span> <span class="kw">print</span> <span class="op">}</span></span></code></pre></div>
 <p>上述代码与以下代码等价</p>
@@ -416,8 +421,7 @@ class="sourceCode awk"><code class="sourceCode awk"><span id="cb17-1"><a href="#
 b
 c</code></pre>
 <p>未向 <code>print</code> 函数提供参数时，它会打印
-<code>$0</code>。始终都要记住，<code>$0</code>
-是当前正在处理的文本行，在
+<code>$0</code>。始终都要记住，<code>$0</code> 是当前正在处理的记录，在
 <code>sub</code>、<code>gsub</code>、<code>gensub</code> 以及
 <code>print</code> 函数中，它可以作为默认的输入参数，使得 Awk
 代码更为简约，当然在不熟悉 Awk
@@ -435,7 +439,7 @@ c</code></pre>
 可以替换目标字符串中所有与正则表达式匹配的部分。gawk 实现的这三个
 <code>sub</code> 函数，有着其他 Awk
 语言的实现所不具备的功能，即正则表达式匹配过程中的捕获功能。例如，对于上述的
-foo.txt，以下示例可为文件中每一行被捕获的部分增加花扩号：</p>
+foo.txt，以下示例可为每一条记录中被捕获的部分增加花扩号：</p>
 <div class="sourceCode" id="cb21"><pre
 class="sourceCode awk"><code class="sourceCode awk"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>$ awk &#39;<span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/[^</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+/</span><span class="op">,</span> <span class="st">&quot;{&amp;}&quot;</span><span class="op">);</span> <span class="kw">print</span> <span class="op">}</span>&#39; foo.txt</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span>a<span class="op">}</span></span>
@@ -520,6 +524,173 @@ Awk 实现中模拟 <code>gensub</code> 会更为困难。从应用 Awk
 href="https://www.gnu.org/software/gawk/manual/gawk.html#Gory-Details">More
 about ‘’ and ‘&amp;’ with sub(), gsub(), and
 gensub()</a>」，但是，对此也无需过于严肃，在实践中，尝试几次便可获得够用的经验了。</p>
+<h1 id="匹配-c-函数的定义">匹配 C 函数的定义</h1>
+<p>「<a href="#源码渲染">源码渲染</a>」一节中，我为 C
+函数的渲染定义了几个标记，有函数名 <code>\fn</code>，变量类型
+<code>\t</code> 以及参数名 <code>\p</code>，之所以需要这些标记，是因为
+Awk 语言对文件默认是逐行处理，而 C
+函数的定义通常跨越多行，正则表达式匹配 C
+函数的定义存在困难。不过，通过修改全局变量 <code>RS</code> 的值，Awk
+语言也能实现跨行处理记录，亦即 Awk 所处理的记录可以由多行文本构成。</p>
+<p><code>RS</code> 是记录分隔符，默认值为 <code>\n</code>，故而 Awk
+语言默认是以文件中的每一行作为记录来处理。当匹配到记录含有
+<code>\starttyping</code> 时，意味着进入了 ConTeXt
+源文件中的源码排版区域，此时，可将 <code>RS</code> 的值修改为
+<code>\stoptyping</code>，然后 Awk
+的主循环下一次读入的记录便是整个源码排版区域的内容。例如，以下 Awk
+程序</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ot">/\</span><span class="sc">\</span><span class="ss">starttyping</span><span class="ot">/</span> <span class="op">{</span> <span class="bu">RS</span> <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\\\\</span><span class="st">stoptyping&quot;</span><span class="op">;</span> typing <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> <span class="kw">next</span> <span class="op">}</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>typing <span class="op">{</span> typing <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="bu">RS</span> <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="kw">next</span><span class="op">}</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="kw">print</span> <span class="op">}</span></span></code></pre></div>
+<p>可消除 ConTeXt 源文件中的所有源码排版区域。需要注意的是，将
+<code>\stoptyping</code> 赋予 <code>RS</code>
+时，需要进行反斜线转义，而且需要连续转义 3 次，请忍受这个事实。</p>
+<p>上述代码的 <code>typing { ... }</code>
+部分得到的记录便是一个源码排版区域的所有内容，因此匹配 C
+函数的定义需要在这部分实现。首先需要考虑 C
+函数定义的正则表达式结构。以下面的 C 函数定义作为参考，</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">*</span> foo <span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> <span class="op">*</span>c <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>c <span class="op">=</span> a <span class="op">+</span> b<span class="op">;</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> c<span class="op">;</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>可写出以下这则表达式：</p>
+<ul>
+<li><code>(\w+[\* \t\n]+)</code>：匹配并捕获函数的返回值类型，如上例中
+<code>int *</code> 部分；</li>
+<li><code>(\w+)</code>：匹配并捕获函数名，如上例的
+<code>foo</code>；</li>
+<li><code>(\s*\()</code>：匹配并捕获函数参数列表的左括号；</li>
+<li><code>(.*)</code>：匹配并捕获函数的参数列表；</li>
+<li><code>(\)\s*{.*})</code>：匹配并捕获函数参数列表的右括号以及函数定义的剩余部分。</li>
+</ul>
+<p>将上述各正则表达式片段组装起来，使用 Awk 的 <code>match</code>
+函数中便可对函数的定义进行匹配并捕获各个部分，捕获结果存于一个数组 s
+中：</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">match</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="ot">/(\</span><span class="sc">w</span><span class="ot">+[\</span><span class="sc">*</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ot">]+)(\</span><span class="sc">w</span><span class="ot">+)(\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">)(.*)(\</span><span class="sc">)</span><span class="ot">\</span><span class="sc">s</span><span class="ot">*</span><span class="ss">{</span><span class="ot">.*</span><span class="ss">}</span><span class="ot">)/</span><span class="op">,</span> s<span class="op">)</span></span></code></pre></div>
+<p>在上述正则表达式中，<code>\s</code> 和 <code>\w</code> 皆为 gawk
+扩展的正则表达式语法，它们分别表示空白字符（空格，制表符和换行符）和单词字符（大小写字母、数字和下划线）。此外，上述使用的
+<code>match</code> 函数也是 gawk
+特有的，它可将含有捕获功能的正则表达式匹配的部分存入数组。</p>
+<p>基于上述知识，现在可以写出一个能够自动标记函数名和参数名的脚本：</p>
+<pre id="c-function.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-function.awk #</span>
+<span class="sr">/\\starttyping/</span> <span class="p">{</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\\\\stoptyping&quot;</span><span class="p">;</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span> <span class="p">}</span>
+<span class="nx">typing</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="mi">0</span><span class="p">,</span> <span class="sr">/(\w+[\* \t\n]+)(\w+)(\s*\()(.*)(\)\s*{.*})/</span><span class="p">,</span> <span class="nx">s</span><span class="p">))</span> <span class="p">{</span>
+        <span class="c1"># 标记函数名</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!~</span> <span class="sr">/\\fn/</span><span class="p">)</span> <span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;\\fn{&quot;</span> <span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="s2">&quot;}&quot;</span>
+        <span class="c1"># 标记参数名</span>
+        <span class="kr">split</span><span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="nx">p</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">in</span> <span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">!~</span> <span class="sr">/\\.+/</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">~</span> <span class="sr">/\w+[\* \t\n]+\([\* \t\n]+\w+\)/</span><span class="p">)</span> <span class="p">{</span>
+                     <span class="c1"># 参数为函数指针的形式，不予处理</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="nx">n</span> <span class="o">=</span> <span class="kr">split</span><span class="p">(</span><span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">q</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+                    <span class="kr">gsub</span><span class="p">(</span><span class="nx">q</span><span class="p">[</span><span class="nx">n</span><span class="p">],</span> <span class="s2">&quot;\\p{&amp;}&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="kr">print</span> <span class="nx">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span>
+    <span class="nx">typing</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span><span class="p">;</span> <span class="kr">printf</span> <span class="s2">&quot;\\stoptyping&quot;</span><span class="p">;</span> <span class="kr">next</span>
+<span class="p">}</span>
+<span class="p">{</span> <span class="kr">print</span> <span class="p">}</span>
+</pre>
+<p>注意，上述代码为了处理函数的参数列表，使用了两次 Awk 内置的
+<code>split</code>
+函数，第一次是以逗号对参数列表进行分割获得每个参数，第二次以空格对参数进行分割以分离参数类型与参数名。此外，由于
+<code>\stoptyping</code> 被临时充作 <code>RS</code>
+的值，会在输出中消失，故而在处理完源码区域后，需要使用
+<code>printf</code> 将其输出。<code>printf</code> 与 <code>print</code>
+的一个区别是，前者不会在输出内容尾部添加换行符 <code>\n</code>。</p>
+<p>使用 c-function.awk 脚本先对 ConTeXt 源文件中的 C
+语言源码中的函数进行处理，以自动生成函数名和参数名的标记，然后将处理后的文件交于「<a
+href="#源码渲染">源码渲染</a>」一节实现的 c-render.awk
+进行后续渲染处理。如此可在不对 c-render.awk
+变动的情况下省却手动标记函数定义的繁琐，并且保持脚本代码的简单。这是我喜欢的程序演进方式。「<a
+href="#源码渲染">源码渲染</a>」一节是在无奈之下选择手动标记处理函数定义，这一节保持了手动标记功能，只是在一定程度上将手动标记过程自动化处理。手动标记，是
+c-function.awk 和 c-render.awk 协作时的一层连接。</p>
+<p>此时的无奈，化为协议层，衔接着彼时的进化……换句话说，祖传的屎山代码可以不要动。</p>
+<h1 id="正则表达式的局限性">正则表达式的局限性</h1>
+<p>上一节所写的脚本 c-function.awk
+实际上有一个很严重的缺陷，即它不具备任何实用性。例如对于以下 C
+语言源码：</p>
+<pre class="plain"><code>\starttyping
+void foo(void) {
+}
+void bar(int a, int b) {
+}
+\stoptyping</code></pre>
+<p>c-function.awk 的处理结果为</p>
+<pre class="plain"><code>\starttyping
+void \fn{foo}(void) {
+}
+void \p{b}\p{a}r(int \p{a}, int \p{b}) {
+}
+\stoptyping</code></pre>
+<p>显然 c-function.awk
+中用于匹配函数定义的正则表达式匹配结果出错了，它将</p>
+<pre class="plain"><code>void) {
+}
+void \p{b}\p{a}r(int \p{a}, int \p{b}</code></pre>
+<p>视为参数列表了。此错误是 Awk 的正则表达式的贪婪所致。</p>
+<p>为了更清楚的说明上述问题，需要对问题进行简化。假设有以下文本：</p>
+<pre class="plain"><code>(a b) c (d e f)</code></pre>
+<p>使用以下 Awk 语句对其进行匹配并捕获：</p>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="ot">/\</span><span class="sc">(</span><span class="ot">(.*)\</span><span class="sc">)</span><span class="ot">/</span><span class="op">,</span> s<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> s[<span class="dv">1</span>]</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>得到的结果是</p>
+<pre class="plain"><code>a b) c (d e f</code></pre>
+<p>而我的本意是想得到</p>
+<pre class="plain"><code>a b</code></pre>
+<p>这便是 c-function.awk
+遇到多个函数时出错的原因。若想解决这个问题，需要实现一个更为复杂的字符串处理过程，但是也有一个简单的方案，增加新标记，例如：</p>
+<pre class="plain"><code>\starttyping
+\fn:start
+void foo(void) {
+}
+\fn:stop
+\fn:start
+void bar(int a, int b) {
+}
+\fn:stop
+\stoptyping</code></pre>
+<p>在新标记规划出的范围内，c-function.awk 是可用的，只需略加修改：</p>
+<pre id="new-c-function.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ new-c-function.awk #</span>
+<span class="sr">/\\starttyping/</span> <span class="p">{</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span> <span class="p">}</span>
+<span class="nx">typing</span> <span class="o">&amp;&amp;</span> <span class="sr">/\\fn:start/</span> <span class="p">{</span> <span class="nx">fn</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\\\\fn:stop\n&quot;</span><span class="p">;</span> <span class="kr">next</span> <span class="p">}</span>
+<span class="nx">typing</span> <span class="o">&amp;&amp;</span> <span class="nx">fn</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="mi">0</span><span class="p">,</span> <span class="sr">/(\w+[\* \t\n]+)(\w+)(\s*\()(.*)(\)\s*{.*})/</span><span class="p">,</span> <span class="nx">s</span><span class="p">))</span> <span class="p">{</span>
+        <span class="c1"># 标记函数名</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!~</span> <span class="sr">/\\fn/</span><span class="p">)</span> <span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;\\fn{&quot;</span> <span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="s2">&quot;}&quot;</span>
+        <span class="c1"># 标记参数名</span>
+        <span class="kr">split</span><span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="nx">p</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">in</span> <span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">!~</span> <span class="sr">/\\.+/</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">~</span> <span class="sr">/\w+[\* \t\n]+\([\* \t\n]+\w+\)/</span><span class="p">)</span> <span class="p">{</span>
+                     <span class="c1"># 参数为函数指针的形式，不予处理</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="nx">n</span> <span class="o">=</span> <span class="kr">split</span><span class="p">(</span><span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">q</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
+                    <span class="kr">gsub</span><span class="p">(</span><span class="nx">q</span><span class="p">[</span><span class="nx">n</span><span class="p">],</span> <span class="s2">&quot;\\p{&amp;}&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="kr">print</span> <span class="nx">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span>
+    <span class="nx">fn</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span><span class="p">;</span> <span class="kr">next</span>
+<span class="p">}</span>
+<span class="sr">/\\stoptyping/</span> <span class="p">{</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span> <span class="p">}</span>
+<span class="p">{</span> <span class="kr">print</span> <span class="p">}</span>
+</pre>
+<p>有朝一日，我变得更聪明了，再写一个脚本，用于自动生成
+<code>\fn:start/\fn:stop</code> 标记。</p>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
