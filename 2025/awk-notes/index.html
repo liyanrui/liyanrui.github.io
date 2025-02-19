@@ -111,6 +111,7 @@ gensub</a></li>
 函数的定义</a></li>
 <li><a href="#正则表达式的局限性"
 id="toc-正则表达式的局限性">正则表达式的局限性</a></li>
+<li><a href="#变得更聪明" id="toc-变得更聪明">变得更聪明</a></li>
 </ul>
 </nav>
 <h1 id="前言">前言</h1>
@@ -689,8 +690,164 @@ void bar(int a, int b) {
 <span class="sr">/\\stoptyping/</span> <span class="p">{</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span> <span class="p">}</span>
 <span class="p">{</span> <span class="kr">print</span> <span class="p">}</span>
 </pre>
-<p>有朝一日，我变得更聪明了，再写一个脚本，用于自动生成
-<code>\fn:start/\fn:stop</code> 标记。</p>
+<p>有朝一日，我变得更聪明了，再写一个脚本，用于为每个 C
+函数的定义自动生成 <code>\fn:start</code> 和 <code>\fn:stop</code>
+标记。</p>
+<h1 id="变得更聪明">变得更聪明</h1>
+<p>现在开始尝试解决上一节最后的问题——变得更聪明。</p>
+<p>假设我已取到一个 <code>\starttyping...\stoptyping</code>
+区域的内容，并将其作为一条记录，即 <code>$0</code>。使用「<a
+href="#匹配-c-函数的定义">匹配 C
+函数的定义</a>」一节中的方法达成这一目的并不困难。</p>
+<p>为了精准捕捉到一个 C 函数的定义，必须逐字符遍历
+<code>$0</code>，推断当前字符及其之后的一段文本是否满足 C
+函数定义的最短特征：返回类型 + 函数名 + 参数列表 +
+第一个花括号。这是最笨的方法，然而对于本节要解决的问题而言，却是最聪明的做法。</p>
+<p>Awk 语言逐字符遍历字符串的方式需要基于 <code>substr</code>
+方能实现。例如，以下脚本可逐字符输出当前记录：</p>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">printf</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码中的 <code>substr</code> 函数从 <code>$0</code> 中截取从第
+<code>i</code> 个字符开始的，长度为 <code>1</code> 的子字符串，亦即第
+<code>i</code> 个字符自身。不过，对于一些 Awk 语言的实现，例如
+mawk，它不支持
+Unicode，故而上述代码对它而言只是逐字节遍历字符串。以下命令可用于彰显
+gawk 在 Unicode 支持方面的功绩：</p>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>$ awk &#39;BEGIN <span class="op">{</span> x <span class="op">=</span> <span class="st">&quot;中文&quot;</span><span class="op">;</span> <span class="kw">print</span> <span class="fu">length</span><span class="op">(</span>x<span class="op">)</span> <span class="op">}</span>&#39;</span></code></pre></div>
+<p>若 awk 为 gawk，上述命令的输出为 2；若 awk 为 mawk，则输出为 6。标准
+Awk（即 Awk 语言的三位创始人）实现的 awk 是 2022 年实现了 Unicode
+支持。单从这一点，我极力不推荐 mawk，虽然它解释 Awk
+语言更快，但是作为脚本语言，要务是让用户在编程时更为直观地实现自己的想法，在这一点上，gawk
+优于其他所有 Awk 实现。</p>
+<p>现在回到本节要解决的问题上来。由于 <code>$0</code>
+中每一个字符都可能是函数定义的开头第一个字符，故而在遍历 <code>$0</code>
+的过程中，每次都要用一个能够匹配函数定义最短特征的正则表达式进行探测：</p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">)</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span>x<span class="op">,</span> <span class="ot">/^\</span><span class="sc">w</span><span class="ot">+[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ss">*</span><span class="ot">]+\</span><span class="sc">w</span><span class="ot">+\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">/</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> i</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;found function!&quot;</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码中，未向 <code>substr</code>
+提供第三个参数——字符串截取长度，则截取的子字符串是从 <code>$0</code>
+的第 <code>i</code> 个字符及其之后所有字符。正则表达式
+<code>/^\w+[ \t\n*]+\w+\s*\(/</code>
+可匹配以函数的返回类型、函数名和参数列表的左括号构成的字符串且该字符串是
+<code>x</code>
+的开头。凡遇到以这种形式开头的文本，便可视为遇到了一个函数定义的开头，用
+<code>a</code> 记录当前的下标 <code>i</code>。可以用一个变量
+<code>in_function</code> 记录这一重大发现：</p>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">)</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span>x<span class="op">,</span> <span class="ot">/^\</span><span class="sc">w</span><span class="ot">+[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ss">*</span><span class="ot">]+\</span><span class="sc">w</span><span class="ot">+\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">/</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> i</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>        in_function <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;found function!&quot;</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码变动之处所表达的逻辑是，在没有遇到函数定义时，探测
+<code>x</code> 的开头是否满足函数定义特征，若满足则将
+<code>in_function</code> 的值置为 1，下一次便无需对 <code>x</code>
+进行探测了，因为已经发现了一处函数定义。不用担心上述代码的
+<code>if</code> 语句中的 <code>!in_function</code>
+表达式在使用一个未定义的变量，因为在 Awk 语言中，未定义的变量的值为 0
+或空字符串，对其进行逻辑求反运算，结果为真。此外，在 Awk
+语言中，为一个变量赋值即定义，故而 <code>in_function = 1</code> 定义了
+<code>in_function</code>
+并对其赋值，从而在下一次循环中，<code>!in_function</code>
+表达式是在对一个已定义的变量进行逻辑求反。</p>
+<p>在发现函数的定义后，需要探测该函数的定义在何处结束。将该问题具体化，即寻找一对封闭的花括号，它所囊括的内容便是函数体。在
+<code>in_function</code> 状态中，只需要找到第一次出现的
+<code>{</code>，然后再寻找一个与之配对的
+<code>}</code>，则后者便是函数定义的结束之处。实现这个过程，无法使用正则表达式，因为函数体内部可能存在俄罗斯套娃似的嵌套的
+<code>{...}</code> 结构，而正则表达式无力识别嵌套结构。</p>
+<p>假设循环正在进行，在 <code>in_function</code>
+状态下，遇到了第一个、第二个…… <code>{</code>，只需要对其进行计数：</p>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>        in_function_body <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">++</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>同时，在 <code>in_function</code> 状态下，遇到了第一个、第二个……
+<code>}</code>，也对其进行计数，只是这个计数是在对
+<code>brace_count</code> 的削减：</p>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">--</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述两段代码可合并为</p>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>        in_function_body <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">++</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">--</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>    </span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>当 <code>brace_count</code> 的值为 0
+时，便意味着发现了囊括函数体的一对花括号，此时用 b
+记住函数定义的终止位置，并将 <code>in_function_body = 0</code> 和
+<code>in_function</code> 置为 0，以备检测下一个可能存在的函数定义：</p>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function_body <span class="op">&amp;&amp;</span> brace_count <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> i</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> a<span class="op">,</span> b <span class="op">-</span> a <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="st">&quot;function end.&quot;</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    in_function_body <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>    in_function <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码中的 <code>substr($0, a, b - a)</code>
+便是捕获的一个函数的定义。</p>
+<p>完整的捕获每个函数定义的代码如下：</p>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">)</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>in_function <span class="op">&amp;&amp;</span> <span class="fu">match</span><span class="op">(</span>x<span class="op">,</span> <span class="ot">/^\</span><span class="sc">w</span><span class="ot">+[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ss">*</span><span class="ot">]+\</span><span class="sc">w</span><span class="ot">+\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">/</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> i</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>        in_function <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;found function!&quot;</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>        c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>            in_function_body <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>            brace_count<span class="op">++</span></span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>            brace_count<span class="op">--</span></span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>in_function_body <span class="op">&amp;&amp;</span> brace_count <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>        b <span class="op">=</span> i</span>
+<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> a<span class="op">,</span> b <span class="op">-</span> a <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;function end.&quot;</span></span>
+<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>        in_function_body <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>        in_function <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>既然能从一条记录中发现所有 C 函数的定义，那么便可为每个函数的定义添加
+<code>\fn:start</code> 和 <code>\fn:stop</code>
+标记，从而上一节的难题便得以解决，而且无需修改 new-function.awk。</p>
+<p>至此，在 ConTeXt 排版环境中渲染 C
+语言源码的问题便基本得以解决。有一些 C
+语法元素的渲染尚未涉及，诸如预处理指令、宏定义等，但是渲染这些语法元素的思路不会比识别
+C 函数的定义更难。</p>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a

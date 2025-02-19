@@ -608,4 +608,144 @@ void bar(int a, int b) {
 <span class="p">{</span> <span class="kr">print</span> <span class="p">}</span>
 </pre>
 
-有朝一日，我变得更聪明了，再写一个脚本，用于自动生成 `\fn:start/\fn:stop` 标记。
+有朝一日，我变得更聪明了，再写一个脚本，用于为每个 C 函数的定义自动生成 `\fn:start` 和 `\fn:stop` 标记。
+
+# 变得更聪明
+
+现在开始尝试解决上一节最后的问题——变得更聪明。
+
+假设我已取到一个 `\starttyping...\stoptyping` 区域的内容，并将其作为一条记录，即 `$0`。使用「[匹配 C 函数的定义](#匹配-c-函数的定义)」一节中的方法达成这一目的并不困难。
+
+为了精准捕捉到一个 C 函数的定义，必须逐字符遍历 `$0`，推断当前字符及其之后的一段文本是否满足 C 函数定义的最短特征：返回类型 + 函数名 + 参数列表 + 第一个花括号。这是最笨的方法，然而对于本节要解决的问题而言，却是最聪明的做法。
+
+Awk 语言逐字符遍历字符串的方式需要基于 `substr` 方能实现。例如，以下脚本可逐字符输出当前记录：
+
+```awk
+for (i = 1; i <= length($0); i++) {
+    printf substr($0, i, 1)
+}
+```
+
+上述代码中的 `substr` 函数从 `$0` 中截取从第 `i` 个字符开始的，长度为 `1` 的子字符串，亦即第 `i` 个字符自身。不过，对于一些 Awk 语言的实现，例如 mawk，它不支持 Unicode，故而上述代码对它而言只是逐字节遍历字符串。以下命令可用于彰显 gawk 在 Unicode 支持方面的功绩：
+
+```awk
+$ awk 'BEGIN { x = "中文"; print length(x) }'
+```
+
+若 awk 为 gawk，上述命令的输出为 2；若 awk 为 mawk，则输出为 6。标准 Awk（即 Awk 语言的三位创始人）实现的 awk 是 2022 年实现了 Unicode 支持。单从这一点，我极力不推荐 mawk，虽然它解释 Awk 语言更快，但是作为脚本语言，要务是让用户在编程时更为直观地实现自己的想法，在这一点上，gawk 优于其他所有 Awk 实现。
+
+现在回到本节要解决的问题上来。由于 `$0` 中每一个字符都可能是函数定义的开头第一个字符，故而在遍历 `$0` 的过程中，每次都要用一个能够匹配函数定义最短特征的正则表达式进行探测：
+
+```awk
+for (i = 1; i <= length($0); i++) {
+    x = substr($0, i)
+    if (match(x, /^\w+[ \t\n*]+\w+\s*\(/)) {
+        a = i
+        print "found function!"
+    }
+}
+```
+
+上述代码中，未向 `substr` 提供第三个参数——字符串截取长度，则截取的子字符串是从 `$0` 的第 `i` 个字符及其之后所有字符。正则表达式 `/^\w+[ \t\n*]+\w+\s*\(/` 可匹配以函数的返回类型、函数名和参数列表的左括号构成的字符串且该字符串是 `x` 的开头。凡遇到以这种形式开头的文本，便可视为遇到了一个函数定义的开头，用 `a` 记录当前的下标 `i`。可以用一个变量 `in_function` 记录这一重大发现：
+
+```awk
+for (i = 1; i <= length($0); i++) {
+    x = substr($0, i)
+    if (match(x, /^\w+[ \t\n*]+\w+\s*\(/) && !in_function) {
+        a = i
+        in_function = 1
+        print "found function!"
+    }
+}
+```
+
+上述代码变动之处所表达的逻辑是，在没有遇到函数定义时，探测 `x` 的开头是否满足函数定义特征，若满足则将 `in_function` 的值置为 1，下一次便无需对 `x` 进行探测了，因为已经发现了一处函数定义。不用担心上述代码的 `if` 语句中的 `!in_function` 表达式在使用一个未定义的变量，因为在 Awk 语言中，未定义的变量的值为 0 或空字符串，对其进行逻辑求反运算，结果为真。此外，在 Awk 语言中，为一个变量赋值即定义，故而 `in_function = 1` 定义了 `in_function` 并对其赋值，从而在下一次循环中，`!in_function` 表达式是在对一个已定义的变量进行逻辑求反。
+
+在发现函数的定义后，需要探测该函数的定义在何处结束。将该问题具体化，即寻找一对封闭的花括号，它所囊括的内容便是函数体。在 `in_function` 状态中，只需要找到第一次出现的 `{`，然后再寻找一个与之配对的 `}`，则后者便是函数定义的结束之处。实现这个过程，无法使用正则表达式，因为函数体内部可能存在俄罗斯套娃似的嵌套的 `{...}` 结构，而正则表达式无力识别嵌套结构。
+
+假设循环正在进行，在 `in_function` 状态下，遇到了第一个、第二个…… `{`，只需要对其进行计数：
+
+```awk
+if (in_function) {
+    c = substr(x, i, 1)
+    if (c == "{") {
+        in_function_body = 1
+        brace_count++
+    }
+}
+```
+
+同时，在 `in_function` 状态下，遇到了第一个、第二个…… `}`，也对其进行计数，只是这个计数是在对 `brace_count` 的削减：
+
+```awk
+if (in_function) {
+    c = substr(x, 1, 1)
+    if (c == "}") {
+        brace_count--
+    }
+}
+```
+
+上述两段代码可合并为
+
+```awk
+if (in_function) {
+    c = substr(x, i, 1)
+    if (c == "{") {
+        in_function_body = 1
+        brace_count++
+    }
+    if (c == "}") {
+        brace_count--
+    }    
+}
+```
+
+当 `brace_count` 的值为 0 时，便意味着发现了囊括函数体的一对花括号，此时用 b 记住函数定义的终止位置，并将 `in_function_body = 0` 和 `in_function` 置为 0，以备检测下一个可能存在的函数定义：
+
+```awk
+if (in_function_body && brace_count == 0) {
+    b = i
+    print substr($0, a, b - a + 1)
+    print "function end."
+    in_function_body = 0
+    in_function = 0
+}
+```
+
+上述代码中的 `substr($0, a, b - a)` 便是捕获的一个函数的定义。
+
+完整的捕获每个函数定义的代码如下：
+
+```awk
+for (i = 1; i <= length($0); i++) {
+    x = substr($0, i)
+    if (!in_function && match(x, /^\w+[ \t\n*]+\w+\s*\(/)) {
+        a = i
+        in_function = 1
+        print "found function!"
+        continue
+    }
+    if (in_function) {
+        c = substr(x, 1, 1)
+        if (c == "{") {
+            in_function_body = 1
+            brace_count++
+        }
+        if (c == "}") {
+            brace_count--
+        }
+    }
+    if (in_function_body && brace_count == 0) {
+        b = i
+        print substr($0, a, b - a + 1)
+        print "function end."
+        in_function_body = 0
+        in_function = 0
+    }
+}
+```
+
+既然能从一条记录中发现所有 C 函数的定义，那么便可为每个函数的定义添加 `\fn:start` 和 `\fn:stop` 标记，从而上一节的难题便得以解决，而且无需修改 new-function.awk。
+
+至此，在 ConTeXt 排版环境中渲染 C 语言源码的问题便基本得以解决。有一些 C 语法元素的渲染尚未涉及，诸如预处理指令、宏定义等，但是渲染这些语法元素的思路不会比识别 C 函数的定义更难。
