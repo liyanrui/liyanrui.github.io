@@ -100,7 +100,140 @@ $ ./hello.sh
 Hello world!
 ```
 
-# 源码渲染
+# 模式与动作
+
+Awk 语言将输入的文件视为一组记录，对每一条记录用一个或多个模式（pattern）进行匹配，若匹配成功，则对该记录进行处理，此即所谓的动作（action）。模式与动作，使得 Awk 语言在文本处理方面很像 SQL 语言操作数据库，这并非偶然。Awk 语言三位作者中的一位，正是因为当时他数据库颇感兴趣所以参与了 Awk 语言的设计与实现。
+
+模式可以是条件表达式，也可以是正则表达式。`BEGIN` 和 `END` 是两种特殊模式，前者匹配文件的开始，后者匹配文件的结束。因此，可以简单的将 Awk 语言视为模式-动作语言。
+
+假设文件 foo.txt 的内容为
+
+```plain
+晒太阳 | 完成
+包饺子 | 待完成
+拖地板 | 完成
+穿越到 2030 年 | 需 5 年
+```
+
+以下 Awk 脚本：
+
+<pre id="todo-list.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ todo-list.awk #</span>
+<span class="nb">BEGIN</span> <span class="p">{</span>
+    <span class="nb">FS</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\usemodule[zhfonts][size=7pt]&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\definepapersize[card][width=85.6mm,height=53.98mm]&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\setuppapersize[card]&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\setuppagenumbering[location=]&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\starttext&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\setupxtable[todolist][frame=off]&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\startxtable[todolist]&quot;</span>
+<span class="p">}</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NF</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="kr">next</span>
+    <span class="kr">print</span> <span class="s2">&quot;  \\startxrow&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;    \\startxcell[width=.05\\textwidth] $\\circ$ \\stopxcell&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;    \\startxcell[width=.75\\textwidth]&quot;</span><span class="p">,</span> <span class="o">$</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;\\stopxcell&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">$</span><span class="mi">2</span> <span class="o">~</span> <span class="sr">/ *待完成 */</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">print</span> <span class="s2">&quot;\\startxcell[width=.2\\textwidth] \\hfill $\\cdots$ \\stopxcell&quot;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">$</span><span class="mi">2</span> <span class="o">~</span> <span class="sr">/ *完成 */</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">print</span> <span class="s2">&quot;\\startxcell[width=.2\\textwidth] \\hfill $\\checkmark$ \\stopxcell&quot;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="kr">print</span> <span class="s2">&quot;\\startxcell[width=.2\\textwidth] \\hfill&quot;</span><span class="p">,</span> <span class="o">$</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;\\stopxcell&quot;</span>
+    <span class="p">}</span>
+    <span class="kr">print</span> <span class="s2">&quot;  \\stopxrow&quot;</span>
+<span class="p">}</span>
+<span class="nb">END</span> <span class="p">{</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\stopxtable&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\stoptext&quot;</span>
+<span class="p">}</span>
+</pre>
+
+可将 foo.txt 转换为 ConTeXt 源文件 foo.tex，后者内容如下：
+
+```tex
+\usemodule[zhfonts][size=7pt]
+\definepapersize[card][width=85.6mm,height=53.98mm]
+\setuppapersize[card]
+\starttext
+\setupxtable[todolist][frame=off]
+\startxtable[todolist]
+  \startxrow
+    \startxcell[width=.05\textwidth] $\circ$ \stopxcell
+    \startxcell[width=.75\textwidth] 晒太阳 \stopxcell
+    \startxcell[width=.2\textwidth] \hfill $\checkmark$ \stopxcell
+  \stopxrow
+  \startxrow
+    \startxcell[width=.05\textwidth] $\circ$ \stopxcell
+    \startxcell[width=.75\textwidth] 包饺子 \stopxcell
+    \startxcell[width=.2\textwidth]  \hfill $\cdots$\stopxcell
+  \stopxrow
+  \startxrow
+    \startxcell[width=.05\textwidth] $\circ$ \stopxcell
+    \startxcell[width=.75\textwidth] 拖地板 \stopxcell
+    \startxcell[width=.2\textwidth]  \hfill $\checkmark$\stopxcell
+  \stopxrow
+  \startxrow
+    \startxcell[width=.05\textwidth] $\circ$ \stopxcell
+    \startxcell[width=.75\textwidth] 穿越到 2030 年 \stopxcell
+    \startxcell[width=.2\textwidth]  \hfill 需 5 年\stopxcell
+  \stopxrow
+\stopxtable
+\stoptext
+```
+
+转换命令为
+
+```console
+$ awk -f todo-list.awk foo.txt > foo.tex
+```
+
+倘若 ConTeXt 环境安装了 zhfonts 模块（详见 [ConTeXt-notes.pdf](https://github.com/liyanrui/ConTeXt-notes) 第 15 章），编译 foo.tex：
+
+```console
+$ context foo.tex
+```
+
+可得 foo.pdf，其内容如下图所示：
+
+![todo-list](figures/todo-list.png)
+
+脚本 todo-list.awk 的内容虽然较多，但程序逻辑很简单，核心部分如下：
+
+```awk
+BEGIN {
+    FS = "|"  # 设置用于分割记录每一列的符号
+    ... 输出 ConTeXt 源文档的首部 ...
+}
+# 无模式匹配，意味着匹配每一条记录。
+{
+    # 动作：将记录分割的每一列
+    #      转换为 ConTeXt 表格单元，
+    #      即 \startxcell ... \stopxcell 语句。
+}
+END { ... 输出 ConTeXt 源文档的首部 ... }
+```
+
+todo-list.awk 中用于处理记录的模式-动作，未提供模式，意味着匹配每一条记录，但是在动作语句中，有检测记录分割所得列数是否为 2 的语句：
+
+```awk
+{
+    if (NF != 2) next
+    ... ... ...
+}
+```
+
+`NF` 即当前记录分割所得列数。若它不为 2，则执行 `next` 命令，即终止当前动作的后续语句以及后续的所有模式-动作语句，awk 解释器会读入文件的下一条记录，并再度执行 BEGIN 模式及动作语句之后的模式-动作语句。实际上该条件语句可以写成模式的形式，即
+
+```awk
+NF == 2 {
+    ... ... ...
+}
+```
+
+下一节会用到更多的模式-动作语句。
+
+# C 语言源码渲染
 
 使用 ConTeXt（若不了解 ConTeXt，可阅读《[ConTeXt 笔记](https://github.com/liyanrui/ConTeXt-notes)》）排版含有程序源码的文档时，由于 ConTeXt 用于排版源码的命令 `\starttyping ... \stoptyping` 在源码渲染方面对编程语言支持的种类过少，例如不支持 C 语言，故而只能将代码中的所有文字渲染为单一颜色。例如以下 C 语言源码：
 

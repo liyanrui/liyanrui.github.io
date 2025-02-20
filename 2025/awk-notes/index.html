@@ -104,7 +104,9 @@
 <li><a href="#awk-教程" id="toc-awk-教程">Awk 教程</a></li>
 <li><a href="#选择-gawk" id="toc-选择-gawk">选择 gawk</a></li>
 <li><a href="#hello-world" id="toc-hello-world">Hello world!</a></li>
-<li><a href="#源码渲染" id="toc-源码渲染">源码渲染</a></li>
+<li><a href="#模式与动作" id="toc-模式与动作">模式与动作</a></li>
+<li><a href="#c-语言源码渲染" id="toc-c-语言源码渲染">C
+语言源码渲染</a></li>
 <li><a href="#subgsub-和-gensub" id="toc-subgsub-和-gensub">sub、gsub 和
 gensub</a></li>
 <li><a href="#匹配-c-函数的定义" id="toc-匹配-c-函数的定义">匹配 C
@@ -195,7 +197,127 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="
 <pre class="console"><code>$ chmod +x hello.sh
 $ ./hello.sh
 Hello world!</code></pre>
-<h1 id="源码渲染">源码渲染</h1>
+<h1 id="模式与动作">模式与动作</h1>
+<p>Awk
+语言将输入的文件视为一组记录，对每一条记录用一个或多个模式（pattern）进行匹配，若匹配成功，则对该记录进行处理，此即所谓的动作（action）。模式与动作，使得
+Awk 语言在文本处理方面很像 SQL 语言操作数据库，这并非偶然。Awk
+语言三位作者中的一位，正是因为当时他数据库颇感兴趣所以参与了 Awk
+语言的设计与实现。</p>
+<p>模式可以是条件表达式，也可以是正则表达式。<code>BEGIN</code> 和
+<code>END</code>
+是两种特殊模式，前者匹配文件的开始，后者匹配文件的结束。因此，可以简单的将
+Awk 语言视为模式-动作语言。</p>
+<p>假设文件 foo.txt 的内容为</p>
+<pre class="plain"><code>晒太阳 | 完成
+包饺子 | 待完成
+拖地板 | 完成
+穿越到 2030 年 | 需 5 年</code></pre>
+<p>以下 Awk 脚本：</p>
+<pre id="todo-list.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ todo-list.awk #</span>
+<span class="nb">BEGIN</span> <span class="p">{</span>
+    <span class="nb">FS</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\usemodule[zhfonts][size=7pt]&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\definepapersize[card][width=85.6mm,height=53.98mm]&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\setuppapersize[card]&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\setuppagenumbering[location=]&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\starttext&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\setupxtable[todolist][frame=off]&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\startxtable[todolist]&quot;</span>
+<span class="p">}</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NF</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="kr">next</span>
+    <span class="kr">print</span> <span class="s2">&quot;  \\startxrow&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;    \\startxcell[width=.05\\textwidth] $\\circ$ \\stopxcell&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;    \\startxcell[width=.75\\textwidth]&quot;</span><span class="p">,</span> <span class="o">$</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;\\stopxcell&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">$</span><span class="mi">2</span> <span class="o">~</span> <span class="sr">/ *待完成 */</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">print</span> <span class="s2">&quot;\\startxcell[width=.2\\textwidth] \\hfill $\\cdots$ \\stopxcell&quot;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">$</span><span class="mi">2</span> <span class="o">~</span> <span class="sr">/ *完成 */</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">print</span> <span class="s2">&quot;\\startxcell[width=.2\\textwidth] \\hfill $\\checkmark$ \\stopxcell&quot;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="kr">print</span> <span class="s2">&quot;\\startxcell[width=.2\\textwidth] \\hfill&quot;</span><span class="p">,</span> <span class="o">$</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;\\stopxcell&quot;</span>
+    <span class="p">}</span>
+    <span class="kr">print</span> <span class="s2">&quot;  \\stopxrow&quot;</span>
+<span class="p">}</span>
+<span class="nb">END</span> <span class="p">{</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\stopxtable&quot;</span>
+    <span class="kr">print</span> <span class="s2">&quot;\\stoptext&quot;</span>
+<span class="p">}</span>
+</pre>
+<p>可将 foo.txt 转换为 ConTeXt 源文件 foo.tex，后者内容如下：</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode tex"><code class="sourceCode latex"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">\usemodule</span>[zhfonts][size=7pt]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">\definepapersize</span>[card][width=85.6mm,height=53.98mm]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">\setuppapersize</span>[card]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">\starttext</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">\setupxtable</span>[todolist][frame=off]</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">\startxtable</span>[todolist]</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\startxrow</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.05<span class="fu">\textwidth</span>] <span class="ss">$</span><span class="sc">\circ</span><span class="ss">$</span> <span class="fu">\stopxcell</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.75<span class="fu">\textwidth</span>] 晒太阳 <span class="fu">\stopxcell</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.2<span class="fu">\textwidth</span>] <span class="fu">\hfill</span> <span class="ss">$</span><span class="sc">\checkmark</span><span class="ss">$</span> <span class="fu">\stopxcell</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\stopxrow</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\startxrow</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.05<span class="fu">\textwidth</span>] <span class="ss">$</span><span class="sc">\circ</span><span class="ss">$</span> <span class="fu">\stopxcell</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.75<span class="fu">\textwidth</span>] 包饺子 <span class="fu">\stopxcell</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.2<span class="fu">\textwidth</span>]  <span class="fu">\hfill</span> <span class="ss">$</span><span class="sc">\cdots</span><span class="ss">$</span><span class="fu">\stopxcell</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\stopxrow</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\startxrow</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.05<span class="fu">\textwidth</span>] <span class="ss">$</span><span class="sc">\circ</span><span class="ss">$</span> <span class="fu">\stopxcell</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.75<span class="fu">\textwidth</span>] 拖地板 <span class="fu">\stopxcell</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.2<span class="fu">\textwidth</span>]  <span class="fu">\hfill</span> <span class="ss">$</span><span class="sc">\checkmark</span><span class="ss">$</span><span class="fu">\stopxcell</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\stopxrow</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\startxrow</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.05<span class="fu">\textwidth</span>] <span class="ss">$</span><span class="sc">\circ</span><span class="ss">$</span> <span class="fu">\stopxcell</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.75<span class="fu">\textwidth</span>] 穿越到 2030 年 <span class="fu">\stopxcell</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.2<span class="fu">\textwidth</span>]  <span class="fu">\hfill</span> 需 5 年<span class="fu">\stopxcell</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\stopxrow</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="fu">\stopxtable</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="fu">\stoptext</span></span></code></pre></div>
+<p>转换命令为</p>
+<pre class="console"><code>$ awk -f todo-list.awk foo.txt &gt; foo.tex</code></pre>
+<p>倘若 ConTeXt 环境安装了 zhfonts 模块（详见 <a
+href="https://github.com/liyanrui/ConTeXt-notes">ConTeXt-notes.pdf</a>
+第 15 章），编译 foo.tex：</p>
+<pre class="console"><code>$ context foo.tex</code></pre>
+<p>可得 foo.pdf，其内容如下图所示：</p>
+<figure>
+<img src="figures/todo-list.png" alt="todo-list" />
+<figcaption aria-hidden="true">todo-list</figcaption>
+</figure>
+<p>脚本 todo-list.awk
+的内容虽然较多，但程序逻辑很简单，核心部分如下：</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">FS</span> <span class="op">=</span> <span class="st">&quot;|&quot;</span>  <span class="co"># 设置用于分割记录每一列的符号</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    ... 输出 ConTeXt 源文档的首部 ...</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 无模式匹配，意味着匹配每一条记录。</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 动作：将记录分割的每一列</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">#      转换为 ConTeXt 表格单元，</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">#      即 \startxcell ... \stopxcell 语句。</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="cf">END</span> <span class="op">{</span> ... 输出 ConTeXt 源文档的首部 ... <span class="op">}</span></span></code></pre></div>
+<p>todo-list.awk
+中用于处理记录的模式-动作，未提供模式，意味着匹配每一条记录，但是在动作语句中，有检测记录分割所得列数是否为
+2 的语句：</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="bu">NF</span> <span class="op">!=</span> <span class="dv">2</span><span class="op">)</span> <span class="kw">next</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    ... ... ...</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>NF</code> 即当前记录分割所得列数。若它不为 2，则执行
+<code>next</code>
+命令，即终止当前动作的后续语句以及后续的所有模式-动作语句，awk
+解释器会读入文件的下一条记录，并再度执行 BEGIN
+模式及动作语句之后的模式-动作语句。实际上该条件语句可以写成模式的形式，即</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">NF</span> <span class="op">==</span> <span class="dv">2</span> <span class="op">{</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    ... ... ...</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>下一节会用到更多的模式-动作语句。</p>
+<h1 id="c-语言源码渲染">C 语言源码渲染</h1>
 <p>使用 ConTeXt（若不了解 ConTeXt，可阅读《<a
 href="https://github.com/liyanrui/ConTeXt-notes">ConTeXt
 笔记</a>》）排版含有程序源码的文档时，由于 ConTeXt 用于排版源码的命令
@@ -406,11 +528,11 @@ $ context bar.tex</code></pre>
 函数会将当前读入的一行文本 <code>$0</code> 作为该参数。Awk
 程序读入的一行文本，称为一条记录。以下 Awk
 脚本可去除任何一条记录的前导空白字符：</p>
-<div class="sourceCode" id="cb16"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]*/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">);</span> <span class="kw">print</span> <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]*/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">);</span> <span class="kw">print</span> <span class="op">}</span></span></code></pre></div>
 <p>上述代码与以下代码等价</p>
-<div class="sourceCode" id="cb17"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]*/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> <span class="dt">$0</span><span class="op">);</span> <span class="kw">print</span> <span class="dt">$0</span> <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]*/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> <span class="dt">$0</span><span class="op">);</span> <span class="kw">print</span> <span class="dt">$0</span> <span class="op">}</span></span></code></pre></div>
 <p>例如，对于 foo.txt 文件：</p>
 <pre class="plain"><code>a
     b
@@ -441,11 +563,11 @@ c</code></pre>
 <code>sub</code> 函数，有着其他 Awk
 语言的实现所不具备的功能，即正则表达式匹配过程中的捕获功能。例如，对于上述的
 foo.txt，以下示例可为每一条记录中被捕获的部分增加花扩号：</p>
-<div class="sourceCode" id="cb21"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>$ awk &#39;<span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/[^</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+/</span><span class="op">,</span> <span class="st">&quot;{&amp;}&quot;</span><span class="op">);</span> <span class="kw">print</span> <span class="op">}</span>&#39; foo.txt</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span>a<span class="op">}</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>b<span class="op">}</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>c<span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>$ awk &#39;<span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/[^</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+/</span><span class="op">,</span> <span class="st">&quot;{&amp;}&quot;</span><span class="op">);</span> <span class="kw">print</span> <span class="op">}</span>&#39; foo.txt</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span>a<span class="op">}</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>b<span class="op">}</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>c<span class="op">}</span></span></code></pre></div>
 <p>上述代码中的正则表达式 <code>/[^ \t]+/</code>
 表示一个或多个非空白字符，<code>sub</code>
 函数匹配到的部分，在替换文本中表示为 <code>&amp;</code>。</p>
@@ -494,12 +616,12 @@ a b c
 <code>RLENGTH</code>，它们分别表示与正则表达式匹配的文本的开始位置和文本长度，由
 <code>match</code> 函数予以设定。基于这两个全局变量，使用
 <code>substr</code> 提取文本，从而模拟捕获。例如</p>
-<div class="sourceCode" id="cb26"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]*/</span><span class="op">))</span> <span class="op">{</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="bu">RSTART</span> <span class="op">+</span> <span class="bu">RLENGTH</span><span class="op">)</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]*/</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="bu">RSTART</span> <span class="op">+</span> <span class="bu">RLENGTH</span><span class="op">)</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>执行以下命令，便可消除 foo.txt 中每一行的前导空白：</p>
 <pre class="console"><code>$ awk &#39;{
     if (match($0, /^[ \t]*/)) {
@@ -540,10 +662,10 @@ Awk 语言对文件默认是逐行处理，而 C
 <code>\stoptyping</code>，然后 Awk
 的主循环下一次读入的记录便是整个源码排版区域的内容。例如，以下 Awk
 程序</p>
-<div class="sourceCode" id="cb28"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ot">/\</span><span class="sc">\</span><span class="ss">starttyping</span><span class="ot">/</span> <span class="op">{</span> <span class="bu">RS</span> <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\\\\</span><span class="st">stoptyping&quot;</span><span class="op">;</span> typing <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> <span class="kw">next</span> <span class="op">}</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>typing <span class="op">{</span> typing <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="bu">RS</span> <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="kw">next</span><span class="op">}</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="kw">print</span> <span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ot">/\</span><span class="sc">\</span><span class="ss">starttyping</span><span class="ot">/</span> <span class="op">{</span> <span class="bu">RS</span> <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\\\\</span><span class="st">stoptyping&quot;</span><span class="op">;</span> typing <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> <span class="kw">next</span> <span class="op">}</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>typing <span class="op">{</span> typing <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="bu">RS</span> <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="kw">next</span><span class="op">}</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="kw">print</span> <span class="op">}</span></span></code></pre></div>
 <p>可消除 ConTeXt 源文件中的所有源码排版区域。需要注意的是，将
 <code>\stoptyping</code> 赋予 <code>RS</code>
 时，需要进行反斜线转义，而且需要连续转义 3 次，请忍受这个事实。</p>
@@ -551,11 +673,11 @@ class="sourceCode awk"><code class="sourceCode awk"><span id="cb28-1"><a href="#
 部分得到的记录便是一个源码排版区域的所有内容，因此匹配 C
 函数的定义需要在这部分实现。首先需要考虑 C
 函数定义的正则表达式结构。以下面的 C 函数定义作为参考，</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">*</span> foo <span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> <span class="op">*</span>c <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>c <span class="op">=</span> a <span class="op">+</span> b<span class="op">;</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> c<span class="op">;</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">*</span> foo <span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> <span class="op">*</span>c <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>c <span class="op">=</span> a <span class="op">+</span> b<span class="op">;</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> c<span class="op">;</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>可写出以下这则表达式：</p>
 <ul>
 <li><code>(\w+[\* \t\n]+)</code>：匹配并捕获函数的返回值类型，如上例中
@@ -569,8 +691,8 @@ class="sourceCode awk"><code class="sourceCode awk"><span id="cb28-1"><a href="#
 <p>将上述各正则表达式片段组装起来，使用 Awk 的 <code>match</code>
 函数中便可对函数的定义进行匹配并捕获各个部分，捕获结果存于一个数组 s
 中：</p>
-<div class="sourceCode" id="cb30"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">match</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="ot">/(\</span><span class="sc">w</span><span class="ot">+[\</span><span class="sc">*</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ot">]+)(\</span><span class="sc">w</span><span class="ot">+)(\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">)(.*)(\</span><span class="sc">)</span><span class="ot">\</span><span class="sc">s</span><span class="ot">*</span><span class="ss">{</span><span class="ot">.*</span><span class="ss">}</span><span class="ot">)/</span><span class="op">,</span> s<span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">match</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="ot">/(\</span><span class="sc">w</span><span class="ot">+[\</span><span class="sc">*</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ot">]+)(\</span><span class="sc">w</span><span class="ot">+)(\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">)(.*)(\</span><span class="sc">)</span><span class="ot">\</span><span class="sc">s</span><span class="ot">*</span><span class="ss">{</span><span class="ot">.*</span><span class="ss">}</span><span class="ot">)/</span><span class="op">,</span> s<span class="op">)</span></span></code></pre></div>
 <p>在上述正则表达式中，<code>\s</code> 和 <code>\w</code> 皆为 gawk
 扩展的正则表达式语法，它们分别表示空白字符（空格，制表符和换行符）和单词字符（大小写字母、数字和下划线）。此外，上述使用的
 <code>match</code> 函数也是 gawk
@@ -642,10 +764,10 @@ void \p{b}\p{a}r(int \p{a}, int \p{b}</code></pre>
 <p>为了更清楚的说明上述问题，需要对问题进行简化。假设有以下文本：</p>
 <pre class="plain"><code>(a b) c (d e f)</code></pre>
 <p>使用以下 Awk 语句对其进行匹配并捕获：</p>
-<div class="sourceCode" id="cb35"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="ot">/\</span><span class="sc">(</span><span class="ot">(.*)\</span><span class="sc">)</span><span class="ot">/</span><span class="op">,</span> s<span class="op">))</span> <span class="op">{</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> s[<span class="dv">1</span>]</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="ot">/\</span><span class="sc">(</span><span class="ot">(.*)\</span><span class="sc">)</span><span class="ot">/</span><span class="op">,</span> s<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> s[<span class="dv">1</span>]</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>得到的结果是</p>
 <pre class="plain"><code>a b) c (d e f</code></pre>
 <p>而我的本意是想得到</p>
@@ -705,18 +827,18 @@ href="#匹配-c-函数的定义">匹配 C
 第一个花括号。这是最笨的方法，然而对于本节要解决的问题而言，却是最聪明的做法。</p>
 <p>Awk 语言逐字符遍历字符串的方式需要基于 <code>substr</code>
 方能实现。例如，以下脚本可逐字符输出当前记录：</p>
-<div class="sourceCode" id="cb39"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">printf</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">printf</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>上述代码中的 <code>substr</code> 函数从 <code>$0</code> 中截取从第
 <code>i</code> 个字符开始的，长度为 <code>1</code> 的子字符串，亦即第
 <code>i</code> 个字符自身。不过，对于一些 Awk 语言的实现，例如
 mawk，它不支持
 Unicode，故而上述代码对它而言只是逐字节遍历字符串。以下命令可用于彰显
 gawk 在 Unicode 支持方面的功绩：</p>
-<div class="sourceCode" id="cb40"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>$ awk &#39;BEGIN <span class="op">{</span> x <span class="op">=</span> <span class="st">&quot;中文&quot;</span><span class="op">;</span> <span class="kw">print</span> <span class="fu">length</span><span class="op">(</span>x<span class="op">)</span> <span class="op">}</span>&#39;</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>$ awk &#39;BEGIN <span class="op">{</span> x <span class="op">=</span> <span class="st">&quot;中文&quot;</span><span class="op">;</span> <span class="kw">print</span> <span class="fu">length</span><span class="op">(</span>x<span class="op">)</span> <span class="op">}</span>&#39;</span></code></pre></div>
 <p>若 awk 为 gawk，上述命令的输出为 2；若 awk 为 mawk，则输出为 6。标准
 Awk（即 Awk 语言的三位创始人）实现的 awk 是 2022 年实现了 Unicode
 支持。单从这一点，我极力不推荐 mawk，虽然它解释 Awk
@@ -725,14 +847,14 @@ Awk（即 Awk 语言的三位创始人）实现的 awk 是 2022 年实现了 Uni
 <p>现在回到本节要解决的问题上来。由于 <code>$0</code>
 中每一个字符都可能是函数定义的开头第一个字符，故而在遍历 <code>$0</code>
 的过程中，每次都要用一个能够匹配函数定义最短特征的正则表达式进行探测：</p>
-<div class="sourceCode" id="cb41"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">)</span></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span>x<span class="op">,</span> <span class="ot">/^\</span><span class="sc">w</span><span class="ot">+[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ss">*</span><span class="ot">]+\</span><span class="sc">w</span><span class="ot">+\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">/</span><span class="op">))</span> <span class="op">{</span></span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> i</span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;found function!&quot;</span></span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">)</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span>x<span class="op">,</span> <span class="ot">/^\</span><span class="sc">w</span><span class="ot">+[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ss">*</span><span class="ot">]+\</span><span class="sc">w</span><span class="ot">+\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">/</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> i</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;found function!&quot;</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>上述代码中，未向 <code>substr</code>
 提供第三个参数——字符串截取长度，则截取的子字符串是从 <code>$0</code>
 的第 <code>i</code> 个字符及其之后所有字符。正则表达式
@@ -742,15 +864,15 @@ class="sourceCode awk"><code class="sourceCode awk"><span id="cb41-1"><a href="#
 的开头。凡遇到以这种形式开头的文本，便可视为遇到了一个函数定义的开头，用
 <code>a</code> 记录当前的下标 <code>i</code>。可以用一个变量
 <code>in_function</code> 记录这一重大发现：</p>
-<div class="sourceCode" id="cb42"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">)</span></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span>x<span class="op">,</span> <span class="ot">/^\</span><span class="sc">w</span><span class="ot">+[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ss">*</span><span class="ot">]+\</span><span class="sc">w</span><span class="ot">+\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">/</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>in_function<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> i</span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>        in_function <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;found function!&quot;</span></span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">)</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span>x<span class="op">,</span> <span class="ot">/^\</span><span class="sc">w</span><span class="ot">+[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ss">*</span><span class="ot">]+\</span><span class="sc">w</span><span class="ot">+\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">/</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> i</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>        in_function <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;found function!&quot;</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>上述代码变动之处所表达的逻辑是，在没有遇到函数定义时，探测
 <code>x</code> 的开头是否满足函数定义特征，若满足则将
 <code>in_function</code> 的值置为 1，下一次便无需对 <code>x</code>
@@ -769,78 +891,78 @@ class="sourceCode awk"><code class="sourceCode awk"><span id="cb42-1"><a href="#
 <code>{...}</code> 结构，而正则表达式无力识别嵌套结构。</p>
 <p>假设循环正在进行，在 <code>in_function</code>
 状态下，遇到了第一个、第二个…… <code>{</code>，只需要对其进行计数：</p>
-<div class="sourceCode" id="cb43"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>        in_function_body <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">++</span></span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>        in_function_body <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">++</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>同时，在 <code>in_function</code> 状态下，遇到了第一个、第二个……
 <code>}</code>，也对其进行计数，只是这个计数是在对
 <code>brace_count</code> 的削减：</p>
-<div class="sourceCode" id="cb44"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">--</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">--</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>上述两段代码可合并为</p>
-<div class="sourceCode" id="cb45"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>        in_function_body <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">++</span></span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">--</span></span>
-<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>    </span>
-<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>        in_function_body <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">++</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">--</span></span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>    </span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>当 <code>brace_count</code> 的值为 0
 时，便意味着发现了囊括函数体的一对花括号，此时用 b
 记住函数定义的终止位置，并将 <code>in_function_body = 0</code> 和
 <code>in_function</code> 置为 0，以备检测下一个可能存在的函数定义：</p>
-<div class="sourceCode" id="cb46"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function_body <span class="op">&amp;&amp;</span> brace_count <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> i</span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> a<span class="op">,</span> b <span class="op">-</span> a <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="st">&quot;function end.&quot;</span></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    in_function_body <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>    in_function <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function_body <span class="op">&amp;&amp;</span> brace_count <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> i</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> a<span class="op">,</span> b <span class="op">-</span> a <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="st">&quot;function end.&quot;</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    in_function_body <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>    in_function <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>上述代码中的 <code>substr($0, a, b - a)</code>
 便是捕获的一个函数的定义。</p>
 <p>完整的捕获每个函数定义的代码如下：</p>
-<div class="sourceCode" id="cb47"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">)</span></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>in_function <span class="op">&amp;&amp;</span> <span class="fu">match</span><span class="op">(</span>x<span class="op">,</span> <span class="ot">/^\</span><span class="sc">w</span><span class="ot">+[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ss">*</span><span class="ot">]+\</span><span class="sc">w</span><span class="ot">+\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">/</span><span class="op">))</span> <span class="op">{</span></span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> i</span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>        in_function <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;found function!&quot;</span></span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>        c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>            in_function_body <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>            brace_count<span class="op">++</span></span>
-<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>            brace_count<span class="op">--</span></span>
-<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>in_function_body <span class="op">&amp;&amp;</span> brace_count <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>        b <span class="op">=</span> i</span>
-<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> a<span class="op">,</span> b <span class="op">-</span> a <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span>
-<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;function end.&quot;</span></span>
-<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>        in_function_body <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>        in_function <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">)</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>in_function <span class="op">&amp;&amp;</span> <span class="fu">match</span><span class="op">(</span>x<span class="op">,</span> <span class="ot">/^\</span><span class="sc">w</span><span class="ot">+[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ss">*</span><span class="ot">]+\</span><span class="sc">w</span><span class="ot">+\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">/</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> i</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>        in_function <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;found function!&quot;</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>        c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>            in_function_body <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>            brace_count<span class="op">++</span></span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a>            brace_count<span class="op">--</span></span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>in_function_body <span class="op">&amp;&amp;</span> brace_count <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a>        b <span class="op">=</span> i</span>
+<span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> a<span class="op">,</span> b <span class="op">-</span> a <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;function end.&quot;</span></span>
+<span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a>        in_function_body <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a>        in_function <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb54-25"><a href="#cb54-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb54-26"><a href="#cb54-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>既然能从一条记录中发现所有 C 函数的定义，那么便可为每个函数的定义添加
 <code>\fn:start</code> 和 <code>\fn:stop</code>
 标记，从而上一节的难题便得以解决，而且无需修改 new-c-function.awk。</p>
