@@ -158,13 +158,12 @@ mawk。</p>
 gawk，而是 mawk，将 gawk 设为默认 awk 最简单的方法是：</p>
 <pre class="console"><code>$ sudo apt remove mawk
 $ sudo apt install gawk</code></pre>
-<p>若希望保持多个不同的 awk 实现，可使用以下命令选择 gawk 个作为默认
+<p>若希望保持多个不同的 awk 实现，可使用以下命令选择 gawk 作为默认
 awk：</p>
 <pre class="console"><code>$ sudo update-alternatives --config awk</code></pre>
 <p>更推荐 gawk 作为默认 awk 的原因是，gawk 对 Awk 语言进行了扩展，使得
 Awk 语言在处理文本时更为简便。本文档中出现的 Awk 程序皆面向
-gawk，但是尽量保持与 mawk 的兼容并同时指出 gawk 对 Awk
-语言的扩展之处。</p>
+gawk，在必要时，我会指出 gawk 对 Awk 语言的扩展之处。</p>
 <h1 id="hello-world">Hello world!</h1>
 <p>使用 Awk 语言编写的每个程序（脚本），都假设有一份要处理的文本，故而
 Awk 程序通常用以下方式执行：</p>
@@ -422,7 +421,7 @@ comment: darkgray
 \p:OutrageousOrange
 \c: darkgray
 </pre>
-<p>简单起见，只为关键字、字符串、注释、函数名（）、自定义类型（、函数参数名（）以及语句内嵌注释（定义了颜色。若日后需要更多的特殊标记，可对
+<p>简单起见，只为关键字、字符串、注释、函数名（<code>\fn</code>）、自定义类型（<code>\t</code>）、函数参数名（<code>\p</code>）以及语句内嵌注释（<code>\c</code>）定义了颜色。若日后需要更多的特殊标记，可对
 c-color.map 进行扩充。</p>
 <p>在 Awk 程序的 <code>BEGIN</code> 块读入颜色文件，将其内容转化为 Awk
 数组 color，并定义 C 语言的基本类型和常见关键词：</p>

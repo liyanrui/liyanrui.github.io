@@ -42,13 +42,13 @@ $ sudo apt remove mawk
 $ sudo apt install gawk
 ```
 
-若希望保持多个不同的 awk 实现，可使用以下命令选择 gawk 个作为默认 awk：
+若希望保持多个不同的 awk 实现，可使用以下命令选择 gawk 作为默认 awk：
 
 ```console
 $ sudo update-alternatives --config awk
 ```
 
-更推荐 gawk 作为默认 awk 的原因是，gawk 对 Awk 语言进行了扩展，使得 Awk 语言在处理文本时更为简便。本文档中出现的 Awk 程序皆面向 gawk，但是尽量保持与 mawk 的兼容并同时指出 gawk 对 Awk 语言的扩展之处。
+更推荐 gawk 作为默认 awk 的原因是，gawk 对 Awk 语言进行了扩展，使得 Awk 语言在处理文本时更为简便。本文档中出现的 Awk 程序皆面向 gawk，在必要时，我会指出 gawk 对 Awk 语言的扩展之处。
 
 # Hello world!
 
@@ -277,7 +277,6 @@ int main(void) {
 
 ![C 语言源码在 ConTeXt 中的渲染结果](figures/c-hello.png)
 
-
 ConTeXt 提供了[源码渲染机制](https://segmentfault.com/a/1190000043405105)，用户可通过 Lua 语言的 lpeg 库，对能够以 BNF（巴科斯范式） 形式描述的语言进行解析，从而实现该语言的源码渲染。这种解析方式存在一个问题，它会导致无法在 `\starttyping ... \stoptyping` 环境中实现 TeX 逃逸。例如，以下代码以 TeX 逃逸的方式实现了在源码中排版数学公式：
 
 ```plain
@@ -327,7 +326,7 @@ comment: darkgray
 \c: darkgray
 @
 
-简单起见，只为关键字、字符串、注释、函数名（\fn）、自定义类型（\t）、函数参数名（\p）以及语句内嵌注释（\c）定义了颜色。若日后需要更多的特殊标记，可对 c-color.map 进行扩充。
+简单起见，只为关键字、字符串、注释、函数名（`\fn`）、自定义类型（`\t`）、函数参数名（`\p`）以及语句内嵌注释（`\c`）定义了颜色。若日后需要更多的特殊标记，可对 c-color.map 进行扩充。
 
 在 Awk 程序的 `BEGIN` 块读入颜色文件，将其内容转化为 Awk 数组 color，并定义 C 语言的基本类型和常见关键词：
 
