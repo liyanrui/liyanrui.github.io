@@ -114,6 +114,7 @@ gensub</a></li>
 <li><a href="#正则表达式的局限性"
 id="toc-正则表达式的局限性">正则表达式的局限性</a></li>
 <li><a href="#变得更聪明" id="toc-变得更聪明">变得更聪明</a></li>
+<li><a href="#范围模式" id="toc-范围模式">范围模式</a></li>
 <li><a href="#总结" id="toc-总结">总结</a></li>
 </ul>
 </nav>
@@ -999,8 +1000,51 @@ class="sourceCode awk"><code class="sourceCode awk"><span id="cb58-1"><a href="#
 语言源码的问题便基本得以解决。有一些 C
 语法元素的渲染尚未涉及，诸如预处理指令、宏定义等，但是渲染这些语法元素的思路不会比识别
 C 函数的定义更难。</p>
+<h1 id="范围模式">范围模式</h1>
+<p>文档转换工具 <a href="https://pandoc.org/">pandoc</a>
+允许在它所处理的 Markdown 文档首部存在 YAML 数据作为文档的元信息。例如
+awk-notes.md：</p>
+<div class="sourceCode" id="cb59"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Awk：面向文本编程</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="an">abstract:</span><span class="co"> 专业的事，交给专业的工具。</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="co">...</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>很多年后，我可能又一次不知道 Awk 的用法，就像此刻的你……</span></code></pre></div>
+<p>其中，起始符 <code>---</code> 和终止符 <code>...</code>
+包括的内容便是 YAML 格式的文档首部。现在我需要在上述 YAML
+数据区域加入一个时间戳</p>
+<div class="sourceCode" id="cb60"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> 02 月 20 日</span></span></code></pre></div>
+<p>由于 awk-notes.md 的内容区域也可能存在 <code>---</code> 和
+<code>...</code>，故而需要确定时间戳只插入第一次出现的被
+<code>---</code> 和 <code>...</code>
+包含的区域。解决这个问题，有多种方法，但是最稳健且最简单的方法是用 Awk
+语言的范围模式：</p>
+<div class="sourceCode" id="cb61"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="ot">/</span><span class="ss">---</span><span class="ot">/</span><span class="op">,</span> <span class="ot">/\</span><span class="sc">.</span><span class="ot">\</span><span class="sc">.</span><span class="ot">\</span><span class="sc">.</span><span class="ot">/</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>finished <span class="op">{</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="ot">/\</span><span class="sc">.</span><span class="ot">\</span><span class="sc">.</span><span class="ot">\</span><span class="sc">.</span><span class="ot">/</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;date: 02 月 20 日&quot;</span></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;...&quot;</span></span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>        finished <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="kw">print</span></span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">next</span></span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="kw">print</span> <span class="op">}</span></span></code></pre></div>
+<p>上述代码中，模式 <code>/---/</code> 和 <code>/\.\.\./</code> 可以匹配
+YAML 数据的起始符和终止符，用逗号隔开这两个模式，表示匹配从
+<code>---</code> 到 <code>...</code>
+的所有行，这便是范围模式。在上述范围模式对应的动作语句里，若当前记录为
+<code>...</code>，则在它之前输出时间戳，问题便得以解决，用 finished
+变量表示时间戳插入任务完成，以保证在文档的后续内容遇到 <code>---</code>
+和 <code>...</code> 时会予以忽略。</p>
 <h1 id="总结">总结</h1>
-<p>我几乎又将 Awk 语言学习了一遍。</p>
+<p>这段时间，我几乎又将 Awk
+语言完整地学习了一遍，事实证明，我以前只是假装会了 Awk 的用法。这次在 C
+语言源码渲染方面的实践驱动的学习中，我发现了 Awk
+语言一些细节。基于这些细节，可以大幅简化之前所写的一些 Awk
+脚本。虽然此处已是总结，但未来在用 Awk
+语言解决一些实际问题时，可能还会更新这份文档。也许，这次我只是又一次假装学会了。我的生活，就在一场又一场假装中，踉跄前进</p>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
