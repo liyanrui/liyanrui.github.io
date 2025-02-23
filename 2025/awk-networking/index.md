@@ -1,5 +1,5 @@
 ---
-title: Awk 网络编程
+title: Awk 网络编程指南
 abstract: 用 gawk 编写网络程序。
 date: 02 月 23 日
 ...
