@@ -109,6 +109,8 @@ id="toc-特殊文件网络主机">特殊文件：网络主机</a></li>
 HTTP 服务器</a></li>
 <li><a href="#可交互的-http-服务器"
 id="toc-可交互的-http-服务器">可交互的 HTTP 服务器</a></li>
+<li><a href="#gawk-网络编程的局限性" id="toc-gawk-网络编程的局限性">gawk
+网络编程的局限性</a></li>
 <li><a href="#总结" id="toc-总结">总结</a></li>
 </ul>
 </nav>
@@ -278,20 +280,20 @@ class="sourceCode awk"><code class="sourceCode awk"><span id="cb19-1"><a href="#
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">RS</span> <span class="op">=</span> <span class="bu">ORS</span> <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\r\n</span><span class="st">&quot;</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    http_service <span class="op">=</span> <span class="st">&quot;/inet/tcp/8888/0/0&quot;</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    hello <span class="op">=</span> <span class="st">&quot;&lt;html&gt;&lt;head&gt;&quot;</span> \</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;&lt;meta charset=</span><span class="sc">\</span><span class="er">&quot;</span><span class="st">utf-8</span><span class="sc">\</span><span class="er">&quot;</span><span class="st"> /&gt;</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="st">            &quot;</span><span class="op">&lt;</span>title<span class="op">&gt;</span>一个著名的问候<span class="op">&lt;/</span>title<span class="op">&gt;&lt;/</span>head<span class="op">&gt;</span><span class="st">&quot; </span><span class="sc">\</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="st">            &quot;</span><span class="op">&lt;</span>body<span class="op">&gt;&lt;</span>h1<span class="op">&gt;</span>你好，世界！<span class="op">&lt;/</span>h1<span class="op">&gt;&lt;/</span>body<span class="op">&gt;&lt;/</span>html<span class="op">&gt;</span><span class="st">&quot;</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="st">    n = length(hello) + length(ORS)</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="st">    while (1) {</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="st">        print &quot;</span>HTTP<span class="op">/</span><span class="fl">1.0</span> <span class="dv">200</span> OK<span class="st">&quot;        |&amp; http_service</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="st">        print &quot;</span>Content<span class="op">-</span>Length<span class="op">:</span> <span class="st">&quot; n ORS |&amp; http_service</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="st">        print hello                    |&amp; http_service</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="st">        while ((http_service |&amp; getline) &gt; 0) {</span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="st">            continue</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="st">        }</span></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="st">        close(http_service)</span></span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="st">    }</span></span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span></code></pre></div>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;&lt;meta charset=</span><span class="sc">\</span><span class="er">&quot;</span><span class="st">utf-8</span><span class="sc">\</span><span class="er">&quot;</span><span class="st"> /&gt;&quot;</span> \</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;&lt;title&gt;一个著名的问候&lt;/title&gt;&lt;/head&gt;&quot;</span> \</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;&lt;body&gt;&lt;h1&gt;你好，世界！&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&quot;</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="fu">length</span><span class="op">(</span>hello<span class="op">)</span> <span class="op">+</span> <span class="fu">length</span><span class="op">(</span><span class="bu">ORS</span><span class="op">)</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;HTTP/1.0 200 OK&quot;</span>        <span class="op">|&amp;</span> http_service</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;Content-Length: &quot;</span> n <span class="bu">ORS</span> <span class="op">|&amp;</span> http_service</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> hello                    <span class="op">|&amp;</span> http_service</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">((</span>http_service <span class="op">|&amp;</span> <span class="kw">getline</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">close</span><span class="op">(</span>http_service<span class="op">)</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>假设将上述代码保存为 http-server.awk，执行该程序：</p>
 <pre class="console"><code>$ awk -f http-server.awk</code></pre>
 <p>在运行该 HTTP 服务器程序的机器上，打开网络浏览器，在地址栏输入
@@ -334,6 +336,27 @@ href="https://www.gnu.org/software/gawk/manual/gawkinet/">Gawkinet:
 TCP/IP Internetworking with Gawk</a>」的 2.9 节实现了一个可交互的 HTTP
 服务器，但它也是假设读者对 CGI
 协议有所了解，而且它的示例代码并不稳健——服务器的连接可能会因超时而意外断开。</p>
+<h1 id="gawk-网络编程的局限性">gawk 网络编程的局限性</h1>
+<p>gawk
+基于双向管道实现的网络连接和数据传输，服务端无法支持并发访问。例如上一节实现的
+http-server.awk，运行该服务器程序后，可以使用 telnet 访问它：</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>$ telnet localhost <span class="dv">8888</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>Trying <span class="dv">127</span>.<span class="dv">0</span>.<span class="dv">0</span>.<span class="dv">1</span>...</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>Connected to localhost.</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>Escape character is &#39;<span class="op">^</span>]&#39;.</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>HTTP<span class="op">/</span><span class="fl">1.0</span> <span class="dv">200</span> OK</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Length<span class="op">:</span> <span class="dv">102</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>html<span class="op">&gt;&lt;</span>head<span class="op">&gt;&lt;</span>meta charset<span class="op">=</span><span class="st">&quot;utf-8&quot;</span> <span class="op">/&gt;&lt;</span>title<span class="op">&gt;</span>一个著名的问候<span class="op">&lt;/</span>title<span class="op">&gt;&lt;/</span>head<span class="op">&gt;&lt;</span>body<span class="op">&gt;&lt;</span>h1<span class="op">&gt;</span>你好，世界！<span class="op">&lt;/</span>h1<span class="op">&gt;&lt;/</span>body<span class="op">&gt;&lt;/</span>html<span class="op">&gt;</span></span></code></pre></div>
+<p>此时保持上述 telnet 的连接未断，再次向服务端发起连接，会被拒绝：</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>$ telnet localhost <span class="dv">8888</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>Trying <span class="dv">127</span>.<span class="dv">0</span>.<span class="dv">0</span>.<span class="dv">1</span>...</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>telnet<span class="op">:</span> Unable to connect to remote host<span class="op">:</span> Connection refused</span></code></pre></div>
+<p>这意味着 http-server.awk
+所实现的服务器无法支持两个并发连接。原因是什么呢？相当于电话占线。gawk
+将复杂的网络连接过程封装为可与双向管道配合使用的特殊文件形式，便意味着无法让网络连接支持更为复杂的需求了。</p>
 <h1 id="总结">总结</h1>
 <p>用 Awk
 语言编写的网络程序虽无大用，但是对于熟悉网络编程并建立一些工程直觉有所裨益。对于

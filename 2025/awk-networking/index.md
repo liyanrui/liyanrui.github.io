@@ -193,7 +193,7 @@ BEGIN {
     RS = ORS = "\r\n"
     http_service = "/inet/tcp/8888/0/0"
     hello = "<html><head>" \
-            "<meta charset=\"utf-8\" />
+            "<meta charset=\"utf-8\" />" \
             "<title>一个著名的问候</title></head>" \
             "<body><h1>你好，世界！</h1></body></html>"
     n = length(hello) + length(ORS)
@@ -245,6 +245,31 @@ close(http_service)
 # 可交互的 HTTP 服务器
 
 若懂得 CGI 协议，可以将 http-server.awk 修改为一个可以支持在网页上动态交互的 HTTP 服务器。对此，我现在没兴趣，暂且略过。「[Gawkinet: TCP/IP Internetworking with Gawk](https://www.gnu.org/software/gawk/manual/gawkinet/)」的 2.9 节实现了一个可交互的 HTTP 服务器，但它也是假设读者对 CGI 协议有所了解，而且它的示例代码并不稳健——服务器的连接可能会因超时而意外断开。
+
+# gawk 网络编程的局限性
+
+gawk 基于双向管道实现的网络连接和数据传输，服务端无法支持并发访问。例如上一节实现的 http-server.awk，运行该服务器程序后，可以使用 telnet 访问它：
+
+```awk
+$ telnet localhost 8888
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+HTTP/1.0 200 OK
+Content-Length: 102
+
+<html><head><meta charset="utf-8" /><title>一个著名的问候</title></head><body><h1>你好，世界！</h1></body></html>
+```
+
+此时保持上述 telnet 的连接未断，再次向服务端发起连接，会被拒绝：
+
+```awk
+$ telnet localhost 8888
+Trying 127.0.0.1...
+telnet: Unable to connect to remote host: Connection refused
+```
+
+这意味着 http-server.awk 所实现的服务器无法支持两个并发连接。原因是什么呢？相当于电话占线。gawk 将复杂的网络连接过程封装为可与双向管道配合使用的特殊文件形式，便意味着无法让网络连接支持更为复杂的需求了。
 
 # 总结
 
