@@ -101,10 +101,9 @@
 <nav id="TOC" role="doc-toc">
 <ul>
 <li><a href="#双向管道" id="toc-双向管道">双向管道</a></li>
-<li><a href="#特殊文件网络主机"
-id="toc-特殊文件网络主机">特殊文件：网络主机</a></li>
+<li><a href="#特殊文件" id="toc-特殊文件">特殊文件</a></li>
 <li><a href="#hello-world" id="toc-hello-world">Hello world!</a></li>
-<li><a href="#端口查看器" id="toc-端口查看器">端口查看器</a></li>
+<li><a href="#端口查看" id="toc-端口查看">端口查看</a></li>
 <li><a href="#简单的-http-服务器" id="toc-简单的-http-服务器">简单的
 HTTP 服务器</a></li>
 <li><a href="#可交互的-http-服务器"
@@ -115,8 +114,8 @@ id="toc-可交互的-http-服务器">可交互的 HTTP 服务器</a></li>
 </ul>
 </nav>
 <p>本文是 gawk 网络编程的学习笔记。用 Awk
-语言编写网络程序，这样的想法有些癫狂，像是企图用一柄小刀砍伐一棵巨树，何况是对于我这样的人，对网络编程近乎一无所知。对于一些在使用
-Awk 语言处理文本方面颇有经验的人，他们甚至未必知道 Awk
+语言编写网络程序，这样的想法有些癫狂，像是企图用一柄小刀砍伐一棵巨树，何况是对于我这样的人，对网络编程近乎一无所知。</p>
+<p>对于一些在使用 Awk 语言处理文本方面颇有经验的人，他们甚至未必认为 Awk
 语言能够实现网络编程。的确如此，Awk 语言并不支持网络编程，但是 gawk
 改变了这个事实。gawk 对 Awk 语言进行了扩展，网络编程便在其中，于 gawk
 3.1 版本实现，详见「<a
@@ -156,88 +155,90 @@ class="sourceCode awk"><code class="sourceCode awk"><span id="cb3-1"><a href="#c
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode awk"><code class="sourceCode awk"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">print</span> <span class="st">&quot;123456789&quot;</span> <span class="op">|&amp;</span> <span class="st">&quot;rev&quot;</span><span class="op">;</span> <span class="fu">close</span><span class="op">(</span><span class="st">&quot;rev&quot;</span><span class="op">,</span> <span class="st">&quot;to&quot;</span><span class="op">)</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;rev&quot;</span> <span class="op">|&amp;</span> <span class="kw">getline</span><span class="op">;</span> <span class="fu">close</span><span class="op">(</span><span class="st">&quot;rev&quot;</span><span class="op">,</span> <span class="st">&quot;from&quot;</span><span class="op">)</span></span></code></pre></div>
-<h1 id="特殊文件网络主机">特殊文件：网络主机</h1>
+<h1 id="特殊文件">特殊文件</h1>
 <p>gawk
-的网络编程基于双向管道实现，将提供某种网络服务的机器作为协同进程。gawk
-以一种特殊文件形式表示网络主机，形式如下：</p>
+的网络编程基于双向管道实现，只是与管道连接的不再是协同进程，而是一种特殊文件，其形式如下：</p>
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode awk"><code class="sourceCode awk"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># /网络类型/协议/本地端口/主机名/远程端口</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ot">/</span><span class="ss">net-type</span><span class="ot">/</span>protocol<span class="op">/</span>localport<span class="op">/</span>hostname<span class="op">/</span>remoteport</span></code></pre></div>
-<p>这种特殊文件形式，即可表达服务器，也可表达客户端。例如，将本机作为服务器，使用
+<p>这种特殊文件形式，即可用于表达服务器端，也可表达客户端。例如，将本机作为服务器端，使用
 IP v4 网络类型和 TCP 协议，以端口 8080
 提供某种网络服务，则特殊文件的写法为</p>
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode awk"><code class="sourceCode awk"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ot">/</span><span class="ss">inet4</span><span class="ot">/</span>tcp<span class="op">/</span><span class="dv">8080</span><span class="op">/</span><span class="dv">0</span><span class="op">/</span><span class="dv">0</span></span></code></pre></div>
-<p>若某个客户端访问该服务器，则该客户端对应的特殊文件写法为</p>
+<p>若某个客户端访问该服务器端，则客户端对应的特殊文件写法为</p>
 <div class="sourceCode" id="cb7"><pre
 class="sourceCode awk"><code class="sourceCode awk"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ot">/</span><span class="ss">inet4</span><span class="ot">/</span>tcp<span class="op">/</span><span class="dv">0</span><span class="op">/</span>服务器地址<span class="op">(</span>IP 或域名<span class="op">)/</span><span class="dv">8080</span></span></code></pre></div>
 <p>这种特殊文件的写法，除了网络类型和协议之外的其他部分，无论是服务器程序还是客户端程序，只要自身无需关心的部分，皆写为
 0。例如，作为服务器端的程序，它不必关心 <code>hostname</code> 和
-<code>remoteport</code>，因为它不需要访问其他主机，而作为客户端的程序则不必关心
-<code>localport</code>，因为它不需要向其他主机提供服务。</p>
-<p>gawk
-将网络主机的初始化过程隐含在上述特殊文件的构建过程中了，从而显著简化了网络程序的编写，但是也牺牲了实现能够应对复杂需求的网络程序的可能性，亦即使用
+<code>remoteport</code>，因为它不需要主动访问其他机器上的进程，而作为客户端的程序则不必关心
+<code>localport</code>，因为没有主机会主动访问它。</p>
+<p>gawk 将网络编程的
+socket（所谓的套接字）创建过程隐含在上述特殊文件的构建过程中了，从而显著简化了网络程序的编写，但是也牺牲了实现能够应对复杂需求的网络程序的可能性，亦即使用
 gawk
 通常只能编写简单的网络程序。工业级的网络程序，例如支持网络并发访问和反向代理等功能的服务器程序，需使用其他编程语言在底层的
 socket 层面方能实现。</p>
-<p>现在，需要将代表网络主机的特殊文件视为运行在本机或其他机器上的程序。使用双向管道可与之连接。若编写服务器端的程序，只需将信息发送到特殊文件，例如</p>
+<p>服务器端程序，向与之连接的客户端程序发送信息，只需将信息发送到特殊文件。例如</p>
 <div class="sourceCode" id="cb8"><pre
 class="sourceCode awk"><code class="sourceCode awk"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">print</span> <span class="st">&quot;Hello world!&quot;</span> <span class="op">|&amp;</span> <span class="st">&quot;/inet4/tcp/8888/0/0&quot;</span></span></code></pre></div>
-<p>若编写客户端的程序，只需从特殊文件读取信息：</p>
+<p>服务器端程序从与之连接的客户端程序读取信息，只需从特殊文件读取信息。例如</p>
 <div class="sourceCode" id="cb9"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;/inet4/tcp/0/服务器地址/8888&quot;</span> <span class="op">|&amp;</span> <span class="kw">getline</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">print</span> <span class="dt">$0</span></span></code></pre></div>
-<p><code>getline</code>
-可从服务器端读取一行文本并将其作为当前要处理的一条记录，即
-<code>$0</code>。</p>
-<p>用于表示服务端的特殊文件和用于表示客户端的特殊文件，二者存在一个重叠，即端口。在服务端，端口是本机端口；在客户端，端口是远程端口，二者所指对象是服务器上的那个端口。可以将服务器理解为有许多房间的一栋楼，端口是房间的门牌号。</p>
-<p>表示网络主机的特殊文件，网络协议字段是 <code>inet4</code> 或
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;/inet4/tcp/8888/0/0&quot;</span> <span class="op">|&amp;</span> <span class="kw">getline</span>  <span class="co"># 从客户端程序读取一条记录，存于 $0</span></span></code></pre></div>
+<p>同理，客户端程序从与之连接的服务器端程序获取信息，只需从特殊文件读取信息。例如</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;/inet4/tcp/0/服务器地址/8888&quot;</span> <span class="op">|&amp;</span> <span class="kw">getline</span>  <span class="co"># 从服务器端程序读取一条记录，存于 $0</span></span></code></pre></div>
+<p>客户端程序向与之连接的服务器端程序发送信息，只需向特殊文件写入数据。例如</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">print</span> <span class="st">&quot;hi&quot;</span> <span class="op">|&amp;</span> <span class="st">&quot;/inet4/tcp/0/服务器地址/8888&quot;</span></span></code></pre></div>
+<p>分别用于表示服务端和客户端的特殊文件，二者存在一个重叠，即端口。在服务端，端口是本机端口；在客户端，端口是远程端口，二者所指对象都是服务器上的那个端口。可以将服务器理解为有许多房间的一栋楼，端口是房间的门牌号。</p>
+<p>特殊文件的网络协议字段是 <code>inet4</code> 或
 <code>inet6</code>，分别表示 IP v4 和 IP v6。可以简写为
 <code>inet</code>，此时若系统环境使用的是 IP v4 网络，则
 <code>inet</code> 表示 <code>inet4</code>，若系统环境为 IP v6 网络，则
 <code>inet</code> 即 <code>inet6</code>。</p>
 <h1 id="hello-world">Hello world!</h1>
 <p>下面的脚本构造了一个会说「Hello world!」的服务端程序 server.awk：</p>
-<div class="sourceCode" id="cb10"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="st">&quot;Hello world!&quot;</span> <span class="op">|&amp;</span> <span class="st">&quot;/inet/tcp/8888/0/0&quot;</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="st">&quot;Hello world!&quot;</span> <span class="op">|&amp;</span> <span class="st">&quot;/inet/tcp/8888/0/0&quot;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>运行 server.awk：</p>
 <pre class="console"><code>$ awk -f server.awk</code></pre>
 <p>现在 server.awk 程序会在本机的 <code>8888</code>
-端口等待客户端的访问。</p>
-<p>位于任何网络主机上的客户端程序在访问运行 server.awk 的主机的
-<code>8888</code> 端口时，可以得到文本「Hello
-world!」。下面是位于该服务端程序所在主机上的一个客户端程序
+端口等待客户端的访问。用网络编程术语描述，这个过程是<strong>阻塞</strong>的，即上述程序通过双向管道向特殊文件写入数据后，会停止执行，直到有客户端程序发起连接。</p>
+<p>客户端程序通过特殊文件访问运行 server.awk 程序的主机的
+<code>8888</code> 端口时，可以得到 server.awk
+发送过来的数据。下面是位于运行 server.awk 的机器上的一个客户端程序
 client.awk：</p>
-<div class="sourceCode" id="cb12"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;/inet/tcp/0/localhost/8888&quot;</span> <span class="op">|&amp;</span> <span class="kw">getline</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="dt">$0</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>由于 client.awk 访问的服务器就是本机，故而网络主机的地址是
-<code>localhost</code>，亦可写为 <code>127.0.0.1</code>。运行
-client.awk，可在屏幕上打印来自 server.awk 的「Hello world!」，</p>
-<div class="sourceCode" id="cb13"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>$ awk <span class="op">-</span>f client.awk</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>Hello world<span class="op">!</span></span></code></pre></div>
-<p>然后 client.awk 和 server.awk 分别自动结束运行。</p>
-<h1 id="端口查看器">端口查看器</h1>
-<p>上一节实现的 server.awk 和
-client.awk，皆未对表示网络主机的特殊文件进行显式关闭。学究一些，是需要显式关闭的，即</p>
 <div class="sourceCode" id="cb14"><pre
 class="sourceCode awk"><code class="sourceCode awk"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    service <span class="op">=</span> <span class="st">&quot;/inet/tcp/8888/0/0&quot;</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="st">&quot;Hello world!&quot;</span> <span class="op">|&amp;</span> service</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">close</span><span class="op">(</span>service<span class="op">)</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;/inet/tcp/0/localhost/8888&quot;</span> <span class="op">|&amp;</span> <span class="kw">getline</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="dt">$0</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>由于 client.awk 访问的服务器就是本机，故而网络主机地址是
+<code>localhost</code>，亦可写为 <code>127.0.0.1</code>。运行
+client.awk，可在屏幕上打印来自 server.awk 的「Hello world!」，</p>
 <div class="sourceCode" id="cb15"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    server <span class="op">=</span> <span class="st">&quot;/inet/tcp/0/localhost/8888&quot;</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    server <span class="op">|&amp;</span> <span class="kw">getline</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="dt">$0</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">close</span><span class="op">(</span>server<span class="op">)</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>$ awk <span class="op">-</span>f client.awk</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>Hello world<span class="op">!</span></span></code></pre></div>
+<p>然后 client.awk 和 server.awk
+分别自动结束运行，各自所用的特殊文件也会被自动关闭。</p>
+<h1 id="端口查看">端口查看</h1>
+<p>上一节实现的 server.awk 和
+client.awk，皆未对表示网络连接的特殊文件进行显式关闭。学究一些，是需要显式关闭的，即</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    service <span class="op">=</span> <span class="st">&quot;/inet/tcp/8888/0/0&quot;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="st">&quot;Hello world!&quot;</span> <span class="op">|&amp;</span> service</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">close</span><span class="op">(</span>service<span class="op">)</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    server <span class="op">=</span> <span class="st">&quot;/inet/tcp/0/localhost/8888&quot;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    server <span class="op">|&amp;</span> <span class="kw">getline</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="dt">$0</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">close</span><span class="op">(</span>server<span class="op">)</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>实际上在 Awk 程序退出时，会自动关闭这些特殊文件。可以使用
 <code>netstat</code> 命令做一个试验，验证这一观点。</p>
 <p>首先，执行上一节所写的 server.awk
@@ -261,39 +262,37 @@ server.awk，然后二者自动退出。</p>
 <li><code>-l</code>：显示所有处于监听（LISTEN）状态的端口（常用于检查服务是否启动）。</li>
 <li><code>-p</code>：显示占用端口的进程名和 PID（需超级用户权限）。</li>
 </ul>
-<p>现在，可以按照 <code>netstat</code>
-的术语，将上述用于表示网络主机的特殊文件，称为网络连接，简称连接。</p>
 <h1 id="简单的-http-服务器">简单的 HTTP 服务器</h1>
 <p>有的时候，必须关闭连接，例如实现一个可以持续运行的服务器。前两节所实现的
 server.awk，在客户端访问一次后便终止退出了，它无法持续运行。要让一个服务端程序持续运行，只需要在一个无限循环中不断开启和关闭即可，即</p>
-<div class="sourceCode" id="cb18"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        service <span class="op">=</span> <span class="st">&quot;/inet/tcp/8888/0/0&quot;</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;Hello world!&quot;</span> <span class="op">|&amp;</span> service</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">close</span><span class="op">(</span>service<span class="op">)</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        service <span class="op">=</span> <span class="st">&quot;/inet/tcp/8888/0/0&quot;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;Hello world!&quot;</span> <span class="op">|&amp;</span> service</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">close</span><span class="op">(</span>service<span class="op">)</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>对上述代码略加修改，便可构造一个简单的可持续运行的 HTTP 服务器：</p>
-<div class="sourceCode" id="cb19"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">RS</span> <span class="op">=</span> <span class="bu">ORS</span> <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\r\n</span><span class="st">&quot;</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    http_service <span class="op">=</span> <span class="st">&quot;/inet/tcp/8888/0/0&quot;</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    hello <span class="op">=</span> <span class="st">&quot;&lt;html&gt;&lt;head&gt;&quot;</span> \</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;&lt;meta charset=</span><span class="sc">\</span><span class="er">&quot;</span><span class="st">utf-8</span><span class="sc">\</span><span class="er">&quot;</span><span class="st"> /&gt;&quot;</span> \</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;&lt;title&gt;一个著名的问候&lt;/title&gt;&lt;/head&gt;&quot;</span> \</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;&lt;body&gt;&lt;h1&gt;你好，世界！&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&quot;</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="fu">length</span><span class="op">(</span>hello<span class="op">)</span> <span class="op">+</span> <span class="fu">length</span><span class="op">(</span><span class="bu">ORS</span><span class="op">)</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;HTTP/1.0 200 OK&quot;</span>        <span class="op">|&amp;</span> http_service</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;Content-Length: &quot;</span> n <span class="bu">ORS</span> <span class="op">|&amp;</span> http_service</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> hello                    <span class="op">|&amp;</span> http_service</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">((</span>http_service <span class="op">|&amp;</span> <span class="kw">getline</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">close</span><span class="op">(</span>http_service<span class="op">)</span></span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">RS</span> <span class="op">=</span> <span class="bu">ORS</span> <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\r\n</span><span class="st">&quot;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    http_service <span class="op">=</span> <span class="st">&quot;/inet/tcp/8888/0/0&quot;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    hello <span class="op">=</span> <span class="st">&quot;&lt;html&gt;&lt;head&gt;&quot;</span> \</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;&lt;meta charset=</span><span class="sc">\</span><span class="er">&quot;</span><span class="st">utf-8</span><span class="sc">\</span><span class="er">&quot;</span><span class="st"> /&gt;&quot;</span> \</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;&lt;title&gt;一个著名的问候&lt;/title&gt;&lt;/head&gt;&quot;</span> \</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;&lt;body&gt;&lt;h1&gt;你好，世界！&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&quot;</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="fu">length</span><span class="op">(</span>hello<span class="op">)</span> <span class="op">+</span> <span class="fu">length</span><span class="op">(</span><span class="bu">ORS</span><span class="op">)</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;HTTP/1.0 200 OK&quot;</span>        <span class="op">|&amp;</span> http_service</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;Content-Length: &quot;</span> n <span class="bu">ORS</span> <span class="op">|&amp;</span> http_service</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> hello                    <span class="op">|&amp;</span> http_service</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">((</span>http_service <span class="op">|&amp;</span> <span class="kw">getline</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">close</span><span class="op">(</span>http_service<span class="op">)</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>假设将上述代码保存为 http-server.awk，执行该程序：</p>
 <pre class="console"><code>$ awk -f http-server.awk</code></pre>
 <p>在运行该 HTTP 服务器程序的机器上，打开网络浏览器，在地址栏输入
@@ -310,21 +309,21 @@ alt="简单的 HTTP 服务器访问结果" />
 <p>上述代码中第一层 <code>while</code>
 循环可以保证服务器持续运行，而在该循环内部，除了将 HTTP 报文发送给
 <code>http_service</code> 连接的代码外，最为关键的是下面这段代码：</p>
-<div class="sourceCode" id="cb21"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">((</span>http_service <span class="op">|&amp;</span> <span class="kw">getline</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">continue</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">close</span><span class="op">(</span>http_service<span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">((</span>http_service <span class="op">|&amp;</span> <span class="kw">getline</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">continue</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">close</span><span class="op">(</span>http_service<span class="op">)</span></span></code></pre></div>
 <p>上述这段代码，用于读取客户端（网络浏览器）向连接传送的信息，但是这些信息皆被忽略了，当客户端的信息传送完毕后，<code>while</code>
 中的双向管道的结果不再是正数，故而 <code>while</code>
 循环终止，继而连接被关闭。若对来自客户端的信息感兴趣，可在
 <code>while</code> 循环中将信息打印出来：</p>
-<div class="sourceCode" id="cb22"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">((</span>http_service <span class="op">|&amp;</span> <span class="kw">getline</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="dt">$0</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">continue</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">close</span><span class="op">(</span>http_service<span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">((</span>http_service <span class="op">|&amp;</span> <span class="kw">getline</span><span class="op">)</span> <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="dt">$0</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">continue</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">close</span><span class="op">(</span>http_service<span class="op">)</span></span></code></pre></div>
 <p>至于 http-server.awk
 向连接发送的报文是如何被网络浏览器端获得并呈现，那是网络浏览器的任务，在本质上它与前文我们所写的
 client.awk 并无不同，当然在实现上会复杂好多个数量级。</p>
@@ -340,20 +339,20 @@ TCP/IP Internetworking with Gawk</a>」的 2.9 节实现了一个可交互的 HT
 <p>gawk
 基于双向管道实现的网络连接和数据传输，服务端无法支持并发访问。例如上一节实现的
 http-server.awk，运行该服务器程序后，可以使用 telnet 访问它：</p>
-<div class="sourceCode" id="cb23"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>$ telnet localhost <span class="dv">8888</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>Trying <span class="dv">127</span>.<span class="dv">0</span>.<span class="dv">0</span>.<span class="dv">1</span>...</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>Connected to localhost.</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>Escape character is &#39;<span class="op">^</span>]&#39;.</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>HTTP<span class="op">/</span><span class="fl">1.0</span> <span class="dv">200</span> OK</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Length<span class="op">:</span> <span class="dv">102</span></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>html<span class="op">&gt;&lt;</span>head<span class="op">&gt;&lt;</span>meta charset<span class="op">=</span><span class="st">&quot;utf-8&quot;</span> <span class="op">/&gt;&lt;</span>title<span class="op">&gt;</span>一个著名的问候<span class="op">&lt;/</span>title<span class="op">&gt;&lt;/</span>head<span class="op">&gt;&lt;</span>body<span class="op">&gt;&lt;</span>h1<span class="op">&gt;</span>你好，世界！<span class="op">&lt;/</span>h1<span class="op">&gt;&lt;/</span>body<span class="op">&gt;&lt;/</span>html<span class="op">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>$ telnet localhost <span class="dv">8888</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>Trying <span class="dv">127</span>.<span class="dv">0</span>.<span class="dv">0</span>.<span class="dv">1</span>...</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>Connected to localhost.</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>Escape character is &#39;<span class="op">^</span>]&#39;.</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>HTTP<span class="op">/</span><span class="fl">1.0</span> <span class="dv">200</span> OK</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>Content<span class="op">-</span>Length<span class="op">:</span> <span class="dv">102</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>html<span class="op">&gt;&lt;</span>head<span class="op">&gt;&lt;</span>meta charset<span class="op">=</span><span class="st">&quot;utf-8&quot;</span> <span class="op">/&gt;&lt;</span>title<span class="op">&gt;</span>一个著名的问候<span class="op">&lt;/</span>title<span class="op">&gt;&lt;/</span>head<span class="op">&gt;&lt;</span>body<span class="op">&gt;&lt;</span>h1<span class="op">&gt;</span>你好，世界！<span class="op">&lt;/</span>h1<span class="op">&gt;&lt;/</span>body<span class="op">&gt;&lt;/</span>html<span class="op">&gt;</span></span></code></pre></div>
 <p>此时保持上述 telnet 的连接未断，再次向服务端发起连接，会被拒绝：</p>
-<div class="sourceCode" id="cb24"><pre
-class="sourceCode awk"><code class="sourceCode awk"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>$ telnet localhost <span class="dv">8888</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>Trying <span class="dv">127</span>.<span class="dv">0</span>.<span class="dv">0</span>.<span class="dv">1</span>...</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>telnet<span class="op">:</span> Unable to connect to remote host<span class="op">:</span> Connection refused</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>$ telnet localhost <span class="dv">8888</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>Trying <span class="dv">127</span>.<span class="dv">0</span>.<span class="dv">0</span>.<span class="dv">1</span>...</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>telnet<span class="op">:</span> Unable to connect to remote host<span class="op">:</span> Connection refused</span></code></pre></div>
 <p>这意味着 http-server.awk
 所实现的服务器无法支持两个并发连接。原因是什么呢？相当于电话占线。gawk
 将复杂的网络连接过程封装为可与双向管道配合使用的特殊文件形式，便意味着无法让网络连接支持更为复杂的需求了。</p>
