@@ -1,9 +1,3 @@
----
-title: Awk 网络编程指南
-abstract: 用 gawk 编写网络程序。
-date: 02 月 23 日
-...
-
 本文是 gawk 网络编程的学习笔记。用 Awk 语言编写网络程序，这样的想法有些癫狂，像是企图用一柄小刀砍伐一棵巨树，何况是对于我这样的人，对网络编程近乎一无所知。
 
 对于一些在使用 Awk 语言处理文本方面颇有经验的人，他们甚至未必认为 Awk 语言能够实现网络编程。的确如此，Awk 语言并不支持网络编程，但是 gawk 改变了这个事实。gawk 对 Awk 语言进行了扩展，网络编程便在其中，于 gawk 3.1 版本实现，详见「[Gawkinet: TCP/IP Internetworking with Gawk](https://www.gnu.org/software/gawk/manual/gawkinet/)」。
