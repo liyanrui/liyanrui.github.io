@@ -2,7 +2,7 @@
 title: 2025 年的日志
 ...
 
-* <span class="post-date">02 月 27 日</span>[「IP 地址:端口」的数字化](getaddrinfo/index.html)：用 1 个数字表示 IP 地址和端口，这个简单的问题却是网络编程的核心问题。
+* <span class="post-date">02 月 27 日</span>[「IP 地址:端口」的数字化](getaddrinfo/index.html)：用数字表示 IP 地址和端口，是网络编程的核心问题。
 * <span class="post-date">02 月 26 日</span>[Socket 是什么？](what-is-a-socket/index.html)：计算机网络科学家是如何让一个非常简单的概念变得难以理解的？
 * <span class="post-date">02 月 23 日</span>[Awk 网络编程指南](awk-networking/index.html)：用 gawk 编写网络程序。
 * <span class="post-date">02 月 15 日</span>[Awk：面向文本编程](awk-notes/index.html)：专业的事，交给专业的工具。
