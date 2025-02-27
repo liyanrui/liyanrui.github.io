@@ -7,8 +7,8 @@
     div.category {right: .5em !important;}
 }
 html {
-    font-size: 14px;
-    line-height: 24px;
+    font-size: 15px;
+    line-height: 28px;
 }
 body {
     max-width: 50%;
@@ -146,7 +146,7 @@ blockquote p {
 #TOC ul,  #TOC ol {
     padding:0em 1em;
 }
-li {padding-bottom:0.25em}
+li {padding-bottom:0.5em}
 /* 文章里小节标题的序号与标题名称之间的间距, 针对我写的生成文章目录的 m4 宏 */
 span.section-sep { margin-left: 0.5em; margin-right: 0.5em; }
 div.footer {text-align:center;}
