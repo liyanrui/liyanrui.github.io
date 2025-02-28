@@ -593,7 +593,7 @@ foo.c 中一处代码</p>
 <p>事实上，<code>getaddrinfo</code>
 走得更远，胸怀更为宽广，它能够同时支持 IP v4 和 IP v6，只需将
 <code>hints.ai_family</code> 的值设成
-<code>AF_UNSPEC</code>。若完成此修改，重新编译 foo.c，执行新生成的 foo
+<code>AF_UNSPEC</code>。完成此修改，重新编译 foo.c，执行新生成的 foo
 程序，获取 www.baidu.com 对应的网络地址：</p>
 <pre class="console"><code>$ ./foo www.baidu.com 80
 2409:8c00:6c21:118b:0:ff:b0e8:f003:80

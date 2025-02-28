@@ -482,7 +482,7 @@ hints.ai_family = AF_INET6;
 
 便可实现将文字形式的 IP v6 地址和端口构成的网络地址转换为数字化网络地址。
 
-事实上，`getaddrinfo` 走得更远，胸怀更为宽广，它能够同时支持 IP v4 和 IP v6，只需将 `hints.ai_family` 的值设成 `AF_UNSPEC`。若完成此修改，重新编译 foo.c，执行新生成的 foo 程序，获取 www.baidu.com 对应的网络地址：
+事实上，`getaddrinfo` 走得更远，胸怀更为宽广，它能够同时支持 IP v4 和 IP v6，只需将 `hints.ai_family` 的值设成 `AF_UNSPEC`。完成此修改，重新编译 foo.c，执行新生成的 foo 程序，获取 www.baidu.com 对应的网络地址：
 
 ```console
 $ ./foo www.baidu.com 80
