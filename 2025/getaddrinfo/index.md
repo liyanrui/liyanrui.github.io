@@ -414,7 +414,7 @@ $ man 3 getaddrinfo
 
 # 反函数
 
-下面额外介绍一个与 `getaddrinfo` 相反的函数 `getnameinfo` 的用法，若不感兴趣，以下内容完全可以忽略。`getnameinfo` 可将结构体 `addrinfo` 中存储的数字化的网络地址转换为文本形式。对于我们而言，文本形式的网络地址是已知的，故而 `getnameinfo` 似乎没什么用处。不过，对于上述 foo 程序输出的 www.baidu.com 的 IP 地址，也许你更希望它是文本形式，所以 `getnameinfo` 还是有用的。
+下面额外介绍一个与 `getaddrinfo` 相反的函数 `getnameinfo` 的用法。`getnameinfo` 可将结构体 `addrinfo` 中存储的数字化的网络地址转换为文本形式。对于我们而言，文本形式的网络地址是已知的，故而 `getnameinfo` 似乎没什么用处。不过，对于上述 foo 程序输出的 www.baidu.com 的 IP 地址，也许你更希望它是文本形式，所以 `getnameinfo` 还是有用的。
 
 `getnameinfo` 的声明如下：
 
@@ -465,6 +465,35 @@ for (struct addrinfo *it = res; it; it = it->ai_next) {
 ```console
 $ man 3 getnameinfo
 ```
+
+# 一网打尽
+
+上文不断修改的 foo.c，所实现的皆为文字形式的 IP v4 地址及端口构成的网络地址的数字化转换，虽然提及了 IP v6 地址，但是并未给出相关代码将其转换为数字。实际上，非常简单，只需将上文最后实现的 foo.c 中一处代码
+
+```c
+hints.ai_family = AF_INET;
+```
+
+修改为
+
+```c
+hints.ai_family = AF_INET6;
+```
+
+便可实现将文字形式的 IP v6 地址和端口构成的网络地址转换为数字化网络地址。
+
+事实上，`getaddrinfo` 走得更远，胸怀更为宽广，它能够同时支持 IP v4 和 IP v6，只需将 `hints.ai_family` 的值设成 `AF_UNSPEC`。若完成此修改，重新编译 foo.c，执行新生成的 foo 程序，获取 www.baidu.com 对应的网络地址：
+
+```c
+$ ./foo www.baidu.com 80
+2409:8c00:6c21:118b:0:ff:b0e8:f003:80
+2409:8c00:6c21:11eb:0:ff:b0bf:59ca:80
+39.156.70.239:80
+39.156.70.46:80
+```
+
+原来，www.baidu.com 还有两个 IP v6 地址！
+
 
 # 总结
 
