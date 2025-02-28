@@ -468,4 +468,4 @@ $ man 3 getnameinfo
 
 # 总结
 
-不知不觉，我们已经基本学会了 4 个 socket API 函数了，`getaddrinfo`、`gai_strerror`、`freeaddrinfo` 以及 `getnameinfo`。没什么难的，我甚至有些过度讲解了。倘若你足够聪明，借助 man 命令便可获得这些函数最为权威的讲解。只是 man 命令无法告诉你，学习网络编程居然可以从学习 `getaddrinfo` 开始。
+不知不觉，我们已经基本学会了 4 个 socket API 函数了，`getaddrinfo`、`gai_strerror`、`freeaddrinfo` 以及 `getnameinfo`。没什么难的，我甚至有些过度讲解了。倘若你足够聪明，借助 man 命令便可获得这些函数最为权威的讲解，然后迅速学会它们。只是 man 命令无法告诉你，学习网络编程居然可以从学习 `getaddrinfo` 开始。
