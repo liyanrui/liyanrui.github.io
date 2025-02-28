@@ -33,11 +33,11 @@ $ gcc hello-world.c -o hello-world
 
 这个人也许是善意的，真心想给你一些非常有用的建议，可是他很容易让你没有机会写出上述的 Hello world 程序。我看过的网络编程书籍，每本书的作者都是这个人。
 
-# 第一个 socket API
+# 是否有些恐慌？
 
 Linux 或任何一种还活着的 Unix，还有我不怎么使用的 Windows，它们都为操作 socket 提供了一组 C 函数。通常将这些函数统称为 socket API（Application Program Interface，应用程序接口）。不妨将这些 API 理解为邮局系统为寄信和收信的人提供的服务人员和服务设施，例如邮递员，邮筒等。
 
-学习 socket 编程，第一个需要学会的 API 是 `getaddrinfo`，它可以将文字形式的 IP 地址和端口转换为一个数字，类似于你为某个寄信或收信的地址查找与之对应的邮政编码。`getaddrinfo` 的形式如下：
+学习基于 socket API 的网络编程，第一个需要学会的函数是 `getaddrinfo`，它可以将文字形式的 IP 地址和端口转换为一个数字，类似于你为某个寄信或收信的地址查找与之对应的邮政编码。`getaddrinfo` 的形式如下：
 
 ```c
 #include <sys/types.h>
