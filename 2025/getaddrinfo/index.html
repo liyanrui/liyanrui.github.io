@@ -144,7 +144,7 @@ API
 以及两个辅助函数的声明，以及使用它们时需要包含的三个头文件，当然理解这些，需要你熟悉一些
 C 语言。倘若你不熟悉 C，这份文档所讲述的学习 socket
 网络编程的思路依然适用于学习其他编程语言封装的 socket 模块或库。李白曾为
-C socket API 写过一句诗，莫道前路无知己，天下谁人不识君。</p>
+C socket API 写过一句诗，莫愁前路无知己，天下谁人不识君。</p>
 <p>首先，需要大致了解 <code>getaddrinfo</code>，它接受 4
 个参数，若它运行成功，则返回 0，否则返回一个非 0
 的错误码。<code>node</code> 参数表示 IP 地址，<code>service</code>
@@ -222,7 +222,7 @@ wlp3s0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
 <code>SOCK_DATAGRAM</code>。这两种可靠程度分别对应着两种通信方式（协议），<code>SOCK_STREAM</code>
 对应 TCP 传输方式 <code>IPPROTO_TCP</code>，而
 <code>SOCK_DATAGRAM</code> 对应 UDP 传输方式
-<code>IPPROTO_UDP</code>，就像我们的生活中，用邮局寄信总比找个顺路的熟人将信捎过去会更靠谱一些。TCP
+<code>IPPROTO_UDP</code>，就像我们的生活中，用邮局寄信总比找个顺路的陌生人将信捎过去会更靠谱一些。TCP
 协议和 UPD 协议，可以通过 <code>ai_protocol</code> 进行设定，但是
 <code>ai_socktype</code> 已经决定了它的值，故而可无需设定。</p>
 <p>为 <code>hints</code> 设定的值有什么用处呢？这些值是在告诉
@@ -301,7 +301,7 @@ C 的指针，像下面这段呓语所描述的那样：</p>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> getaddrinfo<span class="op">(</span><span class="st">&quot;192.168.1.10&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">,</span> <span class="op">&amp;</span>hints<span class="op">,</span> <span class="op">&amp;</span>res<span class="op">);</span></span></code></pre></div>
 <p><code>getaddrinfo</code> 将文字形式的 <code>192.168.1.10:8080</code>
 这样的网络地址转换成的数字藏于 <code>res</code>
-所指向的结构体中的何处呢？在 <code>struct addrinfo</code> 结构体的
+所指向的结构体中的何处呢？在结构体 <code>addrinfo</code> 的
 <code>ai_addr</code> 成员所指向的结构体对象之中。</p>
 <p><code>ai_addr</code> 的类型是 <code>struct sockaddr *</code>，而
 <code>sockaddr</code> 的定义是</p>
@@ -504,6 +504,57 @@ IP v6
 Linux 系统，不妨使用以下命令，再回顾一下 <code>getaddrinfo</code>
 的一切：</p>
 <pre class="console"><code>$ man 3 getaddrinfo</code></pre>
+<p>下面额外介绍一个与 <code>getaddrinfo</code> 相反的函数
+<code>getnameinfo</code>
+的用法，若不感兴趣，以下内容完全可以忽略。<code>getnameinfo</code>
+可将结构体 <code>addrinfo</code>
+中存储的数字化的网络地址转换为文本形式。对于我们而言，文本形式的网络地址是已知的，故而
+<code>getnameinfo</code> 似乎没什么用处。不过，对于上述 foo 程序输出的
+www.baidu.com 的 IP 地址，也许你更希望它是文本形式，所以
+<code>getnameinfo</code> 还是有用的。</p>
+<p><code>getnameinfo</code> 的声明如下：</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/socket.h&gt;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;netdb.h&gt;</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> getnameinfo<span class="op">(</span><span class="dt">const</span> <span class="kw">struct</span> sockaddr <span class="op">*</span><span class="dt">restrict</span> addr<span class="op">,</span> socklen_t addrlen<span class="op">,</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> host<span class="op">[</span>_Nullable <span class="dt">restrict</span> <span class="op">.</span>hostlen<span class="op">],</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>                socklen_t hostlen<span class="op">,</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> serv<span class="op">[</span>_Nullable <span class="dt">restrict</span> <span class="op">.</span>servlen<span class="op">],</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>                socklen_t servlen<span class="op">,</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> flags<span class="op">);</span></span></code></pre></div>
+<p>你可能又开始恐慌了……我也是。这是什么啊？</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> host<span class="op">[</span>_Nullable <span class="dt">restrict</span> <span class="op">.</span>hostlen<span class="op">]</span></span></code></pre></div>
+<p>这根本不是 C 数组的语法。是的，因为上述内容是我从 man 手册里的
+<code>getnameinfo</code>
+部分复制过来的，数组的形式包含了一些描述性的伪代码。<code>_Nullable</code>
+表示可以该数组可以替换为 <code>NULL</code>，而
+<code>restrict .hostlen</code> 数组的长度必须与函数的 hostlen
+的值相等。对于 <code>getnameinfo</code> 的 <code>serv</code>
+参数也可以如此理解。</p>
+<p>简而言之，<code>getnameinfo</code> 接受 <code>socketaddr</code>
+结构体，然后将 IP 地址转换为文本存储于 <code>host</code>
+数组，该数组的长度即 <code>hostlen</code>，并将端口转换为文本存于
+<code>serv</code> 数组，该数组的长度是
+<code>servlen</code>。最后一个参数 <code>flags</code>
+用于组合一些标识，让 <code>getnameinfo</code>
+输出我们所需要的结果，例如如果希望输出的是文本形式的 IP
+地址和端口，而不是主机名或域名以及服务名（服务名是为端口取的便于人类记住的名字，例如端口
+80，对应的服务名是 http），只需将 <code>flags</code> 的值设定为</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>NI_NUMERICHOST <span class="op">|</span> NI_NUMERICSERV</span></code></pre></div>
+<p>下面是 <code>getnameinfo</code> 的用法示例：</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* 输出 IP 地址和端口 */</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> host<span class="op">[</span>NI_MAXHOST<span class="op">],</span> port<span class="op">[</span>NI_MAXSERV<span class="op">];</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="kw">struct</span> addrinfo <span class="op">*</span>it <span class="op">=</span> res<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>ai_next<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>        getnameinfo<span class="op">(</span>it<span class="op">-&gt;</span>ai_addr<span class="op">,</span> it<span class="op">-&gt;</span>ai_addrlen<span class="op">,</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>                    host<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>host<span class="op">),</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>                    port<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>port<span class="op">),</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>                    NI_NUMERICHOST <span class="op">|</span> NI_NUMERICSERV<span class="op">);</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s</span><span class="st">:</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> host<span class="op">,</span> port<span class="op">);</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>可使用这段代码替换前文最后一个版本的 foo.c 中遍历
+<code>getaddrinfo</code> 生成的网络地址列表的那部分代码。</p>
+<p>若你想更加了解 <code>getnameinfo</code>，可以</p>
+<pre class="console"><code>$ man 3 getnameinfo</code></pre>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a

@@ -48,7 +48,7 @@ void freeaddrinfo(struct addrinfo *res);
 const char *gai_strerror(int errcode);
 ```
 
-现在，你可能已经开始有些恐慌，如同此刻的我。请自信一些，上述代码给出了 `getaddrinfo` 以及两个辅助函数的声明，以及使用它们时需要包含的三个头文件，当然理解这些，需要你熟悉一些 C 语言。倘若你不熟悉 C，这份文档所讲述的学习 socket 网络编程的思路依然适用于学习其他编程语言封装的 socket 模块或库。李白曾为 C socket API 写过一句诗，莫道前路无知己，天下谁人不识君。
+现在，你可能已经开始有些恐慌，如同此刻的我。请自信一些，上述代码给出了 `getaddrinfo` 以及两个辅助函数的声明，以及使用它们时需要包含的三个头文件，当然理解这些，需要你熟悉一些 C 语言。倘若你不熟悉 C，这份文档所讲述的学习 socket 网络编程的思路依然适用于学习其他编程语言封装的 socket 模块或库。李白曾为 C socket API 写过一句诗，莫愁前路无知己，天下谁人不识君。
 
 首先，需要大致了解 `getaddrinfo`，它接受 4 个参数，若它运行成功，则返回 0，否则返回一个非 0 的错误码。`node` 参数表示 IP 地址，`service` 表示端口，`hints` 可以让我们对 `getaddrinfo` 的工作过程施加一些干扰，`res` 存储着 `getaddrinfo` 对文字形式的 IP 地址和端口的转换结果。已经熟悉 socket API 用法的人看到这里，或许会立刻指出我的说法不严谨，例如 `node` 也可以是主机名。的确如此，但是学习任何东西，都应该从不严谨出发，再逐步严谨，不是吗？若一开始就追求严谨，我们可能到现在还学不会走路。
 
@@ -111,7 +111,7 @@ hints.ai_family = AF_INET;
 hints.ai_socktype = SOCK_STREAM;
 ```
 
-`memset` 可将指定的内存空间清零，即以 0 值填充该空间。`ai_family` 用于设定 IP 地址是第 4 代（AF_INET）还是第 6 代（AF_INET6）。`ai_socktype`，可以暂且理解为用于设定在网络通信时数据传输过程的可靠程度，`SOCK_STREAM` 表示相当可靠。还有一种不太可靠的设定，即 `SOCK_DATAGRAM`。这两种可靠程度分别对应着两种通信方式（协议），`SOCK_STREAM` 对应 TCP 传输方式 `IPPROTO_TCP`，而 `SOCK_DATAGRAM` 对应 UDP 传输方式 `IPPROTO_UDP`，就像我们的生活中，用邮局寄信总比找个顺路的熟人将信捎过去会更靠谱一些。TCP 协议和 UPD 协议，可以通过 `ai_protocol` 进行设定，但是 `ai_socktype` 已经决定了它的值，故而可无需设定。
+`memset` 可将指定的内存空间清零，即以 0 值填充该空间。`ai_family` 用于设定 IP 地址是第 4 代（AF_INET）还是第 6 代（AF_INET6）。`ai_socktype`，可以暂且理解为用于设定在网络通信时数据传输过程的可靠程度，`SOCK_STREAM` 表示相当可靠。还有一种不太可靠的设定，即 `SOCK_DATAGRAM`。这两种可靠程度分别对应着两种通信方式（协议），`SOCK_STREAM` 对应 TCP 传输方式 `IPPROTO_TCP`，而 `SOCK_DATAGRAM` 对应 UDP 传输方式 `IPPROTO_UDP`，就像我们的生活中，用邮局寄信总比找个顺路的陌生人将信捎过去会更靠谱一些。TCP 协议和 UPD 协议，可以通过 `ai_protocol` 进行设定，但是 `ai_socktype` 已经决定了它的值，故而可无需设定。
 
 为 `hints` 设定的值有什么用处呢？这些值是在告诉 `getaddrinfo` 一些事情，诸如 `192.168.1.10` 是 IP v4 地址，数据传输是要用要用靠谱的 `SOCK_STREAM` 对应的传输方式，即 `IPPROTO_TCP`。不可靠的传输方式并非无用，其优势在于传输速度更快，适用于传输一些不太重要的信息，例如网络上聊天时的信息。
 
@@ -201,7 +201,7 @@ hints.ai_socktype = SOCK_STREAM;
 int a = getaddrinfo("192.168.1.10", "8080", &hints, &res);
 ```
 
-`getaddrinfo` 将文字形式的 `192.168.1.10:8080` 这样的网络地址转换成的数字藏于 `res` 所指向的结构体中的何处呢？在 `struct addrinfo` 结构体的 `ai_addr` 成员所指向的结构体对象之中。
+`getaddrinfo` 将文字形式的 `192.168.1.10:8080` 这样的网络地址转换成的数字藏于 `res` 所指向的结构体中的何处呢？在结构体 `addrinfo` 的 `ai_addr` 成员所指向的结构体对象之中。
 
 `ai_addr` 的类型是 `struct sockaddr *`，而 `sockaddr` 的定义是
 
@@ -396,4 +396,56 @@ $ ./foo www.baidu.com 80
 
 ```console
 $ man 3 getaddrinfo
+```
+
+下面额外介绍一个与 `getaddrinfo` 相反的函数 `getnameinfo` 的用法，若不感兴趣，以下内容完全可以忽略。`getnameinfo` 可将结构体 `addrinfo` 中存储的数字化的网络地址转换为文本形式。对于我们而言，文本形式的网络地址是已知的，故而 `getnameinfo` 似乎没什么用处。不过，对于上述 foo 程序输出的 www.baidu.com 的 IP 地址，也许你更希望它是文本形式，所以 `getnameinfo` 还是有用的。
+
+`getnameinfo` 的声明如下：
+
+```c
+#include <sys/socket.h>
+#include <netdb.h>
+
+int getnameinfo(const struct sockaddr *restrict addr, socklen_t addrlen,
+                char host[_Nullable restrict .hostlen],
+                socklen_t hostlen,
+                char serv[_Nullable restrict .servlen],
+                socklen_t servlen,
+                int flags);
+```
+
+你可能又开始恐慌了……我也是。这是什么啊？
+
+```c
+char host[_Nullable restrict .hostlen]
+```
+
+这根本不是 C 数组的语法。是的，因为上述内容是我从 man 手册里的 `getnameinfo` 部分复制过来的，数组的形式包含了一些描述性的伪代码。`_Nullable` 表示可以该数组可以替换为 `NULL`，而 `restrict .hostlen` 数组的长度必须与函数的 hostlen 的值相等。对于 `getnameinfo` 的 `serv` 参数也可以如此理解。
+
+简而言之，`getnameinfo` 接受 `socketaddr` 结构体，然后将 IP 地址转换为文本存储于 `host` 数组，该数组的长度即 `hostlen`，并将端口转换为文本存于 `serv` 数组，该数组的长度是 `servlen`。最后一个参数 `flags` 用于组合一些标识，让 `getnameinfo` 输出我们所需要的结果，例如如果希望输出的是文本形式的 IP 地址和端口，而不是主机名或域名以及服务名（服务名是为端口取的便于人类记住的名字，例如端口 80，对应的服务名是 http），只需将 `flags` 的值设定为
+
+```c
+NI_NUMERICHOST | NI_NUMERICSERV
+```
+
+下面是 `getnameinfo` 的用法示例：
+
+```c
+/* 输出 IP 地址和端口 */
+char host[NI_MAXHOST], port[NI_MAXSERV];
+for (struct addrinfo *it = res; it; it = it->ai_next) {
+        getnameinfo(it->ai_addr, it->ai_addrlen,
+                    host, sizeof(host),
+                    port, sizeof(port),
+                    NI_NUMERICHOST | NI_NUMERICSERV);
+        printf("%s:%s\n", host, port);
+}
+```
+
+可使用这段代码替换前文最后一个版本的 foo.c 中遍历 `getaddrinfo` 生成的网络地址列表的那部分代码。
+
+若你想更加了解 `getnameinfo`，可以
+
+```console
+$ man 3 getnameinfo
 ```
