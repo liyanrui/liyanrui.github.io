@@ -98,12 +98,31 @@
 <p class="date">02 月 27 日</p>
 </header>
 <hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#前言" id="toc-前言">前言</a></li>
+<li><a href="#存在先于本质" id="toc-存在先于本质">存在先于本质</a></li>
+<li><a href="#第一个-socket-api" id="toc-第一个-socket-api">第一个
+socket API</a></li>
+<li><a href="#插曲双重指针"
+id="toc-插曲双重指针">插曲：双重指针</a></li>
+<li><a href="#迷雾重重" id="toc-迷雾重重">迷雾重重</a></li>
+<li><a href="#更安全更稳健"
+id="toc-更安全更稳健">更安全，更稳健</a></li>
+<li><a href="#有些计算机不单纯"
+id="toc-有些计算机不单纯">有些计算机，不单纯</a></li>
+<li><a href="#反函数" id="toc-反函数">反函数</a></li>
+<li><a href="#总结" id="toc-总结">总结</a></li>
+</ul>
+</nav>
+<h1 id="前言">前言</h1>
 <p>可能没有任何一本网络编程方面的书籍会告诉你，网络编程真正重要的问题从来都不是一台机器上的进程如何与另一台机器上的进程如何连接以及数据如何传递，而是这两台机器的网络地址如何表示。</p>
 <p>倘若你对上述说法觉得奇怪甚至荒谬，那么请思考这样一个问题，当你打算给一个人写信的时候，最重要的问题是什么？他的收信地址以及其邮政编码。倘若你需要对方回复，那么你还需要知道你的收信地址及其邮政编码。将一个文字形式的网络地址转换为类似邮政编码一样的数字，这便是网络编程的核心问题。</p>
 <p>邮局是如何建立的，邮寄的物品如何分拣、传输和派送，这些问题当然更为重要，但是写信和收信的人可无需关心。编写网络程序，自然是以网络已经存在为前提，可以无需关心网络体系的任何内幕，亦即你无需知道
 OSI 模型七层结构是什么，Internet
 四层结构是什么，每层结构都有哪些协议，在计算机操作系统中如何实现这些协议，TCP
 协议需要几次握手和几次挥手等。</p>
+<h1 id="存在先于本质">存在先于本质</h1>
 <p>多学一些知识，必定有益，但是在刚开始学习网络编程时，这些知识可能会让你难以进行下去。试想你刚开始学习
 C
 语言，有人告诉你需要先了解计算机体系组成结构，汇编语言，操作系统原理，编译器原理……然后你才能开始写一个
@@ -118,6 +137,7 @@ Hello world 程序：</p>
 <pre class="console"><code>$ gcc hello-world.c -o hello-world</code></pre>
 <p>这个人也许是善意的，真心想给你一些非常有用的建议，可是他很容易让你没有机会写出上述的
 Hello world 程序。我看过的网络编程书籍，每本书的作者都是这个人。</p>
+<h1 id="第一个-socket-api">第一个 socket API</h1>
 <p>Linux 或任何一种还活着的 Unix，还有我不怎么使用的
 Windows，它们都为操作 socket 提供了一组 C 函数。通常将这些函数统称为
 socket API（Application Program Interface，应用程序接口）。不妨将这些
@@ -243,6 +263,7 @@ v4 地址，数据传输是要用要用靠谱的 <code>SOCK_STREAM</code>
 <code>getaddrinfo</code> 要将 IP
 地址和端口转换的结果存于一个链表，需要用一个指针记录该链表的首结点位置（内存地址），<code>res</code>
 则指向这个指针。</p>
+<h1 id="插曲双重指针">插曲：双重指针</h1>
 <p>可能你对 C
 语言的熟悉程度不足以理解上述关于双指针的讨论，不必为此羞愧，毕竟并没有任何人要求必须对
 C 语言了如指掌方可学习网络编程。假设需要定义一个函数
@@ -293,6 +314,7 @@ C 的指针，像下面这段呓语所描述的那样：</p>
 <blockquote>
 <p>这是我的指针，虽有很多与之相似的，但这个是我的。我的指针是我的挚友，如同我的生命。我将运用它如同运用我的生命。指针没了我便是废物，我没了指针便成为废人。我会准确无误地使用我的指针，比敌人用得更好。我会在他的程序速度超过我之前超过他，我会超过他的。</p>
 </blockquote>
+<h1 id="迷雾重重">迷雾重重</h1>
 <p>现在我们已经能够让 <code>getaddrinfo</code> 运行起来了，即</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> addrinfo hints<span class="op">,</span> <span class="op">*</span>res<span class="op">;</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>memset<span class="op">(&amp;</span>hints<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="kw">struct</span> addrinfo<span class="op">));</span></span>
@@ -374,6 +396,7 @@ $ ./foo
 <p>IP 地址 <code>192.168.1.10</code> 被转换为
 <code>167880896</code>，端口 <code>8080</code> 被转换为
 <code>36895</code>。或许你会觉得，一路辗转，所得不过如此，前途依然渺茫。且莫着急，毕竟我们已经得到了类似邮政编码的东西了，距离将信件发送出去，已近在咫尺。</p>
+<h1 id="更安全更稳健">更安全，更稳健</h1>
 <p>关于
 <code>getaddrinfo</code>，还有一些事情需要探索，例如直到现在，我们似乎未曾真正关心过它的返回值，亦即上述代码中的
 <code>int a</code>。前面说过，<code>a</code> 的值若为 0，则表示
@@ -483,6 +506,7 @@ $ ./foo 0.0.0.0 8080
 表示网络回环地址，任何一台计算机都有这个地址，即使它没有安装网卡。可以将
 <code>localhost</code> 和 <code>127.0.0.1</code>
 理解成「自我」。一个人，可以不与整个社会发生任何关系，但是只要他还活着，必定会有「自我」。</p>
+<h1 id="有些计算机不单纯">有些计算机，不单纯</h1>
 <p>可以试着用 foo 程序访问域名 www.baidu.com 的 IP 地址：</p>
 <pre class="console"><code>$ ./foo www.baidu.com 80
 776379431:20480
@@ -504,6 +528,7 @@ IP v6
 Linux 系统，不妨使用以下命令，再回顾一下 <code>getaddrinfo</code>
 的一切：</p>
 <pre class="console"><code>$ man 3 getaddrinfo</code></pre>
+<h1 id="反函数">反函数</h1>
 <p>下面额外介绍一个与 <code>getaddrinfo</code> 相反的函数
 <code>getnameinfo</code>
 的用法，若不感兴趣，以下内容完全可以忽略。<code>getnameinfo</code>
@@ -555,6 +580,14 @@ www.baidu.com 的 IP 地址，也许你更希望它是文本形式，所以
 <code>getaddrinfo</code> 生成的网络地址列表的那部分代码。</p>
 <p>若你想更加了解 <code>getnameinfo</code>，可以</p>
 <pre class="console"><code>$ man 3 getnameinfo</code></pre>
+<h1 id="总结">总结</h1>
+<p>不知不觉，我们已经基本学会了 4 个 socket API
+函数了，<code>getaddrinfo</code>、<code>gai_strerror</code>、<code>freeaddrinfo</code>
+以及
+<code>getnameinfo</code>。没什么难的，我甚至有些过度讲解了。倘若你足够聪明，借助
+man 命令便可获得这些函数最为权威的讲解。只是 man
+命令无法告诉你，学习网络编程居然可以从学习 <code>getaddrinfo</code>
+开始。</p>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
