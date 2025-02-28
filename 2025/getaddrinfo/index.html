@@ -515,8 +515,8 @@ $ ./foo 0.0.0.0 8080
 地址。事实上，许多知名的网页服务器（端口默认为 80），都有多个 IP。这便是
 <code>getaddrinfo</code>
 生成的是一个地址列表，而不是单个地址的原因。也许你会觉得有些不可思议，<code>getaddrinfo</code>
-是得知域名为 www.baidu.com 的计算机的 IP
-的呢？原因是，<code>getaddrinfo</code>
+是如何获得域名为 www.baidu.com 的计算机的 IP
+地址的呢？答案是，<code>getaddrinfo</code>
 会调用操作系统提供的域名查询服务，在 DNS 服务器上查找 www.baidu.com 的
 IP 集。</p>
 <p>用主机名或域名指代一台网络上的计算机，是因为文字形式的 IP
