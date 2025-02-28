@@ -484,7 +484,7 @@ hints.ai_family = AF_INET6;
 
 事实上，`getaddrinfo` 走得更远，胸怀更为宽广，它能够同时支持 IP v4 和 IP v6，只需将 `hints.ai_family` 的值设成 `AF_UNSPEC`。若完成此修改，重新编译 foo.c，执行新生成的 foo 程序，获取 www.baidu.com 对应的网络地址：
 
-```c
+```console
 $ ./foo www.baidu.com 80
 2409:8c00:6c21:118b:0:ff:b0e8:f003:80
 2409:8c00:6c21:11eb:0:ff:b0bf:59ca:80

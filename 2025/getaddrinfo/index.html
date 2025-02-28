@@ -595,11 +595,11 @@ foo.c 中一处代码</p>
 <code>hints.ai_family</code> 的值设成
 <code>AF_UNSPEC</code>。若完成此修改，重新编译 foo.c，执行新生成的 foo
 程序，获取 www.baidu.com 对应的网络地址：</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>$ <span class="op">./</span>foo www<span class="op">.</span>baidu<span class="op">.</span>com <span class="dv">80</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="dv">2409</span><span class="op">:</span><span class="dv">8</span><span class="er">c00</span><span class="op">:</span><span class="dv">6</span><span class="er">c21</span><span class="op">:</span><span class="dv">118</span><span class="er">b</span><span class="op">:</span><span class="dv">0</span><span class="op">:</span>ff<span class="op">:</span>b0e8<span class="op">:</span>f003<span class="op">:</span><span class="dv">80</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="dv">2409</span><span class="op">:</span><span class="dv">8</span><span class="er">c00</span><span class="op">:</span><span class="dv">6</span><span class="er">c21</span><span class="op">:</span><span class="dv">11</span><span class="er">eb</span><span class="op">:</span><span class="dv">0</span><span class="op">:</span>ff<span class="op">:</span>b0bf<span class="op">:</span><span class="dv">59</span><span class="er">ca</span><span class="op">:</span><span class="dv">80</span></span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fl">39.156</span><span class="er">.70.239</span><span class="op">:</span><span class="dv">80</span></span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="fl">39.156</span><span class="er">.70.46</span><span class="op">:</span><span class="dv">80</span></span></code></pre></div>
+<pre class="console"><code>$ ./foo www.baidu.com 80
+2409:8c00:6c21:118b:0:ff:b0e8:f003:80
+2409:8c00:6c21:11eb:0:ff:b0bf:59ca:80
+39.156.70.239:80
+39.156.70.46:80</code></pre>
 <p>原来，www.baidu.com 还有两个 IP v6 地址！</p>
 <h1 id="总结">总结</h1>
 <p>不知不觉，我们已经基本学会了 4 个 socket API
