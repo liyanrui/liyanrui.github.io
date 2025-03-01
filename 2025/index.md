@@ -2,7 +2,7 @@
 title: 2025 年的日志
 ...
 
-* <span class="post-date">03 月 01 日</span>[有一封信，无处可寄](simple-client/index.html)：已非难事。
+* <span class="post-date">03 月 01 日</span>[有一封信，无处可寄](simple-client/index.html)：一个毁灭地球的计划以失败而告终。
 * <span class="post-date">02 月 27 日</span>[「IP 地址:端口」的数字化](getaddrinfo/index.html)：用数字表示 IP 地址和端口，是网络编程的核心问题。
 * <span class="post-date">02 月 26 日</span>[Socket 是什么？](what-is-a-socket/index.html)：计算机网络科学家是如何让一个非常简单的概念变得难以理解的？
 * <span class="post-date">02 月 23 日</span>[Awk 网络编程指南](awk-networking/index.html)：用 gawk 编写网络程序。
@@ -12,6 +12,7 @@ title: 2025 年的日志
 * <span class="post-date">01 月 27 日</span>[新的 lmd 脚本的用法](how-to-use-lmd/index.html)
 * <span class="post-date">01 月 24 日</span>[lmd 的设计与实现](best-lmd/index.html)：文学程序，实现了静态网站的构建脚本。
 * <span class="post-date">01 月 03 日</span>[Orez 1.0 指南](orez-v1/index.html)：介绍重写的文学编程工具 orez 的用法。
+
 
 
 
