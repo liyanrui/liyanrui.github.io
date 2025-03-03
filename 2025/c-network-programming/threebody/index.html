@@ -104,8 +104,7 @@
 <li><a href="#我的地址" id="toc-我的地址">我的地址</a></li>
 <li><a href="#信封" id="toc-信封">信封</a></li>
 <li><a href="#纷至沓来" id="toc-纷至沓来">纷至沓来</a></li>
-<li><a href="#用于回信的信封"
-id="toc-用于回信的信封">用于回信的信封</a></li>
+<li><a href="#信封的对称性" id="toc-信封的对称性">信封的对称性</a></li>
 <li><a href="#读信和回信" id="toc-读信和回信">读信和回信</a></li>
 <li><a href="#完整的程序" id="toc-完整的程序">完整的程序</a></li>
 <li><a href="#总结" id="toc-总结">总结</a></li>
@@ -113,9 +112,10 @@ id="toc-用于回信的信封">用于回信的信封</a></li>
 </nav>
 <h1 id="前言">前言</h1>
 <p>在「<a
-href="simple-client/index.html">有一封信，无处可寄</a>」中，由程序 ywj
-发往 www.threebody.com 的信息以该域名对应的计算机不存在而失败。</p>
-<p>不存在的，可以创建，然后欺骗 ywj。若是在 Linux
+href="simple-client/index.html">有一封信，无处可寄</a>」中，程序 ywj 向
+www.threebody.com:8080
+发送信息，该过程因目标计算机不存在而以失败告终。</p>
+<p>不存在的，可以创建，然后欺骗 ywj，让她以为它存在。若是在 Linux
 系统中，可使用超级用户权限编辑 /etc/hosts 文件，为其添加以下内容</p>
 <pre class="plain"><code>127.0.0.1       www.threebody.com</code></pre>
 <p>也许你已经识破我的诡计了，我是给这个域名与本机网络回环地址绑定，我只需要写一个程序，接收
@@ -124,81 +124,112 @@ ywj 发来的信息并予以回复，便可完成欺骗。</p>
 <h1 id="我的地址">我的地址</h1>
 <p>ywj 给我发送信息，她需要知道我的域名或 IP
 地址。为了能收到她发来的信息，我需要为自己构造一个网络地址：</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> addrinfo hints<span class="op">,</span> <span class="op">*</span>res<span class="op">;</span></span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> addrinfo hints<span class="op">,</span> <span class="op">*</span>addr_list<span class="op">;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>memset<span class="op">(&amp;</span>hints<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="kw">struct</span> addrinfo<span class="op">));</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>hints<span class="op">.</span>ai_family <span class="op">=</span> AF_UNSPEC<span class="op">;</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>hints<span class="op">.</span>ai_socktype <span class="op">=</span> SOCK_STREAM<span class="op">;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> getaddrinfo<span class="op">(</span><span class="st">&quot;127.0.0.1&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">,</span> <span class="op">&amp;</span>hints<span class="op">,</span> <span class="op">&amp;</span>res<span class="op">);</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> getaddrinfo<span class="op">(</span><span class="st">&quot;127.0.0.1&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">,</span> <span class="op">&amp;</span>hints<span class="op">,</span> <span class="op">&amp;</span>addr_list<span class="op">);</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>a <span class="op">!=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;getaddrinfo error: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> gai_strerror<span class="op">(</span>a<span class="op">));</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="kw">struct</span> addrinfo <span class="op">*</span>it <span class="op">=</span> addr_list<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>ai_next<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* ... 想必你已很熟悉地址列表遍历过程了 ... */</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>与 ywj 构造收信人地址所用代码唯一的区别是，<code>getaddrinfo</code>
 的第一个参数，在这里是
 <code>127.0.0.1</code>。我只需要知道其他计算机上的某个进程试图访问「我所在的计算机」的
-<code>8080</code> 端口。何谓「我所在的计算机」？答案是
-<code>localhost</code> 或 <code>127.0.0.1</code>，即网络回环地址。</p>
-<p>一定要清楚，ywj
+<code>8080</code> 端口。</p>
+<p>何谓「我所在的计算机」？答案是 <code>localhost</code> 或
+<code>127.0.0.1</code>，即网络回环地址。一定要清楚，ywj
 构造的收信人地址与我在这里构造的地址是同一个地址，只是在 ywj 看来，它是
 <code>www.threebody.com:8080</code>，而在我看来，它是
-<code>127.0.0.1:8080</code>。我说的如此细致，也许你还是不明白。不妨想象一下，假设我楼下有个信箱，你要往这个信箱里寄信，那么你需要知道这个信箱在中国地图上的位置，而我呢？我只需要知道，它就在我楼下。</p>
+<code>127.0.0.1:8080</code>。</p>
+<p>我说的如此细致，也许你还是不明白。不妨想象一下，假设我楼下有个信箱，你要往这个信箱里寄信，那么你需要知道这个信箱在中国地图上的位置，而我呢？我只需要知道，它就在我楼下。</p>
 <h1 id="信封">信封</h1>
-<p>我是三体人，若有外太空有消息发送给我，为了让我的同胞们永远不再受乱纪元脱水之苦，我必须有所回复，所以我也必须有一个信封，而且一开始它也是空的：</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> envelop <span class="op">=</span> socket<span class="op">(</span>res<span class="op">-&gt;</span>ai_family<span class="op">,</span> res<span class="op">-&gt;</span>ai_socktype<span class="op">,</span> res<span class="op">-&gt;</span>ai_protocol<span class="op">);</span></span></code></pre></div>
-<p>现在，我需要先在信封上写上我的地址，我楼下的那个信箱……由于这个地址如此随意，以致将这个地址写在信封上，也需要一种特别的方式，ywj
-用的是 <code>connect</code> 函数——能一举写上通信双方的地址，而我用的是
-<code>bind</code>
-函数，只能先写上我的地址，原因是，此时我还不知道谁写了一封信寄给了我。</p>
+<p>我是三体人，若有外太空有消息发送给我，为了让我的同胞们永远不再受乱纪元脱水之苦，我必须有所回复，所以我也必须有一个信封，而且一开始它也是空的。对地址列表的遍历过程略作修改，便可创建一个可用的空信封：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> envelop <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="kw">struct</span> addrinfo <span class="op">*</span>it <span class="op">=</span> addr_list<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>ai_next<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        envelop <span class="op">=</span> socket<span class="op">(</span>it<span class="op">-&gt;</span>ai_family<span class="op">,</span>  it<span class="op">-&gt;</span>ai_socktype<span class="op">,</span> it<span class="op">-&gt;</span>ai_protocol<span class="op">);</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>envelop <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>得到可用的新信封后，我需要先在它上面写上我的地址——我楼下的那个信箱。这个地址有些随意，也只有我和我的计算机操作系统知道它的含义，故而将这个地址写在信封上，需要一种特别方式。ywj
+用的是 <code>connect</code>
+函数，该函数能一举写上通信双方的地址，而我用的是 <code>bind</code>
+函数，只能先写上我的地址，原因是此时我还不知道谁写了一封信寄给了我。</p>
 <p><code>bind</code> 函数的形式如下：</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/socket.h&gt;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> bind<span class="op">(</span><span class="dt">int</span> sockfd<span class="op">,</span> <span class="dt">const</span> <span class="kw">struct</span> sockaddr <span class="op">*</span>addr<span class="op">,</span> socklen_t addrlen<span class="op">);</span></span></code></pre></div>
 <p>现在，调用它的条件已经都满足了，即</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> bind<span class="op">(</span>envelop<span class="op">,</span> res<span class="op">-&gt;</span>ai_addr<span class="op">,</span> res<span class="op">-&gt;</span>ai_addrlen<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> envelop <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="kw">struct</span> <span class="op">*</span>addrinfo it <span class="op">=</span> addr_list<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>ai_next<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        envelop <span class="op">=</span> socket<span class="op">(</span>it<span class="op">-&gt;</span>ai_family<span class="op">,</span> it<span class="op">-&gt;</span>ai_socktype<span class="op">,</span> it<span class="op">-&gt;</span>ai_protocol<span class="op">);</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>envelop <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> bind<span class="op">(</span>envelop<span class="op">,</span> res<span class="op">-&gt;</span>ai_addr<span class="op">,</span> res<span class="op">-&gt;</span>ai_addrlen<span class="op">);</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                close<span class="op">(</span>envelop<span class="op">);</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>freeaddrinfo<span class="op">(</span>addr_list<span class="op">);</span> <span class="co">/* 地址列表完成使命 */</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>envelop <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to bind!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>同之前遇到过的那些 socket API 函数类似，<code>bind</code>
-运行成功，返回 0，否则返回 -1。</p>
-<p>若 <code>bind</code> 运行成功，现在的 <code>envelop</code>
-还缺少给我写信的那个人的地址，它依然无法使用。</p>
+运行成功，返回 0，否则返回 -1。不过，即使 <code>bind</code>
+运行成功，所得的 <code>envelop</code>
+依然因缺少给我写信的那个人的地址而无法使用。</p>
 <h1 id="纷至沓来">纷至沓来</h1>
-<p>只有在我收到信的时候，我才能知道给我写信的人的地址。不过，我担心的并非无人给我写信，而是万一有无数人给我写信，我该怎么办？当然是一封一封处理，或一批一批处理。</p>
+<p>只有收到信的时候，我才能知道给我写信的人的地址。不过，我担心的并非是无人给我写信，而是若有无数人给我写信，我该当如何是从？当然是逐一处理，或逐批处理。</p>
 <p>不过，现在已经很难用简单地用现实中书信通信的方式进行比喻了。ywj
-用的信封，跟我用的信封实际上是不同的，因为 ywj
-只需要考虑和我一个人的通信，而我需要考虑与可能无数个人通信的问题。换言之，ywj
-的信封是「主动」的——她知道我的地址和她自己的地址，我的信封则是「被动」的——我只知道我的地址，与我通信的人的地址我需要先收到他的来信之后才知道，但是在
-socket API 网络编程中，默认的信封形式是 ywj 的这种主动形式的信封。</p>
-<p>被动形式的信封，需要用 <code>listen</code>
-函数予以标记，以告诉操作系统这个信封需要等待我收到信之后才能构造出来。<code>listen</code>
+用的信封，跟我用的信封实际上是不同的。因为 ywj
+只需要考虑和我一个人的通信，而我需要考虑与可能无数个人通信的问题，而在
+socket API 网络编程中，默认的信封形式是 ywj 那种。</p>
+<p>与多人通信用的信封，需要用 <code>listen</code>
+函数予以标定，告诉操作系统该信封需待我收到他人来信信之后方能完全地构造出来。<code>listen</code>
 函数的声明如下：</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/socket.h&gt;</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> listen<span class="op">(</span><span class="dt">int</span> sockfd<span class="op">,</span> <span class="dt">int</span> backlog<span class="op">);</span></span></code></pre></div>
-<p>它的作用是将一个还不完整的信封标记为被动形式，并声明该信封一次性最多能支持多少封来信。<code>listen</code>
-函数实际上是在驱动操作系统为被动形式的信封构造两个序列，一个用于存储已经进入排队状态的来信，另一个用于存储暂时尚未获得排队资格的来信，前者最大的长度是
-<code>backlog</code>。另外，<code>listen</code> 也会驱动操作系统监听
-<code>sockfd</code>
-所绑定的端口，将到来的信件塞入排队序列。若排队序列已满，则将未能获得排队资格的信件加入待排队序列，等到排队序列出现空位时，再将其填入。若待排队序列也满了，后续发来的信件会被丢弃。</p>
-<p>想必你已经对上述这枯燥乏味且语焉难详的讲解表示抗拒了。我们可以继续比喻。之前我们将寄信和收信的过程想得太多于简单了。现在，需要假设你是一个大人物或者明星，可能每天都会收到大量的信件，假设你专门成立了一个部门负责接收这些信件——你肯定没时间处理这些琐事。这个部门可能只有
-1 个人在处理这一事务，这个人叫
-<code>listen</code>。在每一天里，<code>listen</code>
-能接收的信件必定有一个数量限制，这个数量限制即
-<code>backlog</code>，他接收的信件则是进入了排队序列，等待你接下来的处理，他未接收的信件则进入待排队序列。若待排队序列也满了，例如
-<code>listen</code>
-所在的房间已经无容身之地了，他会将后续送来的信件扔在门外不予理睬。呜呼……总算将
-<code>listen</code> 的工作讲得有些清楚了。</p>
+<p>若理解 <code>listen</code>
+函数的作用，需要假设你是一个大人物。你可能每天都能收到大量信件，而你根本没时间操心收信这样的琐事。假设你专门成立了一个部门负责接收信件，并且这个部门可能只有
+1
+个人处理这一事务。在每一天里，他接收的信件必定有一个数量限制，这个数量限制即
+<code>backlog</code>。他将接收的信件整齐地叠放成一摞，这摞信件最多有
+<code>backlog</code>
+封，而且先收到的信总是放在后收到的信的上面，不妨将这摞信件称为 A
+摞。你要读信，每次只需拿 A
+摞最上面的那封。同时，他每次将最新接到的信塞到 A 摞的底部，一旦 A
+摞拥有信件的数量达到
+<code>backlog</code>，并且此时，还有新的信件陆续到来，他便另起一摞——姑且成为
+B 摞，同 A 摞，B
+摞也总是将先到的信件放在上面，后到的信件放在下面。当他一旦发现 A
+摞信件的数量减少，便从 B 摞的上面取走一些，塞到 A 摞下面，补充 A
+摞所缺。同样，B
+摞也有一个最大信件数量限制，只是我们不太清楚，但负责收信的这个人知道，在
+B 摞的信件数量超出限制，他便拒绝再接收新的信件了。这个收信人，并非
+<code>listen</code> 函数，后者只是用于通知他 A
+摞的信件数量限制，他实际上是操作系统中的某个底层网络子系统，在 socket
+API 层面上，他是一个无名英雄。呜呼……总算将 <code>listen</code>
+的工作讲得有些清楚了。</p>
 <p>与<code>listen</code> 函数的内涵相比，它的调用则非常简单：</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> b <span class="op">=</span> listen<span class="op">(</span>envelop<span class="op">,</span> <span class="dv">10</span><span class="op">);</span> <span class="co">/* 排队序列最大长度为 10 */</span></span></code></pre></div>
 <p>若 <code>listen</code> 成功运行，上述它的返回值 <code>b</code> 为
 0，否则为 -1。</p>
-<h1 id="用于回信的信封">用于回信的信封</h1>
-<p>经过 <code>listen</code>
-标记的信封，它实际上只是一个范本，需要将它传递于 <code>accept</code>
+<h1 id="信封的对称性">信封的对称性</h1>
+<p>经过 <code>listen</code> 标记的信封，需要将它传递于
+<code>accept</code>
 函数，由后者根据该范本（有我的地址）以及来信队列中第一个可获得的信件（有与我通信的人的地址）构造一个真正可用的信封——它含有通信双方的地址。</p>
-<p><code>accetp</code> 函数的声明如下：</p>
+<p><code>accept</code> 函数的声明如下：</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/socket.h&gt;</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> accept<span class="op">(</span><span class="dt">int</span> sockfd<span class="op">,</span> <span class="kw">struct</span> sockaddr <span class="op">*</span>_Nullable <span class="dt">restrict</span> addr<span class="op">,</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>           socklen_t <span class="op">*</span>_Nullable <span class="dt">restrict</span> addrlen<span class="op">);</span></span></code></pre></div>
-<p>它所需要的所有参数，我都有：</p>
+<p>它所需要的所有参数，我现在都有：</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> real_envelop <span class="op">=</span> accept<span class="op">(</span>envelop<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">);</span></span></code></pre></div>
 <p><code>accept</code>
 的返回值是一个真正可用的信封，通过它，我可以接收来自 ywj
@@ -241,9 +272,9 @@ socket API 编程的层面上可不必关心。</p>
 函数向 <code>real_envelop</code> 写信息即可，例如</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>other_buffer <span class="op">=</span> <span class="st">&quot;Hi, I am a threebody human!&quot;</span><span class="op">;</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="dt">ssize_t</span> m <span class="op">=</span> send<span class="op">(</span>real_envelop<span class="op">,</span> other_buffer<span class="op">,</span> strlen<span class="op">(</span>other_buffer<span class="op">),</span> <span class="dv">0</span><span class="op">);</span></span></code></pre></div>
-<p>信封用完后，需要关闭……不过，从现在开始，我们无需再使用信封作为 socket
+<p>信封用完后，需要关闭。从现在开始，我们无需再使用信封作为 socket
 的喻体了。socket
-是一个能接受信息，也能发送信息的文件。既然是文件，不再用它的时候，需要使用
+是一个能够用于接受信息，也能用于发送信息的文件。既然是文件，不再用它的时候，需使用
 <code>close</code> 函数予以关闭：</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>close<span class="op">(</span>real_envelop<span class="op">);</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>close<span class="op">(</span>envelop<span class="op">);</span></span></code></pre></div>
@@ -279,48 +310,43 @@ socket API 编程的层面上可不必关心。</p>
 <span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>                        close<span class="op">(</span>envelop<span class="op">);</span></span>
 <span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">continue</span><span class="op">;</span></span>
 <span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>                getnameinfo<span class="op">(</span>it<span class="op">-&gt;</span>ai_addr<span class="op">,</span> it<span class="op">-&gt;</span>ai_addrlen<span class="op">,</span></span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>                            host<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>host<span class="op">),</span></span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>                            port<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span>port<span class="op">),</span></span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>                            NI_NUMERICHOST <span class="op">|</span> NI_NUMERICSERV<span class="op">);</span></span>
-<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s</span><span class="st">:</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> host<span class="op">,</span> port<span class="op">);</span></span>
-<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>        freeaddrinfo<span class="op">(</span>addr_list<span class="op">);</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>envelop <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to bind!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
 <span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>        freeaddrinfo<span class="op">(</span>addr_list<span class="op">);</span></span>
-<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>envelop <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to bind!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>listen<span class="op">(</span>envelop<span class="op">,</span> <span class="dv">10</span><span class="op">)</span> <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to listen!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>listen<span class="op">(</span>envelop<span class="op">,</span> <span class="dv">10</span><span class="op">)</span> <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to listen!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> real_envelop <span class="op">=</span> accept<span class="op">(</span>envelop<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>real_envelop <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to accept!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
 <span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
 <span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> real_envelop <span class="op">=</span> accept<span class="op">(</span>envelop<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">);</span></span>
-<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>real_envelop <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to accept!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 接收信息 */</span></span>
-<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>        <span class="dt">const</span> <span class="dt">size_t</span> buffer_size <span class="op">=</span> <span class="dv">1024</span><span class="op">;</span></span>
-<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> buffer<span class="op">[</span>buffer_size<span class="op">];</span></span>
-<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ssize_t</span> n <span class="op">=</span> recv<span class="op">(</span>real_envelop<span class="op">,</span> buffer<span class="op">,</span> buffer_size <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;recv error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;Connection is closed!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
-<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>                buffer<span class="op">[</span>n<span class="op">]</span> <span class="op">=</span> <span class="ch">&#39;</span><span class="sc">\0</span><span class="ch">&#39;</span><span class="op">;</span></span>
-<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;Received </span><span class="sc">%zd</span><span class="st"> bytes: </span><span class="sc">\n%s\n</span><span class="st">&quot;</span><span class="op">,</span> n<span class="op">,</span> buffer<span class="op">);</span></span>
-<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 发送信息 */</span></span>
-<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>other_buffer <span class="op">=</span> <span class="st">&quot;Hi, I am a threebody human!&quot;</span><span class="op">;</span></span>
-<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ssize_t</span> m <span class="op">=</span> send<span class="op">(</span>real_envelop<span class="op">,</span> other_buffer<span class="op">,</span> strlen<span class="op">(</span>other_buffer<span class="op">),</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 善后工作 */</span></span>
-<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>real_envelop<span class="op">);</span></span>
-<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>envelop<span class="op">);</span></span>
-<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 接收信息 */</span></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>        <span class="dt">const</span> <span class="dt">size_t</span> buffer_size <span class="op">=</span> <span class="dv">1024</span><span class="op">;</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> buffer<span class="op">[</span>buffer_size<span class="op">];</span></span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ssize_t</span> n <span class="op">=</span> recv<span class="op">(</span>real_envelop<span class="op">,</span> buffer<span class="op">,</span> buffer_size <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;recv error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;Connection is closed!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>                buffer<span class="op">[</span>n<span class="op">]</span> <span class="op">=</span> <span class="ch">&#39;</span><span class="sc">\0</span><span class="ch">&#39;</span><span class="op">;</span></span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;Received </span><span class="sc">%zd</span><span class="st"> bytes: </span><span class="sc">\n%s\n</span><span class="st">&quot;</span><span class="op">,</span> n<span class="op">,</span> buffer<span class="op">);</span></span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 发送信息 */</span></span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>other_buffer <span class="op">=</span> <span class="st">&quot;Hi, I am a threebody human!&quot;</span><span class="op">;</span></span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ssize_t</span> m <span class="op">=</span> send<span class="op">(</span>real_envelop<span class="op">,</span> other_buffer<span class="op">,</span> strlen<span class="op">(</span>other_buffer<span class="op">),</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 关闭 socket */</span></span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>real_envelop<span class="op">);</span></span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>envelop<span class="op">);</span></span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>编译上述源码并执行：</p>
 <pre class="console"><code>$ gcc threebody.c -o threebody
 $ ./threebody</code></pre>

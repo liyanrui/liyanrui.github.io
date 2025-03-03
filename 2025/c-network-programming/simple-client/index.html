@@ -243,7 +243,7 @@ href="getaddrinfo/index.html">IP
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        memset<span class="op">(&amp;</span>hints<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="kw">struct</span> addrinfo<span class="op">));</span></span>
 <span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        hints<span class="op">.</span>ai_family <span class="op">=</span> AF_UNSPEC<span class="op">;</span></span>
 <span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        hints<span class="op">.</span>ai_socktype <span class="op">=</span> SOCK_STREAM<span class="op">;</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> getaddrinfo<span class="op">(</span><span class="st">&quot;www.threebody.com&quot;</span><span class="op">,</span> <span class="st">&quot;80&quot;</span><span class="op">,</span> <span class="op">&amp;</span>hints<span class="op">,</span> <span class="op">&amp;</span>addr_list<span class="op">);</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> getaddrinfo<span class="op">(</span><span class="st">&quot;www.threebody.com&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">,</span> <span class="op">&amp;</span>hints<span class="op">,</span> <span class="op">&amp;</span>addr_list<span class="op">);</span></span>
 <span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">!=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;getaddrinfo error: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> gai_strerror<span class="op">(</span>a<span class="op">));</span></span>
 <span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
@@ -271,7 +271,7 @@ href="getaddrinfo/index.html">IP
 <span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>earth_coordinate <span class="op">=</span> <span class="st">&quot;I am here!&quot;</span><span class="op">;</span></span>
 <span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n <span class="op">=</span> strlen<span class="op">(</span>earth_coordinate<span class="op">);</span></span>
 <span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ssize_t</span> b <span class="op">=</span> send<span class="op">(</span>envelop<span class="op">,</span> earth_coordinate<span class="op">,</span> n<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>b <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>b <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;send error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
 <span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
 <span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
@@ -286,7 +286,7 @@ href="getaddrinfo/index.html">IP
 程序以</p>
 <pre class="plain"><code>send error!</code></pre>
 <p>而告终。</p>
-<p>原因是，www.threebody.com 现在不存在了。</p>
+<p>原因是，www.threebody.com 对应的计算机并不存在。</p>
 <p>幸好它不存在。</p>
 <h1 id="总结">总结</h1>
 <p>socket 是一个记录着通信双方地址的信封。</p>

@@ -150,7 +150,7 @@ int main(void) {
         memset(&hints, 0, sizeof(struct addrinfo));
         hints.ai_family = AF_UNSPEC;
         hints.ai_socktype = SOCK_STREAM;
-        int a = getaddrinfo("www.threebody.com", "80", &hints, &addr_list);
+        int a = getaddrinfo("www.threebody.com", "8080", &hints, &addr_list);
         if (a != 0) {
                 fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(a));
                 exit(-1);
@@ -178,7 +178,7 @@ int main(void) {
         char *earth_coordinate = "I am here!";
         size_t n = strlen(earth_coordinate);
         ssize_t b = send(envelop, earth_coordinate, n, 0);
-        if (b < 0) {
+        if (b == -1) {
                 fprintf(stderr, "send error!\n");
                 exit(-1);
         }
@@ -207,7 +207,7 @@ send error!
 
 而告终。
 
-原因是，www.threebody.com 现在不存在了。
+原因是，www.threebody.com 对应的计算机并不存在。
 
 幸好它不存在。
 
