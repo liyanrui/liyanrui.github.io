@@ -192,8 +192,7 @@ id="toc-多个收信地址">多个收信地址？</a></li>
 <h1 id="多个收信地址">多个收信地址？</h1>
 <p>在此需要再次强调，<code>getaddrinfo</code>
 函数为信息的接受者构造的收信地址可能是多个，若已经忘记了，需要再度回顾网络编程的核心技术「<a
-href="getaddrinfo/index.html">IP
-地址和端口的数字化</a>」。我们需要从这些地址中选出一个可用的。何谓「可用的地址」？答案是，能够让
+href="getaddrinfo/index.html">网络地址</a>」。我们需要从这些地址中选出一个可用的。何谓「可用的地址」？答案是，能够让
 <code>connect</code> 函数成功运行的地址。</p>
 <p>以下代码便是可用地址的一个简单的选择过程：</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> envelop <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
