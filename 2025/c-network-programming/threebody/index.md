@@ -132,9 +132,35 @@ int accept(int sockfd, struct sockaddr *_Nullable restrict addr,
 int real_envelop = accept(envelop, NULL, NULL);
 ```
 
-`accept` 的返回值是一个真正可用的信封，通过它，我可以接收来自 ywj 的信息，也能通过它向 ywj 发送信息。若 `accept` 运行失败，会返回 -1。注意，`accept` 的第 2 个和第 3 个参数，用于存储 `accept` 从来信排队序列中获得的来信地址以及该地址的长度——根据地址长度可判断该地址是 IP v4 还是 IP v6 地址），不过这两个参数可以皆为 `NULL`，表示我并不需要记录给我写信的人的地址——以后可能会需要，届时再细究。
+`accept` 的返回值是一个真正可用的信封，通过它，我可以接收来自 ywj 的信息，也能通过它向 ywj 发送信息。若 `accept` 运行失败，会返回 -1。注意，`accept` 的第 2 个和第 3 个参数，用于存储 `accept` 从来信排队序列中获得的来信地址以及该地址的长度——根据地址长度可判断该地址是 IP v4 还是 IP v6 地址），倘若不关心它，可将这两个参数皆设为 `NULL`。
 
 基于同一个信封，可以收信，也可以发信，在现实中是不可能的，但在计算机网络系统中却可以，亦即 socket 具有对称性，同一个 socket 即可以用于接收信息，也可以用于发送信息，关键在于这个 socket 含有通信双方的地址，操作系统会根据信息是发送还是接收这两种不同情况使用这对地址，至于它是如何使用的，在 socket API 编程的层面上可不必关心。
+
+# 信是谁写的？
+
+上一节未深究 `accept` 的第 2 个和第 3 个参数的用途，倘若我想弄清楚是谁给我写了这封信，那么就需要在这两个参数上做文章。
+
+`accetp` 函数的第 2 个参数 `addr`，其类型为 `struct sockaddr *`，是网络地址指针。在「[网络地址](getaddrinfo/index.html)」中的「[迷雾重重](getaddrinfo/index.html#迷雾重重)」一节里，介绍了 `sockaddr` 结构体及其「派生」类型 `sockaddr_in`（IP v4 地址）和 `sockaddr_in6`（IP v6 地址），特别是可使用 `sockaddr` 类型的指针指向后两者的对象，但是在类型兼容方面，`sockaddr` 无法兼容 `sockaddr_in` 和 `sockaddr_in6`。
+
+为了让 `accept` 函数能够不关心 `sockaddr_in` 和 `sockaddr_in6` 的区别，需要使用 `sockaddr_storage` 类型作为 `accetp` 第 2 个参数通用的类型，例如
+
+```c
+struct sockaddr_storage addr;
+socklen_t addr_len;
+int real_envelop = accept(envelop, (struct sockaddr *)&addr, &addr_len);
+```
+
+若只是想查看给我发送信息的网络地址的文字形式，可以直接将 `accept` 获取的网络地址传递给 `getinfoname`，由后者转化成文字形式的 IP 地址和端口：
+
+```c
+char host[NI_MAXHOST], port[NI_MAXSERV];
+getnameinfo((struct sockaddr *)&addr, addrlen,
+            host, sizeof(host),
+            port, sizeof(port),
+            NI_NUMERICHOST | NI_NUMERICSERV);
+```
+
+`host` 存储来信者的 IP 地址，`port` 存储他所用的端口。
 
 # 读信和回信
 
@@ -197,7 +223,6 @@ int main(void) {
         }
         /* 从 envelop 到 real_envelop 构造可用的信封 */
         int envelop = -1;
-        char host[NI_MAXHOST], port[NI_MAXSERV];
         for (struct addrinfo *it = addr_list; it; it = it->ai_next) {
                 envelop = socket(it->ai_family, it->ai_socktype, it->ai_protocol);
                 if (envelop == -1) continue;
@@ -217,11 +242,19 @@ int main(void) {
                 fprintf(stderr, "failed to listen!\n");
                 exit(-1);
         }
-        int real_envelop = accept(envelop, NULL, NULL);
+        struct sockaddr_storage addr;
+        socklen_t addr_len;
+        int real_envelop = accept(envelop, (struct sockaddr *)&addr, &addr_len);
         if (real_envelop == -1) {
                 fprintf(stderr, "failed to accept!\n");
                 exit(-1);
         }
+        /* 获取来信者的 IP 地址和端口 */
+        char host[NI_MAXHOST], port[NI_MAXSERV];
+        getnameinfo((struct sockaddr *)&addr, addr_len,
+                    host, sizeof(host),
+                    port, sizeof(port),
+                    NI_NUMERICHOST | NI_NUMERICSERV);
         /* 接收信息 */
         const size_t buffer_size = 1024;
         char buffer[buffer_size];
@@ -233,7 +266,8 @@ int main(void) {
                 printf("Connection is closed!\n");
         } else {
                 buffer[n] = '\0';
-                printf("Received %zd bytes: \n%s\n", n, buffer);
+                printf("Received %zd bytes: \n%s from %s:%s\n",
+                       n, buffer, host, port);
         }
         /* 发送信息 */
         char *other_buffer = "Hi, I am a threebody human!";
@@ -255,7 +289,8 @@ $ ./threebody
 然后在 threebody 进程所在的同一台计算机上运行 ywj 程序，threebody 进程会打印以下内容
 
 ```console
-I am here!
+Received 10 bytes: 
+I am here! from 127.0.0.1:38066
 ```
 
 然后退出。threebody 打印的信息，正是 ywj 进程发送的，但是 threebody 发送给 ywj 的信息，后者收不到，因为后者尚未实现接收回信的功能。
