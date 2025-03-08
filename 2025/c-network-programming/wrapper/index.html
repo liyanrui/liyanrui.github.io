@@ -157,7 +157,7 @@ socket，后者是与某个客户端通信的 socket。</p>
 <p>拥有可通信的 <code>Socket</code>
 对象后，可基于以下两个方法发送和接受信息：</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> socket_send<span class="op">(</span>Socket <span class="op">*</span>x<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>message<span class="op">);</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>socket_recieve<span class="op">(</span>Socket <span class="op">*</span>x<span class="op">);</span></span></code></pre></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>socket_receive<span class="op">(</span>Socket <span class="op">*</span>x<span class="op">);</span></span></code></pre></div>
 <p><code>socket_free</code> 释放 <code>Socket</code>
 对象占用的内存：</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> socket_free<span class="op">(</span>Socket <span class="op">*</span>x<span class="op">);</span></span></code></pre></div>
@@ -290,7 +290,7 @@ socket，即 <code>listen</code> 成员（不要与 socket API 中的
 成员接受信息，需要一点技巧。因为无法预知接受的信息长度（字节数），故而需要用一个定长的缓冲区，从
 socket
 中循环读取信息，并将每次读取的信息合并到一个动态增长的字符串中：</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>socket_recieve<span class="op">(</span>Socket <span class="op">*</span>x<span class="op">)</span> <span class="op">{</span></span>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>socket_receive<span class="op">(</span>Socket <span class="op">*</span>x<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> m <span class="op">=</span> <span class="dv">1024</span><span class="op">;</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>buffer <span class="op">=</span> malloc<span class="op">(</span>m <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">char</span><span class="op">));</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
@@ -338,7 +338,7 @@ href="network.c">network.c</a> 文件。</p>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        Socket <span class="op">*</span>x <span class="op">=</span> client_socket<span class="op">(</span><span class="st">&quot;www.threebody.com&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">);</span></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        socket_send<span class="op">(</span>x<span class="op">,</span> <span class="st">&quot;I am here!&quot;</span><span class="op">);</span></span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span> <span class="co">/* 从 x 读取信息 */</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> <span class="op">*</span>msg <span class="op">=</span> socket_recieve<span class="op">(</span>x<span class="op">);</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> <span class="op">*</span>msg <span class="op">=</span> socket_receive<span class="op">(</span>x<span class="op">);</span></span>
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s</span><span class="st">:</span><span class="sc">%s</span><span class="st"> said: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">-&gt;</span>host<span class="op">,</span> x<span class="op">-&gt;</span>port<span class="op">,</span> msg<span class="op">);</span></span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>                free<span class="op">(</span>msg<span class="op">);</span></span>
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
@@ -356,11 +356,11 @@ href="network.c">network.c</a> 文件。</p>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        Socket <span class="op">*</span>x <span class="op">=</span> server_socket<span class="op">(</span><span class="st">&quot;localhost&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">);</span></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        server_socket_accept<span class="op">(</span>x<span class="op">);</span></span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span> <span class="co">/* 从 x 读取信息 */</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> <span class="op">*</span>msg <span class="op">=</span> socket_recieve<span class="op">(</span>x<span class="op">);</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> <span class="op">*</span>msg <span class="op">=</span> socket_receive<span class="op">(</span>x<span class="op">);</span></span>
 <span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s</span><span class="st">:</span><span class="sc">%s</span><span class="st"> said: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">-&gt;</span>host<span class="op">,</span> x<span class="op">-&gt;</span>port<span class="op">,</span> msg<span class="op">);</span></span>
 <span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                free<span class="op">(</span>msg<span class="op">);</span></span>
 <span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        socket_send<span class="op">(</span>x<span class="op">,</span> <span class="st">&quot;Hi, I recieved your message!&quot;</span><span class="op">);</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        socket_send<span class="op">(</span>x<span class="op">,</span> <span class="st">&quot;Hi, I received your message!&quot;</span><span class="op">);</span></span>
 <span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>x<span class="op">-&gt;</span>connection<span class="op">);</span></span>
 <span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>x<span class="op">-&gt;</span>listen<span class="op">);</span></span>
 <span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>        socket_free<span class="op">(</span>x<span class="op">);</span></span>

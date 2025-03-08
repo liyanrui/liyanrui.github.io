@@ -20,7 +20,7 @@ Socket *server_socket(const char *host, const char *port);
 void server_socket_accept(Socket *x);
 
 void socket_send(Socket *x, const char *message);
-char *socket_recieve(Socket *x);
+char *socket_receive(Socket *x);
 
 void socket_free(Socket *x);
 

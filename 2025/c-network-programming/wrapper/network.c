@@ -97,7 +97,7 @@ void socket_send(Socket *x, const char *message) {
         }
 }
 
-char *socket_recieve(Socket *x) {
+char *socket_receive(Socket *x) {
         size_t m = 1024;
         char *buffer = malloc(m * sizeof(char));
         size_t n = 0;

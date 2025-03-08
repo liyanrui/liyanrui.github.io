@@ -48,7 +48,7 @@ void server_socket_accept(Socket *x);
 
 ```c
 void socket_send(Socket *x, const char *message);
-char *socket_recieve(Socket *x);
+char *socket_receive(Socket *x);
 ```
 
 `socket_free` 释放 `Socket` 对象占用的内存：
@@ -206,7 +206,7 @@ void socket_send(Socket *x, const char *message) {
 从 `Socket` 对象的 `connection` 成员接受信息，需要一点技巧。因为无法预知接受的信息长度（字节数），故而需要用一个定长的缓冲区，从 socket 中循环读取信息，并将每次读取的信息合并到一个动态增长的字符串中：
 
 ```c
-char *socket_recieve(Socket *x) {
+char *socket_receive(Socket *x) {
         size_t m = 1024;
         char *buffer = malloc(m * sizeof(char));
         size_t n = 0;
@@ -262,7 +262,7 @@ int main(void) {
         Socket *x = client_socket("www.threebody.com", "8080");
         socket_send(x, "I am here!");
         { /* 从 x 读取信息 */
-                char *msg = socket_recieve(x);
+                char *msg = socket_receive(x);
                 printf("%s:%s said: %s\n", x->host, x->port, msg);
                 free(msg);
         }
@@ -288,11 +288,11 @@ int main(void) {
         Socket *x = server_socket("localhost", "8080");
         server_socket_accept(x);
         { /* 从 x 读取信息 */
-                char *msg = socket_recieve(x);
+                char *msg = socket_receive(x);
                 printf("%s:%s said: %s\n", x->host, x->port, msg);
                 free(msg);
         }
-        socket_send(x, "Hi, I recieved your message!");
+        socket_send(x, "Hi, I received your message!");
         close(x->connection);
         close(x->listen);
         socket_free(x);
