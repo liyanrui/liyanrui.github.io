@@ -261,8 +261,12 @@ v6 地址），特别是可使用 <code>sockaddr</code>
 <code>sockaddr_in6</code> 的区别，需要使用 <code>sockaddr_storage</code>
 类型作为 <code>accetp</code> 第 2 个参数通用的类型，例如</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> sockaddr_storage addr<span class="op">;</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>socklen_t addr_len<span class="op">;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>socklen_t addr_len <span class="op">=</span> <span class="kw">sizeof</span><span class="op">(</span>addr<span class="op">);</span>  <span class="co">/* 务必将其初始化为 addr 的大小 */</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> real_envelop <span class="op">=</span> accept<span class="op">(</span>envelop<span class="op">,</span> <span class="op">(</span><span class="kw">struct</span> sockaddr <span class="op">*)&amp;</span>addr<span class="op">,</span> <span class="op">&amp;</span>addr_len<span class="op">);</span></span></code></pre></div>
+<p>注意，<code>accept</code> 的第 3 个参数 <code>addr_len</code>
+必须初始化为第 2 个参数所指向的结构体对象占用的内存大小（字节数）。当
+<code>accept</code> 返回后， 第 2
+个参数所指向的结构体对象实际占用的内存大小会保存在第 3 个参数中。</p>
 <p>若只是想查看给我发送信息的网络地址的文字形式，可以直接将
 <code>accept</code> 获取的网络地址传递给
 <code>getinfoname</code>，由后者转化成文字形式的 IP 地址和端口：</p>
@@ -350,7 +354,7 @@ v6 地址），特别是可使用 <code>sockaddr</code>
 <span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
 <span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
 <span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>        <span class="kw">struct</span> sockaddr_storage addr<span class="op">;</span></span>
-<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>        socklen_t addr_len<span class="op">;</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>        socklen_t addr_len <span class="op">=</span> <span class="kw">sizeof</span><span class="op">(</span>addr<span class="op">);</span></span>
 <span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> real_envelop <span class="op">=</span> accept<span class="op">(</span>envelop<span class="op">,</span> <span class="op">(</span><span class="kw">struct</span> sockaddr <span class="op">*)&amp;</span>addr<span class="op">,</span> <span class="op">&amp;</span>addr_len<span class="op">);</span></span>
 <span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>real_envelop <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to accept!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>

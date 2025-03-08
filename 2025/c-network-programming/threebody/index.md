@@ -146,9 +146,11 @@ int real_envelop = accept(envelop, NULL, NULL);
 
 ```c
 struct sockaddr_storage addr;
-socklen_t addr_len;
+socklen_t addr_len = sizeof(addr);  /* 务必将其初始化为 addr 的大小 */
 int real_envelop = accept(envelop, (struct sockaddr *)&addr, &addr_len);
 ```
+
+注意，`accept` 的第 3 个参数 `addr_len` 必须初始化为第 2 个参数所指向的结构体对象占用的内存大小（字节数）。当 `accept` 返回后， 第 2 个参数所指向的结构体对象实际占用的内存大小会保存在第 3 个参数中。
 
 若只是想查看给我发送信息的网络地址的文字形式，可以直接将 `accept` 获取的网络地址传递给 `getinfoname`，由后者转化成文字形式的 IP 地址和端口：
 
@@ -243,7 +245,7 @@ int main(void) {
                 exit(-1);
         }
         struct sockaddr_storage addr;
-        socklen_t addr_len;
+        socklen_t addr_len = sizeof(addr);
         int real_envelop = accept(envelop, (struct sockaddr *)&addr, &addr_len);
         if (real_envelop == -1) {
                 fprintf(stderr, "failed to accept!\n");
