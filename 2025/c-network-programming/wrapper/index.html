@@ -121,16 +121,16 @@ ywj 和 threebody</a></li>
 <p>现在，你已经实现了一个简单的 C/S
 架构的程序，这个程序分为两个部分，一个是
 ywj，它是客户端（Client），另一个是
-threebody，它是服务端（Server），这两部分通过 socket
+threebody，它是服务端（Server）。这两个部分通过 socket
 合为一体。不妨再勇敢一些，Internet 也不过是使用不计其数的 socket
 将各个部分连接起来的一个程序。你想到了……量子力学么？通信即测量，网络即量子。</p>
 <p>不过，还是尽快从无尽的遐想中回归，看一看 ywj.c 和 threebody.c 中的
 <code>main</code>
 函数，它们的代码已经有些不清晰了，像桌面上连接计算机的电源线以及乱七八糟的信号线和数据线，我们需要尝试用面向对象的办法收纳这些代码。</p>
 <h1 id="类与方法">类与方法</h1>
-<p>C 语言在语法上不能像 C++、Java、Java
+<p>C 语言在语法上不能像 C++、C#、Java
 等语言那样优雅地支持面向对象编程，但是若将面向对象编程视为一种编程范式，C
-在一定程度上可以实现它，例如可以用结构体模拟类，将类名作为一些函数名的前缀以模拟类的方法。</p>
+在一定程度上可以实现其基本思想。我们可以用结构体模拟类，用小写的类名作为函数名的前缀从而模拟对象的方法。</p>
 <p>首先，定义一个类 <code>Socket</code>：</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> listen<span class="op">;</span></span>

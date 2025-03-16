@@ -259,6 +259,10 @@ socket 设为非阻塞状态，只需调用下面这个封装好的函数：</p>
 与 <code>FILE SET FLAGS</code> 的缩写，可驱使 <code>fcntl</code>
 获取或设定文件状态标志。文件状态标志是一组简单的二进制位，它们可以通过位运算符
 <code>|</code> 进行组合，从而为文件设定多种状态。</p>
+<p><code>fcntl</code> 的返回值依赖于所用的操作指令。<code>F_GETFL</code>
+会让 <code>fcntl</code> 返回文件的当前状态标志，而 <code>F_SETFL</code>
+会让它返回 0。还有一些其他的情况，现在用不到。如果 <code>fcntl</code>
+返回 -1，表示它运行失败了。</p>
 <p>像 <code>fcntl</code>
 这样的函数，它的参数以及所用的位运算，都散发着古奥的气息。原因是这类函数在早期的
 Unix

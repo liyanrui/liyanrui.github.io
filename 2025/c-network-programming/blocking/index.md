@@ -158,6 +158,8 @@ int socket_nonblock(int x) {
 
 真正令初学者沮丧的是这段代码中的缩写。首先，`fcntl`，是 `file control` 的意思，即控制文件状态。`F_GETFL` 和 `F_SETFL` 都是操作指令，分别是 `FILE GET FLAGS` 与 `FILE SET FLAGS` 的缩写，可驱使 `fcntl` 获取或设定文件状态标志。文件状态标志是一组简单的二进制位，它们可以通过位运算符 `|` 进行组合，从而为文件设定多种状态。
 
+`fcntl` 的返回值依赖于所用的操作指令。`F_GETFL` 会让 `fcntl` 返回文件的当前状态标志，而 `F_SETFL` 会让它返回 0。还有一些其他的情况，现在用不到。如果 `fcntl` 返回 -1，表示它运行失败了。
+
 像 `fcntl` 这样的函数，它的参数以及所用的位运算，都散发着古奥的气息。原因是这类函数在早期的 Unix 系统诞生时就存在了。函数名与操作指令之所以简写，犹如在纸张尚未发明的年代，古人在竹简上写着简洁但难懂的语句。理解它们，然后用更为现代的名字封装它们吧。
 
 将上述 `socket_nonblock` 函数的定义添加到 [network.c](../wrapper/network.c)，然后在 [network.h](../wrapper/network.h) 增加 `fcntl` 所需的头文件包含语句和 `socket_nonblock` 的声明：
