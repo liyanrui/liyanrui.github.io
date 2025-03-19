@@ -1,4 +1,5 @@
 #include <errno.h>
+#include <sys/wait.h>
 #include "network.h"
 
 static struct addrinfo *get_address_list(const char *host,
