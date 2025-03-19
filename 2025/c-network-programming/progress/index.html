@@ -169,8 +169,8 @@ I am 33990.</code></pre>
 的两次返回的值之一，因为这两次返回是同时的，因此我无法使用「第一次返回的值或第二次返回的值」之类的说法。</p>
 <p>重新编译 foo.c 并运行所得程序，则程序里的两次 <code>printf</code>
 打印的内容是相同的，例如</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>I am <span class="fl">41590.</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>I am <span class="fl">41590.</span></span></code></pre></div>
+<pre><code>I am 41590.
+I am 41590.</code></pre>
 <p>这说明，对于 <code>else</code> 分支里的那个进程而言，它持有
 <code>if</code> 分支里的进程的 ID。</p>
 <p>对 foo.c 再略作修改：</p>
@@ -185,9 +185,9 @@ I am 33990.</code></pre>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>再度编译 foo.c，然后运行所得程序，结果如下：</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>I am <span class="fl">41851.</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="dv">41852</span><span class="op">,</span> <span class="dv">41851</span><span class="op">)</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="dv">41852</span><span class="op">)</span></span></code></pre></div>
+<pre><code>I am 41851.
+(41852, 41851)
+(0, 41852)</code></pre>
 <p>现在能看出一些端倪了么？<code>main</code> 函数所在的进程，ID 为
 41851，在调用 <code>fork</code> 之后，在 <code>else</code>
 分支里的进程恰好是 <code>main</code> 函数所在的进程，而 <code>if</code>
@@ -248,7 +248,7 @@ CPU
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>假设上述源码编译成的程序为 foo，运行 foo 之后，可通过以下命令查看是
 foo 的子进程是否为僵尸进程：</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>$ ps aux <span class="op">|</span> grep foo</span></code></pre></div>
+<pre class="console"><code>$ ps aux | grep foo</code></pre>
 <p>在我的机器上，上述命令给出的结果为</p>
 <pre><code>...    9232  ...   S+   ... ./foo
 ...    9233  ...   Z+   ... [foo] &lt;defunct&gt;</code></pre>
@@ -468,8 +468,8 @@ ID。若在父进程等待期间，快速在另一个终端用 <code>kill</code>
 <span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>上面示例，在 <code>fork</code>
 出子进程后，父进程进入主动阻塞模式，相当于它在执行很多其他任务，同时等待子进程退出信号。我的试验结果如下：</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>子进程：我是 <span class="dv">19221</span>！</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>父进程：<span class="dv">19221</span> 退出了！</span></code></pre></div>
+<pre><code>子进程：我是 19221！
+父进程：19221 退出了！</code></pre>
 <p>试验结果出现后，可使用 Ctrl + C，即 Ctrl 和 C
 的组合键关闭父进程。这个组合键可驱动操作系统向终端前台正在运行的进程发送
 <code>SIGINT</code>
