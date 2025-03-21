@@ -192,46 +192,29 @@ ywj 进程。若你用的 Linux 是 Ubuntu 或其衍生版本，且无 parallel
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>此时，threebody 进程便是一个永不休息的服务端了。</p>
 <h1 id="阻塞">阻塞</h1>
-<p>现在，对「<a href="../wrapper/index.html">封装</a>」中重写的 ywj
-程序再略作修改，结果为 new-ywj.c：</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* new-ywj.c */</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;network.h&quot;</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        Socket <span class="op">*</span>x <span class="op">=</span> client_socket<span class="op">(</span><span class="st">&quot;www.threebody.com&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">);</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        socket_send<span class="op">(</span>x<span class="op">,</span> <span class="st">&quot;I am here!&quot;</span><span class="op">);</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span> <span class="co">/* 从 x 读取信息 */</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> <span class="op">*</span>msg <span class="op">=</span> socket_receive<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s</span><span class="st">:</span><span class="sc">%s</span><span class="st"> said: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">-&gt;</span>host<span class="op">,</span> x<span class="op">-&gt;</span>port<span class="op">,</span> msg<span class="op">);</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                free<span class="op">(</span>msg<span class="op">);</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        sleep<span class="op">(</span><span class="dv">3</span><span class="op">);</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>x<span class="op">-&gt;</span>connection<span class="op">);</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        socket_free<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>与 ywj.c 相比，new-ywj.c 的改写之处仅仅是在关闭 socket 之前增加了
-<code>sleep(3)</code>，将该程序与 threebody 的通信的时间延长了约 3
-秒。</p>
-<p>编译 new-ywj.c，得到 new-ywj 程序：</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>$ gcc network<span class="op">.</span>c new<span class="op">-</span>ywj<span class="op">.</span>c <span class="op">-</span>o new<span class="op">-</span>ywj</span></code></pre></div>
-<p>然后，并行运行 new-ywj 和 ywj：</p>
-<pre class="console"><code>$ parallel ::: ./new-ywj ./ywj</code></pre>
-<p>可以发现，虽然 ywj 与 new-ywj 是同时运行的，但 ywj 可能要晚收到
+<p>在上一节实现的 threebody.c 中的 <code>close(x-&gt;connection)</code>
+的前面插入</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sleep<span class="op">(</span><span class="dv">3</span><span class="op">);</span></span></code></pre></div>
+<p>然后重新编译 threebody.c，得到 threebody 程序。运行 threebody：</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>$ <span class="op">./</span>threebody</span></code></pre></div>
+<p>继而同时运行 ywj 两次：</p>
+<pre class="console"><code>$ parallel ::: ./ywj ./ywj</code></pre>
+<p>可以发现，虽然两个 ywj 进程是同时运行的，但是两者中有一个晚收到
 threebody 给它发送的信息约 3 秒。这意味着什么呢？</p>
-<p>意味着，threebody 是逐一与客户端通信的，即可能会与 new-ywj
-进程通信完毕后，再与 ywj
+<p>意味着，threebody 是逐一与客户端通信的，即与一个 ywj
+进程通信完毕后，再与另一个 ywj
 进程通信。这种形式的通信，称为阻塞式通信。该通信形式，在 threebody
-看来，是非常自然的——有很多人给我发信息，我自然是要逐一进行处理的，但在
-ywj
-看来，非常不合理——我是与其他进程同时发起了通信，为什么本该很慢的它们却很快得到了回复，而我需要等待很久？</p>
+看来，是非常自然的——有很多人给我发信息，我自然是要逐一进行处理的，但在最后与
+threebody 连接并通信的 ywj
+看来，非常不合理——我是与其他进程同时发起了通信，为什么么它们却很快得到了回复，而我需要等待很久呢？</p>
 <p>在服务端造成通信阻塞的 socket API 函数是封装在
 <code>server_socket_accept</code> 中的
 <code>accept</code>，该函数在默认情况下，会逐一接受客户端的连接，从而构造与客户端通信的
-socket。实际上，用于接受信息的 <code>recv</code>
+socket，在与当前连接的客户端通信过程结束之前，<code>accept</code>
+不会与其他客户端建立连接。实际上，用于接受信息的 <code>recv</code>
 也是阻塞的，因为该函数要等待位于 socket 另一端的进程发送信息。</p>
-<p>一些非 socket API 函数也会造成进程阻塞，例如 <code>sleep</code>
-的函数以及等待用户输入信息的 <code>scanf</code>
+<p>一些非 socket API 函数也会造成进程阻塞，例如 threebody.c 中使用的
+<code>sleep</code> 的函数以及等待用户输入信息的 <code>scanf</code>
 函数。进程被阻塞时，操作系统会将其由「运行」状态切换为「等待」状态，此时进程不会占用
 CPU，直到特定事件发生（例如有客户端发起网络连接），使其能够继续运行。</p>
 <p>实际上，并非是某些函数导致进程阻塞，而是文件的状态设置成阻塞模式时，在一些特殊情况下，会导致读写文件的进程进入等待状态，只是当时恰好该进程的某个函数正在读写文件，从而形成了是这些函数阻塞了进程的错觉——可能只是我有这种错觉。文件阻塞模式导致的进程阻塞，是被动的。由
@@ -316,26 +299,26 @@ $ ./threebody</code></pre>
 <p>操作系统将文件的状态默认设定为阻塞，是为了保证访问文件的进程不会出错。若我们决定将文件状态设定为非阻塞，便需要在进程某处主动设置一个阻塞，以保证程序不会因失去阻塞而无法遏制地迅速消亡。</p>
 <p>前文说过，<code>sleep</code>
 之类的函数能实现进程的主动阻塞。倘若在上一节的 threebody.c 的 while
-循环的开始增加 <code>sleep</code> 主动阻塞：</p>
+循环开始时增加 <code>sleep</code> 主动阻塞：</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>        server_socket_accept<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        socket_nonblock<span class="op">(</span>x<span class="op">-&gt;</span>connection<span class="op">);</span> <span class="co">/* 为通信 socket 设定非阻塞标志 */</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        sleep<span class="op">(</span><span class="dv">10</span><span class="op">);</span> <span class="co">/* 主动阻塞进程 10 秒 */</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>        sleep<span class="op">(</span><span class="dv">10</span><span class="op">);</span> <span class="co">/* 主动阻塞进程 10 秒 */</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        server_socket_accept<span class="op">(</span>x<span class="op">);</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        socket_nonblock<span class="op">(</span>x<span class="op">-&gt;</span>connection<span class="op">);</span> <span class="co">/* 为通信 socket 设定非阻塞标志 */</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>那么在改写的 threebody 程序运行后的 10 秒内，并行运行 new-ywj 和
-ywj，它们皆能与 threebody 正常通信，但是在 10 秒之后 threebody
-依然会因没有新的连接而出错退出。不过，若 new-ywj 与 threebody
-先建立了连接，则 ywj 依然需要等 new-ywj 约 3 秒，方能与 threebody
-通信，亦即无论服务端是被动阻塞还是主动阻塞，一个客户端与服务端较长时间的通信倒置其他客户端不得不等待，该问题依然无法解决。</p>
-<p>不过，主动阻塞依然有一个好处。若理解这一点，请观察</p>
+<p>那么在改写的 threebody 程序运行后的 10 秒内，并行运行两次
+ywj，它们皆能与 threebody 正常通信，但是在第 3 个 10 秒之后 threebody
+依然会因没有新的连接而出错退出。不过，两个 ywj 进程收到 threebody
+的回复需要间隔 10
+秒，亦即无论服务端是被动阻塞还是主动阻塞，一个客户端与服务端较长时间的通信倒置其他客户端不得不等待。</p>
+<p>不过，主动阻塞有一个好处。若理解这一点，请观察</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>和</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        sleep<span class="op">(</span><span class="dv">10</span><span class="op">);</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>        sleep<span class="op">(</span><span class="dv">10</span><span class="op">);</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>虽然都是无休止的循环，但前者会一直占用 CPU，而后者是每隔 10
 秒占用片刻的 CPU。我们需要设法让主动阻塞变得更灵活一些，即不像

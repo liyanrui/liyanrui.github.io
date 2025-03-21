@@ -13,3 +13,4 @@ date: 03 月 01 日
 * <span class="post-date">03 月 15 日</span>[同步 I/O 多路复用](io-multiplexing/index.html)：拒绝内耗，见机行事。
 * <span class="post-date">03 月 16 日</span>[第一朵乌云，散了！](socket-and-select/index.html)：我们有了初步拥抱这个世界的能力。
 * <span class="post-date">03 月 17 日</span>[世界是你的，也是我的](progress/index.html)：我们都有美好的未来！
+* <span class="post-date">03 月 21 日</span>[坍缩](server-with-multiprogress/index.html)：也许是电子与生俱来的能力。

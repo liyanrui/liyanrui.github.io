@@ -96,48 +96,31 @@ int main(void) {
 
 # 阻塞
 
-现在，对「[封装](../wrapper/index.html)」中重写的 ywj 程序再略作修改，结果为 new-ywj.c：
+在上一节实现的 threebody.c 中的 `close(x->connection)` 的前面插入
 
 ```c
-/* new-ywj.c */
-#include "network.h"
-
-int main(void) {
-        Socket *x = client_socket("www.threebody.com", "8080");
-        socket_send(x, "I am here!");
-        { /* 从 x 读取信息 */
-                char *msg = socket_receive(x);
-                printf("%s:%s said: %s\n", x->host, x->port, msg);
-                free(msg);
-        }
-        sleep(3);
-        close(x->connection);
-        socket_free(x);
-        return 0;
-}
+sleep(3);
 ```
 
-与 ywj.c 相比，new-ywj.c 的改写之处仅仅是在关闭 socket 之前增加了 `sleep(3)`，将该程序与 threebody 的通信的时间延长了约 3 秒。
-
-编译 new-ywj.c，得到 new-ywj 程序：
+然后重新编译 threebody.c，得到 threebody 程序。运行 threebody：
 
 ```c
-$ gcc network.c new-ywj.c -o new-ywj
+$ ./threebody
 ```
 
-然后，并行运行 new-ywj 和 ywj：
+继而同时运行 ywj 两次：
 
 ```console
-$ parallel ::: ./new-ywj ./ywj
+$ parallel ::: ./ywj ./ywj
 ```
 
-可以发现，虽然 ywj 与 new-ywj 是同时运行的，但 ywj 可能要晚收到 threebody 给它发送的信息约 3 秒。这意味着什么呢？
+可以发现，虽然两个 ywj 进程是同时运行的，但是两者中有一个晚收到 threebody 给它发送的信息约 3 秒。这意味着什么呢？
 
-意味着，threebody 是逐一与客户端通信的，即可能会与 new-ywj 进程通信完毕后，再与 ywj 进程通信。这种形式的通信，称为阻塞式通信。该通信形式，在 threebody 看来，是非常自然的——有很多人给我发信息，我自然是要逐一进行处理的，但在 ywj 看来，非常不合理——我是与其他进程同时发起了通信，为什么本该很慢的它们却很快得到了回复，而我需要等待很久？
+意味着，threebody 是逐一与客户端通信的，即与一个 ywj 进程通信完毕后，再与另一个 ywj 进程通信。这种形式的通信，称为阻塞式通信。该通信形式，在 threebody 看来，是非常自然的——有很多人给我发信息，我自然是要逐一进行处理的，但在最后与 threebody 连接并通信的 ywj 看来，非常不合理——我是与其他进程同时发起了通信，为什么么它们却很快得到了回复，而我需要等待很久呢？
 
-在服务端造成通信阻塞的 socket API 函数是封装在 `server_socket_accept` 中的 `accept`，该函数在默认情况下，会逐一接受客户端的连接，从而构造与客户端通信的 socket。实际上，用于接受信息的 `recv` 也是阻塞的，因为该函数要等待位于 socket 另一端的进程发送信息。
+在服务端造成通信阻塞的 socket API 函数是封装在 `server_socket_accept` 中的 `accept`，该函数在默认情况下，会逐一接受客户端的连接，从而构造与客户端通信的 socket，在与当前连接的客户端通信过程结束之前，`accept` 不会与其他客户端建立连接。实际上，用于接受信息的 `recv` 也是阻塞的，因为该函数要等待位于 socket 另一端的进程发送信息。
 
-一些非 socket API 函数也会造成进程阻塞，例如 `sleep` 的函数以及等待用户输入信息的 `scanf` 函数。进程被阻塞时，操作系统会将其由「运行」状态切换为「等待」状态，此时进程不会占用 CPU，直到特定事件发生（例如有客户端发起网络连接），使其能够继续运行。
+一些非 socket API 函数也会造成进程阻塞，例如 threebody.c 中使用的 `sleep` 的函数以及等待用户输入信息的 `scanf` 函数。进程被阻塞时，操作系统会将其由「运行」状态切换为「等待」状态，此时进程不会占用 CPU，直到特定事件发生（例如有客户端发起网络连接），使其能够继续运行。
 
 实际上，并非是某些函数导致进程阻塞，而是文件的状态设置成阻塞模式时，在一些特殊情况下，会导致读写文件的进程进入等待状态，只是当时恰好该进程的某个函数正在读写文件，从而形成了是这些函数阻塞了进程的错觉——可能只是我有这种错觉。文件阻塞模式导致的进程阻塞，是被动的。由 `sleep` 函数以及其他一些时间延迟函数导致的进程阻塞，是主动的。
 
@@ -223,20 +206,20 @@ failed to accept!
 
 操作系统将文件的状态默认设定为阻塞，是为了保证访问文件的进程不会出错。若我们决定将文件状态设定为非阻塞，便需要在进程某处主动设置一个阻塞，以保证程序不会因失去阻塞而无法遏制地迅速消亡。
 
-前文说过，`sleep` 之类的函数能实现进程的主动阻塞。倘若在上一节的 threebody.c 的 while 循环的开始增加 `sleep` 主动阻塞：
+前文说过，`sleep` 之类的函数能实现进程的主动阻塞。倘若在上一节的 threebody.c 的 while 循环开始时增加 `sleep` 主动阻塞：
 
 ```c
 while (1) {
+        sleep(10); /* 主动阻塞进程 10 秒 */
         server_socket_accept(x);
         socket_nonblock(x->connection); /* 为通信 socket 设定非阻塞标志 */
         ... ... ...
-        sleep(10); /* 主动阻塞进程 10 秒 */
 }
 ```
 
-那么在改写的 threebody 程序运行后的 10 秒内，并行运行 new-ywj 和 ywj，它们皆能与 threebody 正常通信，但是在 10 秒之后 threebody 依然会因没有新的连接而出错退出。不过，若 new-ywj 与 threebody 先建立了连接，则 ywj 依然需要等 new-ywj 约 3 秒，方能与 threebody 通信，亦即无论服务端是被动阻塞还是主动阻塞，一个客户端与服务端较长时间的通信倒置其他客户端不得不等待，该问题依然无法解决。
+那么在改写的 threebody 程序运行后的 10 秒内，并行运行两次 ywj，它们皆能与 threebody 正常通信，但是在第 3 个 10 秒之后 threebody 依然会因没有新的连接而出错退出。不过，两个 ywj 进程收到 threebody 的回复需要间隔 10 秒，亦即无论服务端是被动阻塞还是主动阻塞，一个客户端与服务端较长时间的通信倒置其他客户端不得不等待。
 
-不过，主动阻塞依然有一个好处。若理解这一点，请观察
+不过，主动阻塞有一个好处。若理解这一点，请观察
 
 ```c
 while (1) {
@@ -248,8 +231,8 @@ while (1) {
 
 ```c
 while (1) {
-        ... ... ...
         sleep(10);
+        ... ... ...
 }
 ```
 
