@@ -1,5 +1,5 @@
 ---
-title: 这就是网络编程？
+title: 网络编程修行录
 abstract: 我在想方设法学会 C socket API 网络编程。
 date: 03 月 01 日
 ...
@@ -14,3 +14,4 @@ date: 03 月 01 日
 * <span class="post-date">03 月 16 日</span>[第一朵乌云，散了！](socket-and-select/index.html)：我们有了初步拥抱这个世界的能力。
 * <span class="post-date">03 月 17 日</span>[世界是你的，也是我的](progress/index.html)：我们都有美好的未来！
 * <span class="post-date">03 月 21 日</span>[坍缩](server-with-multiprogress/index.html)：也许是电子与生俱来的能力。
+* <span class="post-date">03 月 25 日</span>[弦动](thread/index.html)：奏出妙音，绝非易事，向来如此！
