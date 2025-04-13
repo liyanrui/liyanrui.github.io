@@ -1,20 +1,27 @@
-#include "network.h"
-
+#include "sim-network.h"
 int main(void) {
-        Socket *x = server_socket("localhost", "8080");
-        /* 接受无数个连接 */
-        while (1) {
-                server_socket_accept(x);
-                { /* 从 x 读取信息 */
-                        char *msg = socket_receive(x);
-                        printf("%s:%s said: %s\n", x->host, x->port, msg);
-                        free(msg);
-                }
-                socket_send(x, "Hi, I received your message!");
-                close(x->connection);
+        SimServer *threebody = sim_server("localhost", "8080");
+        if (!threebody) {
+                fprintf(stderr, "sim_server failed!\n");
+                exit(-1);
         }
-        /* 关闭监听 socket 并释放 x */
-        close(x->listen);
-        socket_free(x);
+        /* 服务端程序运转 */
+        while (1) {
+                sim_server_run(threebody);
+                if (sim_server_safe(threebody)) { 
+                        /* 从客户端接收信息 */
+                        SimStr *msg = sim_server_receive(threebody);
+		        if (msg) {
+                                printf("%s\n", sim_str_raw(msg));
+                                sim_str_free(msg);
+			}
+                        /* 向客户端发送信息 */
+                        msg = sim_str("threebody: Hi");
+                        sim_server_send(threebody, msg);
+                        sim_str_free(msg);
+                        sim_server_close(threebody);
+                }
+        }
+        sim_server_free(threebody);
         return 0;
 }

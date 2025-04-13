@@ -105,133 +105,174 @@
 <li><a href="#阻塞" id="toc-阻塞">阻塞</a></li>
 <li><a href="#不阻塞会如何"
 id="toc-不阻塞会如何">不阻塞会如何？</a></li>
-<li><a href="#主动阻塞" id="toc-主动阻塞">主动阻塞</a></li>
+<li><a href="#可以挽救的错误"
+id="toc-可以挽救的错误">可以挽救的错误</a></li>
+<li><a href="#cpu-很忙" id="toc-cpu-很忙">CPU 很忙</a></li>
 <li><a href="#总结" id="toc-总结">总结</a></li>
 </ul>
 </nav>
 <h1 id="前言">前言</h1>
 <p>这份不守江湖规矩的网络编程指南，实际上已经几乎完结了。一台计算机上作为服务端的进程
 A，能够与另一台计算机上作为客户端的进程 B
-通信，这几乎就是网络编程的全部内容了。不过，我们的头上飘荡着一朵乌云。假设还有一台计算机上的进程
-C，令它也作为客户端，与进程 A 通信，此时进程 A 该如何设计呢？</p>
+通信，本已是网络编程的全部内容了，更何况我们额外用了面向对象的范式，封装了一些常用的套接字函数。</p>
+<p>不过，也许你并未注意到，我们的头上飘荡着一朵乌云。假设还有一台计算机上的进程
+C，令它作为客户端，与 B 同时和进程 A 通信，此时进程 A
+的程序该如何设计呢？</p>
 <h1 id="接受两个连接">接受两个连接</h1>
-<p><a href="../wrapper/network.h">network.h</a> 和 <a
-href="../wrapper/network.c">network.c</a>
-让我们编写实验性的网络代码更为容易，只需将 threebody
-程序写为以下形式，便可实现与两个客户端通信：</p>
+<p>假设 A 为 ywj，B 为 threebody，C 为另一个 ywj。</p>
+<p>首先，需要改写 threebody。基于「<a
+href="../wrapper/index.html">封装</a>」中实现的 sim 项目，只需将
+threebody 程序写为以下形式，便可实现与两个客户端通信：</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* threebody.c */</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;network.h&quot;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        Socket <span class="op">*</span>x <span class="op">=</span> server_socket<span class="op">(</span><span class="st">&quot;localhost&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">);</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 接受 1 个连接 */</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        server_socket_accept<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span> <span class="co">/* 从 x 读取信息 */</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> <span class="op">*</span>msg <span class="op">=</span> socket_receive<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s</span><span class="st">:</span><span class="sc">%s</span><span class="st"> said: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">-&gt;</span>host<span class="op">,</span> x<span class="op">-&gt;</span>port<span class="op">,</span> msg<span class="op">);</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                free<span class="op">(</span>msg<span class="op">);</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        socket_send<span class="op">(</span>x<span class="op">,</span> <span class="st">&quot;Hi, I received your message!&quot;</span><span class="op">);</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>x<span class="op">-&gt;</span>connection<span class="op">);</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 再接受 1 个连接 */</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        server_socket_accept<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span> <span class="co">/* 从 x 读取信息 */</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> <span class="op">*</span>msg <span class="op">=</span> socket_receive<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s</span><span class="st">:</span><span class="sc">%s</span><span class="st"> said: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">-&gt;</span>host<span class="op">,</span> x<span class="op">-&gt;</span>port<span class="op">,</span> msg<span class="op">);</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>                free<span class="op">(</span>msg<span class="op">);</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        socket_send<span class="op">(</span>x<span class="op">,</span> <span class="st">&quot;Hi, I received your message!&quot;</span><span class="op">);</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>x<span class="op">-&gt;</span>connection<span class="op">);</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 关闭监听 socket 并释放 x */</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>x<span class="op">-&gt;</span>listen<span class="op">);</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        socket_free<span class="op">(</span>x<span class="op">);</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;sim-network.h&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        SimServer <span class="op">*</span>threebody <span class="op">=</span> sim_server<span class="op">(</span><span class="st">&quot;localhost&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">);</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>threebody<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;sim_server failed!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 接受 2 个连接 */</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">2</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                sim_server_run<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>sim_server_safe<span class="op">(</span>threebody<span class="op">))</span> <span class="op">{</span> </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>                        <span class="co">/* 从客户端接收信息 */</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>                        SimStr <span class="op">*</span>msg <span class="op">=</span> sim_server_receive<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="op">(</span>msg<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> sim_str_raw<span class="op">(</span>msg<span class="op">));</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>                                sim_str_free<span class="op">(</span>msg<span class="op">);</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>                        <span class="co">/* 向客户端发送信息 */</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>                        msg <span class="op">=</span> sim_str<span class="op">(</span><span class="st">&quot;threebody: Hi&quot;</span><span class="op">);</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>                        sim_server_send<span class="op">(</span>threebody<span class="op">,</span> msg<span class="op">);</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>                        sim_str_free<span class="op">(</span>msg<span class="op">);</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>                        sim_server_close<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        sim_server_free<span class="op">(</span>threebody<span class="op">);</span></span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>编译 threebody.c，运行所得程序 threebody：</p>
-<pre class="console"><code>$ gcc network.c threebody.c -o threebody
-$ ./threebody</code></pre>
-<p>然后同时运行两次 ywj 程序：</p>
-<pre class="console"><code>$ parallel ::: ./ywj ./ywj</code></pre>
-<p>parallel 是可以并行执行命令的 perl
-脚本程序，我曾为它的一些基本用法写过一篇笔记，详见「<a
-href="https://segmentfault.com/a/1190000007687963">GNU
-parallel</a>」。上述命令是这篇笔记未曾提及的简单用法，它同时运行了两个
-ywj 进程。若你用的 Linux 是 Ubuntu 或其衍生版本，且无 parallel
-程序，可使用以下命令安装：</p>
-<pre class="console"><code>$ sudo apt install parallel</code></pre>
-<p>threebody 和并行运行的两个 ywj 的运行结果如下图所示，threebody
-进程接受到了两个 ywj 进程发来的信息，每个 ywj 进程也得到了 threebody
-进程发来的信息。</p>
+<p>编译 threebody.c，得到 threebody：</p>
+<pre class="console"><code>$ gcc -I. sim-str.c sim-network.c threeboy.c -o threebody</code></pre>
+<p>至于另一个 ywj，我们重新写一个程序作为她，如下：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* other-ywj.c */</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;sim-network.h&quot;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        SimClient <span class="op">*</span>ywj <span class="op">=</span> sim_client<span class="op">(</span><span class="st">&quot;www.threebody.com&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">);</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>ywj<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;sim_client failed!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 延迟 15 秒，模拟存在许多运算 */</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        sleep<span class="op">(</span><span class="dv">15</span><span class="op">);</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 发送数据 */</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        SimStr <span class="op">*</span>msg_to <span class="op">=</span> sim_str<span class="op">(</span><span class="st">&quot;other ywj: I am here!&quot;</span><span class="op">);</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        sim_client_send<span class="op">(</span>ywj<span class="op">,</span> msg_to<span class="op">);</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        sim_str_free<span class="op">(</span>msg_to<span class="op">);</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 从 www.threebody.com:8080 接收信息 */</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        SimStr <span class="op">*</span>msg_from <span class="op">=</span> sim_client_receive<span class="op">(</span>ywj<span class="op">);</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>msg_from<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> sim_str_raw<span class="op">(</span>msg_from<span class="op">));</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>                sim_str_free<span class="op">(</span>msg_from<span class="op">);</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 析构，退出 */</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        sim_client_free<span class="op">(</span>ywj<span class="op">);</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>需要注意的是，other-ywj.c 与「<a
+href="../wrapper/index.html">封装</a>」中的 ywj.c
+的最大不同在于，前者在建立网络连接之后，在与服务端通信之前，主动延时约
+15 秒，象征这个 ywj 比较犹豫迟疑……编译 other-ywj.c，得到 other-ywj：</p>
+<pre class="console"><code>$ gcc -I. sim-str.c sim-network.c other-ywj.c -o other-ywj</code></pre>
+<p>现在，在 Linux
+环境里开始我们的实验。首先，打开三个终端窗口，令它们的工作目录皆为
+threebody、other-ywj 以及 ywj 所在的目录。ywj 是「<a
+href="../wrapper/index.html">封装</a>」中的那个 ywj。</p>
+<p>在第一个终端里运行 threebody：</p>
+<pre class="console"><code>$ ./threebody</code></pre>
+<p>然后在第二个终端里运行 other-ywj：</p>
+<pre class="console"><code>$ ./other-ywj</code></pre>
+<p>在运行 other-ywj 后，请随即尽快，假设在 5 秒之内，在第三个终端里运行
+ywj：</p>
+<pre class="console"><code>$ ./ywj</code></pre>
+<p>上述三个程序的运行结果如下图所示：</p>
 <figure>
-<img src="figures/01.png" alt="threebody 接受两次 ywj 的连接" />
-<figcaption aria-hidden="true">threebody 接受两次 ywj
-的连接</figcaption>
+<img src="figures/01.png" alt="other-ywj 和 ywj 访问 threebody" />
+<figcaption aria-hidden="true">other-ywj 和 ywj 访问
+threebody</figcaption>
 </figure>
-<p>若需要让 threebody 接受无数个客户端的连接，只需将 threebody.c
-修改为</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* threebody.c */</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;network.h&quot;</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        Socket <span class="op">*</span>x <span class="op">=</span> server_socket<span class="op">(</span><span class="st">&quot;localhost&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">);</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 接受无数个连接 */</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                server_socket_accept<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                <span class="op">{</span> <span class="co">/* 从 x 读取信息 */</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">char</span> <span class="op">*</span>msg <span class="op">=</span> socket_receive<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s</span><span class="st">:</span><span class="sc">%s</span><span class="st"> said: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">-&gt;</span>host<span class="op">,</span> x<span class="op">-&gt;</span>port<span class="op">,</span> msg<span class="op">);</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>                        free<span class="op">(</span>msg<span class="op">);</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>                socket_send<span class="op">(</span>x<span class="op">,</span> <span class="st">&quot;Hi, I received your message!&quot;</span><span class="op">);</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>                close<span class="op">(</span>x<span class="op">-&gt;</span>connection<span class="op">);</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 关闭监听 socket 并释放 x */</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>x<span class="op">-&gt;</span>listen<span class="op">);</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        socket_free<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>此时，threebody 进程便是一个永不休息的服务端了。</p>
+<p>你会发现，在 other-ywj 运行后，它需要等待大约 15 秒，方能得到
+threebody
+的回应，这是正常的，因为她被我们设计为一个犹豫迟疑的人。真正让你觉得奇怪的现象应该是，随即运行的
+ywj 也需要等待 10 秒左右，而且得到 threebody 的回应也是在 other-ywj
+之后。</p>
 <h1 id="阻塞">阻塞</h1>
-<p>在上一节实现的 threebody.c 中的 <code>close(x-&gt;connection)</code>
-的前面插入</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sleep<span class="op">(</span><span class="dv">3</span><span class="op">);</span></span></code></pre></div>
-<p>然后重新编译 threebody.c，得到 threebody 程序。运行 threebody：</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>$ <span class="op">./</span>threebody</span></code></pre></div>
-<p>继而同时运行 ywj 两次：</p>
-<pre class="console"><code>$ parallel ::: ./ywj ./ywj</code></pre>
-<p>可以发现，虽然两个 ywj 进程是同时运行的，但是两者中有一个晚收到
-threebody 给它发送的信息约 3 秒。这意味着什么呢？</p>
-<p>意味着，threebody 是逐一与客户端通信的，即与一个 ywj
-进程通信完毕后，再与另一个 ywj
-进程通信。这种形式的通信，称为阻塞式通信。该通信形式，在 threebody
+<p>在上一节的试验中，在运行 other-ywj 之后，随即运行 ywj
+为什么会陷入等待呢？</p>
+<p>原因是，threebody
+还没学会孙悟空的分身术，它只能逐一与客户端建立连接和通信。当即 other-ywj
+进程先发起连接，threebody 要与它完成通信后，方能与 ywj
+建立连接并通信。这种形式的通信机制，称为阻塞式通信。该通信形式，在
+threebody
 看来，是非常自然的——有很多人给我发信息，我自然是要逐一进行处理的，但在最后与
 threebody 连接并通信的 ywj
-看来，非常不合理——我是与其他进程同时发起了通信，为什么么它们却很快得到了回复，而我需要等待很久呢？</p>
-<p>在服务端造成通信阻塞的 socket API 函数是封装在
-<code>server_socket_accept</code> 中的
-<code>accept</code>，该函数在默认情况下，会逐一接受客户端的连接，从而构造与客户端通信的
-socket，在与当前连接的客户端通信过程结束之前，<code>accept</code>
-不会与其他客户端建立连接。实际上，用于接受信息的 <code>recv</code>
-也是阻塞的，因为该函数要等待位于 socket 另一端的进程发送信息。</p>
-<p>一些非 socket API 函数也会造成进程阻塞，例如 threebody.c 中使用的
-<code>sleep</code> 的函数以及等待用户输入信息的 <code>scanf</code>
+看来，非常不合理——我几乎是与其他进程同时发起了的连接，为什么么它们能很快得到回复，而我却等待很久呢？</p>
+<p>真正对我们有用的网络服务端，往往同一时间需要接受成千上万的客户端的连接请求。让
+threebody 接受更多个甚至无数个客户端的连接，并不难，只需将上述
+threebody.c 中的 <code>for</code> 循环结构改为 <code>while (1)</code>
+这样的无休止循环结构，便可得到永不休息，能处理无数个客户端连接的
+threebody 了。基于 other-ywj 和 ywj 的验证，显然 threebody
+不可能在同一时间能接受成千上万的连接，它只适用于处理寥寥几个客户端的连接。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* threebody.c [改] */</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">/* 服务端永不停息 */</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        sim_server_run<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>sim_server_safe<span class="op">(</span>threebody<span class="op">))</span> <span class="op">{</span> </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                <span class="co">/* 从客户端接收信息 */</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                SimStr <span class="op">*</span>msg <span class="op">=</span> sim_server_receive<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>msg<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> sim_str_raw<span class="op">(</span>msg<span class="op">));</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                        sim_str_free<span class="op">(</span>msg<span class="op">);</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                <span class="co">/* 向客户端发送信息 */</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>                msg <span class="op">=</span> sim_str<span class="op">(</span><span class="st">&quot;threebody: Hi&quot;</span><span class="op">);</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                sim_server_send<span class="op">(</span>threebody<span class="op">,</span> msg<span class="op">);</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                sim_str_free<span class="op">(</span>msg<span class="op">);</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>                sim_server_close<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>在服务端造成通信阻塞的套接字 API 函数是封装在
+<code>sim_server_run</code> 中的
+<code>accept</code>，该函数在默认情况下是阻塞的，在与当前连接的客户端通信过程结束之前，<code>accept</code>
+不会与其他客户端建立连接。实际上，用于发送和接收数据的 <code>send</code>
+和 <code>recv</code> 也是阻塞的。</p>
+<p>一些非套接字 API 函数也会造成进程阻塞，例如 other-ywj.c 中使用的
+<code>sleep</code> 函数以及等待用户输入信息的 <code>scanf</code>
 函数。进程被阻塞时，操作系统会将其由「运行」状态切换为「等待」状态，此时进程不会占用
 CPU，直到特定事件发生（例如有客户端发起网络连接），使其能够继续运行。</p>
-<p>实际上，并非是某些函数导致进程阻塞，而是文件的状态设置成阻塞模式时，在一些特殊情况下，会导致读写文件的进程进入等待状态，只是当时恰好该进程的某个函数正在读写文件，从而形成了是这些函数阻塞了进程的错觉——可能只是我有这种错觉。文件阻塞模式导致的进程阻塞，是被动的。由
+<p>事实上，并非是某这些函数导致进程阻塞，而是当这些函数所读写的文件，其状态若为阻塞模式时，便会导致这些函数出现阻塞，从而导致进程进入等待状态。在
+Unix 或 Linux
+中，套接字是文件描述符，亦即套接字也是文件，只是专用于网络通信。使用
+<code>socket</code> 并辅以 <code>connect</code> 或 <code>bind</code>
+而构造的套接字，默认便是阻塞状态，故而导致访问套接字的
+<code>accept</code>、<code>send</code> 和 <code>recv</code>
+这些函数出现阻塞，从而导致进程阻塞。</p>
+<p>因文件阻塞状态导致进程在对其读写时出现阻塞，称为 I/O 阻塞，而像
 <code>sleep</code>
-函数以及其他一些时间延迟函数导致的进程阻塞，是主动的。</p>
+函数以及其他一些时间延迟函数导致的进程阻塞，称为时间阻塞。</p>
 <h1 id="不阻塞会如何">不阻塞会如何？</h1>
-<p>在大致理解进程的阻塞机制之后，我们需要考虑的问题是，在网络通信中，若将服务端的一些
-socket（它们也是文件啊）设置称非阻塞状态，会发生什么？</p>
-<p>在 Linux 系统（或其他遵守 POSIX 协议的操作系统），使用
-<code>fcntl</code>
+<p>在大致理解进程的阻塞机制之后，我们需要考虑的问题是，在网络通信中，若将服务端的用于监听和通信的套接字设置为非阻塞状态，会发生什么？</p>
+<p>在 Unix 或 Linux 系统中，使用 <code>fcntl</code>
 函数可修改文件状态。我不打算认真介绍这个函数的用法，原因是，很多应用软件层面的开发者（我也是其中一员）往往对操作系统层面的文件概念并不熟悉，引入过多细节，可能会破坏学习信心。对于网络编程而言，若将一个
 socket 设为非阻塞状态，只需调用下面这个封装好的函数：</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* 参数 x 是一个 socket */</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> socket_nonblock<span class="op">(</span><span class="dt">int</span> x<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fcntl<span class="op">(</span>x<span class="op">,</span> F_SETFL<span class="op">,</span> fcntl<span class="op">(</span>x<span class="op">,</span> F_GETFL<span class="op">)</span> <span class="op">|</span> O_NONBLOCK<span class="op">);</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>其中，<code>fcntl(x, F_GETFL) | O_NONBLOCK</code> 用于获取
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c ++ */</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fcntl.h&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">/* 参数 x 是一个 socket */</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> socket_nonblock<span class="op">(</span><span class="dt">int</span> x<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fcntl<span class="op">(</span>x<span class="op">,</span> F_SETFL<span class="op">,</span> fcntl<span class="op">(</span>x<span class="op">,</span> F_GETFL<span class="op">)</span> <span class="op">|</span> O_NONBLOCK<span class="op">);</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>其中，<code>fcntl(x, F_GETFL) | O_NONBLOCK</code> 用于获取套接字
 <code>x</code> 的当前状态标志并将其与 <code>O_NONBLOCK</code>
 合并，这样便拥有了非阻塞状态标志，并且包含 <code>x</code>
 原有的状态标志，然后通过 <code>fcntl(x, F_SETFL, 新标志)</code>
@@ -247,85 +288,224 @@ socket 设为非阻塞状态，只需调用下面这个封装好的函数：</p>
 会让它返回 0。还有一些其他的情况，现在用不到。如果 <code>fcntl</code>
 返回 -1，表示它运行失败了。</p>
 <p>像 <code>fcntl</code>
-这样的函数，它的参数以及所用的位运算，都散发着古奥的气息。原因是这类函数在早期的
+这样的函数，它的参数以及所用的位运算，散发着古奥的气息。原因是这类函数在早期的
 Unix
-系统诞生时就存在了。函数名与操作指令之所以简写，犹如在纸张尚未发明的年代，古人在竹简上写着简洁但难懂的语句。理解它们，然后用更为现代的名字封装它们吧。</p>
-<p>将上述 <code>socket_nonblock</code> 函数的定义添加到 <a
-href="../wrapper/network.c">network.c</a>，然后在 <a
-href="../wrapper/network.h">network.h</a> 增加 <code>fcntl</code>
-所需的头文件包含语句和 <code>socket_nonblock</code> 的声明：</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;fcntl.h&gt;</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> socket_nonblock<span class="op">(</span><span class="dt">int</span> x<span class="op">);</span></span></code></pre></div>
-<p>现在重写 threebody.c，将监听 socket 和通信 socket 皆增加
+系统诞生时就存在了。函数名与操作指令之所以简写，犹如在纸张尚未发明的年代，古人在竹简上写着简洁但难懂的语句。我们不仅需要理解它们，还需要让它们具备现代气息。</p>
+<p>现在改写 <code>SimServer</code> 对象的构造函数
+<code>sim_server</code> 和方法
+<code>sim_server_run</code>，为监听套接字和通信套接字增加
 <code>O_NONBLOCK</code> 标志：</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* threebody.c */</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;network.h&quot;</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        Socket <span class="op">*</span>x <span class="op">=</span> server_socket<span class="op">(</span><span class="st">&quot;localhost&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">);</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        socket_nonblock<span class="op">(</span>x<span class="op">-&gt;</span>listen<span class="op">);</span> <span class="co">/* 为监听 socket 设定非阻塞标志 */</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 接受无数个连接 */</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>                server_socket_accept<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>                socket_nonblock<span class="op">(</span>x<span class="op">-&gt;</span>connection<span class="op">);</span> <span class="co">/* 为通信 socket 设定非阻塞标志 */</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>                <span class="op">{</span> <span class="co">/* 从 x 读取信息 */</span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">char</span> <span class="op">*</span>msg <span class="op">=</span> socket_receive<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s</span><span class="st">:</span><span class="sc">%s</span><span class="st"> said: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">-&gt;</span>host<span class="op">,</span> x<span class="op">-&gt;</span>port<span class="op">,</span> msg<span class="op">);</span></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                        free<span class="op">(</span>msg<span class="op">);</span></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>                socket_send<span class="op">(</span>x<span class="op">,</span> <span class="st">&quot;Hi, I received your message!&quot;</span><span class="op">);</span></span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>                close<span class="op">(</span>x<span class="op">-&gt;</span>connection<span class="op">);</span></span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 关闭监听 socket 并释放 x */</span></span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>x<span class="op">-&gt;</span>listen<span class="op">);</span></span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>        socket_free<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* threebody.c [改] */</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>SimServer <span class="op">*</span>sim_server<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>host<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>port<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> fd <span class="op">=</span> first_valid_address<span class="op">(</span>host<span class="op">,</span> port<span class="op">,</span> bind<span class="op">);</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>fd <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>listen<span class="op">(</span>fd<span class="op">,</span> <span class="dv">10</span><span class="op">)</span> <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        SimServer <span class="op">*</span>server <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>SimServer<span class="op">));</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>server<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;sim_server error: failed to malloc!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        socket_nonblock<span class="op">(</span>fd<span class="op">);</span> <span class="co">/* 将 fd 设为非阻塞状态 */</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        server<span class="op">-&gt;</span>listener <span class="op">=</span> fd<span class="op">;</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        server<span class="op">-&gt;</span>client <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        server<span class="op">-&gt;</span>error <span class="op">=</span> NULL<span class="op">;</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> server<span class="op">;</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* threebody.c [改] */</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_run<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> fd <span class="op">=</span> accept<span class="op">(</span>self<span class="op">-&gt;</span>listener<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>fd <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                self<span class="op">-&gt;</span>error <span class="op">=</span> <span class="st">&quot;sim_server_run error: failed to accept!&quot;</span><span class="op">;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                socket_nonblock<span class="op">(</span>fd<span class="op">);</span> <span class="co">/* 将 fd 设为非阻塞状态 */</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>                <span class="co">/* 恢复 self 无错状态 */</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>self<span class="op">-&gt;</span>error<span class="op">)</span> self<span class="op">-&gt;</span>error <span class="op">=</span> NULL<span class="op">;</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        self<span class="op">-&gt;</span>client <span class="op">=</span> fd<span class="op">;</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>重新编译 threebody.c，运行所得程序 threebody：</p>
-<pre class="console"><code>$ gcc network.c threebody.c -o threebody
+<pre class="console"><code>$ gcc -I. sim-str.c sim-network.c threebody.c -o threebody
 $ ./threebody</code></pre>
-<p>然后并行运行两个 ywj 程序：</p>
-<pre class="console"><code>$ parallel ::: ./ywj ./ywj</code></pre>
-<p>会发生什么奇迹……或灾难呢？结果是，我还没来得及运行 ywj
-程序，threebody 进程便失败退出了，给出的错误信息是：</p>
-<pre class="plain"><code>failed to accept!</code></pre>
-<p>原因是，<code>server_socket_accept</code> 中的 <code>accept</code>
-函数基于非阻塞状态的监听 socket 以及客户端的连接构造通信 socket
-时，因为该过程是非阻塞的，但是却没有客户端连接过来，故而
-<code>accept</code> 只能返回
-<code>-1</code>，即与客户端的连接失败。对此，老子微笑着说，孩子们，看到了吧，这就是欲速则不达！</p>
-<h1 id="主动阻塞">主动阻塞</h1>
-<p>操作系统将文件的状态默认设定为阻塞，是为了保证访问文件的进程不会出错。若我们决定将文件状态设定为非阻塞，便需要在进程某处主动设置一个阻塞，以保证程序不会因失去阻塞而无法遏制地迅速消亡。</p>
-<p>前文说过，<code>sleep</code>
-之类的函数能实现进程的主动阻塞。倘若在上一节的 threebody.c 的 while
-循环开始时增加 <code>sleep</code> 主动阻塞：</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>        sleep<span class="op">(</span><span class="dv">10</span><span class="op">);</span> <span class="co">/* 主动阻塞进程 10 秒 */</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        server_socket_accept<span class="op">(</span>x<span class="op">);</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        socket_nonblock<span class="op">(</span>x<span class="op">-&gt;</span>connection<span class="op">);</span> <span class="co">/* 为通信 socket 设定非阻塞标志 */</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>那么在改写的 threebody 程序运行后的 10 秒内，并行运行两次
-ywj，它们皆能与 threebody 正常通信，但是在第 3 个 10 秒之后 threebody
-依然会因没有新的连接而出错退出。不过，两个 ywj 进程收到 threebody
-的回复需要间隔 10
-秒，亦即无论服务端是被动阻塞还是主动阻塞，一个客户端与服务端较长时间的通信倒置其他客户端不得不等待。</p>
-<p>不过，主动阻塞有一个好处。若理解这一点，请观察</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>和</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>        sleep<span class="op">(</span><span class="dv">10</span><span class="op">);</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>虽然都是无休止的循环，但前者会一直占用 CPU，而后者是每隔 10
-秒占用片刻的 CPU。我们需要设法让主动阻塞变得更灵活一些，即不像
-<code>sleep</code>
-这样机械，便可以实现一个低功耗的服务器，它可以处理无数个客户端的连接。</p>
+<p>然后像上文的试验那样，在两个终端里分别且近乎同时运行 other-ywj 和
+ywj，会发生什么奇迹……或灾难呢？</p>
+<p>奇迹是有的，ywj 可以立刻得到 threebody 的回应，other-ywj 会在 15
+秒后得到 threebody 的回应，这个结果正是我们所期望的，果断的 ywj
+立刻得到回应，迟疑的 ywj 得到迟一些的回应。灾难也是有的，结果表明
+threebody 大概率收不到来自 ywj 和 other-ywj 的信息。</p>
+<p>threebody 无法收到来自客户端的信息，原因是
+<code>sim_server_receive</code>
+并非我们所认为的那样稳健，<code>sim_client_receive</code> 亦是如此。ywj
+和 other-ywj 都收到了 threebody
+的回复，那是因为它们的通信套接字并未设成非阻塞状态。事实上，若套接字为非阻塞状态，<code>sim_server_send</code>
+和 <code>sim_client_send</code> 也可能会出现类似的问题。</p>
+<p>现在的 threebody
+是无休止运行的，完成上述试验后，在其运行的终端里，请务必使用 Ctrl + C
+终止它！请务必使用 Ctrl + C 终止它！请务必使用 Ctrl + C
+终止它！重要的事，要说三遍的。<code>Ctrl + C</code>，即摁下 Ctrl
+键不放，再摁 C 键。</p>
+<h1 id="可以挽救的错误">可以挽救的错误</h1>
+<p>在「<a
+href="../wrapper/index.html">封装</a>」中，<code>SimClient</code> 和
+<code>SimServer</code> 对象的 <code>receive</code> 和 <code>send</code>
+方法，分别基于 <code>recv_robustly</code> 和 <code>send_robustly</code>
+函数实现，我们需要对这两个函数再作一些修改，进一步提高它们的稳健性。</p>
+<p>在 <code>recv_robustly</code> 中，当套接字函数 <code>recv</code>
+访问的套接字 <code>x</code> 为非阻塞状态时，<code>recv</code> 会直接返回
+-1，而非阻塞式读取 <code>x</code> 所指代的文件中的内容，而
+<code>recv_robutly</code> 对这种情况的处理方式是</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">ssize_t</span> h <span class="op">=</span> recv<span class="op">(</span>x<span class="op">,</span> data <span class="op">+</span> n<span class="op">,</span> remaining<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a> <span class="cf">if</span> <span class="op">(</span>h <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>         free<span class="op">(</span>data<span class="op">);</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>         <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a> <span class="op">}</span></span></code></pre></div>
+<p>我需要告诉你一个秘密。这个秘密，我已隐瞒了很久，现在不得不说出来。Unix
+或 Linux 的大多数系统调用和套接字函数，出错时，会返回
+-1，同时会将一个错误码存入全局变量 <code>errno</code>。<code>recv</code>
+和 <code>send</code> 在出错时，返回 -1，有时并非意味着错误无法挽回。</p>
+<p><code>recv</code> 遇到以下情况：</p>
+<ul>
+<li>当套接字处于非阻塞状态，若接收缓冲区为空时；</li>
+<li>某些数据传输协议（如
+UDP）没有缓冲区，在非阻塞模式下未收到数据时</li>
+<li>对端已关闭连接或停止发送数据时</li>
+</ul>
+<p>都会返回 -1，并将 <code>errno</code> 的值赋为
+<code>EAGAIN</code>。上一节的 threebody 大概率收不到 other-ywj 和 ywj
+发送的数据，便属于上述第 1 种情况。</p>
+<p><code>send</code>
+在套接字为非阻塞状态，且系统为数据发送准备的缓冲区内容已满时，会立即返回
+-1，并将 <code>errno</code> 的值赋为 <code>EAGAIN</code>。</p>
+<p>你还需要知道，<code>accept</code>
+函数，在用于监听的套接字为非阻塞状态且操作系统的监听队列中没有已建立的连接时，也会返回
+-1，并将 <code>errno</code> 的值赋为 <code>EAGAIN</code>。</p>
+<p>还有一个事实，<code>accept</code>、<code>send</code> 和
+<code>recv</code>
+这些套接字函数在工作时，可能会因操作系统发出的中断信号而导致出错，返回
+-1，此时 <code>errno</code> 的值为
+<code>ENITR</code>。可能你还不清楚何谓操作系统发出的中断信号，你可简单理解为操作系统必须处理一些紧急事务，无暇关心网络通信之事。遇到这种情况，我们也需要重新启动
+<code>accept</code>、<code>send</code> 和
+<code>recv</code>，让它们尽可能地运行成功。</p>
+<p>基于上述的秘密，我们需要对
+<code>sim_server_run</code>、<code>send_robustly</code> 和
+<code>receive_robustly</code> 略作修改：</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c ++ */</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;errno.h&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c ++ */</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_run<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> fd<span class="op">;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                fd <span class="op">=</span> accept<span class="op">(</span>self<span class="op">-&gt;</span>listener<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                 <span class="cf">if</span> <span class="op">(</span>fd <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="op">(</span>errno <span class="op">==</span> EAGAIN <span class="op">||</span> errno <span class="op">==</span> EINTR<span class="op">)</span> <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                                self<span class="op">-&gt;</span>error <span class="op">=</span> <span class="st">&quot;sim_server_run error!&quot;</span><span class="op">;</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>                                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>                        <span class="co">/* 将 fd 设为非阻塞状态 */</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>                        socket_nonblock<span class="op">(</span>fd<span class="op">);</span> </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                        <span class="co">/* 恢复 self 无错状态 */</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="op">(</span>self<span class="op">-&gt;</span>error<span class="op">)</span> self<span class="op">-&gt;</span>error <span class="op">=</span> NULL<span class="op">;</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>        self<span class="op">-&gt;</span>client <span class="op">=</span> fd<span class="op">;</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c [改] */</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> send_robustly<span class="op">(</span><span class="dt">int</span> x<span class="op">,</span> SimStr <span class="op">*</span>str<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>buffer <span class="op">=</span> sim_str_share<span class="op">(</span>str<span class="op">);</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n <span class="op">=</span> sim_str_size<span class="op">(</span>str<span class="op">);</span> <span class="co">/* buffer 字节数 */</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> m <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="co">/* 发送了多少字节 */</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> remaining <span class="op">=</span> n<span class="op">;</span> <span class="co">/* 还有多少字节未发送 */</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span>m <span class="op">&lt;</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>                <span class="dt">ssize_t</span> t <span class="op">=</span> send<span class="op">(</span>x<span class="op">,</span> buffer <span class="op">+</span> m<span class="op">,</span> remaining<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>t <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="op">(</span>errno <span class="op">==</span> EAGAIN <span class="op">||</span> errno <span class="op">==</span> EINTR<span class="op">)</span> <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">else</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>                m <span class="op">+=</span> t<span class="op">;</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>                remaining <span class="op">-=</span> t<span class="op">;</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="op">(</span>m <span class="op">&lt;</span> n<span class="op">)</span> <span class="op">?</span> <span class="op">-</span><span class="dv">1</span> <span class="op">:</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c [改] */</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>SimStr <span class="op">*</span>recv_robustly<span class="op">(</span><span class="dt">int</span> x<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> m <span class="op">=</span> <span class="dv">1024</span><span class="op">;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>data <span class="op">=</span> malloc<span class="op">(</span>m <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">char</span><span class="op">));</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="co">/* 已接收的字节数 */</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> m<span class="op">)</span> <span class="op">{</span> <span class="co">/* 扩容 */</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                        m <span class="op">*=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>                        data <span class="op">=</span> realloc<span class="op">(</span>data<span class="op">,</span> m<span class="op">);</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="op">(!</span>data<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>                                free<span class="op">(</span>data<span class="op">);</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>                                <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>                <span class="dt">size_t</span> remaining <span class="op">=</span> m <span class="op">-</span> n<span class="op">;</span> <span class="co">/* 剩余空间长度 */</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>                <span class="dt">ssize_t</span> h <span class="op">=</span> recv<span class="op">(</span>x<span class="op">,</span> data <span class="op">+</span> n<span class="op">,</span> remaining<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>h <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="op">(</span>errno <span class="op">==</span> EAGAIN <span class="op">||</span> errno <span class="op">==</span> EINTR<span class="op">)</span> <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>                                free<span class="op">(</span>data<span class="op">);</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>                                <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>h <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>                        n <span class="op">+=</span> h<span class="op">;</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="op">(</span>h <span class="op">&lt;</span> remaining<span class="op">)</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>n <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>                free<span class="op">(</span>data<span class="op">);</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">return</span> sim_str_absorb<span class="op">(</span>data<span class="op">,</span> m<span class="op">,</span> n<span class="op">);</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>唉……但愿永远不再处理这些乱七八糟的安全问题。一旦追求人身安全，人必须先让自己的思维进入十八层地狱游走一番！</p>
+<p>在 sim-network.c 中完成上述修改后，重新编译
+threebody.c，然后重新做一遍上一节的试验。然后你会发现，奇迹出现了，但是灾难也出现了。奇迹是，threebody
+能收到 other-ywj 和 ywj 发送的数据。灾难是，ywj 又回到不得不等待
+other-ywj 先收到 threebody 回复的情况了。</p>
+<p>事实上，上述对 <code>recv_robustly</code> 和
+<code>send_robustly</code> 的修改，导致二者变成了时间阻塞，即遇到
+<code>EAGAIN</code> 错误，就重新接收或发送数据，直至成功为止。</p>
+<p>现在的 threebody
+是无休止运行的，完成上述试验后，在其运行的终端里，请务必使用 Ctrl + C
+终止它！请务必使用 Ctrl + C 终止它！请务必使用 Ctrl + C
+终止它！重要的事，要说三遍的。</p>
+<h1 id="cpu-很忙">CPU 很忙</h1>
+<p>将套接字设为非阻塞状态后，为什么每次试验 threebody
+后，我会告诫你，务必用 Ctrl + C 终止它呢？</p>
+<p>现在，假设你在某个终端里运行了 threebody，可以不必运行 ywj 和
+other-ywj。然后再打开一个终端，执行以下命令</p>
+<pre class="console"><code>$ top -p $(pgrep threebody)</code></pre>
+<p><code>top -p</code> 命令可以查看指定 ID
+的进程的资源占用情况。<code>$(pgrep threebody)</code> 是子 Shell
+命令，即在当前终端里运行的 Shell 里又开启了一个 Shell，让后者运行
+<code>pgrep threebody</code> 命令，并将结果返回给上层
+Shell。<code>pgrep</code> 的用途根据进程对应的程序名查询该进程的
+ID。如果你不知道 Shell
+是什么……就是终端里接受你的输入的命令并执行的这个东西。终端只是个躯体，Shell
+是它的灵魂。</p>
+<p>执行上述命令后，你会看到类似以下信息：</p>
+<pre><code>  PID USER      ...  %CPU  %MEM  ... COMMAND
+11821 garfileo  ...  99.7   0.1  ... threebody</code></pre>
+<p>重点在 CPU 那列，threebody 的运行，占用了 99.7% 的 CPU
+时间！假如是冬天，你没有用 Ctrl + C 强行关闭
+threebody，也许你可以不用交暖气费或开空调制暖了。</p>
 <h1 id="总结">总结</h1>
-<p>我们的头上依然还飘荡着那朵乌云，可是现在似乎又多了一朵，不过我已隐约看到可以将其驱散的希望了。请怀念这一刻吧，这大概是我们最后的田园时光了。作为服务端的进程，很快要进化得令我们这些旧时代的人觉得它面目全非，难以理解，难以调试。</p>
+<p>我们的头上依然还飘荡着那朵乌云，可是现在似乎又多了一朵。不过我已隐约看到可以将其驱散的希望了。请怀念这一刻吧，这大概是我们最后的田园时光了。作为服务端的进程，很快要进化得令我们这些旧时代的人觉得它面目全非，难以理解，难以调试。</p>
+<p>现在，到了你不劳而获的时间！</p>
+<ul>
+<li>字符串类：<a href="sim-str.h">sim-str.h</a> 和 <a
+href="sim-str.c">sim-str.c</a></li>
+<li>网络类：<a href="sim-network.h">sim-network.h</a> 和 <a
+href="sim-network.c">sim-network.c</a></li>
+<li>测试程序：<a href="ywj.c">ywj.c</a>、<a
+href="other-ywj.c">other-ywj.c</a> 和 <a
+href="threebody.c">threebody.c</a></li>
+</ul>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a

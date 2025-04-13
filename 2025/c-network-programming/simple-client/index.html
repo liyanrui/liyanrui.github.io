@@ -6,7 +6,7 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" 
         content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>有一封信，无处可寄</title>
+  <title>我在这里！</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -94,31 +94,30 @@
 <a href="../index.html">回上级页面</a>
 </div>
 <header id="title-block-header">
-<h1 class="title">有一封信，无处可寄</h1>
+<h1 class="title">我在这里！</h1>
 <p class="date">03 月 01 日</p>
 </header>
 <hr />
 <nav id="TOC" role="doc-toc">
 <ul>
 <li><a href="#前言" id="toc-前言">前言</a></li>
-<li><a href="#收信人地址" id="toc-收信人地址">收信人地址</a></li>
-<li><a href="#空信封" id="toc-空信封">空信封</a></li>
-<li><a href="#信封上的地址" id="toc-信封上的地址">信封上的地址</a></li>
-<li><a href="#寄信" id="toc-寄信">寄信</a></li>
-<li><a href="#多个收信地址"
-id="toc-多个收信地址">多个收信地址？</a></li>
+<li><a href="#套接字" id="toc-套接字">套接字</a></li>
+<li><a href="#连接" id="toc-连接">连接</a></li>
+<li><a href="#发送数据" id="toc-发送数据">发送数据</a></li>
+<li><a href="#多个套接字地址"
+id="toc-多个套接字地址">多个套接字地址？</a></li>
 <li><a href="#完整的程序" id="toc-完整的程序">完整的程序</a></li>
 <li><a href="#总结" id="toc-总结">总结</a></li>
 </ul>
 </nav>
 <h1 id="前言">前言</h1>
 <p>叶文洁将地球在宇宙中的坐标暴露给三体人时，她并不知道这个信息要多久能抵达，而且她对三体人几乎一无所知，她只是知道那个遥远的星系有着一个比地球更强大的文明。我们试着模仿叶文洁，写一个向外太空暴露地球坐标的网络程序。等到有一天我们对人类彻底失去希望的时候，就运行这个程序。</p>
-<h1 id="收信人地址">收信人地址</h1>
 <p>假设网络上有一台计算机，它的域名是
-<code>www.threebody.com</code>，提供网络服务（某个进程）所用的端口是
-<code>8080</code>，我们需要向这个网络地址发送信息。由于我们已经学会了
+<code>www.threebody.com</code>，提供的某个网络服务端（某个进程）所用的端口是
+<code>8080</code>，于是该网络服务端的套接字地址便是
+<code>www.threebody.com:8080</code>。由于我们已经学会了
 <code>getaddrinfo</code>
-函数，因此很容易将这个域名和端口转化为数字化的网络地址：</p>
+函数，因此很容易将这个文字化套接字地址转化为数字化的套接字地址：</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> addrinfo hints<span class="op">,</span> <span class="op">*</span>res<span class="op">;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>memset<span class="op">(&amp;</span>hints<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="kw">struct</span> addrinfo<span class="op">));</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>hints<span class="op">.</span>ai_family <span class="op">=</span> AF_UNSPEC<span class="op">;</span></span>
@@ -128,155 +127,142 @@ id="toc-多个收信地址">多个收信地址？</a></li>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;getaddrinfo error: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> gai_strerror<span class="op">(</span>a<span class="op">));</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<h1 id="空信封">空信封</h1>
-<p>基于数字化的网络地址可在计算机中创建文件描述符，指代用于网络通信的文件。创建这种文件描述符的函数，是
+<h1 id="套接字">套接字</h1>
+<p>基于数字化的套接字地址可创建套接字。在 Unix 或 Linux
+系统中，套接字实际上是文件描述符，指代专用于网络通信的文件。创建套接字的函数，是
 <code>socket</code>，其声明如下：</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/socket.h&gt;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> socket<span class="op">(</span><span class="dt">int</span> domain<span class="op">,</span> <span class="dt">int</span> type<span class="op">,</span> <span class="dt">int</span> protocol<span class="op">);</span></span></code></pre></div>
-<p>还记得在「<a href="what-is-a-socket/index.html">Socket
-是什么</a>」一文是如何理解 socket 的吗？当时是这样说的：</p>
-<blockquote>
-<p>网络编程中的 socket，形式上由网络上进行通信的两台计算机各自的 IP
-地址加上某个端口的编号构成，亦即一个网络地址序对……</p>
-</blockquote>
-<p>在 socket API 网络编程中，socket
-实际上是文件描述符（整型数），它所指代的文件需要含有通信双方的网络地址信息，可将这种文件类比为现实中的信封。</p>
-<p><code>socket</code>
-函数生成的文件描述符，此刻指代的文件还是一个空文件，可将其类比为空信封，不仅没有装入信件，甚至上面连双方的通信地址都没有。</p>
 <p>在 <code>getaddrinfo</code> 生成的结构体 <code>addrinfo</code>
-列表中，每一个结点都含有 <code>socket</code>
-函数所需要的参数值。下面以首结点为例，演示 <code>socket</code>
+列表中，每一个结点都含有 <code>socket</code> 函数所需要的参数值。下面以
+<code>addrinfo</code> 列表首结点为例，演示 <code>socket</code>
 函数的用法：</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> envelop <span class="op">=</span> socket<span class="op">(</span>res<span class="op">-&gt;</span>ai_family<span class="op">,</span> res<span class="op">-&gt;</span>ai_socktype<span class="op">,</span> res<span class="op">-&gt;</span>ai_protocol<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> server <span class="op">=</span> socket<span class="op">(</span>res<span class="op">-&gt;</span>ai_family<span class="op">,</span> res<span class="op">-&gt;</span>ai_socktype<span class="op">,</span> res<span class="op">-&gt;</span>ai_protocol<span class="op">);</span></span></code></pre></div>
 <p>如果 <code>socket</code> 函数运行成功，会返回文件描述符，否则返回
-<code>-1</code>。</p>
-<h1 id="信封上的地址">信封上的地址</h1>
-<p><code>connect</code>
-函数可以向空信封写上通信双方的地址，其声明如下：</p>
+<code>-1</code>。不过，<code>socket</code>
+函数生成的套接字，所指代的文件是空文件，还不具备地址，不能用于通信。</p>
+<h1 id="连接">连接</h1>
+<p><code>connect</code> 函数可将服务端地址赋予套接字，其形式如下：</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/socket.h&gt;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> connect<span class="op">(</span><span class="dt">int</span> sockfd<span class="op">,</span> <span class="dt">const</span> <span class="kw">struct</span> sockaddr <span class="op">*</span>addr<span class="op">,</span> socklen_t addrlen<span class="op">);</span></span></code></pre></div>
-<p>毫无意外，<code>connect</code> 所需要的参数值，我们也已经都有了：</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> connect<span class="op">(</span>envelop<span class="op">,</span> res<span class="op">-&gt;</span>ai_addr<span class="op">,</span> res<span class="op">-&gt;</span>ai_addrlen<span class="op">);</span></span></code></pre></div>
+<p>毫无意外，<code>connect</code> 所需要的参数值，我们也已经有了：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> connect<span class="op">(</span>server<span class="op">,</span> res<span class="op">-&gt;</span>ai_addr<span class="op">,</span> res<span class="op">-&gt;</span>ai_addrlen<span class="op">);</span></span></code></pre></div>
 <p><code>connect</code> 运行成功，会返回 0，否则会返回
-<code>-1</code>。</p>
-<p><code>connect</code> 函数第一个参数是
-<code>socket</code>创建的文件描述符——空信封，后两个参数分别是信息接收者的网络地址以及给地址的长度（字节数），亦即该函数相当于在空信封上帮你写上收信人的地址。不过，<code>connect</code>
-也会会悄悄地将你的地址也写在信封上，因为操作系统知道你的 IP
-地址，它会自动给你分配一个随机的端口，从而组成一个网络地址。</p>
-<h1 id="寄信">寄信</h1>
-<p><code>send</code>
-函数可发送信息，其发送信息的过程可类比为，将书信塞进已经带有地址的信封，邮寄出去。<code>send</code>
-函数的形式如下：</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/socket.h&gt;</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">ssize_t</span> send<span class="op">(</span><span class="dt">int</span> sockfd<span class="op">,</span> <span class="dt">const</span> <span class="dt">void</span> buf<span class="op">[.</span>len<span class="op">],</span> <span class="dt">size_t</span> len<span class="op">,</span> <span class="dt">int</span> flags<span class="op">);</span></span></code></pre></div>
-<p><code>send</code> 函数的第 1 个参数是文件描述符，所指向的文件已被
-<code>connect</code>
-函数处理过了，可将其类比为带有通信双方地址的空信封，<code>send</code>
-函数将长度（字节数）为 <code>len</code> 的 <code>buf</code>
-中的信息塞入这个空信封，然后寄走。<code>flags</code>
-函数用于更精细的控制这个寄信过程的运作，例如平信、挂号信以及特快专递，它们的运作方式是有区别的，但是大多数时候我们只需要将
-<code>flags</code> 设为 <code>0</code> 即可，类比为寄出的是平信。如果
-<code>send</code> 函数运行成功，它的返回值是它发送信息的字节数，否则返回
-<code>-1</code>。</p>
+<code>-1</code>。<code>connect</code>
+函数第一个参数是空的套接字，后两个参数分别是套接字地址和地址长度（字节数），亦即该函数可将需要连接的套接字地址赋予套接字。同时，<code>connect</code>
+也会悄悄地构造一个对于我们而言不可见的套接字，并将本机的 IP
+地址以及一个随即分配的端口号作为地址赋予它。因此，<code>connect</code>
+创建的实际上是一对套接字，对于上例而言，这对套接字可用其地址表示为：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>www<span class="op">.</span>threebody<span class="op">.</span>com<span class="op">:</span><span class="dv">8080</span><span class="op">,</span> localhost<span class="op">:</span>随机端口<span class="op">)</span></span></code></pre></div>
+<p>前者表示我们需要向其发送数据的服务端的套接字地址，后者则是本机套接字地址。这对套接字构成了一个网络连接。基于该连接，便可发送和接收数据。</p>
+<h1 id="发送数据">发送数据</h1>
+<p><code>send</code> 函数可发送数据，其形式如下：</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/socket.h&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="dt">ssize_t</span> send<span class="op">(</span><span class="dt">int</span> sockfd<span class="op">,</span> <span class="dt">const</span> <span class="dt">void</span> <span class="op">*</span>buf<span class="op">,</span> <span class="dt">size_t</span> len<span class="op">,</span> <span class="dt">int</span> flags<span class="op">);</span></span></code></pre></div>
+<p><code>send</code> 函数可将长度为 <code>len</code> 的缓冲区
+<code>buf</code> 中的数据按照 <code>flags</code> 规定的方式发送给套接字
+<code>sockfd</code>。大多数时候只需要将 <code>flags</code> 设为
+<code>0</code>，表示采用普通的数据发送方式。若 <code>send</code>
+函数运行成功，返回值是已发送数据的字节数，否则为 <code>-1</code>
+表示数据发送失败。</p>
 <p>以下代码是 <code>send</code> 函数的调用示例：</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>earth_coordinate <span class="op">=</span> <span class="st">&quot;I am here!&quot;</span><span class="op">;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="dt">size_t</span> n <span class="op">=</span> strlen<span class="op">(</span>earth_coordinate<span class="op">);</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="dt">ssize_t</span> b <span class="op">=</span> send<span class="op">(</span>envelop<span class="op">,</span> earth_coordinate<span class="op">,</span> n<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>b <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;send error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<h1 id="多个收信地址">多个收信地址？</h1>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>earth_coordinate <span class="op">=</span> <span class="st">&quot;I am here!&quot;</span><span class="op">;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="dt">size_t</span> n <span class="op">=</span> strlen<span class="op">(</span>earth_coordinate<span class="op">);</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="dt">ssize_t</span> b <span class="op">=</span> send<span class="op">(</span>server<span class="op">,</span> earth_coordinate<span class="op">,</span> n<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>b <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;send error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h1 id="多个套接字地址">多个套接字地址？</h1>
 <p>在此需要再次强调，<code>getaddrinfo</code>
-函数为信息的接受者构造的收信地址可能是多个，若已经忘记了，需要再度回顾网络编程的核心技术「<a
-href="getaddrinfo/index.html">网络地址</a>」。我们需要从这些地址中选出一个可用的。何谓「可用的地址」？答案是，能够让
-<code>connect</code> 函数成功运行的地址。</p>
-<p>以下代码便是可用地址的一个简单的选择过程：</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> envelop <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="kw">struct</span> addrinfo <span class="op">*</span>it <span class="op">=</span> res<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>ai_next<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        envelop <span class="op">=</span> socket<span class="op">(</span>res<span class="op">-&gt;</span>ai_family<span class="op">,</span> res<span class="op">-&gt;</span>ai_socktype<span class="op">,</span> res<span class="op">-&gt;</span>ai_protocol<span class="op">);</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>envelop <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="cf">continue</span><span class="op">;</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> connect<span class="op">(</span>envelop<span class="op">,</span> it<span class="op">-&gt;</span>ai_addr<span class="op">,</span> it<span class="op">-&gt;</span>ai_addrlen<span class="op">);</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                close<span class="op">(</span>envelop<span class="op">);</span> <span class="co">/* 关闭 socket 函数打开的文件 */</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span><span class="op">;</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>envelop <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to connect!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+函数构造的套接字地址可能是多个，若已经忘记了，需要再度回顾网络编程的核心技术「<a
+href="../getaddrinfo/index.html">套接字地址</a>」。我们需要从这些地址中选出一个可用的。</p>
+<p>何谓「可用的套接字地址」？答案是，能够让 <code>connect</code>
+函数成功运行的地址。以下代码便是可用地址的一个简单的选择过程：</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> server <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="kw">struct</span> addrinfo <span class="op">*</span>it <span class="op">=</span> res<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>ai_next<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        server <span class="op">=</span> socket<span class="op">(</span>res<span class="op">-&gt;</span>ai_family<span class="op">,</span> res<span class="op">-&gt;</span>ai_socktype<span class="op">,</span> res<span class="op">-&gt;</span>ai_protocol<span class="op">);</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>server <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> connect<span class="op">(</span>server<span class="op">,</span> it<span class="op">-&gt;</span>ai_addr<span class="op">,</span> it<span class="op">-&gt;</span>ai_addrlen<span class="op">);</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                close<span class="op">(</span>server<span class="op">);</span> <span class="co">/* 关闭套接字 */</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>server <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to connect!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>注意，在上述代码的 <code>for</code>
-循环中，每一次循环，都会构造文件描述符 <code>envelop</code>，若
-<code>connect</code> 失败，便会
-<code>close(envelop)</code>。之前从未提及 <code>close</code>
-函数，是因为它并非 socket API 中的函数，而是 C
+循环中，每一次循环，都会构造套接字 <code>server</code>，若
+<code>connect</code> 失败，便会 <code>close(server)</code>。之前从未提及
+<code>close</code> 函数，是因为它并非套接字 API 中的函数，而是 C
 标准库中通过文件描述符关闭文件的函数。之所以要关闭文件，是因为
-<code>socket</code> 函数中已经打开了这份文件。</p>
-<p>若上述代码所得的 <code>envelop</code> 的值并非
-<code>-1</code>，则意味着有了一个可用的信封——它记录了通信双方网络地址，便可使用它，发送信息：</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>earth_coordinate <span class="op">=</span> <span class="st">&quot;I am here!&quot;</span><span class="op">;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="dt">size_t</span> n <span class="op">=</span> strlen<span class="op">(</span>earth_coordinate<span class="op">);</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="dt">ssize_t</span> b <span class="op">=</span> send<span class="op">(</span>envelop<span class="op">,</span> earth_coordinate<span class="op">,</span> n<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>b <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;send error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<code>socket</code> 函数中已经打开了套接字，而套接字指代文件。</p>
+<p>若上述代码所得的 <code>server</code> 的值并非
+<code>-1</code>，则意味着有了可用的服务端套接字以及本机套接字，这对套接字构成了一个可用的通信连接，亦即本机套接字与服务端套接字处于连通状态，然后便可向服务端套接字发送数据：</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>earth_coordinate <span class="op">=</span> <span class="st">&quot;I am here!&quot;</span><span class="op">;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="dt">size_t</span> n <span class="op">=</span> strlen<span class="op">(</span>earth_coordinate<span class="op">);</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="dt">ssize_t</span> b <span class="op">=</span> send<span class="op">(</span>server<span class="op">,</span> earth_coordinate<span class="op">,</span> n<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>b <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;send error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <h1 id="完整的程序">完整的程序</h1>
-<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* ywj.c */</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;string.h&gt;</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span><span class="pp">  </span><span class="co">/* close 函数需要它 */</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/types.h&gt;</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/socket.h&gt;</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;netdb.h&gt;</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 构造用于接收信息的网络地址列表 */</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">struct</span> addrinfo hints<span class="op">,</span> <span class="op">*</span>addr_list<span class="op">;</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        memset<span class="op">(&amp;</span>hints<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="kw">struct</span> addrinfo<span class="op">));</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        hints<span class="op">.</span>ai_family <span class="op">=</span> AF_UNSPEC<span class="op">;</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        hints<span class="op">.</span>ai_socktype <span class="op">=</span> SOCK_STREAM<span class="op">;</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> getaddrinfo<span class="op">(</span><span class="st">&quot;www.threebody.com&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">,</span> <span class="op">&amp;</span>hints<span class="op">,</span> <span class="op">&amp;</span>addr_list<span class="op">);</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">!=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;getaddrinfo error: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> gai_strerror<span class="op">(</span>a<span class="op">));</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 选择可用的信封 */</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> envelop <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="kw">struct</span> addrinfo <span class="op">*</span>it <span class="op">=</span> addr_list<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>ai_next<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>                envelop <span class="op">=</span> socket<span class="op">(</span>addr_list<span class="op">-&gt;</span>ai_family<span class="op">,</span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>                                 addr_list<span class="op">-&gt;</span>ai_socktype<span class="op">,</span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>                                 addr_list<span class="op">-&gt;</span>ai_protocol<span class="op">);</span></span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>envelop <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="cf">continue</span><span class="op">;</span></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> a <span class="op">=</span> connect<span class="op">(</span>envelop<span class="op">,</span> it<span class="op">-&gt;</span>ai_addr<span class="op">,</span> it<span class="op">-&gt;</span>ai_addrlen<span class="op">);</span></span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>                        close<span class="op">(</span>envelop<span class="op">);</span> <span class="co">/* 关闭 socket 函数打开的文件 */</span></span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">continue</span><span class="op">;</span></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>        freeaddrinfo<span class="op">(</span>addr_list<span class="op">);</span></span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>envelop <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to connect!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 寄信 */</span></span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>earth_coordinate <span class="op">=</span> <span class="st">&quot;I am here!&quot;</span><span class="op">;</span></span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n <span class="op">=</span> strlen<span class="op">(</span>earth_coordinate<span class="op">);</span></span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ssize_t</span> b <span class="op">=</span> send<span class="op">(</span>envelop<span class="op">,</span> earth_coordinate<span class="op">,</span> n<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>b <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;send error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>envelop<span class="op">);</span></span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* ywj.c */</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;string.h&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span><span class="pp">  </span><span class="co">/* close 函数需要它 */</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/types.h&gt;</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/socket.h&gt;</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;netdb.h&gt;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 服务端套接字列表 */</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">struct</span> addrinfo hints<span class="op">,</span> <span class="op">*</span>addr_list<span class="op">;</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        memset<span class="op">(&amp;</span>hints<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="kw">struct</span> addrinfo<span class="op">));</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        hints<span class="op">.</span>ai_family <span class="op">=</span> AF_UNSPEC<span class="op">;</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        hints<span class="op">.</span>ai_socktype <span class="op">=</span> SOCK_STREAM<span class="op">;</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> getaddrinfo<span class="op">(</span><span class="st">&quot;www.threebody.com&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">,</span> <span class="op">&amp;</span>hints<span class="op">,</span> <span class="op">&amp;</span>addr_list<span class="op">);</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">!=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;getaddrinfo error: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> gai_strerror<span class="op">(</span>a<span class="op">));</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 选择可用的连接 */</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> server <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="kw">struct</span> addrinfo <span class="op">*</span>it <span class="op">=</span> addr_list<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>ai_next<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>                server <span class="op">=</span> socket<span class="op">(</span>addr_list<span class="op">-&gt;</span>ai_family<span class="op">,</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>                                 addr_list<span class="op">-&gt;</span>ai_socktype<span class="op">,</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>                                 addr_list<span class="op">-&gt;</span>ai_protocol<span class="op">);</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>server <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> a <span class="op">=</span> connect<span class="op">(</span>server<span class="op">,</span> it<span class="op">-&gt;</span>ai_addr<span class="op">,</span> it<span class="op">-&gt;</span>ai_addrlen<span class="op">);</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>                        close<span class="op">(</span>server<span class="op">);</span> <span class="co">/* 关闭 socket 函数打开的文件 */</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>        freeaddrinfo<span class="op">(</span>addr_list<span class="op">);</span></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>server <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to connect!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 向服务端发送数据 */</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>earth_coordinate <span class="op">=</span> <span class="st">&quot;I am here!&quot;</span><span class="op">;</span></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n <span class="op">=</span> strlen<span class="op">(</span>earth_coordinate<span class="op">);</span></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>        <span class="dt">ssize_t</span> b <span class="op">=</span> send<span class="op">(</span>server<span class="op">,</span> earth_coordinate<span class="op">,</span> n<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>b <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;send error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>server<span class="op">);</span></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>编译上述源码：</p>
 <pre class="console"><code>$ gcc ywj.c -o ywj</code></pre>
 <p>现在，我们对这个世界假装着失望了，运行 ywj 程序：</p>
@@ -288,7 +274,13 @@ href="getaddrinfo/index.html">网络地址</a>」。我们需要从这些地址�
 <p>原因是，www.threebody.com 对应的计算机并不存在。</p>
 <p>幸好它不存在。</p>
 <h1 id="总结">总结</h1>
-<p>socket 是一个记录着通信双方地址的信封。</p>
+<p>务必清楚，作为客户端，要向服务端发送数据，需要在明面上创建表达服务端的套接字，同时也需要暗地里创建表达本机的套接字，如此方能形成可用的通信连接。这个过程完整的套接字
+API 管线是：</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>getaddrinfo <span class="op">-&gt;</span> socket <span class="op">-&gt;</span> connect <span class="op">-&gt;</span> send</span></code></pre></div>
+<p>其中，<code>socket</code> 和 <code>connect</code>
+所需要的参数，<code>getaddrinfo</code>
+皆已备好。现在，你应该大概明白，为何在「<a
+href="../getaddrinfo/index.html">套接字地址</a>」中说，网络编程真正重要的问题，从来都不是两台计算机上的进程如何传送信息，而是套接字地址如何表示。</p>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>天地一指</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="../index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">天地一指</h1>
+<p class="date">03 月 30 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#前言" id="toc-前言">前言</a></li>
+<li><a href="#新的维度" id="toc-新的维度">新的维度</a></li>
+<li><a href="#梳子" id="toc-梳子">梳子</a></li>
+<li><a href="#理论化" id="toc-理论化">理论化</a></li>
+<li><a href="#返回值" id="toc-返回值">返回值</a></li>
+<li><a href="#拉链" id="toc-拉链">拉链</a></li>
+<li><a href="#可重入性" id="toc-可重入性">可重入性</a></li>
+<li><a href="#总结" id="toc-总结">总结</a></li>
+</ul>
+</nav>
+<h1 id="前言">前言</h1>
+<p>在超弦理论致力于统一广义相对论与量子力学过程中，令超弦理论学家尴尬的是，他们创造了五种不同的超弦理论，这不是统一，而是更严重的分裂。好在爱德华·威滕出手，在超弦理论的十维空间设定上增加了一个新的维度，并提出了膜的概念，认为以振动的方式形成粒子的弦是
+1-维膜，亦即弦是膜的特例。</p>
+<p>实际上，操作系统对线程的调度，也有多种策略，足够凑出 5
+种了。我将每种策略对应每个超弦理论，这就意味着，若追求一种大一统的线程调度理论，也需要在线程上增加一个维度，同时构造出与膜在哲学上有共性的结构。</p>
+<p>这个结构是什么呢？协程！它的历史据说比进程和线程都要悠久，只是长期未受学术界和工程界的重视而沉睡数十年，直至最近这些年，因对回调地狱这一顽疾有神奇疗效而大行其道。现今，若是何种编程语言未提供与构造协程相关的语法，应该会招来众多批评。</p>
+<p>C
+语言没有协程的概念，不过，我们可以尝试给出一些近似的模拟，也许能让你更为深刻地理解，何为协程。</p>
+<h1 id="新的维度">新的维度</h1>
+<p>实际上这个新的维度，我们在「<a
+href="../thread/index.html">弦动</a>」中基于多线程、互斥以及条件语句所实现的生产者/消费者程序中已经感受到了，只不过是以线程「通信」的方式。若不用线程，基于多进程以及进程间通信（例如网络通信）机制，也能实现生产者/消费者程序。</p>
+<p>现在，我们考虑的是，普通的两个 C
+函数，它能否实现生产者/消费者模型呢？若答案是能，这意味着普通的函数不仅可并发运行且能彼此节制，那么无论是多线程机制，还是多进程机制，在理论上它们就毫无神秘之处可言了；它们之所以神秘，是因操作系统实现的调度和通信机制对我们而言是透明的，而现在我们要打破这种透明。</p>
+<p>在 C 语言中，两个普通的函数 <code>foo</code> 和
+<code>bar</code>，它们之间若存在关系——在物理学里，你可称其为引力，只能是
+<code>foo</code> 调用 <code>bar</code>，或 <code>bar</code> 调用
+<code>foo</code>。不过，若再引入一个函数
+<code>foobar</code>，我们希望在其中能够建立 <code>foo</code> 和
+<code>bar</code>
+的关系，前提是无需二者存在调用关系，就像在生产者/消费者模型中，一个只考虑生产，一个只考虑消费，但二者却存在联系。</p>
+<p>为了更好地表达我们的意图，我需要先写一个普通的 <code>foo</code>
+函数，它用于生产数据：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define TOTAL </span><span class="dv">7</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> data <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> TOTAL<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>             data <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>             printf<span class="op">(</span><span class="st">&quot;生产者：生成数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">);</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>在写一个普通的 <code>bar</code> 函数，用于消费数据：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bar<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;消费者：消费数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">);</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>现在，我们期望的是，在 <code>foo</code> 每产出 1
+条数据，<code>bar</code>
+随即消费它，但二者不存在调用关系。实现这一目的的第一步是，需要让
+<code>foo</code> 在每产出 1 条数据后，便暂停，但是 C
+语言没有给普通函数提供这样的暂停支持，操作系统也只能暂停线程或进程，但是仔细想一下，我们用
+<code>return</code> 能够让 <code>foo</code> 在产出 1
+条数据后就返回：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> TOTAL<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>             data <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>             printf<span class="op">(</span><span class="st">&quot;生产者：生成数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">);</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>             <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>现在若在 <code>foobar</code> 函数里运行 <code>foo</code> 函数和
+<code>bar</code> 函数：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foobar<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        foo<span class="op">();</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        bar<span class="op">();</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>可以完成数据的第一次产出和消费。</p>
+<p>若我们打算在 <code>foobar</code> 中再次运行 <code>foo</code> 时，若
+<code>foo</code> 能从上一次它的返回之处继续运行，便可产出下 1
+条数据了，但前提是，需要知道上一次循环变量的值。这个前提，可借助
+<code>static</code> 变量实现：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> TOTAL<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>             data <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>             printf<span class="op">(</span><span class="st">&quot;生产者：生成数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">);</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>             <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>             <span class="co">/* 我们希望再次运行 foo 时，从此处运行 */</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>在函数内的 <code>static</code> 变量
+<code>i</code>，它拥有全局变量的特性，在 <code>foo</code>
+函数再次运行时，<code>i</code> 依然是上一次 <code>foo</code>
+函数返回时的状态。通过 <code>static</code> 变量，能够让 <code>foo</code>
+函数拥有记忆……或者历史。</p>
+<p>实现再次运行 <code>foo</code>
+时从它上次的返回处继续运行，需借助一个状态机和长期被视为恶魔的
+<code>goto</code> 语句：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> state <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">switch</span> <span class="op">(</span>state<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                <span class="cf">case</span> <span class="dv">0</span><span class="op">:</span> <span class="cf">goto</span> BEGIN<span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                <span class="cf">case</span> <span class="dv">1</span><span class="op">:</span> <span class="cf">goto</span> NEXT<span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        BEGIN<span class="op">:</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> TOTAL<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                 data <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>                 printf<span class="op">(</span><span class="st">&quot;生产者：生成数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">);</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>                 state <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>                 <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>                 NEXT<span class="op">:</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        state <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="co">/* 状态机重置 */</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码中，<code>switch/case</code>
+语句实现了一个很简单的状态机，其状态变量也是 <code>foo</code>
+的记忆。可能长期以来，大家对 <code>goto</code> 的痛恨，已经让你淡忘了
+<code>goto</code> 的用法，现在可趁机温习。<code>goto</code>
+可将程序的运行流导向到代码中用标签标定的位置。</p>
+<p>现在，在 <code>foobar</code> 里两次调用 <code>foo</code> 和
+<code>bar</code>：</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foobar<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>        foo<span class="op">();</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        bar<span class="op">();</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        foo<span class="op">();</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        bar<span class="op">();</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>foobar</code> 的输出应当是</p>
+<pre><code>生产者：生成数据 1
+消费者：消费数据 1
+生产者：生成数据 2
+消费者：消费数据 2</code></pre>
+<p>现在，将 <code>foobar</code> 写为</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foobar<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> TOTAL<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                foo<span class="op">();</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                bar<span class="op">();</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>便可将 <code>foo</code> 所有产出的数据逐一交于 <code>bar</code>
+消费掉。</p>
+<p>但愿你会因此觉得惊奇。这种惊奇不仅仅是我们在 <code>foo</code> 和
+<code>bar</code>
+无需借助调用关系的前提下实现了二者的协作，它更是一切竟如此简单，甚至我们可以藐视，操作系统对线程或进程的挂起也无非如此。</p>
+<p>可惜的是，物理学界的超弦和 M
+理论专家，他们似乎理解不了这种简单，反而制造出一些精妙但复杂的机制，犹如尽浓妆艳抹之能事，打扮一位清水芙蓉般的少女。</p>
+<h1 id="梳子">梳子</h1>
+<p>如果你的确因 <code>goto</code> 的存在而不安，在 C
+语言中的确是有方法完全基于你信任的 <code>switch/case</code> 语句而消除
+<code>goto</code>
+语句以及它所需要的所有标签，只是我又担心，这种方法又会让你对
+<code>switch/case</code>
+觉得不安。这种方法就是，<code>switch/case</code>
+语句能像梳子一样刺入松软的代码块中：</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> state <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">switch</span> <span class="op">(</span>state<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> <span class="dv">0</span><span class="op">:</span> <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> TOTAL<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                         data <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                         printf<span class="op">(</span><span class="st">&quot;生产者：生成数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">);</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>                         state <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                         <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> <span class="dv">1</span><span class="op">:</span> <span class="op">;</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="co">/* for 循环结束 */</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="co">/* switch 结束 */</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        state <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码所用的方法，就是历史上有名的「达夫设备」，它是合乎 C
+语法的，原因是 <code>case</code> 语句与配合 <code>goto</code>
+的标签是等价的，它们的作用只是用于标定程序流的位置，但对程序流毫不影响。改变程序流的是
+<code>switch</code> 或 <code>goto</code>。</p>
+<p>不妨勇敢一些，在新的 <code>foo</code> 函数中，代码左侧的
+<code>switch / case</code> 语句是卡拉比-丘空间，右侧的 <code>for</code>
+循环结构是我们的时空。在超弦理论里，这个卡拉比-丘空间，还是像超弦理论那样畏畏缩缩地蜷缩于时空之中，而在新的
+<code>foo</code> 函数里，它完全融入了时空。</p>
+<h1 id="理论化">理论化</h1>
+<p>物理学的本质是什么？是创造一套尽量简单的协议，这份协议像是与天地订下的契约。既然我们已经发现了一种可以让函数之间平等相处的方法，而不是传统的谁调用谁，谁被谁调用这种类似物理学中引力机制的方法，我们也可以将其协议化，这就是计算机软件世界里我们的「物理」学。</p>
+<p>我们创造的第 1 条协议是</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define cr_begin </span><span class="dt">static</span><span class="pp"> </span><span class="dt">int</span><span class="pp"> state </span><span class="op">=</span><span class="pp"> </span><span class="dv">0</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="pp">                 </span><span class="cf">switch</span><span class="pp"> </span><span class="op">(</span><span class="pp">state</span><span class="op">)</span><span class="pp"> </span><span class="op">{</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="pp">                 </span><span class="cf">case</span><span class="pp"> </span><span class="dv">0</span><span class="op">:</span></span></code></pre></div>
+<p>上述代码定义了一个宏 <code>cr_begin</code>，若像下面这样调用它：</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>cr_begin<span class="op">;</span></span></code></pre></div>
+<p>可展开为</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> state <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="cf">switch</span> <span class="op">(</span>state<span class="op">)</span> <span class="op">{</span> <span class="cf">case</span> <span class="dv">0</span><span class="op">:;</span></span></code></pre></div>
+<p><code>case 0:</code> 后面虽然多处了
+<code>;</code>，但是无妨，它是空代码。</p>
+<p>类似地，创造第 2 条协议：</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define cr_yield </span><span class="cf">do</span><span class="pp"> </span><span class="op">{</span><span class="pp">state </span><span class="op">=</span><span class="pp"> </span><span class="dv">1</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="pp">                     </span><span class="cf">return</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="pp">                     </span><span class="cf">case</span><span class="pp"> </span><span class="dv">1</span><span class="op">:</span><span class="pp"> </span><span class="op">;</span><span class="pp"> </span><span class="op">}</span><span class="pp"> </span><span class="cf">while</span><span class="pp"> </span><span class="op">(</span><span class="dv">0</span><span class="op">)</span></span></code></pre></div>
+<p><code>do { ... } while (0)</code> 是 C
+语言宏定义时常用的技法，它用一个只能运行一次的 <code>do ... while</code>
+循环结构将一些代码包含起来，使得宏的展开结果不与周边代码产生错误联系。不过，将
+<code>case 1:</code>
+这样的语句直接放在一个循环结构中，也许你心里难免会有些恐慌。不要怕，<code>case 1:</code>
+只是个标签，它无论放在何处，也只是标定当前程序流的位置而已，何况其后只是一个空语句。</p>
+<p>第 3 条协议是：</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define cr_end </span><span class="cf">do</span><span class="pp"> </span><span class="op">{</span><span class="pp">state </span><span class="op">=</span><span class="pp"> </span><span class="dv">0</span><span class="op">;}</span><span class="pp"> </span><span class="cf">while</span><span class="pp"> </span><span class="op">(</span><span class="dv">0</span><span class="op">);</span><span class="pp"> </span><span class="op">}</span></span></code></pre></div>
+<p>基于上述 3 条协议，便可重写 <code>foo</code> 函数：</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>        cr_begin<span class="op">;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> TOTAL<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>               data <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>               printf<span class="op">(</span><span class="st">&quot;生产者：生成数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">);</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>               cr_yield<span class="op">;</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        cr_end<span class="op">;</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>foo</code> 的代码看上去已颇为舒爽，不过存在隐患。例如将
+<code>foo</code> 改写为</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        cr_begin<span class="op">;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> TOTAL<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>               data <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>               printf<span class="op">(</span><span class="st">&quot;生产者：生成数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">);</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>               cr_yield<span class="op">;</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>               printf<span class="op">(</span><span class="st">&quot;生产者：已产出数据共 </span><span class="sc">%d</span><span class="st"> 次</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> i<span class="op">);</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>               cr_yield<span class="op">;</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        cr_end<span class="op">;</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码等价于</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> state <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">switch</span> <span class="op">(</span>state<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> <span class="dv">0</span><span class="op">:</span> <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> TOTAL<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                         data <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                         printf<span class="op">(</span><span class="st">&quot;生产者：生成数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">);</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                         state <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                         <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> <span class="dv">1</span><span class="op">:</span> <span class="op">;</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>                         printf<span class="op">(</span><span class="st">&quot;生产者：已产出数据共 </span><span class="sc">%d</span><span class="st"> 次</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> i<span class="op">);</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>                         state <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>                         <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> <span class="dv">1</span><span class="op">:</span> <span class="op">;</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="co">/* for 循环结束 */</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="co">/* switch 结束 */</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>        state <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>假设上述的 <code>foo</code> 函数已运行了两次，它在第 3
+次运行时，<code>switch</code> 会将程序流切换到第一个 <code>case 1</code>
+处，但实际上应该切换到第 2 个 <code>case 1</code>，亦即当
+<code>cr_yield</code> 多次出现时，状态变量 <code>state</code>
+需要有变化，它不能只是 1。为了解决这个问题，需要重新定义
+<code>cr_yield</code>：</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define cr_yield</span><span class="op">(</span><span class="pp">n</span><span class="op">)</span><span class="pp"> </span><span class="cf">do</span><span class="pp"> </span><span class="op">{</span><span class="pp">state </span><span class="op">=</span><span class="pp"> n</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="pp">                     </span><span class="cf">return</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="pp">                     </span><span class="cf">case</span><span class="pp"> n</span><span class="op">:</span><span class="pp"> </span><span class="op">;</span><span class="pp"> </span><span class="op">}</span><span class="pp"> </span><span class="cf">while</span><span class="pp"> </span><span class="op">(</span><span class="dv">0</span><span class="op">)</span></span></code></pre></div>
+<p>新的 <code>cr_yield</code> 需要 1 个参数，用作状态变量
+<code>state</code> 的值。</p>
+<p>修改上述 <code>foo</code> 函数：</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        cr_begin<span class="op">;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> TOTAL<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>               data <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>               printf<span class="op">(</span><span class="st">&quot;生产者：生成数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">);</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>               cr_yield<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>               printf<span class="op">(</span><span class="st">&quot;生产者：已产出数据共 </span><span class="sc">%d</span><span class="st"> 次</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> i<span class="op">);</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>               cr_yield<span class="op">(</span><span class="dv">2</span><span class="op">);</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        cr_end<span class="op">;</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>宏展开后的代码等价于以下代码：</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> state <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">switch</span> <span class="op">(</span>state<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> <span class="dv">0</span><span class="op">:</span> <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> TOTAL<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                         data <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                         printf<span class="op">(</span><span class="st">&quot;生产者：生成数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">);</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                         state <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>                         <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> <span class="dv">1</span><span class="op">:</span> <span class="op">;</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>                         printf<span class="op">(</span><span class="st">&quot;生产者：已产出数据共 </span><span class="sc">%d</span><span class="st"> 次</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> i<span class="op">);</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>                         state <span class="op">=</span> <span class="dv">2</span><span class="op">;</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>                         <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> <span class="dv">2</span><span class="op">:</span> <span class="op">;</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="co">/* for 循环结束 */</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="co">/* switch 结束 */</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>        state <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>不过，我们有更好的解决方案。C 语言标准中有一个宏
+<code>__LINE__</code>，调用它时，展开结果是当前代码的行号，我们可以用它作为状态变量的值，便可保证多次调用
+<code>cr_yield</code> 时，不会出现重复状态。重新定义
+<code>cr_yield</code>：</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define cr_yield </span><span class="cf">do</span><span class="pp"> </span><span class="op">{</span><span class="pp">state </span><span class="op">=</span><span class="pp"> __LINE__</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="pp">                     </span><span class="cf">return</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="pp">                     </span><span class="cf">case</span><span class="pp"> __LINE__</span><span class="op">:</span><span class="pp"> </span><span class="op">;</span><span class="pp"> </span><span class="op">}</span><span class="pp"> </span><span class="cf">while</span><span class="pp"> </span><span class="op">(</span><span class="dv">0</span><span class="op">)</span></span></code></pre></div>
+<p>现在 <code>cr_yield</code>
+又变成无参数宏了。只是要记住，永远不要在同一行内多次调用
+<code>cr_yield</code>，不然状态变量 <code>state</code>
+的值又要出现重复了。</p>
+<h1 id="返回值">返回值</h1>
+<p>上一节实现的 <code>cr_yield</code>
+只适合无返回值的协程。实际上大多数函数需要有返回值，故而还需改进
+<code>cr_yield</code>，使之能支持更具一般性的函数。</p>
+<p>C 语言从 C99
+标准开始提供了可变参数宏的语法。我们可以基于可变参数宏定义
+<code>cy_yield</code>：</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define cr_yield</span><span class="op">(...)</span><span class="pp"> </span><span class="cf">do</span><span class="pp"> </span><span class="op">{</span><span class="pp">state </span><span class="op">=</span><span class="pp"> __LINE__</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="pp">                      </span><span class="cf">return</span><span class="pp"> __VA_ARGS__</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="pp">                      </span><span class="cf">case</span><span class="pp"> __LINE__</span><span class="op">:</span><span class="pp"> </span><span class="op">;</span><span class="pp"> </span><span class="op">}</span><span class="pp"> </span><span class="cf">while</span><span class="pp"> </span><span class="op">(</span><span class="dv">0</span><span class="op">)</span></span></code></pre></div>
+<p>对于无返回值的函数，只需像下面这样使用 <code>cr_yield</code>：</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>cr_yield<span class="op">();</span></span></code></pre></div>
+<p>对于有返回值的函数，假设返回值为 <code>foo</code>，只需</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>cr_yield<span class="op">(</span>foo<span class="op">);</span></span></code></pre></div>
+<h1 id="拉链">拉链</h1>
+<p>我们曾在「<a href="../wrapper-again/index.html">再封装</a>」里为
+<code>SimServer</code> 对象实现了 <code>receive</code> 和
+<code>send</code>
+方法。这两个方法其实都不够自然，它们只能批量接收客户端发来的数据或者批量向客户端发送数据，而并非是从某个客户端收到数据后，随即向该客户端发送数据。</p>
+<p>我们可以基于协程机制改造 <code>SimServer</code> 类，将
+<code>SimServer</code>
+对象接收和发送数据过程凝聚于每个客户端，不过修改之处较为琐碎，甚至可能会迷失协程这一主题。对此，我先用一个简单的例子示意改造过程所循的原理。</p>
+<p>这个例子很像生活中的拉链。假设有一个数组
+<code>clients</code>，其中存储了一些整型数，有正数，有负数。另外有两个函数，<code>foo</code>
+和 <code>bar</code>，它们都要遍历 <code>clients</code>。<code>foo</code>
+需要处理 <code>clients</code> 里的正数，例如将其增 1。我们希望当
+<code>foo</code> 对 <code>clients</code> 里的每个正数增 1
+的时候，<code>bar</code> 能随即将该正数减 1。</p>
+<p>我们先用协程实现 <code>foo</code> 函数：</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>clients<span class="op">,</span> <span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>        cr_begin<span class="op">;</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> a <span class="op">=</span> clients<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>a <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> printf<span class="op">(</span><span class="st">&quot;(</span><span class="sc">%d</span><span class="st">, &quot;</span><span class="op">,</span> a <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>                cr_yield<span class="op">;</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        cr_end<span class="op">;</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>bar</code> 函数与 <code>foo</code> 类似：</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bar<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>clients<span class="op">,</span> <span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>        cr_begin<span class="op">;</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> a <span class="op">=</span> clients<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>a <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d</span><span class="st">)</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> a <span class="op">-</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>                cr_yield<span class="op">();</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>        cr_end<span class="op">;</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>foo</code> 和 <code>bar</code>
+就像拉链两边的链带，或者像两条铁轨，或者像 DNA 的双链……下面的
+<code>foobar</code> 函数则像拉锁头、火车、读取 DNA 的蛋白质……</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foobar<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> clients<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> <span class="op">-</span><span class="dv">2</span><span class="op">,</span> <span class="op">-</span><span class="dv">3</span><span class="op">,</span> <span class="dv">5</span><span class="op">};</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> n <span class="op">=</span> <span class="kw">sizeof</span><span class="op">(</span>clients<span class="op">)</span> <span class="op">/</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">);</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>                foo<span class="op">(</span>clients<span class="op">,</span> n<span class="op">);</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>                bar<span class="op">(</span>clients<span class="op">,</span> n<span class="op">);</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>foobar</code> 的输出应当是</p>
+<pre class="plain"><code>(2, 0)
+(4, 2)
+(6, 4)</code></pre>
+<p>我希望 <code>SimServer</code> 的 <code>receive</code> 和
+<code>send</code> 方法能向上述的 <code>foo</code> 和 <code>bar</code>
+函数那样协同工作，而非各自为政。</p>
+<h1 id="可重入性">可重入性</h1>
+<p>我们的协程物理学，对于简单的情况已经是足够用的了，但是在多线程机制里，它会很容易错乱起来。例如，如果有两个线程皆以上一节的
+<code>foo</code> 函数作为例程，由于循环变量 <code>i</code> 和状态变量
+<code>state</code> 皆为
+<code>static</code>，这意味着它们是两个线程共享的变量，当一个线程修改它，它便可能会导致另一个线程的行为异常，通过互斥加以保护也无用，因为这两个变量本不应该被多个线程共享。还有一处，<code>foo</code>
+函数产出的数据，也是保存在全局变量 <code>data</code>
+里的，它也不该被多个线程共享。</p>
+<p>像 <code>foo</code>
+这样的函数，在多线程环境中，堪称以一女事二夫——仅作比喻，不歧视性别和伦理，通常称它们为不具备可重入性。为了程序的安全，让函数具备可重入性通常是必要的。</p>
+<p>若一个函数，它原本依赖静态变量或全局变量，但是为了可重入性，必须放弃这种依赖，最终它必须以闭包（Closure）的形式存在。倘若你之前经常听到闭包而不知其意，那么至少在
+C
+语言的语境里，我已很清晰地给你刻画出了它该有的样子，倘若你依然未能想象出来，不妨看下面重新定义的
+<code>foo</code> 函数：</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>state<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span>i<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span>data<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>        <span class="cf">switch</span> <span class="op">(*</span>state<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> <span class="dv">0</span><span class="op">:</span> <span class="cf">for</span> <span class="op">(*</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="op">*</span>i <span class="op">&lt;</span> TOTAL<span class="op">;</span> <span class="op">(*</span>i<span class="op">)++)</span> <span class="op">{</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>                         <span class="op">*</span>data <span class="op">=</span> <span class="op">*</span>i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>                         printf<span class="op">(</span><span class="st">&quot;生产者：生成数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">*</span>data<span class="op">);</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>                         <span class="op">*</span>state <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>                         <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> <span class="dv">1</span><span class="op">:</span> <span class="op">;</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>state <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>我们只需将 <code>foo</code>
+原本依赖的静态变量和全局变量，统统变成指针形式的参数。至于这些指针指向的变量，它们可以是某个函数的局部变量，例如，</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foobar<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> state <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> data <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>        foo<span class="op">(&amp;</span>state<span class="op">,</span> <span class="op">&amp;</span>i<span class="op">,</span> <span class="op">&amp;</span>data<span class="op">);</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>于是，<code>foo</code>
+函数便是可重入的函数，而且我们也可以称它是一个闭包。若对闭包给出一个明确的定义，就是具备捕捉外部变量能力的函数。就像一个茶杯，它虽然在宇宙之中，但是它不也装着整个宇宙么？在
+C
+程序里，将指针作为函数参数，是一种非常普遍的现象，只是大家很少去关心这样的函数是闭包，原因是
+C 语言并不觉得有什么必要开设这个概念。</p>
+<p>同理，我们也能将消费数据的函数 <code>bar</code>
+改成闭包，让它无需再依赖全局变量 <code>data</code>：</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bar<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>data<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;消费者：消费数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">*</span>data<span class="op">);</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>对于变成了闭包的
+<code>foo</code>，之前我们设计的协程物理学，也需要相应地予以改进，但这并非难事。你可以作为一道练习题去完成它。</p>
+<p>若我此刻我说，在超弦理论中，以振动的方式形成各种基本粒子的开弦，必须附着在一种叫作
+D 膜的结构上，而在 M 理论中，基本粒子是由一种 2 维的 M
+膜的振动形成的，而这种膜不需要附着在其它结构上。可能你不懂这句话的意思，请放心，我也不懂我在说什么。我只是大致明白了，在多线程机制中，若想用多个线程做一些有用处的事情，这些线程之间必须用互斥和条件变量予以约束，而在协程中，这种约束原本是通过全局变量或函数内的静态变量实现的，但是当我们将协程升级为闭包，这种约束也就不存在了。闭包可以不依附其它结构而自由存在。</p>
+<h1 id="总结">总结</h1>
+<p>天地一协程，万物一闭包。</p>
+<p>C 语言没有协程，也没有闭包，却也能无中生有。</p>
+<p>不过，我们好像已经走得太远了，甚至失去了踪迹。</p>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
+class="email">lyr.m2@live.cn</a> 或在<a
+href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

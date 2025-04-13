@@ -1,301 +1,491 @@
 ---
 title: 封装
 abstract: 收纳桌子上那些乱七八糟的电线。
-date: 2025 年 03 月 05 日
+date: 2025 年 04 月 05 日
 ...
 
 # 前言
 
-现在，你已经实现了一个简单的 C/S 架构的程序，这个程序分为两个部分，一个是 ywj，它是客户端（Client），另一个是 threebody，它是服务端（Server）。这两个部分通过 socket 合为一体。不妨再勇敢一些，Internet 也不过是使用不计其数的 socket 将各个部分连接起来的一个程序。你想到了……量子力学么？通信即测量，网络即量子。
+sim 项目中的字符串类获得了巨大成功，ywj 和 threebody 也受到了鼓舞，希望加入 sim 的阵营。
 
-不过，还是尽快从无尽的遐想中回归，看一看 ywj.c 和 threebody.c 中的 `main` 函数，它们的代码已经有些不清晰了，像桌面上连接计算机的电源线以及乱七八糟的信号线和数据线，我们需要尝试用面向对象的办法收纳这些代码。
+# 客户端
 
-# 类与方法
-
-C 语言在语法上不能像 C++、C#、Java 等语言那样优雅地支持面向对象编程，但是若将面向对象编程视为一种编程范式，C 在一定程度上可以实现其基本思想。我们可以用结构体模拟类，用小写的类名作为函数名的前缀从而模拟对象的方法。
-
-首先，定义一个类 `Socket`：
+新建一份文件 sim-network.h，除了防碰头设计，还包含了 sim-str.h：
 
 ```c
-typedef struct {
-        int listen;
-        int connection;
-        char *host;
-        size_t host_size;
-        char *port;
-        size_t port_size;
-} Socket;
+/* sim-network.h */
+#ifndef SIM_NETWORK_H
+#define SIM_NETWORK_H
+#include <sim-str.h>
+
+#endif
 ```
 
-这个类表达的是一个通用的 socket，即可用于客户端，也可用于服务端，同时它还能以文字的形式记录对方的 IP 地址和端口——若是客户端的 socket，则记录服务端的 IP 地址和端口；若是服务端的 socket，则记录客户端的 IP 地址和端口。
-
-有两种方法为类 `Socket` 创建对象，分别面向客户端和服务端：
+之后我用以下示意标记
 
 ```c
-Socket *client_socket(const char *host, const char *port);
-Socket *server_socket(const char *host, const char *port);
+/* sim-network.h ++ */
+... ... 代码片段 ... ...
 ```
 
-服务端的 `Socket` 对象，还需要一个 `accept` 方法：
+我希望你能理解成，代码片段是添加在 `#define SIM_NETWORK_H` 和 `#endif` 之间的区域。
+
+之所以需要 sim-str.h，是因为我们在学习网络编程时，大部分时间是在收发文本信息。
+
+创建 sim-network.c 文件，先让它包含 sim-network.h：
 
 ```c
-void server_socket_accept(Socket *x);
+/* sim-network.c */
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include "sim-network.h"
 ```
 
-顾名思义，该方法主要是基于 `x->listen` 建立 `x->connection`，前者为服务端的监听 socket，后者是与某个客户端通信的 socket。
-
-拥有可通信的 `Socket` 对象后，可基于以下两个方法发送和接受信息：
+客户端程序 ywj 较为简单，我们不妨先从客户端类 `SimClient` 的定义开始：
 
 ```c
-void socket_send(Socket *x, const char *message);
-char *socket_receive(Socket *x);
+/* sim-network.h ++ */
+typedef struct sim_client SimClient;
 ```
 
-`socket_free` 释放 `Socket` 对象占用的内存：
-
 ```c
-void socket_free(Socket *x);
+/* sim-network.c ++ */
+struct sim_client {
+        int server;   /* 服务端套接字 */
+        const char *error;
+};
 ```
 
-一个 socket 用毕后，需要关闭，而上述方法未为 `Socket` 对象的 `listen` 和 `connection` 成员提供 `close` 方法。这是我故意而为之，因为 socket API 中的 `close` 函数的用法已经非常简单，没有必要再将其封装为一个函数。假设 `Socket *x` 指向某个服务器端的 `Socket` 对象，可使用以下代码关闭该对象的两个 socket：
+与 `SimStr` 相似，`SimClient` 对象也有 `error` 成员，用于记录它的生命周期内可能的出错信息。我会努力让 sim 项目中所有的对象，都拥有 `error` 成员。
+
+`SimClient` 对象的构造函数的声明如下：
 
 ```c
-close(x->connection);
-close(x->listen);
+/* sim-network.h ++ */
+SimClient *sim_client(const char *host, const char *port);
 ```
 
-对于面向客户端的 `Socket` 对象只需关闭 `connection`。
-
-# 构造网络地址列表
-
-为了简化客户端或服务端的 `Socket` 对象的创建过程，需要先将网路地址列表的构造过程封装为函数：
+在实现 `sim_client` 函数之前，需要先将套接字地址由文字化转化为数字化的过程封装为一个仅在 sim-network.c 中使用的函数。不过，在定义这个函数之前，我们先定义一个函数指针：
 
 ```c
-static struct addrinfo *
-get_address_list(const char *host, const char *port) {
+/* sim-network.c ++ */
+typedef int (*AddrSelector)(int sockfd, 
+                            const struct sockaddr *addr, 
+                            socklen_t addrlen);
+```
+
+函数指针 `AddSelector` 指向的函数，用于 `getaddrinfo` 返回的地址列表中挑选可用地址。倘若你还没有对套接字 API 函数中的 `connect` 和 `bind` 的用法过于淡忘，想必应该明白了，它们就是这样的函数。基于这个函数指针，便可定义一个函数，从文字化套接字地址转化的数字化套接字地址列表中选择第一个可用的地址，如下：
+
+```c
+/* sim-network.c ++ */
+static int first_valid_address(const char *host, 
+                               const char *port,
+                               AddrSelector selector) {
         struct addrinfo hints, *addr_list;
         memset(&hints, 0, sizeof(struct addrinfo));
         hints.ai_family = AF_UNSPEC;
         hints.ai_socktype = SOCK_STREAM;
-        int a = getaddrinfo(host, port, &hints, &addr_list);
-        if(a != 0) {
-                fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(a));
-                exit(-1);
+        if (getaddrinfo(host, port, &hints, &addr_list) != 0) {
+                return -1;
         }
-        return addr_list;
-}
-```
-
-上述函数定义中的一切，皆已在「[网络地址](getaddrinfo/index.html)」中给出了详细讲解，需要注意的是，该函数是私有的，即除了我之外，我不打算让任何人使用它，故而使用 `static` 修饰它。
-
-# Socket 对象
-
-以下私有函数，用于构造一个暂且无法使用的 `Socket` 对象：
-
-```c
-static Socket *socket_new(void) {
-        Socket *result = malloc(sizeof(Socket));
-        result->listen = -1;
-        result->connection = -1;
-        result->host_size = NI_MAXHOST * sizeof(char);
-        result->host = malloc(result->host_size);
-        result->port_size = NI_MAXSERV * sizeof(char);
-        result->port = malloc(result->port_size);
-        return result;
-}
-```
-
-# 客户端 Socket 对象
-
-客户端 `Socket` 对象的创建过程颇为简单：
-
-```c
-Socket *client_socket(const char *host, const char *port) {
-        Socket *result = socket_new();
-        struct addrinfo *addr_list = get_address_list(host, port);
         int fd = -1;
         for (struct addrinfo *it = addr_list; it; it = it->ai_next) {
                 fd = socket(it->ai_family, it->ai_socktype, it->ai_protocol);
                 if (fd == -1) continue;
-                if (connect(fd, it->ai_addr, it->ai_addrlen) == -1) {
+                if (selector(fd, it->ai_addr, it->ai_addrlen) == -1) {
                         close(fd);
-                        continue;
-                }
-                getnameinfo(it->ai_addr, it->ai_addrlen,
-                            result->host, result->host_size,
-                            result->port, result->port_size,
-                            NI_NUMERICHOST | NI_NUMERICSERV);
-                break;
-        }
-        freeaddrinfo(addr_list);
-        
-        result->connection = fd;
-        return result;
-}
-```
-
-客户端的 `Socket` 对象的两个 socket，只有 `connection` 有意义。
-
-# 服务端 Socket 对象
-
-服务端的 `Socket` 对象构造过程如下：
-
-```c
-Socket *server_socket(const char *host, const char *port) {
-        struct addrinfo *addr_list = get_address_list(host, port);
-        int fd = -1;
-        for (struct addrinfo *it = addr_list; it; it = it->ai_next) {
-                fd = socket(it->ai_family, it->ai_socktype, it->ai_protocol);
-                if (fd == -1) continue;
-                if (bind(fd, it->ai_addr, it->ai_addrlen) == -1) {
-                        close(fd);
+                        fd = -1;
                         continue;
                 }
                 break;
         }
         freeaddrinfo(addr_list);
+        return fd;
+}
+```
+
+在 `first_valid_address` 的辅助下，可以很简单的实现 `SimClient` 对象的构造函数：
+
+```c
+/* sim-network.c ++ */
+SimClient *sim_client(const char *host, const char *port) {
+        int fd = first_valid_address(host, port, connect); 
+        if (fd == -1) return NULL;
+
+        SimClient *client = malloc(sizeof(SimClient));
+        if (!client) {
+                fprintf(stderr, "sim_client error: failed to malloc!\n");
+                return NULL;
+        }
+        client->server = fd;
+        client->error = NULL;
+        return client;
+}
+```
+
+如果你对 C 语言的函数指针的用法不熟悉，那么上述代码可以作为一个很实用的示例。
+
+`SimClient` 对象的析构函数的声明和定义如下：
+
+```c
+/* sim-network.h ++ */
+void sim_client_free(SimClient *client);
+```
+
+```c
+/* sim-network.c ++ */
+void sim_client_free(SimClient *client) {
+        if (client) {
+                close(client->server);
+                free(client);
+        } else {
+                fprintf(stderr, "sim_client_free error: NULL pointer!\n");
+        }
+}
+```
+
+上述代码，若有不解之处，请及时回顾「[我在这里！](../simple-client/index.html)」。
+
+# 服务端
+
+服务端类的声明和定义如下：
+
+```c
+/* sim-network.h ++ */
+typedef struct sim_server SimServer;
+```
+
+```c
+/* sim-network.c ++ */
+struct sim_server {
+        int listener;  /* 用于监听的套接字 */
+        int client;    /* 客户端套接字 */
+        const char *error;
+};
+```
+
+`SimServer` 对象的构造函数的声明和定义如下：
+
+```c
+/* sim-network.h ++ */
+SimServer *sim_server(const char *host, const char *port);
+```
+
+```c
+/* sim-network.h ++ */
+SimServer *sim_server(const char *host, const char *port) {
+        int fd = first_valid_address(host, port, bind); 
+        if (fd == -1) return NULL;
+        if (listen(fd, 10) == -1) return NULL;
         
+        SimServer *server = malloc(sizeof(SimServer));
+        if (!server) {
+                fprintf(stderr, "sim_server error: failed to malloc!\n");
+                return NULL;
+        }
+        server->listener = fd;
+        server->client = -1;
+        server->error = NULL;
+        return server;
+}
+```
+
+`SimServer` 对象的析构函数声明如下：
+
+```c
+/* sim-network.h ++ */
+void sim_server_free(SimServer *server);
+```
+
+`sim_server_free` 只需关闭用于 `SimServer` 对象的用于监听的套接字：
+
+```c
+/* sim-network.c ++ */
+void sim_server_free(SimServer *server) {
+        if (server) {
+                close(server->listener);
+                free(server);
+        } else {
+                fprintf(stderr, "sim_server_free error: NULL pointer!\n");
+        }
+}
+```
+
+`SimServer` 对象需要一个 `run` 方法，表达服务端开始运转，接受客户端的连接，该方法声明和定义如下：
+
+```c
+/* sim-network.h ++ */
+void sim_server_run(SimServer *self);
+```
+
+```c
+/* sim-network.c ++ */
+void sim_server_run(SimServer *self) {
+        int fd = accept(self->listener, NULL, NULL);
         if (fd == -1) {
-                fprintf(stderr, "failed to bind!\n");
-                exit(-1);
+                self->error = "sim_server_run error: failed to accept!";
+        } else {
+                /* 恢复 self 无错状态 */
+                if (self->error) self->error = NULL;
         }
-        if (listen(fd, 10) == -1) {
-                fprintf(stderr, "failed to listen!\n");
-                exit(-1);
-        }
-        
-        Socket *result = socket_new();
-        result->listen = fd;
-        return result;
+        self->client = fd;
 }
 ```
 
-由于服务端的 `Socket` 对象，其 `connection` 成员需要与具体的客户端连接时方能确定，故而上述代码仅构造了用于监听的 socket，即 `listen` 成员（不要与 socket API 中的 `listen` 函数混淆）。
-
-服务端 `Socket` 对象接受客户端连接的过程如下：
+至于 `SimServer` 对象的 `client` 套接字，每次当 `SimServer` 对象处理完一个客户端连接后，可使用 `close` 方法关闭，该方法的声明与定义如下：
 
 ```c
-void server_socket_accept(Socket *x) {
-        struct sockaddr_storage addr;
-        socklen_t addr_len = sizeof(addr);
-        x->connection = accept(x->listen, (struct sockaddr *)(&addr), &addr_len);
-        if (x->connection == -1) {
-                fprintf(stderr, "failed to accept!\n");
-                exit(-1);
-        }
-        getnameinfo((struct sockaddr *)&addr, addr_len,
-                    x->host, x->host_size,
-                    x->port, x->port_size,
-                    NI_NUMERICHOST | NI_NUMERICSERV);
-}
+/* sim-network.h ++ */
+void sim_server_close(SimServer *server);
 ```
 
-# 信息收发
-
-通过 `Socket` 对象的 `connection` 成员发送信息，过程较为简单：
-
 ```c
-void socket_send(Socket *x, const char *message) {
-        if (send(x->connection, message, strlen(message), 0) == -1) {
-                fprintf(stderr, "send error!\n");
-                exit(-1);
+/* sim-network.c ++ */
+void sim_server_close(SimServer *self) {
+        if(self) {
+                close(self->client);
+                self->client = -1;
+        } else {
+                fprintf(stderr, "sim_server_close error: NULL pointer!\n");
         }
 }
 ```
 
-从 `Socket` 对象的 `connection` 成员接受信息，需要一点技巧。因为无法预知接受的信息长度（字节数），故而需要用一个定长的缓冲区，从 socket 中循环读取信息，并将每次读取的信息合并到一个动态增长的字符串中：
+上述代码，若有不解之处，请及时回顾「[我是三体人](../threebody/index.html)」。
+
+# 数据发送与接收
+
+`SimClient` 对象和 `SimServer` 对象之间的通信方法本质相同，区别只是使用的套接字不同，`SimClient` 用它的服务端套接字，而 `SimServer` 用它的客户端套接字。我们可以先实现两个通用的函数，对所有套接字通信一视同仁，然后基于它们为 `SimClient` 对象和 `SimServer` 对象定义数据发送和接收方法。
+
+首先，实现向一个套接字发送数据。在「[我在这里！](../simple-client/index.html)」中，我们使用套接字 API 函数 `send` 向套接字发送数据。若 `send` 运行成功，其返回值是发送出去的数据的字节数。可能当时你并未深想这句话意味着什么。事实上，`send` 有时未必能将数据一次性完全发送出去，会剩余一些，当网络状况不稳定或者信息接收方处理速度较慢，都可能导致这种问题出现。解决方法也很简单，`send` 函数能够将未能发送出去的信息继续发送，只需持续发送，直至数据全部发送出去，该过程的实现如下：
 
 ```c
-char *socket_receive(Socket *x) {
+/* sim-network.c ++ */
+/* 将字符串对象中的数据发送到套接字 x */
+static int send_robustly(int x, SimStr *str) {
+        const char *buffer = sim_str_share(str);
+        size_t n = sim_str_size(str); /* buffer 字节数 */
+        size_t m = 0; /* 发送了多少字节 */
+        size_t remaining = n; /* 还有多少字节未发送 */
+        while (m < n) {
+                ssize_t t = send(x, buffer + m, remaining, 0);
+                if (t == -1) break;
+                m += t;
+                remaining -= t;
+        }
+        return (m < n) ? -1 : 0;
+}
+```
+
+同理，套接字 API 函数 `recv` 函数也存在类似 `send` 这样的问题。从套接字接收数据时，有可能缓冲区太小，无法一次性接收所有数据，必须多次接收，直至接收不到数据为止，该过程如下：
+
+```c
+/* 从套接字 x 接收数据，返回值为接受到的数据 */
+SimStr *recv_robustly(int x) {
         size_t m = 1024;
-        char *buffer = malloc(m * sizeof(char));
-        size_t n = 0;
-        char *total = NULL;
+        char *data = malloc(m * sizeof(char));
+        size_t n = 0; /* 已接收的字节数 */
         while (1) {
-                ssize_t h = recv(x->connection, buffer, m, 0);
+                if (n == m) { /* 扩容 */
+                        m *= 2;
+                        data = realloc(data, m);
+                }
+                size_t remaining = m - n; /* 剩余空间长度 */
+                ssize_t h = recv(x, data + n, remaining, 0);
                 if (h == -1) {
-                        fprintf(stderr, "recv error!\n");
-                        exit(-1);
+                        free(data);
+                        return NULL;
                 } else if (h == 0) break;
                 else {
-                        total = realloc(total, n + h);
-                        memcpy(total + n, buffer, h);
                         n += h;
-                        if (h < m) break;
+                        if (h < remaining) break;
                 }
         }
-        if (total) { /* 为字符串增加终止符 */
-                total = realloc(total, n + 1);
-                *(total + n) = '\0';
-                n += 1;
-        }
-        free(buffer);
-        return total;
+        if (n == 0) {
+                free(data);
+                return NULL;
+        } else return sim_str_absorb(data, m, n);
 }
 ```
 
-理解上述代码的关键是，若 `recv` 函数一次无法读取 socket 中的全部信息，可继续调用它读取剩余信息。
+注意，`recv_robustly` 在接收数据的过程中，发现缓冲区 `data` 已满，便将其扩容一倍，使得缓冲区空间总是够用。当发现接收数据的字节数 `h` 小于 `data` 剩余空间长度 `rest` 时，便意味着数据接收完毕。
 
-# 释放 Socket 对象
-
-无论是客户端还是服务端的 `Socket` 对象，皆可使用以下函数释放其全部内存：
+基于上述的 `send` 和 `recv` 稳健版，可以为 `Client` 和 `Server` 对象定义数据发送和接收方法：
 
 ```c
-void socket_free(Socket *x) {
-        free(x->host);
-        free(x->port);
-        free(x);
+/* sim-network.h ++ */
+void sim_client_send(SimClient *self, SimStr *str);
+SimStr *sim_client_receive(SimClient *self);
+```
+
+```c
+/* sim-network.c ++ */
+#define SEND_COMMON(member, error_info)  do {         \
+        if (send_robustly(self->member, str) == -1) { \
+                self->error = error_info;             \
+        } else {                                      \
+                /* 恢复 self 正常 */                   \
+                if (self->error) self->error = NULL;  \
+        }                                             \
+} while (0)
+
+void sim_client_send(SimClient *self, SimStr *str) {
+        SEND_COMMON(server, "sim_client_send error!");
+}
+void sim_server_send(SimServer *self, SimStr *str) {
+        SEND_COMMON(client, "sim_server_send error!");
 }
 ```
 
-# 重写 ywj 和 threebody
+```c
+/* sim-network.h ++ */
+void sim_server_send(SimClient *self, SimStr *str);
+SimStr *sim_server_receive(SimClient *self);
+```
 
-将上述 `Socket` 类的定义与方法的声明皆在 [network.h](network.h) 文件，所有方法的定义皆在 [network.c](network.c) 文件。
+```c
+/* sim-network.c ++ */
+#define RECEIVE_COMMON(member, error_info) do {       \
+        SimStr *str = recv_robustly(self->member);    \
+        if (!str) {                                   \
+                self->error = error_info;             \
+        } else {                                      \
+                /* 恢复 self 正常 */                   \
+                if (self->error) self->error = NULL;  \
+        }                                             \
+        return str;                                   \
+} while (0)
 
-基于 `Socket` 类与方法，重写 ywj 程序：
+SimStr *sim_client_receive(SimClient *self) {
+        RECEIVE_COMMON(server, "sim_client_receive error!");
+}
+
+SimStr *sim_server_receive(SimServer *self) {
+        RECEIVE_COMMON(client, "sim_server_receive error!");
+}
+```
+
+上述代码，为了消除重复代码，我用了宏，但愿不会吓到你。它们其实很简单，你只需用宏调用语句中的实际参数去替换宏定义中的名义参数即可。例如
+
+```c
+SEND_COMMON(server, "sim_client_send error!");
+```
+
+这个宏调用语句的展开结果是
+
+```c
+do {
+        SimStr *str = recv_robustly(self->server);
+        if (!str) {
+                self->error = sim_client_send error!;
+        } else {
+                if (self->error) self->error = NULL;
+        }
+        return str;
+} while (0);
+```
+
+应该有更好的避免代码重复的方法，待日后再予深究。
+
+# 安全监测
+
+上述 `SimClient` 和 `SimServer` 对象的一些方法的实现，利用对象的 `error` 记录了错误信息。我们为这两种对象的安全性提供了检测方法：
+
+```c
+/* sim-network.h ++ */
+bool sim_client_safe(SimClient *self);
+bool sim_server_safe(SimServer *self);
+```
+
+```c
+/* sim-network.h ++ */
+#define SIM_OBJ_SAFE(error_info) do {          \
+        if (self) {                            \
+                /* 不太致命的错误 */             \
+                if (self->error) return false; \
+        } else {                               \
+                /* 致命错误 */                  \
+                fprintf(stderr, error_info);   \
+                return false;                  \
+        }                                      \
+        return true;                           \
+} while (0)
+
+bool sim_client_safe(SimClient *self) {
+        SIM_OBJ_SAFE("sim_client_safe error: NULL pointer!\n");
+}
+
+bool sim_server_safe(SimServer *self) {
+        SIM_OBJ_SAFE("sim_server_safe error: NULL pointer!\n");
+}
+```
+
+上述的 `SIM_SAFE` 宏，对 `sim_str_safe` 也适用，以后我们应该专门建立一个 sim-macro.h 文件，集中存放一些通用的宏。
+
+# 重写 ywj
+
+ywj 说，我期待这一天已经很久了！
 
 ```c
 /* ywj.c */
-#include "network.h"
-
+#include "sim-network.h"
 int main(void) {
-        Socket *x = client_socket("www.threebody.com", "8080");
-        socket_send(x, "I am here!");
-        { /* 从 x 读取信息 */
-                char *msg = socket_receive(x);
-                printf("%s:%s said: %s\n", x->host, x->port, msg);
-                free(msg);
+        SimClient *ywj = sim_client("www.threebody.com", "8080");
+        if (!ywj) {
+                fprintf(stderr, "sim_client failed!\n");
+                exit(-1);
         }
-        close(x->connection);
-        socket_free(x);
+        /* 发送数据 */
+        SimStr *msg_to = sim_str("ywj: I am here!");
+        sim_client_send(ywj, msg_to);
+        sim_str_free(msg_to);
+        /* 从 www.threebody.com:8080 接收信息 */
+        SimStr *msg_from = sim_client_receive(ywj);
+        if (sim_str_safe(msg_from)) {
+                printf("%s\n", sim_str_raw(msg_from));
+        }
+        sim_str_free(msg_from);
+        /* 析构，退出 */
+        sim_client_free(ywj);
         return 0;
 }
 ```
 
-编译：
+用 gcc 编译上述 ywj.c，需要联编 sim-str.c 和 sim-network.c：
 
 ```console
-$ gcc network.c ywj.c -o ywj
+$ gcc -I. sim-str.c sim-network.c ywj.c -o ywj
 ```
 
-重写 threebody 程序：
+# 重写 threebody
+
+threebody 说，终于轮到我了！
 
 ```c
 /* threebody.c */
-#include "network.h"
-
+#include "sim-network.h"
 int main(void) {
-        Socket *x = server_socket("localhost", "8080");
-        server_socket_accept(x);
-        { /* 从 x 读取信息 */
-                char *msg = socket_receive(x);
-                printf("%s:%s said: %s\n", x->host, x->port, msg);
-                free(msg);
+        SimServer *threebody = sim_server("localhost", "8080");
+        if (!threebody) {
+                fprintf(stderr, "sim_server failed!\n");
+                exit(-1);
         }
-        socket_send(x, "Hi, I received your message!");
-        close(x->connection);
-        close(x->listen);
-        socket_free(x);
+        sim_server_run(threebody);
+        /* 从客户端读取信息 */
+        SimStr *msg_from = sim_server_receive(threebody);
+        if (sim_str_safe(msg_from)) {
+                printf("%s\n", sim_str_raw(msg_from));
+        }
+        sim_str_free(msg_from);
+        /* 向客户端发送信息 */
+        SimStr *msg_to = sim_str("threebody: Hi!");
+        sim_server_send(threebody, msg_to);
+        sim_str_free(msg_to);
+        sim_server_close(threebody);
+        /* 析构，退出 */
+        sim_server_free(threebody);
         return 0;
 }
 ```
@@ -303,15 +493,18 @@ int main(void) {
 编译：
 
 ```console
-$ gcc network.c threebody.c -o threebody
+$ gcc -I. sim-str.c sim-network.c threebody.c -o threebody
 ```
-
-以下是 threebody 和 ywj 程序的运行结果截图：
-
-![ywj 和 threebody](figures/01.png)
 
 # 总结
 
-虽然我不喜欢 C++，Java 以及 C# 之类的面向对象编程语言，但我需要承认，面向对象编程范式，是个了不起的发明。
+如果你依然不想逐一复制本文所有代码片段，拼凑成完整的 .h 和 .c 文件，你依然可以不劳而获……
 
-本文未对一些涉及内存分配的代码作防御性处理，涉及网络连接和信息收发的代码虽有错误处理但失于粗暴。我一向也是这样写 C 程序的，我知道安全很重要，但是处处为了安全，相当于穿着厚重的宇航服登山。偏好安全的现代程序员，可能更好的选择是 Rust。
+* [sim-str.h](sim-str.h)
+* [sim-str.c](sim-str.c)
+* [sim-network.h](sim-network.h)
+* [sim-network.h](sim-network.c)
+* [ywj.c](ywj.c)
+* [threebody.c](threebody.c)
+
+我们的 sim 项目，现已初具规模，它有两个模块了。此刻，你应该也基本熟悉如何用 C 编写简单的面向对象范式的程序了。面向对象编程已在业界独领风骚三十余年，自然是博大精深的，不过，恐龙也是博大精深的，统治地球上亿年。现有的面向编程技巧对于我们而言，似乎已经足够了。持而盈之，不若其已。

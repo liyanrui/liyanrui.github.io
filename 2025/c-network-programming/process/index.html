@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>世界是你的，也是我的</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="../index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">世界是你的，也是我的</h1>
+<p class="date">03 月 17 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#前言" id="toc-前言">前言</a></li>
+<li><a href="#电子穿过双缝" id="toc-电子穿过双缝">电子穿过双缝</a></li>
+<li><a href="#麦田守望者" id="toc-麦田守望者">麦田守望者</a></li>
+<li><a href="#守望的艺术" id="toc-守望的艺术">守望的艺术</a></li>
+<li><a href="#非阻塞等待" id="toc-非阻塞等待">非阻塞等待</a></li>
+<li><a href="#信号处理" id="toc-信号处理">信号处理</a></li>
+<li><a href="#更安全的信号处理"
+id="toc-更安全的信号处理">更安全的信号处理</a></li>
+<li><a href="#坍缩" id="toc-坍缩">坍缩</a></li>
+<li><a href="#总结" id="toc-总结">总结</a></li>
+</ul>
+</nav>
+<h1 id="前言">前言</h1>
+<p>进程，也许是绝大多数人既熟悉又陌生的事物。</p>
+<p>若一个人很自信的说，万物皆备于我……他便是一个进程无疑了。在操作系统中运行的任何一个进程，它都会认为，整个系统资源，它可以随意使用，例如，内存可以想要多少，就能拥有多少……完全可以说，孟老夫子在
+2000 多年前已经提前拥有共产主义意识了。</p>
+<p>矛盾之处在于，任何一个程序，它的设计者都不会让它浪费资源，而程序在操作系统中运行起来，亦即变成进程时，它却觉得自己拥有整个了世界。如果大多数人都没有这样的觉悟，我对人类能否实现共产主义表示悲观。</p>
+<h1 id="电子穿过双缝">电子穿过双缝</h1>
+<p>经常翻阅量子力学科普书的人应该都知道，量子力学最有名的实验，是电子双缝实验。一组电子仿佛同时穿过两个缝隙，在缝隙后面的屏幕上形成干涉图像，一旦观测它们，便会导致它们立刻选择某条路径，于是干涉图像消失。</p>
+<p>Unix 或 Linux 操作系统也为进程提供了颇为相像的机制，即
+<code>fork</code> 函数：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>pid_t fork<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<p><code>fork</code>
+能够为进程制造一个类似双缝装置的程序逻辑，因为它不像普通的 C
+函数那样，每次调用，只能返回一次，<code>fork</code>
+可以同时返回两次。然后，进程会像电子穿过双缝那样穿过这两次返回所对应的程序逻辑。例如</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* foo.c */</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        pid_t a <span class="op">=</span> fork<span class="op">();</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;I am </span><span class="sc">%d</span><span class="st">.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> getpid<span class="op">());</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;I am </span><span class="sc">%d</span><span class="st">.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> getpid<span class="op">());</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>getpid</code> 函数用于获取当前进程的 ID，它与 <code>fork</code>
+函数皆为系统调用，且二者的返回值类型皆为
+<code>pid_t</code>，这是整型类型的别名，专用于表达进程 ID，当然也有 0 和
+<code>-1</code> 这种含的特殊意义的值。</p>
+<p>编译上述的 foo.c 并执行所得程序：</p>
+<pre class="console"><code>$ gcc foo.c -o foo
+$ ./foo
+I am 33989.
+I am 33990.</code></pre>
+<p>亦即上述代码中的 <code>if ... else ...</code>
+的两个条件分支都被执行了。</p>
+<p>倘若你的思维之前一直停留在经典模式，但愿此刻你不会开始怀疑这个世界是否真实了。费曼说，没人能理解量子力学。我们不妨同意这个观点，不过，我们应该能理解同时通过
+<code>fork</code>「双缝」的进程，这个机制毕竟是上个世纪下半叶的人类创造的。</p>
+<p>现在，将上述 foo.c 略微修改一处，只需关注 <code>main</code>
+函数：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        pid_t a <span class="op">=</span> fork<span class="op">();</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;I am </span><span class="sc">%d</span><span class="st">.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> getpid<span class="op">());</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;I am </span><span class="sc">%d</span><span class="st">.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> a<span class="op">);</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>else</code> 分支里打印的不在是 <code>getpid()</code>
+的返回值，而是 <code>fork</code>
+的两次返回的值之一，因为这两次返回是同时的，因此我无法使用「第一次返回的值或第二次返回的值」之类的说法。</p>
+<p>重新编译 foo.c 并运行所得程序，则程序里的两次 <code>printf</code>
+打印的内容是相同的，例如</p>
+<pre><code>I am 41590.
+I am 41590.</code></pre>
+<p>这说明，对于 <code>else</code> 分支里的那个进程而言，它持有
+<code>if</code> 分支里的进程的 ID。</p>
+<p>对 foo.c 再略作修改：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;I am </span><span class="sc">%d</span><span class="st">.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> getpid<span class="op">());</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        pid_t a <span class="op">=</span> fork<span class="op">();</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;(</span><span class="sc">%d</span><span class="st">, </span><span class="sc">%d</span><span class="st">)</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> a<span class="op">,</span> getpid<span class="op">());</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;(</span><span class="sc">%d</span><span class="st">, </span><span class="sc">%d</span><span class="st">)</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> a<span class="op">,</span> getpid<span class="op">());</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>再度编译 foo.c，然后运行所得程序，结果如下：</p>
+<pre><code>I am 41851.
+(41852, 41851)
+(0, 41852)</code></pre>
+<p>现在能看出一些端倪了么？<code>main</code> 函数所在的进程，ID 为
+41851，在调用 <code>fork</code> 之后，在 <code>else</code>
+分支里的进程恰好是 <code>main</code> 函数所在的进程，而 <code>if</code>
+分支里的进程是一个新的进程。</p>
+<p>现在，可以下一个结论：在 <code>fork</code> 的返回值为 0
+的情况里，会出现一个新的进程，而原有的进程——<code>main</code>
+函数所在的进程继续在 <code>fork</code> 返回值为非 0
+的情况中存在，并且它能够持有那个新进程的
+ID。若不理解这个结论，需要你再认真回顾一下上述对 foo.c
+的两次修改及程序运行结果。原有的进程，习惯上称为父进程，而新的进程称为子进程。</p>
+<p>实际上，有的时候，<code>fork</code> 会返回
+-1，表示它执行时出错。这种情况，可能性虽然很小，但理论上是存在的，因此健壮的多进程并发程序，需严谨对待。例如</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> fork<span class="op">();</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span> <span class="co">/* 子进程 */</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="op">{</span> <span class="co">/* 父进程 */</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;fork error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>考考你，你知道下面这段代码（假如 <code>fork</code>
+的执行都是成功的）的结果是什么吗？</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>        fork<span class="op">();</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        fork<span class="op">();</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;I am </span><span class="sc">%d</span><span class="st">.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> getpid<span class="op">());</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>建议动手试验，若结果不符合你的答案，你需要再认真理解关于
+<code>fork</code> 同时返回两次这一事实。</p>
+<h1 id="麦田守望者">麦田守望者</h1>
+<p>物理学家可能至今依然不明白一个电子如何同时穿过双缝，而我们却已经很清楚一个进程如何穿过
+<code>fork</code>
+返回的两个条件分支，父进程将「自身」复制为一个新的子进程，二者同时穿过各自的条件分支，并相互干涉，只是这种干涉，进程毫无所知，它们只是以为自己在独立地运行着。若不理解操作系统的进程调度原理，人类也以为通过
+<code>fork</code>
+产生的条件分支的两个进程不会干涉。事实上，并发的进程可能存在干涉，甚至能创造出薛定谔的猫。</p>
+<p>在操作系统看来，父进程及其 <code>fork</code>
+出来的子进程，有很多人会按照一些过时的教科书所说的，操作系统会将父进程的资源完整复制一份交给子进程。倘若如此，那父进程和子进程在资源方面是完全独立的，也就不发生任何干涉，但实际上现代操作系统采用的是
+Copy-on-Write 机制。COW
+机制就像两个人同时阅读同一本书，其中有一人想在某页上做笔记，操作系统会为他单独复制这一页供他使用。</p>
+<p>父进程和子进程的各自独立运行实际上往往也是假象，因为操作系统在调度它们的时候，可能会让它们运行在单个
+CPU
+核心上。在这种情况下，操作系统会运行一会父进程，然后将其挂起，再运行一会子进程，然后再将子进程挂起，恢复父进程的运行，如此循环交替，直至它们终止。</p>
+<p>还有一个令人伤脑筋的事实是，若子进程结束，父进程尚在运行，则对于操作系统而言，子进程会处于即死又生的状态，所以你可以联想到薛定谔的猫了。这样的子进程，叫僵尸进程。名字有些吓人，但实际上它已经死了，只是还占用着资源，即尸位素餐。制作僵尸进程很容易，例如</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>fork<span class="op">()</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span>  <span class="co">/* 创建子进程 */</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span>       <span class="co">/* 子进程立即退出，成为僵尸 */</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span>         <span class="co">/* 父进程仍在一直运行 */</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>            sleep<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>假设上述源码编译成的程序为 foo，运行 foo 之后，可通过以下命令查看是
+foo 的子进程是否为僵尸进程：</p>
+<pre class="console"><code>$ ps aux | grep foo</code></pre>
+<p>在我的机器上，上述命令给出的结果为</p>
+<pre><code>...    9232  ...   S+   ... ./foo
+...    9233  ...   Z+   ... [foo] &lt;defunct&gt;</code></pre>
+<p>其中含有 <code>Z+</code> 和 <code>defunct</code>
+的进程，便是僵尸进程。</p>
+<p>现在明白，有些人类为什么也喜欢拼爹了吧？因为他们想当僵尸进程。不过，主要原因还是爹不够负责，他对子进程完全放任不管。拼爹的人，也挺可怜的，他们也许潜意识里，只是想证明，自己是有父亲的。</p>
+<p>好的父亲，他无需去干涉孩子的行为，他只需要守望。</p>
+<blockquote>
+一大群小孩儿在一大块麦田里玩一种游戏，有几千个，旁边没人——我是说没有岁数大一点的——我是说只有我。我会站在一道破悬崖边上。我要做的，就是抓住每个跑向悬崖的孩子——我是说要是他们跑起来不看方向，我就得从哪儿过来抓住他们。我整天就干那种事，当个麦田里的守望者。
+<p style="text-align: right;">
+——《麦田守望者》
+</p>
+</blockquote>
+<p>守望是很简单的，只需要使用 <code>wait</code>
+函数，它也是个系统调用，作用是让父进程先不要做别的事情，静静等待子进程的结束。</p>
+<p><code>wait</code>
+的用法并不难，倘若你不想追究细节，只需在父进程中添加</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>wait<span class="op">(</span>NULL<span class="op">);</span></span></code></pre></div>
+<p>例如</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/wait.h&gt;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>fork<span class="op">()</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    wait<span class="op">(</span>NULL<span class="op">);</span> <span class="co">/* 守望 */</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>            sleep<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>将上述源码再次编译为程序 foo 并运行，再使用
+<code>ps | grep foo</code>
+命令查看进程状态，便看不到僵尸态的子进程了，因为它被父进程回收了。</p>
+<p>不妨将 <code>fork</code> 简单理解为 <code>malloc</code>，将
+<code>wait</code> 简单理解为
+<code>free</code>。构建新的进程，像是构建一块有生命的内存空间。大多数情况下，父进程不
+<code>wait</code>
+子进程也无妨，除非它是网络服务端之类的程序，需要保持长期运行。对于网络服务端而言，若子进程开启过多且不回收，系统资源可能很快会被消耗殆尽，从而导致父进程崩溃。</p>
+<p>父进程等着子进程先结束，这件事会让人觉得不太舒适，试问世上可有白发人想送黑发人么？其实，可以浪漫一些。我的父亲虽然不在了，这事的确发生了，可他依然在守望着我。一代又一代，构成绵延不绝的守望链，直至家族绝后。</p>
+<p>有的时候，父进程先于子进程结束，原因也是它没有守望子进程。例如</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/wait.h&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>fork<span class="op">()</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        sleep<span class="op">(</span><span class="dv">3</span><span class="op">);</span> <span class="co">/* 将子进程阻塞 3 秒 */</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span> <span class="co">/* 子进程退出 */</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span> <span class="co">/* 父进程退出 */</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>这更符合现实的情况，即黑发人送白发人，只是黑发人会变成孤儿，以天为父，以地为母。失去父进程的子进程会被操作系统中的
+<code>init</code> 进程领养。<code>init</code>
+进程是操作系统启动后运行的第 1 个进程，亦称 1 号进程，如天如地。</p>
+<p>应该没人想当孤儿。父母们，责任在肩，还是努力多给子女一些守望吧。</p>
+<h1 id="守望的艺术">守望的艺术</h1>
+<p><code>wait</code> 的声明如下：</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/wait.h&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>pid_t wait<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>status<span class="op">);</span></span></code></pre></div>
+<p><code>wait</code> 执行成功，它会返回结束的子进程
+ID，并将子进程的退出状态保存在 <code>status</code> 指向的对象，否则返回
+-1。有一组宏，可以破译各种可能的子进程退出状态。</p>
+<ul>
+<li>若子进程正常退出，<code>WIFEXITED(status)</code> 的结果为非 0；</li>
+<li><code>WEXITSTATUS(status)</code>
+返回子进程的退出状态——子进程返回的值；</li>
+<li>若子进程因其他进程发送给它的信号而引发终止，<code>WIFSIGNALED(status)</code>
+返回真值；</li>
+<li><code>WTERMSIG(status)</code> 返回引起子进程退出的信号。</li>
+</ul>
+<p>现在还不需要了解操作系统为进程提供的信号处理机制，故而上述的 4
+个宏，我们暂且只需要关心前两个即可，以下示例程序演示了它们的基本用法：</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* foo.c */</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/wait.h&gt;</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> fork<span class="op">();</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span>  <span class="co">/* 创建子进程 */</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;子进程：我是 </span><span class="sc">%d</span><span class="st">！</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> getpid<span class="op">());</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>                sleep<span class="op">(</span><span class="dv">7</span><span class="op">);</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>                        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;fork error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>                        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> status<span class="op">;</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>                pid_t child_id <span class="op">=</span> wait<span class="op">(&amp;</span>status<span class="op">);</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>child_id <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>                        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;wait error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>                        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>WIFEXITED<span class="op">(</span>status<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>                        printf<span class="op">(</span><span class="st">&quot;父进程：</span><span class="sc">%d</span><span class="st"> 正常退出了，&quot;</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;其退出状态为 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>                               child_id<span class="op">,</span> WEXITSTATUS<span class="op">(</span>status<span class="op">));</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>                        printf<span class="op">(</span><span class="st">&quot;父进程： </span><span class="sc">%d</span><span class="st"> 的退出存在异常！</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> child_id<span class="op">);</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码的运行结果如下：</p>
+<pre class="console"><code>子进程：我是 17119，我退出了！
+父进程：17119 正常退出了，其退出状态为 0。</code></pre>
+<p>需要注意，上述代码中的父进程要等待子进程大概 7
+秒，方能输出内容，而子进程的输出则是在程序甫运行时便出现了，它给出了子进程的
+ID。若在父进程等待期间，快速在另一个终端用 <code>kill</code>
+命令杀死子进程，例如</p>
+<pre class="console"><code>$ kill -9 17119</code></pre>
+<p>则父进程会立刻输出：</p>
+<pre class="console"><code>父进程： 17175 的退出存在异常！</code></pre>
+<p><code>kill -9</code> 命令是 <code>kill</code> 进程通过 ID
+向对应的进程发送 <code>SIGKILL</code>
+信号，然后导致操作系统会强行杀死收到该信号的进程。有些信号，进程可以捕捉并作出响应，但它们对
+<code>SIGKILL</code> 却无能为力，这个信号是进程无法违抗的死亡通知。</p>
+<h1 id="非阻塞等待">非阻塞等待</h1>
+<p><code>wait</code>
+是阻塞式的，它会让父进程挂起，无法执行后续指令，直到子进程退出。若只有父进程只有一个子进程，为了回收该子进程，父进程阻塞等待，这种做法实际上是没有太大意义的，因为在实际效用上，它与单进程的程序并无区别。</p>
+<p>使用比 <code>wait</code> 更为基础的 <code>waitpid</code>
+函数，能够实现父进程非阻塞等待子进程退出。<code>waitpid</code>
+的声明如下：</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/wait.h&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>pid_t waitpid<span class="op">(</span>pid_t pid<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span>status<span class="op">,</span> <span class="dt">int</span> options<span class="op">);</span></span></code></pre></div>
+<p>该函数比 <code>wait</code> 多出两个参数，<code>pid</code> 和
+<code>options</code>，前者用于指定等待某个子进程，若为
+-1，表示等待所有子进程，后者用于设定等待方式，若为
+<code>WNOHANG</code>，表示非阻塞等待。</p>
+<p>父进程用 <code>waitpid</code> 回收指定的子进程，若子进程并未退出，则
+<code>waitpid</code> 会返回 0，而不像 <code>wait</code>
+那样将父进程挂起。若 <code>waitpid</code> 返回 -1，表示执行失败。</p>
+<p><code>waitpid</code> 的非阻塞特性，意味着我们需要在一个循环中不断使用
+<code>waitpid</code> 尝试回收子进程，直至 <code>waitpid</code>
+返回子进程的 ID，而不是 0 或 -1。例如</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* foo.c */</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/wait.h&gt;</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> fork<span class="op">();</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span>  <span class="co">/* 创建子进程 */</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;子进程：我是 </span><span class="sc">%d</span><span class="st">！</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> getpid<span class="op">());</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>                sleep<span class="op">(</span><span class="dv">5</span><span class="op">);</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>                        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;fork error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>                        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> once <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>                <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">int</span> status<span class="op">;</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>                        pid_t child_id <span class="op">=</span> waitpid<span class="op">(-</span><span class="dv">1</span><span class="op">,</span> <span class="op">&amp;</span>status<span class="op">,</span> WNOHANG<span class="op">);</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="op">(</span>child_id <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>                                printf<span class="op">(</span><span class="st">&quot;父进程：</span><span class="sc">%d</span><span class="st"> 退出了！</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> child_id<span class="op">);</span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>                                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>child_id <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>                                <span class="cf">if</span> <span class="op">(</span>once<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>                                        printf<span class="op">(</span><span class="st">&quot;父进程：等待子进程退出。</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>                                <span class="op">}</span></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>                                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;waitpid error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>                                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>                        once <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>                        sleep<span class="op">(</span><span class="dv">1</span><span class="op">);</span> <span class="co">/* 降低 cpu 占用 */</span></span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码，我的试验结果如下：</p>
+<pre class="console"><code>父进程：等待子进程退出。
+子进程：我是 8191！
+父进程：8191 退出了！</code></pre>
+<h1 id="信号处理">信号处理</h1>
+<p>以轮询的方式回收已结束的子进程，虽然能让父进程非阻塞运行，但是在非阻塞等待期间，父进程要执行的操作只能在轮循过程中精心部署，例如上一节示例程序中，为了避免父进程重复说「等待子进程退出」，我使用了变量
+<code>once</code>
+控制父进程在非阻塞等待期的行为不会被轮询过程重复，虽然有效，但使得程序逻辑更为复杂。实际上，子进程在退出时，会向父进程发送一个信号
+<code>SIGCHLD</code>。若父进程主动忽略该信号，或对该信号作出一些响应，则退出的子进程不会变成僵尸进程。</p>
+<p>让父进程忽略子进程的退出信号，非常简单，只需在 <code>main</code>
+函数的开始，或者所有的调用 <code>fork</code>
+函数的语句之前插入以下语句：</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>signal<span class="op">(</span>SIGCHLD<span class="op">,</span> SIG_IGN<span class="op">)</span></span></code></pre></div>
+<p><code>SIG_IGN</code> 是 <code>SIGNAL IGNORE</code>
+的缩写。很多操作系统级别的信号，皆可凭此法忽略。不过，多数时候，我们需要回收子进程占用的一些资源，需要主动对子进程的退出信号作出响应。</p>
+<p>最简单的响应机制是将一个用于处理信号的函数作为参数传递给
+<code>signal</code>。例如</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/wait.h&gt;</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;signal.h&gt;</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> handler<span class="op">(</span><span class="dt">int</span> signal<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> pid <span class="op">=</span> wait<span class="op">(</span>NULL<span class="op">);</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;父进程：</span><span class="sc">%d</span><span class="st"> 退出了！</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> pid<span class="op">);</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>        signal<span class="op">(</span>SIGCHLD<span class="op">,</span> handler<span class="op">);</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> fork<span class="op">();</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span>  <span class="co">/* 创建子进程 */</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;子进程：我是 </span><span class="sc">%d</span><span class="st">！</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> getpid<span class="op">());</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>                sleep<span class="op">(</span><span class="dv">5</span><span class="op">);</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 让父进程阻塞，模拟长时间运行 */</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> sleep<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上面示例，在 <code>fork</code>
+出子进程后，父进程进入主动阻塞模式，相当于它在执行很多其他任务，同时等待子进程退出信号。我的试验结果如下：</p>
+<pre><code>子进程：我是 19221！
+父进程：19221 退出了！</code></pre>
+<p>试验结果出现后，可使用 Ctrl + C，即 Ctrl 和 C
+的组合键关闭父进程。这个组合键可驱动操作系统向终端前台正在运行的进程发送
+<code>SIGINT</code>
+信号，若进程未对该信号作出响应，操作系统会终止它。</p>
+<h1 id="更安全的信号处理">更安全的信号处理</h1>
+<p>历史原因，即使符合 POSIX 标准的操作系统所实现的 <code>signal</code>
+也不尽相同，此外，当父进程存在较多子进程时，<code>signal</code>
+可能会存在丢失信号的情况，即当它正在响应某个信号的同时，又有不断有新的信号发送过来，而
+<code>signal</code>
+不能对信号进行排队，故而新的信号可能会丢失。在生产环境中，更推荐使用
+<code>sigaction</code> 函数，当然它的用法比 <code>signal</code>
+略复杂。</p>
+<p>使用 <code>sigaction</code> 函数，首先需要准备一个结构体，例如</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> sigaction sa<span class="op">;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>sa<span class="op">.</span>sa_handler <span class="op">=</span> handler<span class="op">;</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>sigemptyset<span class="op">(&amp;</span>sa<span class="op">.</span>sa_mask<span class="op">);</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>sa<span class="op">.</span>sa_flags <span class="op">=</span> SA_RESTART<span class="op">|</span>SA_NOCLDSTOP<span class="op">;</span></span></code></pre></div>
+<p>先不必害怕，以上代码还是较为简单的，<code>struct sigaction</code>
+结构体实际上有 5 个成员变量，上面只设定了其中 3
+个。<code>sa.handler</code>
+的值是上一节定义的信号处理函数。<code>sigemptyset(&amp;sa.sa_mask)</code>
+可将信号掩码清空，表示在信号处理期间不阻塞任何信号。倘若需要在信号处理期间阻塞某些信号，可以通过
+<code>sigaddset</code> 函数增加信号掩码，不过，目前我们对 Unix 或 Linux
+系统的信号机制知之甚少，这些高级知识暂且不必理会。<code>sa.sa_flags</code>
+是一组标志，用于精确控制 <code>sigaction</code> 的行为，其中
+<code>SA_RESTART</code>
+的作用是自动重启被信号中断的系统调用，<code>SA_NOCLDSTOP</code>
+的作用是忽略子进程暂停或恢复时产生的 <code>SIGCHLD</code> 信号。</p>
+<p>对于处理 <code>SIGCHLD</code> 信号而言，上述对 <code>sa</code>
+的设定已经足够，若不甚理解，完全可不求甚解，暂且照抄，如同学习模拟电路的路数，贵在实践，而非理论。下面只需简单调用
+<code>sigaction</code> 函数，即可完成对 <code>SIGCHLD</code>
+的安全处理：</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> sigaction<span class="op">(</span>SIGCHLD<span class="op">,</span> <span class="op">&amp;</span>sa<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;sigaction error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>sigaction</code> 第三个参数，也是一个结构体，类型与
+<code>sa</code> 相同，用于返回进程对 <code>SIGCHLD</code>
+信号的原有配置，若不关心，设为 <code>NULL</code> 即可。若
+<code>sigaction</code> 执行成功，返回 0，否则返回 -1。</p>
+<p>基于上述知识，对上一节的示例进行修改：</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/wait.h&gt;</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;signal.h&gt;</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> handler<span class="op">(</span><span class="dt">int</span> signal<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> pid <span class="op">=</span> wait<span class="op">(</span>NULL<span class="op">);</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;父进程：</span><span class="sc">%d</span><span class="st"> 退出了！</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> pid<span class="op">);</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* SIGCHLD 信号处理 */</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">struct</span> sigaction sa<span class="op">;</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>        sa<span class="op">.</span>sa_handler <span class="op">=</span> handler<span class="op">;</span></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>        sigemptyset<span class="op">(&amp;</span>sa<span class="op">.</span>sa_mask<span class="op">);</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>        sa<span class="op">.</span>sa_flags <span class="op">=</span> SA_RESTART<span class="op">|</span>SA_NOCLDSTOP<span class="op">;</span></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> sigaction<span class="op">(</span>SIGCHLD<span class="op">,</span> <span class="op">&amp;</span>sa<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;sigaction error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 开启子进程 */</span></span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> fork<span class="op">();</span></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span>  <span class="co">/* 创建子进程 */</span></span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;子进程：我是 </span><span class="sc">%d</span><span class="st">！</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> getpid<span class="op">());</span></span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>                sleep<span class="op">(</span><span class="dv">5</span><span class="op">);</span></span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 让父进程阻塞，模拟长时间运行 */</span></span>
+<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> sleep<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h1 id="坍缩">坍缩</h1>
+<p>现在，请将历史回退到「<a
+href="../wrapper/index.html">封装</a>」，那是我们曾经的田园时代！基于那段历史中的字符串类和网络类，再结合多进程机制，在套接字函数皆为阻塞的情景中为
+threebody 赋予并发能力。</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* threebody.c */</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;signal.h&gt;</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/wait.h&gt;</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;sim-network.h&quot;</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> handler<span class="op">(</span><span class="dt">int</span> signal<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>        wait<span class="op">(</span>NULL<span class="op">);</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* SIGCHLD 信号处理 */</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">struct</span> sigaction sa<span class="op">;</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>        sa<span class="op">.</span>sa_handler <span class="op">=</span> handler<span class="op">;</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>        sigemptyset<span class="op">(&amp;</span>sa<span class="op">.</span>sa_mask<span class="op">);</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>        sa<span class="op">.</span>sa_flags <span class="op">=</span> SA_RESTART<span class="op">|</span>SA_NOCLDSTOP<span class="op">;</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> sigaction<span class="op">(</span>SIGCHLD<span class="op">,</span> <span class="op">&amp;</span>sa<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;sigaction error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 服务端 */</span></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>        SimServer <span class="op">*</span>threebody <span class="op">=</span> sim_server<span class="op">(</span><span class="st">&quot;localhost&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">);</span></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>                sim_server_run<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>fork<span class="op">()</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>                         <span class="co">/* 子进程不需要监听套接字 */</span></span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>                        sim_server_close_listener<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>                        <span class="co">/* 从客户端接收数据 */</span></span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>                        SimStr <span class="op">*</span>msg_from <span class="op">=</span> sim_server_receive<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="op">(</span>sim_str_safe<span class="op">(</span>msg_from<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a>                                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> sim_str_raw<span class="op">(</span>msg_from<span class="op">));</span></span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span></span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>                        sim_str_free<span class="op">(</span>msg_from<span class="op">);</span></span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>                        <span class="co">/* 向客户端发送信息 */</span></span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a>                        SimStr <span class="op">*</span>msg_to <span class="op">=</span> sim_str<span class="op">(</span><span class="st">&quot;threebody: Hi!&quot;</span><span class="op">);</span></span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a>                        sim_server_send<span class="op">(</span>threebody<span class="op">,</span> msg_to<span class="op">);</span></span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a>                        sim_str_free<span class="op">(</span>msg_to<span class="op">);</span></span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a>                        sim_server_close_client<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a>                        exit<span class="op">(</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a>                <span class="co">/* 父进程不需要客户端套接字 */</span></span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a>                sim_server_close_client<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a>        sim_server_free<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述所有的代码，都应该很熟悉的，因为我已经用尽了 200%
+的力气在前面的章节中进行了铺垫。不过，「<a
+href="../wrapper/index.html">封装</a>」所实现的网络类尚未提供
+<code>close_listener</code> 和 <code>close_client</code>
+方法，下面分别予以实现：</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.h ++ */</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_close_listener<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c ++ */</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_close_listener<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>self<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>                close<span class="op">(</span>self<span class="op">-&gt;</span>listener<span class="op">);</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>                self<span class="op">-&gt;</span>listener <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;sim_server_close error: NULL pointer!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>置于 <code>close_client</code> 方法，实际上已经实现了，即
+<code>close</code> 方法。现在我们需要对该方法进行更名，将
+<code>sim_server_close</code> 更名为
+<code>sim_server_close_client</code>：</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.h [改] */</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_close_close<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">);</span></span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c [改] */</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_close_client<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>        close<span class="op">(</span>self<span class="op">-&gt;</span>client<span class="op">);</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>基于修改后的网络类，编译上述 threebody.c 并运行所得 threebody：</p>
+<pre class="console"><code>$ gcc -I. sim-str.c sim-network.c threebody.c -o threebody
+$ ./threebody</code></pre>
+<p>然后打开两个终端，分别用于运行「<a
+href="../blocking/index.html">两朵乌云</a>」中的 other-ywj 和
+ywj。先在一个终端里运行 other-ywj，它与 threebody 建立连接后，会主动延迟
+15 秒，然后才开始与 threebody 通信。随即在另一个终端迅速运行 ywj。</p>
+<p>上述试验所得结果与「<a href="../socket-and-select/index.html">select
+不负重望</a>」相似，ywj 无需等到 other-ywj 得到 threebody 的回复后放能与
+threebody 通信。基于多进程机制为服务端实现的并发，在拥现代普遍拥有多颗
+CPU 核心的计算机上，性能远胜基于 I/O 多路复用的并发。即使计算机只有单颗
+CPU 核心，多进程实现的并发，在代码的简洁性上也远胜 I/O
+多路复用实现的并发。</p>
+<p>在处理与「同时」有关的问题上，量子力学胜过广义相对论，早已屡经实验验证过的。</p>
+<h1 id="总结">总结</h1>
+<p>现在先休息一下，喝杯春茶，欣赏一下窗外的世界，万物竞发，这就是我们的现实，时不我待。</p>
+<p>进程以复制自身的方式同时穿过 <code>fork</code>
+构造的双缝，演化出父进程和子进程的叠加态。</p>
+<p>在父进程中，我们可以使用 <code>wait</code> 或 <code>waitpid</code>
+终结这个分身术，迫使这个系统坍缩，从而塑造了子进程的历史。若父进程能够响应
+<code>SIGCHLD</code>
+信号，则系统坍缩的方式几乎天衣无缝，将系统的不确定性保留到了最后一刻，具有电子双缝延迟选择实验一样的魅力，即电子同时通过双缝之后再去观测它，依然会导致它发生坍缩。</p>
+<p>父进程始终是那个父进程，它不断开启子进程，又不断回收子进程，最终它拥有了许多子进程的历史。也许我们看不到的那一个又一个电子，它们可能承载着自宇宙大爆炸以来它们经过的全部历史。</p>
+<p>人类以为是他们的观测导致了电子叠加态的坍缩，他们可能过于多情了。观测自己的分身，创造一段历史，也许原本便是电子与生俱来的能力。之所以电子双缝会发生干涉效应，仅仅是因为电子觉得它还没必要让自己的分身变成历史。</p>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
+class="email">lyr.m2@live.cn</a> 或在<a
+href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

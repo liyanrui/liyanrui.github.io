@@ -1,6 +1,6 @@
 ---
-title: 有一封信，无处可寄
-abstract: 一个毁灭地球的计划以失败而告终。
+title: 我在这里！
+abstract: 毁灭地球的计划以失败而告终。
 date: 03 月 01 日
 ...
 
@@ -8,9 +8,7 @@ date: 03 月 01 日
 
 叶文洁将地球在宇宙中的坐标暴露给三体人时，她并不知道这个信息要多久能抵达，而且她对三体人几乎一无所知，她只是知道那个遥远的星系有着一个比地球更强大的文明。我们试着模仿叶文洁，写一个向外太空暴露地球坐标的网络程序。等到有一天我们对人类彻底失去希望的时候，就运行这个程序。
 
-# 收信人地址
-
-假设网络上有一台计算机，它的域名是 `www.threebody.com`，提供网络服务（某个进程）所用的端口是 `8080`，我们需要向这个网络地址发送信息。由于我们已经学会了 `getaddrinfo` 函数，因此很容易将这个域名和端口转化为数字化的网络地址：
+假设网络上有一台计算机，它的域名是 `www.threebody.com`，提供的某个网络服务端（某个进程）所用的端口是 `8080`，于是该网络服务端的套接字地址便是 `www.threebody.com:8080`。由于我们已经学会了 `getaddrinfo` 函数，因此很容易将这个文字化套接字地址转化为数字化的套接字地址：
 
 ```c
 struct addrinfo hints, *res;
@@ -24,9 +22,9 @@ if (a != 0) {
 }
 ```
 
-# 空信封
+# 套接字
 
-基于数字化的网络地址可在计算机中创建文件描述符，指代用于网络通信的文件。创建这种文件描述符的函数，是 `socket`，其声明如下：
+基于数字化的套接字地址可创建套接字。在 Unix 或 Linux 系统中，套接字实际上是文件描述符，指代专用于网络通信的文件。创建套接字的函数，是 `socket`，其声明如下：
 
 ```c
 #include <sys/socket.h>
@@ -34,25 +32,17 @@ if (a != 0) {
 int socket(int domain, int type, int protocol);
 ```
 
-还记得在「[Socket 是什么](what-is-a-socket/index.html)」一文是如何理解 socket 的吗？当时是这样说的：
-
-> 网络编程中的 socket，形式上由网络上进行通信的两台计算机各自的 IP 地址加上某个端口的编号构成，亦即一个网络地址序对……
-
-在 socket API 网络编程中，socket 实际上是文件描述符（整型数），它所指代的文件需要含有通信双方的网络地址信息，可将这种文件类比为现实中的信封。
-
-`socket` 函数生成的文件描述符，此刻指代的文件还是一个空文件，可将其类比为空信封，不仅没有装入信件，甚至上面连双方的通信地址都没有。
-
-在 `getaddrinfo` 生成的结构体 `addrinfo` 列表中，每一个结点都含有 `socket` 函数所需要的参数值。下面以首结点为例，演示 `socket` 函数的用法：
+在 `getaddrinfo` 生成的结构体 `addrinfo` 列表中，每一个结点都含有 `socket` 函数所需要的参数值。下面以 `addrinfo` 列表首结点为例，演示 `socket` 函数的用法：
 
 ```c
-int envelop = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+int server = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 ```
 
-如果 `socket` 函数运行成功，会返回文件描述符，否则返回 `-1`。
+如果 `socket` 函数运行成功，会返回文件描述符，否则返回 `-1`。不过，`socket` 函数生成的套接字，所指代的文件是空文件，还不具备地址，不能用于通信。
 
-# 信封上的地址
+# 连接
 
-`connect` 函数可以向空信封写上通信双方的地址，其声明如下：
+`connect` 函数可将服务端地址赋予套接字，其形式如下：
 
 ```c
 #include <sys/socket.h>
@@ -60,72 +50,77 @@ int envelop = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 ```
 
-毫无意外，`connect` 所需要的参数值，我们也已经都有了：
+毫无意外，`connect` 所需要的参数值，我们也已经有了：
 
 ```c
-int a = connect(envelop, res->ai_addr, res->ai_addrlen);
+int a = connect(server, res->ai_addr, res->ai_addrlen);
 ```
 
-`connect` 运行成功，会返回 0，否则会返回 `-1`。
+`connect` 运行成功，会返回 0，否则会返回 `-1`。`connect` 函数第一个参数是空的套接字，后两个参数分别是套接字地址和地址长度（字节数），亦即该函数可将需要连接的套接字地址赋予套接字。同时，`connect` 也会悄悄地构造一个对于我们而言不可见的套接字，并将本机的 IP 地址以及一个随即分配的端口号作为地址赋予它。因此，`connect` 创建的实际上是一对套接字，对于上例而言，这对套接字可用其地址表示为：
 
-`connect` 函数第一个参数是 `socket`创建的文件描述符——空信封，后两个参数分别是信息接收者的网络地址以及给地址的长度（字节数），亦即该函数相当于在空信封上帮你写上收信人的地址。不过，`connect` 也会会悄悄地将你的地址也写在信封上，因为操作系统知道你的 IP 地址，它会自动给你分配一个随机的端口，从而组成一个网络地址。
+```c
+(www.threebody.com:8080, localhost:随机端口)
+```
 
-# 寄信
+前者表示我们需要向其发送数据的服务端的套接字地址，后者则是本机套接字地址。这对套接字构成了一个网络连接。基于该连接，便可发送和接收数据。
 
-`send` 函数可发送信息，其发送信息的过程可类比为，将书信塞进已经带有地址的信封，邮寄出去。`send` 函数的形式如下：
+
+# 发送数据
+
+`send` 函数可发送数据，其形式如下：
 
 ```c
 #include <sys/socket.h>
 
-ssize_t send(int sockfd, const void buf[.len], size_t len, int flags);
+ssize_t send(int sockfd, const void *buf, size_t len, int flags);
 ```
 
-`send` 函数的第 1 个参数是文件描述符，所指向的文件已被 `connect` 函数处理过了，可将其类比为带有通信双方地址的空信封，`send` 函数将长度（字节数）为 `len` 的 `buf` 中的信息塞入这个空信封，然后寄走。`flags` 函数用于更精细的控制这个寄信过程的运作，例如平信、挂号信以及特快专递，它们的运作方式是有区别的，但是大多数时候我们只需要将 `flags` 设为 `0` 即可，类比为寄出的是平信。如果 `send` 函数运行成功，它的返回值是它发送信息的字节数，否则返回 `-1`。
+`send` 函数可将长度为 `len` 的缓冲区 `buf` 中的数据按照 `flags` 规定的方式发送给套接字 `sockfd`。大多数时候只需要将 `flags` 设为 `0`，表示采用普通的数据发送方式。若 `send` 函数运行成功，返回值是已发送数据的字节数，否则为 `-1` 表示数据发送失败。
 
 以下代码是 `send` 函数的调用示例：
 
 ```c
 char *earth_coordinate = "I am here!";
 size_t n = strlen(earth_coordinate);
-ssize_t b = send(envelop, earth_coordinate, n, 0);
+ssize_t b = send(server, earth_coordinate, n, 0);
 if (b < 0) {
         fprintf(stderr, "send error!\n");
         exit(-1);
 }
 ```
 
-# 多个收信地址？
+# 多个套接字地址？
 
-在此需要再次强调，`getaddrinfo` 函数为信息的接受者构造的收信地址可能是多个，若已经忘记了，需要再度回顾网络编程的核心技术「[网络地址](getaddrinfo/index.html)」。我们需要从这些地址中选出一个可用的。何谓「可用的地址」？答案是，能够让 `connect` 函数成功运行的地址。
+在此需要再次强调，`getaddrinfo` 函数构造的套接字地址可能是多个，若已经忘记了，需要再度回顾网络编程的核心技术「[套接字地址](../getaddrinfo/index.html)」。我们需要从这些地址中选出一个可用的。
 
-以下代码便是可用地址的一个简单的选择过程：
+何谓「可用的套接字地址」？答案是，能够让 `connect` 函数成功运行的地址。以下代码便是可用地址的一个简单的选择过程：
 
 ```c
-int envelop = -1;
+int server = -1;
 for (struct addrinfo *it = res; it; it = it->ai_next) {
-        envelop = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-        if (envelop == -1) continue;
-        int a = connect(envelop, it->ai_addr, it->ai_addrlen);
+        server = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+        if (server == -1) continue;
+        int a = connect(server, it->ai_addr, it->ai_addrlen);
         if (a == -1) {
-                close(envelop); /* 关闭 socket 函数打开的文件 */
+                close(server); /* 关闭套接字 */
                 continue;
         }
         break;
 }
-if (envelop == -1) {
+if (server == -1) {
         fprintf(stderr, "failed to connect!\n");
         exit(-1);
 }
 ```
 
-注意，在上述代码的 `for` 循环中，每一次循环，都会构造文件描述符 `envelop`，若 `connect` 失败，便会 `close(envelop)`。之前从未提及 `close` 函数，是因为它并非 socket API 中的函数，而是 C 标准库中通过文件描述符关闭文件的函数。之所以要关闭文件，是因为 `socket` 函数中已经打开了这份文件。
+注意，在上述代码的 `for` 循环中，每一次循环，都会构造套接字 `server`，若 `connect` 失败，便会 `close(server)`。之前从未提及 `close` 函数，是因为它并非套接字 API 中的函数，而是 C 标准库中通过文件描述符关闭文件的函数。之所以要关闭文件，是因为 `socket` 函数中已经打开了套接字，而套接字指代文件。
 
-若上述代码所得的 `envelop` 的值并非 `-1`，则意味着有了一个可用的信封——它记录了通信双方网络地址，便可使用它，发送信息：
+若上述代码所得的 `server` 的值并非 `-1`，则意味着有了可用的服务端套接字以及本机套接字，这对套接字构成了一个可用的通信连接，亦即本机套接字与服务端套接字处于连通状态，然后便可向服务端套接字发送数据：
 
 ```c
 char *earth_coordinate = "I am here!";
 size_t n = strlen(earth_coordinate);
-ssize_t b = send(envelop, earth_coordinate, n, 0);
+ssize_t b = send(server, earth_coordinate, n, 0);
 if (b < 0) {
         fprintf(stderr, "send error!\n");
         exit(-1);
@@ -145,7 +140,7 @@ if (b < 0) {
 #include <netdb.h>
 
 int main(void) {
-        /* 构造用于接收信息的网络地址列表 */
+        /* 服务端套接字列表 */
         struct addrinfo hints, *addr_list;
         memset(&hints, 0, sizeof(struct addrinfo));
         hints.ai_family = AF_UNSPEC;
@@ -155,34 +150,34 @@ int main(void) {
                 fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(a));
                 exit(-1);
         }
-        /* 选择可用的信封 */
-        int envelop = -1;
+        /* 选择可用的连接 */
+        int server = -1;
         for (struct addrinfo *it = addr_list; it; it = it->ai_next) {
-                envelop = socket(addr_list->ai_family,
+                server = socket(addr_list->ai_family,
                                  addr_list->ai_socktype,
                                  addr_list->ai_protocol);
-                if (envelop == -1) continue;
-                int a = connect(envelop, it->ai_addr, it->ai_addrlen);
+                if (server == -1) continue;
+                int a = connect(server, it->ai_addr, it->ai_addrlen);
                 if (a == -1) {
-                        close(envelop); /* 关闭 socket 函数打开的文件 */
+                        close(server); /* 关闭 socket 函数打开的文件 */
                         continue;
                 }
                 break;
         }
         freeaddrinfo(addr_list);
-        if (envelop == -1) {
+        if (server == -1) {
                 fprintf(stderr, "failed to connect!\n");
                 exit(-1);
         }
-        /* 寄信 */
+        /* 向服务端发送数据 */
         char *earth_coordinate = "I am here!";
         size_t n = strlen(earth_coordinate);
-        ssize_t b = send(envelop, earth_coordinate, n, 0);
+        ssize_t b = send(server, earth_coordinate, n, 0);
         if (b == -1) {
                 fprintf(stderr, "send error!\n");
                 exit(-1);
         }
-        close(envelop);
+        close(server);
         return 0;
 }
 ```
@@ -213,6 +208,10 @@ send error!
 
 # 总结
 
-socket 是一个记录着通信双方地址的信封。
+务必清楚，作为客户端，要向服务端发送数据，需要在明面上创建表达服务端的套接字，同时也需要暗地里创建表达本机的套接字，如此方能形成可用的通信连接。这个过程完整的套接字 API 管线是：
 
+```c
+getaddrinfo -> socket -> connect -> send
+```
 
+其中，`socket` 和 `connect` 所需要的参数，`getaddrinfo` 皆已备好。现在，你应该大概明白，为何在「[套接字地址](../getaddrinfo/index.html)」中说，网络编程真正重要的问题，从来都不是两台计算机上的进程如何传送信息，而是套接字地址如何表示。
