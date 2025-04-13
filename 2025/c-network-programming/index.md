@@ -19,4 +19,4 @@ date: 03 月 01 日
 * <span class="post-date">03 月 25 日</span>[弦动](thread/index.html)：奏出妙音，绝非易事，向来如此！
 * <span class="post-date">03 月 30 日</span>[天地一指](coroutine/index.html)：万物一马。
 * <span class="post-date">04 月 13 日</span>[返朴](uncarved/index.html)：朴散则为器。
-* <span class="post-date">04 月 14 日</span>[跋](afterword/index.html)：网络编程……编程的终极范式。
+* <span class="post-date">04 月 14 日</span>[跋](afterword/index.html)：可能你需要重新认识 C 语言。
