@@ -37,7 +37,7 @@ h3 { font-size: 1.2em; color: #c93a68;}
 p.subtitle {
     font-size:1.2em;
     text-align: center;
-    color: #d35b7e;
+    color: #c93a68;
 }
 span.post-date {margin-right: 1em;}
 
@@ -165,7 +165,7 @@ blockquote p {
 li {padding-bottom:0.5em}
 /* 文章里小节标题的序号与标题名称之间的间距, 针对我写的生成文章目录的 m4 宏 */
 span.section-sep { margin-left: 0.5em; margin-right: 0.5em; }
-div.footer {text-align:center; color:#d35b7e;}
+div.footer {text-align:center; color:#c93a68;}
 
 /* 渲染文学编程的代码片段 */
 pre {line-height: 1.6em; max-height: 40em;}
