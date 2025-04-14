@@ -513,5 +513,15 @@ class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb33-1"><a href=
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
 href="...%20...%20...">讨论区</a>提问。</div>
+
+<!-- 将这段代码放在 HTML 的 </body> 前 -->
+<script>
+window.addEventListener('scroll', function() {
+  const toc = document.getElementById('TOC');  // 改用 getElementById
+  window.scrollY > 600 
+    ? toc.classList.add('hide') 
+    : toc.classList.remove('hide');
+});
+</script>
 </body>
 </html>

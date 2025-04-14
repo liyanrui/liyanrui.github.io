@@ -63,5 +63,14 @@ $if(footer)$
 <hr />
 <div class="footer">$footer$</div>
 $endif$
+
+<script>
+window.addEventListener('scroll', function() {
+  const toc = document.getElementById('TOC');  // 改用 getElementById
+  window.scrollY > 600 
+    ? toc.classList.add('hide') 
+    : toc.classList.remove('hide');
+});
+</script>
 </body>
 </html>

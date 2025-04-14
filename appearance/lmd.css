@@ -2,16 +2,16 @@
     #TOC {display: none;}
     body {max-width: 65% !important;}
 }
-@media screen and (max-width:720px) {
+@media screen and (max-width:640px) {
     body {max-width: 80% !important;}
-    div.category {right: .5em !important;}
+    div.category {display: none;}
 }
 html {
     font-size: 15px;
     line-height: 26px;
 }
 body {
-    max-width: 60%;
+    max-width: 54%;
     margin: 0 auto;
     padding: 20px;
     hyphens: auto;
@@ -39,25 +39,35 @@ p.subtitle {
 }
 span.post-date {margin-right: 1em;}
 #TOC {
+    width: 11em;
     padding: 0em .5em;
     border: 2pt solid darkgray;
     line-height: 1.5em;
     position: fixed;
-    right: 1.75em;
+    right: 3em;
     top: 6em;
-    overflow: hidden;
+    overflow: auto;
+    /* 新增过渡动画 */
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
+/* 新增隐藏状态 */
+#TOC.hide {
+  transform: translateX(120%);  /* 向右移动 120% 确保完全隐藏 */
+  opacity: 0;                   /* 可选：添加淡出效果 */
+}
+
 div.category {
     font-size: 1em;
     width: 1em;
     text-color:white;
     text-align: center;
     position: fixed;
-    right: 1.75em;
-    bottom: 6em;
+    right: 1em;
+    bottom: 5%;
     line-height: 1.2em;
     padding: .5em .3em;
     background: #666666;
+    overflow: auto;
 }
 #TOC a {
     font-size: 0.9em;

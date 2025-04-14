@@ -190,8 +190,8 @@ C 字符串模块，不仅便于 sim 项目的开发，也是学习用 C
 <p>对象的构造函数未必只有一种。<code>SimStr</code>
 对象也可以由下面这个函数构造：</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-str.h ++ */</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">/* 将长度为 n 的缓冲区转化为字符串对象 */</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>SimStr <span class="op">*</span>sim_str_absorb<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>buffer<span class="op">,</span> <span class="dt">size_t</span> n<span class="op">);</span> </span></code></pre></div>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">/* 将 m 个字节且前 n 个字节存有数据的缓冲区转化为字符串对象 */</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>SimStr <span class="op">*</span>sim_str_absorb<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>buffer<span class="op">,</span> <span class="dt">size_t</span> m<span class="op">,</span> <span class="dt">size_t</span> n<span class="op">);</span> </span></code></pre></div>
 <p>与构造函数相反的是析构函数，它用于释放对象，实际上这个函数应该叫解构。倘若你知道何为解构主义，想必会认同我的这个观点。不过，既然业界已约定俗成，我们也用析构函数这个术语。我们的析构函数，从现在开始，约定为构造函数名加上后缀
 <code>_free</code>。<code>SimStr</code> 对象的析构函数为</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_str_free<span class="op">(</span>SimStr <span class="op">*</span>str<span class="op">);</span></span></code></pre></div>
@@ -208,8 +208,11 @@ C 字符串模块，不仅便于 sim 项目的开发，也是学习用 C
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">/* 获取字符串长度 */</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="dt">size_t</span> sim_str_size<span class="op">(</span>SimStr <span class="op">*</span>self<span class="op">);</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">/* 将字符串对象转化为普通的 C 字符串 */</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>sim_str_raw<span class="op">(</span>SimStr <span class="op">*</span>self<span class="op">);</span></span></code></pre></div>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">/* 允许外界访问 data 成员 */</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>sim_str_share<span class="op">(</span>SimStr <span class="op">*</span>self<span class="op">);</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">/* 将字符串对象转化为普通的 C 字符串 */</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>sim_str_raw<span class="op">(</span>SimStr <span class="op">*</span>self<span class="op">);</span></span></code></pre></div>
 <p>根据代码中的注释，你大概清楚上述方法的用途。但是在读这些函数时，以
 <code>sim_str_raw</code>
 为例，我希望你的读法是这样的，「我（<code>self</code>），作为
@@ -290,19 +293,20 @@ sim-str.h 中的头文件区包含 stdbool.h：</p>
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>现在，为 <code>SimStr</code> 对象定义另一个构造函数：</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-str.c ++ */</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>SimStr <span class="op">*</span>sim_str_absorb<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>buffer<span class="op">,</span> <span class="dt">size_t</span> n<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>buffer <span class="op">||</span> n <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="cf">return</span> NULL<span class="op">;</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        SimStr <span class="op">*</span>str <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>SimStr<span class="op">));</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>str<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;sim_str: malloc error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> NULL<span class="op">;</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>        str<span class="op">-&gt;</span>n <span class="op">=</span> n<span class="op">;</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        str<span class="op">-&gt;</span>m <span class="op">=</span> n<span class="op">;</span></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>        str<span class="op">-&gt;</span>data <span class="op">=</span> buffer<span class="op">;</span></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        str<span class="op">-&gt;</span>error <span class="op">=</span> NULL<span class="op">;</span></span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> str<span class="op">;</span></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co">/* buffer 为 m 字节，前 n 个字节存有数据 */</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>SimStr <span class="op">*</span>sim_str_absorb<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>buffer<span class="op">,</span> <span class="dt">size_t</span> m<span class="op">,</span> <span class="dt">size_t</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>buffer <span class="op">||</span> n <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        SimStr <span class="op">*</span>str <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>SimStr<span class="op">));</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>str<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;sim_str: malloc error!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>        str<span class="op">-&gt;</span>n <span class="op">=</span> n<span class="op">;</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>        str<span class="op">-&gt;</span>m <span class="op">=</span> m<span class="op">;</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        str<span class="op">-&gt;</span>data <span class="op">=</span> buffer<span class="op">;</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>        str<span class="op">-&gt;</span>error <span class="op">=</span> NULL<span class="op">;</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> str<span class="op">;</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p><code>buffer</code> 被 <code>sim_str_absorb</code> 吸入后，创建的
 <code>SimStr</code> 对象便得到了 <code>buffer</code>
 所指空间的所有权。此时，倘若 <code>buffer</code>
@@ -321,27 +325,31 @@ sim-str.h 中的头文件区包含 stdbool.h：</p>
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p><code>SimStr</code>
-对象的两个方法，实现起来颇为简单，只要你敢于放弃安全性：</p>
+对象的三个方法，实现起来颇为简单，只要你敢于放弃安全性：</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-str.c ++ */</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="dt">size_t</span> sim_str_size<span class="op">(</span>SimStr <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> self<span class="op">-&gt;</span>n<span class="op">;</span></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-str.c ++ */</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>sim_str_raw<span class="op">(</span>SimStr <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>self<span class="op">-&gt;</span>n <span class="op">==</span> self<span class="op">-&gt;</span>m<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                <span class="co">/* 对 self-&gt;data 扩容 1 个字节 */</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                <span class="co">/* 用于存储 C 字符串结束符 */</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                <span class="dt">void</span> <span class="op">*</span>p <span class="op">=</span> realloc<span class="op">(</span>self<span class="op">-&gt;</span>data<span class="op">,</span> self<span class="op">-&gt;</span>m <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(!</span>p<span class="op">)</span> <span class="cf">return</span> NULL<span class="op">;</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span> <span class="op">{</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>                        self<span class="op">-&gt;</span>m <span class="op">+=</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>                        self<span class="op">-&gt;</span>data <span class="op">=</span> p<span class="op">;</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 添加字符串结束符 */</span></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">*(</span>self<span class="op">-&gt;</span>data <span class="op">+</span> self<span class="op">-&gt;</span>n<span class="op">)</span> <span class="op">=</span> <span class="ch">&#39;</span><span class="sc">\0</span><span class="ch">&#39;</span><span class="op">;</span></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> self<span class="op">-&gt;</span>data<span class="op">;</span></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>sim_str_share<span class="op">(</span>SimStr <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> self<span class="op">-&gt;</span>data<span class="op">;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-str.c ++ */</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>sim_str_raw<span class="op">(</span>SimStr <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>self<span class="op">-&gt;</span>n <span class="op">==</span> self<span class="op">-&gt;</span>m<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>                <span class="co">/* 对 self-&gt;data 扩容 1 个字节 */</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>                <span class="co">/* 用于存储 C 字符串结束符 */</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>                <span class="dt">void</span> <span class="op">*</span>p <span class="op">=</span> realloc<span class="op">(</span>self<span class="op">-&gt;</span>data<span class="op">,</span> self<span class="op">-&gt;</span>m <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(!</span>p<span class="op">)</span> <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>                        self<span class="op">-&gt;</span>m <span class="op">+=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>                        self<span class="op">-&gt;</span>data <span class="op">=</span> p<span class="op">;</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 添加字符串结束符 */</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">*(</span>self<span class="op">-&gt;</span>data <span class="op">+</span> self<span class="op">-&gt;</span>n<span class="op">)</span> <span class="op">=</span> <span class="ch">&#39;</span><span class="sc">\0</span><span class="ch">&#39;</span><span class="op">;</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> self<span class="op">-&gt;</span>data<span class="op">;</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>我觉得安全性不应该完全由开发基础库的人负责。类似于菜刀的安全性若完全由开发基础库的人负责，那它可能什么东西都切不了，最钝的菜刀是最安全的。若需要担保上述两个方法的安全性，可在使用它们之前用
 <code>sim_str_safe</code> 检测 <code>SimStr</code> 对象的安全性。</p>
 <h1 id="防碰头设计">防碰头设计</h1>
@@ -352,11 +360,11 @@ sim-str.h 中的头文件区包含 stdbool.h：</p>
 含有变量或函数的定义，这种情况下会因变量或函数重复定义而导致编译出错。</p>
 <p>使用条件宏，可避免 .h 文件被多次重复载入。例如，在 sim-str.h
 开始处，添加</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifndef SIM_STR_H</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SIM_STR_H</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifndef SIM_STR_H</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SIM_STR_H</span></span></code></pre></div>
 <p>然后在 sim-str.h 的结尾处，添加</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span></code></pre></div>
 <p>这三个宏组合起来，表达的含义是，当头文件 sim-str.h 第一次被
 <code>#include</code> 时，宏 <code>SIM_STR_H</code> 尚未定义，于是
 sim-str.h 的内容便被正常载入。当 sim-str.h 再次被
@@ -365,28 +373,35 @@ sim-str.h 的内容便被正常载入。当 sim-str.h 再次被
 <h1 id="测试">测试</h1>
 <p>下面的程序 sim-str-test.c 可用于验证 <code>SimStr</code>
 类是否可用，但它更是在向你演示这个类的用法。</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-str-test.c */</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sim-str.h&gt;</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>raw <span class="op">=</span> <span class="st">&quot;Hello world!&quot;</span><span class="op">;</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>        SimStr <span class="op">*</span>foo <span class="op">=</span> sim_str<span class="op">(</span>raw<span class="op">);</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>sim_str_safe<span class="op">(</span>foo<span class="op">))</span> <span class="op">{</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;foo length: </span><span class="sc">%lu\n</span><span class="st">&quot;</span><span class="op">,</span> sim_str_size<span class="op">(</span>foo<span class="op">));</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> sim_str_raw<span class="op">(</span>foo<span class="op">));</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>        sim_str_free<span class="op">(</span>foo<span class="op">);</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n <span class="op">=</span> <span class="dv">32</span><span class="op">;</span></span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">void</span> <span class="op">*</span>buffer <span class="op">=</span> malloc<span class="op">(</span>n <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">char</span><span class="op">));</span></span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>        SimStr <span class="op">*</span>bar <span class="op">=</span> sim_str_absorb<span class="op">(</span>buffer<span class="op">,</span> n<span class="op">);</span></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>sim_str_safe<span class="op">(</span>bar<span class="op">))</span> <span class="op">{</span></span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>                <span class="co">/* 输出结果应该是乱码 */</span></span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> sim_str_raw<span class="op">(</span>bar<span class="op">));</span></span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>        sim_str_free<span class="op">(</span>bar<span class="op">);</span></span>
-<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-str-test.c */</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sim-str.h&gt;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>raw <span class="op">=</span> <span class="st">&quot;Hello world!&quot;</span><span class="op">;</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>        SimStr <span class="op">*</span>foo <span class="op">=</span> sim_str<span class="op">(</span>raw<span class="op">);</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>sim_str_safe<span class="op">(</span>foo<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;foo length: </span><span class="sc">%lu\n</span><span class="st">&quot;</span><span class="op">,</span> sim_str_size<span class="op">(</span>foo<span class="op">));</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;foo content: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> sim_str_raw<span class="op">(</span>foo<span class="op">));</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>        sim_str_free<span class="op">(</span>foo<span class="op">);</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n <span class="op">=</span> strlen<span class="op">(</span>raw<span class="op">);</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> m <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> n<span class="op">;</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>        <span class="dt">void</span> <span class="op">*</span>buffer <span class="op">=</span> malloc<span class="op">(</span>m <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">char</span><span class="op">));</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>        memcpy<span class="op">(</span>buffer<span class="op">,</span> raw<span class="op">,</span> n<span class="op">);</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>        SimStr <span class="op">*</span>bar <span class="op">=</span> sim_str_absorb<span class="op">(</span>buffer<span class="op">,</span> m<span class="op">,</span> n<span class="op">);</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>sim_str_safe<span class="op">(</span>bar<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>                fwrite<span class="op">(</span>sim_str_share<span class="op">(</span>bar<span class="op">),</span> </span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>                       <span class="kw">sizeof</span><span class="op">(</span><span class="dt">char</span><span class="op">),</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>                       sim_str_size<span class="op">(</span>bar<span class="op">),</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>                       stdout<span class="op">);</span></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> sim_str_raw<span class="op">(</span>bar<span class="op">));</span></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>        sim_str_free<span class="op">(</span>bar<span class="op">);</span></span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>用 gcc 编译 sim-str-test.c，并使用 <code>-g</code> 选项让编译所得程序
 test 具有调试信息：</p>
 <pre class="console"><code>$ gcc -I. sim-str.c sim-str-test.c -g -o test</code></pre>
@@ -436,5 +451,14 @@ sim-str.c 文件，我允许你通过下面的连接不劳而获：</p>
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
 href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+
+<script>
+window.addEventListener('scroll', function() {
+  const toc = document.getElementById('TOC');  // 改用 getElementById
+  window.scrollY > 600 
+    ? toc.classList.add('hide') 
+    : toc.classList.remove('hide');
+});
+</script>
 </body>
 </html>

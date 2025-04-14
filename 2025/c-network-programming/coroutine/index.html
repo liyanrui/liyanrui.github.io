@@ -504,5 +504,14 @@ D 膜的结构上，而在 M 理论中，基本粒子是由一种 2 维的 M
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
 href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+
+<script>
+window.addEventListener('scroll', function() {
+  const toc = document.getElementById('TOC');  // 改用 getElementById
+  window.scrollY > 600 
+    ? toc.classList.add('hide') 
+    : toc.classList.remove('hide');
+});
+</script>
 </body>
 </html>

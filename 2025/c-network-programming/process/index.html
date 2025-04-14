@@ -649,5 +649,14 @@ CPU 核心，多进程实现的并发，在代码的简洁性上也远胜 I/O
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
 href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+
+<script>
+window.addEventListener('scroll', function() {
+  const toc = document.getElementById('TOC');  // 改用 getElementById
+  window.scrollY > 600 
+    ? toc.classList.add('hide') 
+    : toc.classList.remove('hide');
+});
+</script>
 </body>
 </html>
