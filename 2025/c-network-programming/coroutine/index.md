@@ -140,9 +140,7 @@ void foobar(void) {
 
 便可将 `foo` 所有产出的数据逐一交于 `bar` 消费掉。
 
-但愿你会因此觉得惊奇。这种惊奇不仅仅是我们在 `foo` 和 `bar` 无需借助调用关系的前提下实现了二者的协作，它更是一切竟如此简单，甚至我们可以藐视，操作系统对线程或进程的挂起也无非如此。
-
-可惜的是，物理学界的超弦和 M 理论专家，他们似乎理解不了这种简单，反而制造出一些精妙但复杂的机制，犹如尽浓妆艳抹之能事，打扮一位清水芙蓉般的少女。
+但愿你会因此觉得惊奇。这种惊奇不仅仅是我们在 `foo` 和 `bar` 无需借助调用关系的前提下实现了二者的协作，它更是一切竟如此简单。可惜的是，物理学界的超弦和 M 理论专家，他们似乎理解不了这种简单，反而制造出一些精妙但复杂的机制，犹如尽浓妆艳抹之能事，打扮一位清水芙蓉般的少女。
 
 # 梳子
 
@@ -169,7 +167,7 @@ void foo(void) {
 
 不妨勇敢一些，在新的 `foo` 函数中，代码左侧的 `switch / case` 语句是卡拉比-丘空间，右侧的 `for` 循环结构是我们的时空。在超弦理论里，这个卡拉比-丘空间，还是像超弦理论那样畏畏缩缩地蜷缩于时空之中，而在新的 `foo` 函数里，它完全融入了时空。
 
-# 理论化
+# 牛顿
 
 物理学的本质是什么？是创造一套尽量简单的协议，这份协议像是与天地订下的契约。既然我们已经发现了一种可以让函数之间平等相处的方法，而不是传统的谁调用谁，谁被谁调用这种类似物理学中引力机制的方法，我们也可以将其协议化，这就是计算机软件世界里我们的「物理」学。
 
@@ -352,20 +350,18 @@ cr_yield(foo);
 
 # 拉链
 
-我们曾在「[再封装](../wrapper-again/index.html)」里为 `SimServer` 对象实现了 `receive` 和 `send` 方法。这两个方法其实都不够自然，它们只能批量接收客户端发来的数据或者批量向客户端发送数据，而并非是从某个客户端收到数据后，随即向该客户端发送数据。
+我想出来一个例子，它更能表达协程的用途。这个例子很像生活中的拉链。
 
-我们可以基于协程机制改造 `SimServer` 类，将 `SimServer` 对象接收和发送数据过程凝聚于每个客户端，不过修改之处较为琐碎，甚至可能会迷失协程这一主题。对此，我先用一个简单的例子示意改造过程所循的原理。
-
-这个例子很像生活中的拉链。假设有一个数组 `clients`，其中存储了一些整型数，有正数，有负数。另外有两个函数，`foo` 和 `bar`，它们都要遍历 `clients`。`foo` 需要处理 `clients` 里的正数，例如将其增 1。我们希望当 `foo` 对 `clients` 里的每个正数增 1 的时候，`bar` 能随即将该正数减 1。
+假设有一个数组 `numbers`，其中存储了一些整型数，有正数，有负数。另外有两个函数，`foo` 和 `bar`，它们都要遍历 `numbers`。`foo` 需要处理 `numbers` 里的正数，例如将其增 1。我们希望当 `foo` 对 `numbers` 里的每个正数增 1 的时候，`bar` 能随即将该正数减 1。
 
 我们先用协程实现 `foo` 函数：
 
 ```c
-void foo(int *clients, int n) {
+void foo(int *numbers, int n) {
         static int i;
         cr_begin;
         for (i = 0; i < n; i++) {
-                int a = clients[i];
+                int a = numbers[i];
                 if (a > 0) printf("(%d, ", a + 1);
                 cr_yield;
         }
@@ -376,11 +372,11 @@ void foo(int *clients, int n) {
 `bar` 函数与 `foo` 类似：
 
 ```c
-void bar(int *clients, int n) {
+void bar(int *numbers, int n) {
         static int i;
         cr_begin;
         for (i = 0; i < n; i++) {
-                int a = clients[i];
+                int a = numbers[i];
                 if (a > 0) printf("%d)\n", a - 1);
                 cr_yield();
         }
@@ -392,11 +388,11 @@ void bar(int *clients, int n) {
 
 ```c
 void foobar(void) {
-        int clients[] = {1, 3, -2, -3, 5};
-        int n = sizeof(clients) / sizeof(int);
+        int numbers[] = {1, 3, -2, -3, 5};
+        int n = sizeof(numbers) / sizeof(int);
         for (int i = 0; i < n; i++) {
-                foo(clients, n);
-                bar(clients, n);
+                foo(numbers, n);
+                bar(numbers, n);
         }
 }
 ```
@@ -409,7 +405,7 @@ void foobar(void) {
 (6, 4)
 ```
 
-我希望 `SimServer` 的 `receive` 和 `send` 方法能向上述的 `foo` 和 `bar` 函数那样协同工作，而非各自为政。
+协程能够将两个独立的过程交相运行。在操作系统中，不同的线程或不同的进程实际上也是用着相似的原理运行的。对于上述的 `foo` 和 `bar` 而言，`foobar` 是它们的操作系统。
 
 # 可重入性
 
@@ -463,4 +459,4 @@ void bar(int *data) {
 
 C 语言没有协程，也没有闭包，却也能无中生有。
 
-不过，我们好像已经走得太远了，甚至失去了踪迹。
+我们好像已经走得太远了，甚至失去了踪迹。

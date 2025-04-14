@@ -103,7 +103,7 @@
 <li><a href="#前言" id="toc-前言">前言</a></li>
 <li><a href="#新的维度" id="toc-新的维度">新的维度</a></li>
 <li><a href="#梳子" id="toc-梳子">梳子</a></li>
-<li><a href="#理论化" id="toc-理论化">理论化</a></li>
+<li><a href="#牛顿" id="toc-牛顿">牛顿</a></li>
 <li><a href="#返回值" id="toc-返回值">返回值</a></li>
 <li><a href="#拉链" id="toc-拉链">拉链</a></li>
 <li><a href="#可重入性" id="toc-可重入性">可重入性</a></li>
@@ -233,8 +233,8 @@ href="../thread/index.html">弦动</a>」中基于多线程、互斥以及条件
 消费掉。</p>
 <p>但愿你会因此觉得惊奇。这种惊奇不仅仅是我们在 <code>foo</code> 和
 <code>bar</code>
-无需借助调用关系的前提下实现了二者的协作，它更是一切竟如此简单，甚至我们可以藐视，操作系统对线程或进程的挂起也无非如此。</p>
-<p>可惜的是，物理学界的超弦和 M
+无需借助调用关系的前提下实现了二者的协作，它更是一切竟如此简单。可惜的是，物理学界的超弦和
+M
 理论专家，他们似乎理解不了这种简单，反而制造出一些精妙但复杂的机制，犹如尽浓妆艳抹之能事，打扮一位清水芙蓉般的少女。</p>
 <h1 id="梳子">梳子</h1>
 <p>如果你的确因 <code>goto</code> 的存在而不安，在 C
@@ -266,7 +266,7 @@ href="../thread/index.html">弦动</a>」中基于多线程、互斥以及条件
 <code>switch / case</code> 语句是卡拉比-丘空间，右侧的 <code>for</code>
 循环结构是我们的时空。在超弦理论里，这个卡拉比-丘空间，还是像超弦理论那样畏畏缩缩地蜷缩于时空之中，而在新的
 <code>foo</code> 函数里，它完全融入了时空。</p>
-<h1 id="理论化">理论化</h1>
+<h1 id="牛顿">牛顿</h1>
 <p>物理学的本质是什么？是创造一套尽量简单的协议，这份协议像是与天地订下的契约。既然我们已经发现了一种可以让函数之间平等相处的方法，而不是传统的谁调用谁，谁被谁调用这种类似物理学中引力机制的方法，我们也可以将其协议化，这就是计算机软件世界里我们的「物理」学。</p>
 <p>我们创造的第 1 条协议是</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define cr_begin </span><span class="dt">static</span><span class="pp"> </span><span class="dt">int</span><span class="pp"> state </span><span class="op">=</span><span class="pp"> </span><span class="dv">0</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
@@ -403,36 +403,30 @@ href="../thread/index.html">弦动</a>」中基于多线程、互斥以及条件
 <p>对于有返回值的函数，假设返回值为 <code>foo</code>，只需</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>cr_yield<span class="op">(</span>foo<span class="op">);</span></span></code></pre></div>
 <h1 id="拉链">拉链</h1>
-<p>我们曾在「<a href="../wrapper-again/index.html">再封装</a>」里为
-<code>SimServer</code> 对象实现了 <code>receive</code> 和
-<code>send</code>
-方法。这两个方法其实都不够自然，它们只能批量接收客户端发来的数据或者批量向客户端发送数据，而并非是从某个客户端收到数据后，随即向该客户端发送数据。</p>
-<p>我们可以基于协程机制改造 <code>SimServer</code> 类，将
-<code>SimServer</code>
-对象接收和发送数据过程凝聚于每个客户端，不过修改之处较为琐碎，甚至可能会迷失协程这一主题。对此，我先用一个简单的例子示意改造过程所循的原理。</p>
-<p>这个例子很像生活中的拉链。假设有一个数组
-<code>clients</code>，其中存储了一些整型数，有正数，有负数。另外有两个函数，<code>foo</code>
-和 <code>bar</code>，它们都要遍历 <code>clients</code>。<code>foo</code>
-需要处理 <code>clients</code> 里的正数，例如将其增 1。我们希望当
-<code>foo</code> 对 <code>clients</code> 里的每个正数增 1
+<p>我想出来一个例子，它更能表达协程的用途。这个例子很像生活中的拉链。</p>
+<p>假设有一个数组
+<code>numbers</code>，其中存储了一些整型数，有正数，有负数。另外有两个函数，<code>foo</code>
+和 <code>bar</code>，它们都要遍历 <code>numbers</code>。<code>foo</code>
+需要处理 <code>numbers</code> 里的正数，例如将其增 1。我们希望当
+<code>foo</code> 对 <code>numbers</code> 里的每个正数增 1
 的时候，<code>bar</code> 能随即将该正数减 1。</p>
 <p>我们先用协程实现 <code>foo</code> 函数：</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>clients<span class="op">,</span> <span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>numbers<span class="op">,</span> <span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> i<span class="op">;</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>        cr_begin<span class="op">;</span></span>
 <span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> a <span class="op">=</span> clients<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> a <span class="op">=</span> numbers<span class="op">[</span>i<span class="op">];</span></span>
 <span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>a <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> printf<span class="op">(</span><span class="st">&quot;(</span><span class="sc">%d</span><span class="st">, &quot;</span><span class="op">,</span> a <span class="op">+</span> <span class="dv">1</span><span class="op">);</span></span>
 <span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>                cr_yield<span class="op">;</span></span>
 <span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
 <span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        cr_end<span class="op">;</span></span>
 <span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p><code>bar</code> 函数与 <code>foo</code> 类似：</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bar<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>clients<span class="op">,</span> <span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bar<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>numbers<span class="op">,</span> <span class="dt">int</span> n<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">int</span> i<span class="op">;</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>        cr_begin<span class="op">;</span></span>
 <span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> a <span class="op">=</span> clients<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> a <span class="op">=</span> numbers<span class="op">[</span>i<span class="op">];</span></span>
 <span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>a <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d</span><span class="st">)</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> a <span class="op">-</span> <span class="dv">1</span><span class="op">);</span></span>
 <span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>                cr_yield<span class="op">();</span></span>
 <span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
@@ -442,20 +436,20 @@ href="../thread/index.html">弦动</a>」中基于多线程、互斥以及条件
 就像拉链两边的链带，或者像两条铁轨，或者像 DNA 的双链……下面的
 <code>foobar</code> 函数则像拉锁头、火车、读取 DNA 的蛋白质……</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foobar<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> clients<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> <span class="op">-</span><span class="dv">2</span><span class="op">,</span> <span class="op">-</span><span class="dv">3</span><span class="op">,</span> <span class="dv">5</span><span class="op">};</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> n <span class="op">=</span> <span class="kw">sizeof</span><span class="op">(</span>clients<span class="op">)</span> <span class="op">/</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">);</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> numbers<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> <span class="op">-</span><span class="dv">2</span><span class="op">,</span> <span class="op">-</span><span class="dv">3</span><span class="op">,</span> <span class="dv">5</span><span class="op">};</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> n <span class="op">=</span> <span class="kw">sizeof</span><span class="op">(</span>numbers<span class="op">)</span> <span class="op">/</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">);</span></span>
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>                foo<span class="op">(</span>clients<span class="op">,</span> n<span class="op">);</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>                bar<span class="op">(</span>clients<span class="op">,</span> n<span class="op">);</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>                foo<span class="op">(</span>numbers<span class="op">,</span> n<span class="op">);</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>                bar<span class="op">(</span>numbers<span class="op">,</span> n<span class="op">);</span></span>
 <span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p><code>foobar</code> 的输出应当是</p>
 <pre class="plain"><code>(2, 0)
 (4, 2)
 (6, 4)</code></pre>
-<p>我希望 <code>SimServer</code> 的 <code>receive</code> 和
-<code>send</code> 方法能向上述的 <code>foo</code> 和 <code>bar</code>
-函数那样协同工作，而非各自为政。</p>
+<p>协程能够将两个独立的过程交相运行。在操作系统中，不同的线程或不同的进程实际上也是用着相似的原理运行的。对于上述的
+<code>foo</code> 和 <code>bar</code> 而言，<code>foobar</code>
+是它们的操作系统。</p>
 <h1 id="可重入性">可重入性</h1>
 <p>我们的协程物理学，对于简单的情况已经是足够用的了，但是在多线程机制里，它会很容易错乱起来。例如，如果有两个线程皆以上一节的
 <code>foo</code> 函数作为例程，由于循环变量 <code>i</code> 和状态变量
@@ -505,7 +499,7 @@ D 膜的结构上，而在 M 理论中，基本粒子是由一种 2 维的 M
 <h1 id="总结">总结</h1>
 <p>天地一协程，万物一闭包。</p>
 <p>C 语言没有协程，也没有闭包，却也能无中生有。</p>
-<p>不过，我们好像已经走得太远了，甚至失去了踪迹。</p>
+<p>我们好像已经走得太远了，甚至失去了踪迹。</p>
 <hr />
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
