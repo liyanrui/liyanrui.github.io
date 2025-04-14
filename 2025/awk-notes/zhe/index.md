@@ -1,6 +1,5 @@
 ---
 title: zhe 的设计与实现
-subtitle: 
 abstract: 以文学程序的形式，介绍中文宏处理器 zhe 的设计与实现。
 date: 01 月 29 日
 ...

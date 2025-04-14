@@ -1,4 +1,8 @@
-本文是 gawk 网络编程的学习笔记。用 Awk 语言编写网络程序，这样的想法有些癫狂，像是企图用一柄小刀砍伐一棵巨树，何况是对于我这样的人，对网络编程近乎一无所知。
+---
+title: Awk 网络编程指南
+abstract: 用 gawk 编写网络程序。
+date: 02 月 23 日
+...
 
 对于一些在使用 Awk 语言处理文本方面颇有经验的人，他们甚至未必认为 Awk 语言能够实现网络编程。的确如此，Awk 语言并不支持网络编程，但是 gawk 改变了这个事实。gawk 对 Awk 语言进行了扩展，网络编程便在其中，于 gawk 3.1 版本实现，详见「[Gawkinet: TCP/IP Internetworking with Gawk](https://www.gnu.org/software/gawk/manual/gawkinet/)」。
 
@@ -276,3 +280,6 @@ telnet: Unable to connect to remote host: Connection refused
 # 总结
 
 用 Awk 语言编写的网络程序虽无大用，但是对于熟悉网络编程并建立一些工程直觉有所裨益。对于 Awk 编程本身而言，由于网络的透明性，Awk 程序可以将一些复杂的计算任务交于其他进程，这个进程可以是运行于本机的，也可以是运行于同一网络上的其他机器上的，且其对应的程序也可以是由其他语言编写，从而可以弥补 Awk 语言的不足，从这一点而言，gawk 为 Awk 语言所作的网络编程扩展，其意义深远。
+
+...
+
