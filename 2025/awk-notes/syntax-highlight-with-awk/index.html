@@ -1045,8 +1045,16 @@ YAML 数据的起始符和终止符，用逗号隔开这两个模式，表示匹
 脚本。虽然此处已是总结，但未来在用 Awk
 语言解决一些实际问题时，可能还会更新这份文档。也许，这次我只是又一次假装学会了。我的生活，就在一场又一场假装中，踉跄前行。</p>
 <hr />
-<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
-class="email">lyr.m2@live.cn</a> 或在<a
-href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+
+<script>
+window.addEventListener('scroll', function() {
+  const toc = document.getElementById('TOC');  // 改用 getElementById
+  window.scrollY > 600 
+    ? toc.classList.add('hide') 
+    : toc.classList.remove('hide');
+});
+</script>
 </body>
 </html>

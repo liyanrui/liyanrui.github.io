@@ -64,8 +64,16 @@ Unix 诞生的时候便已经确立了。对于 C
 伊始，之后诞生的各种语言，争芳斗艳，开发者努力发明的那些语法特性，各有千秋。当你试图用精致的语言努力描述着群山的存在和风光，也许你从未注意过，C
 语言早已与群山浑然一体了。</p>
 <hr />
-<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
-class="email">lyr.m2@live.cn</a> 或在<a
-href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+
+<script>
+window.addEventListener('scroll', function() {
+  const toc = document.getElementById('TOC');  // 改用 getElementById
+  window.scrollY > 600 
+    ? toc.classList.add('hide') 
+    : toc.classList.remove('hide');
+});
+</script>
 </body>
 </html>

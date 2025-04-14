@@ -182,8 +182,16 @@ appearance/pandoc/data/templates 目录中有两份 pandoc
 post.template，前者为首页模板，后者为文章模板，若你熟悉 pandoc
 的用法或者据其内容略加揣测，自行对页面应当出现哪些元素予以定制。</p>
 <hr />
-<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
-class="email">lyr.m2@live.cn</a> 或在<a
-href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+
+<script>
+window.addEventListener('scroll', function() {
+  const toc = document.getElementById('TOC');  // 改用 getElementById
+  window.scrollY > 600 
+    ? toc.classList.add('hide') 
+    : toc.classList.remove('hide');
+});
+</script>
 </body>
 </html>

@@ -6,6 +6,7 @@
     body {max-width: 80% !important;}
     div.category {display: none;}
 }
+
 html {
     font-size: 15px;
     line-height: 26px;
@@ -20,6 +21,7 @@ body {
     /* font-kerning: normal; */
     font-family: "Arial", "Noto Sans CJK SC", sans-serif;
 }
+
 header {
     text-align: center;
 }
@@ -38,8 +40,10 @@ p.subtitle {
     color: #d35b7e;
 }
 span.post-date {margin-right: 1em;}
+
 #TOC {
-    width: 11em;
+    min-width: 8em;
+    max-width: 11em;
     padding: 0em .5em;
     border: 2pt solid darkgray;
     line-height: 1.5em;
@@ -75,7 +79,6 @@ div.category {
 }
 hr {
     color: #a9b5df;
-    size: 10;
 }
 div.category a {
     text-decoration: none;
@@ -118,6 +121,7 @@ pre {
     border: 1px solid #ccc;
     border-radius: 0.25em;
     max-height: 400px;
+    font-family: Monaco, 'Lucida Console', monospace;
 }
 code, code span {
     color: #e83e8c;
@@ -126,7 +130,6 @@ code, code span {
 pre code {
     overflow:auto !important;
     color: #000000;
-    font-family: Monaco, 'Lucida Console', monospace;
 }
 a:link {
     color: #c93a68;
