@@ -141,7 +141,7 @@ href="../thread/index.html">弦动</a>」中基于多线程、互斥以及条件
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>             printf<span class="op">(</span><span class="st">&quot;生产者：生成数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">);</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>在写一个普通的 <code>bar</code> 函数，用于消费数据：</p>
+<p>再写一个普通的 <code>bar</code> 函数，用于消费数据：</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bar<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;消费者：消费数据 </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> data<span class="op">);</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
