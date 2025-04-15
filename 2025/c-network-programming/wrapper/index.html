@@ -304,12 +304,13 @@ href="../threebody/index.html">我是三体人</a>」。</p>
 用它的客户端套接字。我们可以先实现两个通用的函数，对所有套接字通信一视同仁，然后基于它们为
 <code>SimClient</code> 对象和 <code>SimServer</code>
 对象定义数据发送和接收方法。</p>
-<p>首先，实现向一个套接字发送数据。在「<a
+<p>首先，实现向一个套接字写入数据。在「<a
 href="../simple-client/index.html">我在这里！</a>」中，我们使用套接字
-API 函数 <code>send</code> 向套接字发送数据。若 <code>send</code>
-运行成功，其返回值是发送出去的数据的字节数。可能当时你并未深想这句话意味着什么。事实上，<code>send</code>
-有时未必能将数据一次性完全发送出去，会剩余一些，当网络状况不稳定或者信息接收方处理速度较慢，都可能导致这种问题出现。解决方法也很简单，<code>send</code>
-函数能够将未能发送出去的信息继续发送，只需持续发送，直至数据全部发送出去，该过程的实现如下：</p>
+API 函数 <code>send</code> 向套接字写入数据。若 <code>send</code>
+运行成功，其返回值是已写入数据的字节数。可能当时你并未深想这句话意味着什么。事实上，<code>send</code>
+有时未必能将数据一次性完全写入套接字，会有一些剩余。网络状况不稳定或信息接收方处理速度较慢，都有可能导致这种情况出现。</p>
+<p>解决上述问题的方法很简单，<code>send</code>
+函数能够将剩余数据继续写入套接字，只需重复这个过程，直至数据没有剩余。该过程的实现如下：</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c ++ */</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">/* 将字符串对象中的数据发送到套接字 x */</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> send_robustly<span class="op">(</span><span class="dt">int</span> x<span class="op">,</span> SimStr <span class="op">*</span>str<span class="op">)</span> <span class="op">{</span></span>
@@ -327,7 +328,7 @@ API 函数 <code>send</code> 向套接字发送数据。若 <code>send</code>
 <span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>同理，套接字 API 函数 <code>recv</code> 函数也存在类似
 <code>send</code>
-这样的问题。从套接字接收数据时，有可能缓冲区太小，无法一次性接收所有数据，必须多次接收，直至接收不到数据为止，该过程如下：</p>
+这样的问题。从套接字读取数据时，有可能缓冲区太小，无法一次性读取所有数据，必须多次读取，直至无剩余数据为止。该过程的实现如下：</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* 从套接字 x 接收数据，返回值为接受到的数据 */</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>SimStr <span class="op">*</span>recv_robustly<span class="op">(</span><span class="dt">int</span> x<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> m <span class="op">=</span> <span class="dv">1024</span><span class="op">;</span></span>

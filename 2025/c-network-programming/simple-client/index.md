@@ -82,7 +82,7 @@ int a = connect(server, res->ai_addr, res->ai_addrlen);
 ssize_t send(int sockfd, const void *buf, size_t len, int flags);
 ```
 
-`send` 函数可将长度为 `len` 的缓冲区 `buf` 中的数据按照 `flags` 规定的方式写入套接字 `sockfd`。大多数时候只需要将 `flags` 设为 `0`，表示采用普通的数据写入方式。若 `send` 函数运行成功，返回值是已发送数据的字节数，否则为 `-1` 表示数据写入失败。
+`send` 函数可将长度为 `len` 的缓冲区 `buf` 中的数据按照 `flags` 规定的方式写入套接字 `sockfd`。大多数时候只需要将 `flags` 设为 `0`，表示采用普通的数据写入方式。若 `send` 函数运行成功，返回值是已写入数据的字节数，否则为 `-1` 表示数据写入失败。
 
 `send` 函数的用法如下：
 

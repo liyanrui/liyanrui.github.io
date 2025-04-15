@@ -352,8 +352,8 @@ href="../wrapper/index.html">封装</a>」中，<code>SimClient</code> 和
 函数实现，我们需要对这两个函数再作一些修改，进一步提高它们的稳健性。</p>
 <p>在 <code>recv_robustly</code> 中，当套接字函数 <code>recv</code>
 访问的套接字 <code>x</code> 为非阻塞状态时，<code>recv</code> 会直接返回
--1，而非阻塞式读取 <code>x</code> 所指代的文件中的内容，而
-<code>recv_robutly</code> 对这种情况的处理方式是</p>
+-1，而非阻塞式读取 <code>x</code> 中的内容，而 <code>recv_robutly</code>
+对这种情况的处理方式是</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">ssize_t</span> h <span class="op">=</span> recv<span class="op">(</span>x<span class="op">,</span> data <span class="op">+</span> n<span class="op">,</span> remaining<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a> <span class="cf">if</span> <span class="op">(</span>h <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>         free<span class="op">(</span>data<span class="op">);</span></span>

@@ -232,7 +232,7 @@ threebody 无法收到来自客户端的信息，原因是 `sim_server_receive` 
 
 在「[封装](../wrapper/index.html)」中，`SimClient` 和 `SimServer` 对象的 `receive` 和 `send` 方法，分别基于 `recv_robustly` 和 `send_robustly` 函数实现，我们需要对这两个函数再作一些修改，进一步提高它们的稳健性。
 
-在 `recv_robustly` 中，当套接字函数 `recv` 访问的套接字 `x` 为非阻塞状态时，`recv` 会直接返回 -1，而非阻塞式读取 `x` 所指代的文件中的内容，而 `recv_robutly` 对这种情况的处理方式是
+在 `recv_robustly` 中，当套接字函数 `recv` 访问的套接字 `x` 为非阻塞状态时，`recv` 会直接返回 -1，而非阻塞式读取 `x` 中的内容，而 `recv_robutly` 对这种情况的处理方式是
 
 ```c
 ssize_t h = recv(x, data + n, remaining, 0);
