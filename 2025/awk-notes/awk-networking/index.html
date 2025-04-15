@@ -105,12 +105,11 @@
   <li><a href="#特殊文件" id="toc-特殊文件">特殊文件</a></li>
   <li><a href="#hello-world" id="toc-hello-world">Hello world!</a></li>
   <li><a href="#端口查看" id="toc-端口查看">端口查看</a></li>
-  <li><a href="#简单的-http-服务器" id="toc-简单的-http-服务器">简单的
-  HTTP 服务器</a></li>
-  <li><a href="#可交互的-http-服务器"
-  id="toc-可交互的-http-服务器">可交互的 HTTP 服务器</a></li>
-  <li><a href="#gawk-网络编程的局限性"
-  id="toc-gawk-网络编程的局限性">gawk 网络编程的局限性</a></li>
+  <li><a href="#简单的服务器"
+  id="toc-简单的服务器">简单的服务器</a></li>
+  <li><a href="#可交互的服务器"
+  id="toc-可交互的服务器">可交互的服务器</a></li>
+  <li><a href="#局限" id="toc-局限">局限</a></li>
   <li><a href="#总结" id="toc-总结">总结</a></li>
   </ul>
 </nav>
@@ -263,7 +262,7 @@ server.awk，然后二者自动退出。</p>
 <li><code>-l</code>：显示所有处于监听（LISTEN）状态的端口（常用于检查服务是否启动）。</li>
 <li><code>-p</code>：显示占用端口的进程名和 PID（需超级用户权限）。</li>
 </ul>
-<h1 id="简单的-http-服务器">简单的 HTTP 服务器</h1>
+<h1 id="简单的服务器">简单的服务器</h1>
 <p>有的时候，必须关闭连接，例如实现一个可以持续运行的服务器。前两节所实现的
 server.awk，在客户端访问一次后便终止退出了，它无法持续运行。要让一个服务端程序持续运行，只需要在一个无限循环中不断开启和关闭即可，即</p>
 <div class="sourceCode" id="cb20"><pre
@@ -328,15 +327,14 @@ class="sourceCode awk"><code class="sourceCode awk"><span id="cb24-1"><a href="#
 <p>至于 http-server.awk
 向连接发送的报文是如何被网络浏览器端获得并呈现，那是网络浏览器的任务，在本质上它与前文我们所写的
 client.awk 并无不同，当然在实现上会复杂好多个数量级。</p>
-<h1 id="可交互的-http-服务器">可交互的 HTTP 服务器</h1>
+<h1 id="可交互的服务器">可交互的服务器</h1>
 <p>若懂得 CGI 协议，可以将 http-server.awk
 修改为一个可以支持在网页上动态交互的 HTTP
 服务器。对此，我现在没兴趣，暂且略过。「<a
 href="https://www.gnu.org/software/gawk/manual/gawkinet/">Gawkinet:
 TCP/IP Internetworking with Gawk</a>」的 2.9 节实现了一个可交互的 HTTP
-服务器，但它也是假设读者对 CGI
-协议有所了解，而且它的示例代码并不稳健——服务器的连接可能会因超时而意外断开。</p>
-<h1 id="gawk-网络编程的局限性">gawk 网络编程的局限性</h1>
+服务器，不过示例代码并不稳健——服务器的连接可能会因超时而意外断开。</p>
+<h1 id="局限">局限</h1>
 <p>gawk
 基于双向管道实现的网络连接和数据传输，服务端无法支持并发访问。例如上一节实现的
 http-server.awk，运行该服务器程序后，可以使用 telnet 访问它：</p>

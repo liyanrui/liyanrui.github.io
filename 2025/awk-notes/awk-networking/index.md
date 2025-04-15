@@ -178,7 +178,7 @@ awk: server.awk:2: fatal: cannot open two way pipe
 * `-l`：显示所有处于监听（LISTEN）状态的端口（常用于检查服务是否启动）。
 * `-p`：显示占用端口的进程名和 PID（需超级用户权限）。
 
-# 简单的 HTTP 服务器
+# 简单的服务器
 
 有的时候，必须关闭连接，例如实现一个可以持续运行的服务器。前两节所实现的 server.awk，在客户端访问一次后便终止退出了，它无法持续运行。要让一个服务端程序持续运行，只需要在一个无限循环中不断开启和关闭即可，即
 
@@ -248,11 +248,11 @@ close(http_service)
 
 至于 http-server.awk 向连接发送的报文是如何被网络浏览器端获得并呈现，那是网络浏览器的任务，在本质上它与前文我们所写的 client.awk 并无不同，当然在实现上会复杂好多个数量级。
 
-# 可交互的 HTTP 服务器
+# 可交互的服务器
 
-若懂得 CGI 协议，可以将 http-server.awk 修改为一个可以支持在网页上动态交互的 HTTP 服务器。对此，我现在没兴趣，暂且略过。「[Gawkinet: TCP/IP Internetworking with Gawk](https://www.gnu.org/software/gawk/manual/gawkinet/)」的 2.9 节实现了一个可交互的 HTTP 服务器，但它也是假设读者对 CGI 协议有所了解，而且它的示例代码并不稳健——服务器的连接可能会因超时而意外断开。
+若懂得 CGI 协议，可以将 http-server.awk 修改为一个可以支持在网页上动态交互的 HTTP 服务器。对此，我现在没兴趣，暂且略过。「[Gawkinet: TCP/IP Internetworking with Gawk](https://www.gnu.org/software/gawk/manual/gawkinet/)」的 2.9 节实现了一个可交互的 HTTP 服务器，不过示例代码并不稳健——服务器的连接可能会因超时而意外断开。
 
-# gawk 网络编程的局限性
+# 局限
 
 gawk 基于双向管道实现的网络连接和数据传输，服务端无法支持并发访问。例如上一节实现的 http-server.awk，运行该服务器程序后，可以使用 telnet 访问它：
 
