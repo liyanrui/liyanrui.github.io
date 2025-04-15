@@ -34,24 +34,27 @@
 <p class="date">2025 年 01 月 24 日</p>
 </header>
 <hr />
+
 <nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#前言" id="toc-前言">前言</a></li>
-<li><a href="#pandoc" id="toc-pandoc">pandoc</a></li>
-<li><a href="#文章" id="toc-文章">文章</a></li>
-<li><a href="#网站初始化" id="toc-网站初始化">网站初始化</a></li>
-<li><a href="#陈仓暗渡" id="toc-陈仓暗渡">陈仓暗渡</a></li>
-<li><a href="#网页" id="toc-网页">网页</a></li>
-<li><a href="#删除文章" id="toc-删除文章">删除文章</a></li>
-<li><a href="#lmd-脚本" id="toc-lmd-脚本">lmd 脚本</a></li>
-<li><a href="#附录" id="toc-附录">附录</a>
-<ul>
-<li><a href="#pandoc-模板" id="toc-pandoc-模板">pandoc 模板</a></li>
-<li><a href="#样式表" id="toc-样式表">样式表</a></li>
-</ul></li>
-<li><a href="#参考" id="toc-参考">参考</a></li>
-</ul>
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#pandoc" id="toc-pandoc">pandoc</a></li>
+  <li><a href="#文章" id="toc-文章">文章</a></li>
+  <li><a href="#网站初始化" id="toc-网站初始化">网站初始化</a></li>
+  <li><a href="#陈仓暗渡" id="toc-陈仓暗渡">陈仓暗渡</a></li>
+  <li><a href="#网页" id="toc-网页">网页</a></li>
+  <li><a href="#删除文章" id="toc-删除文章">删除文章</a></li>
+  <li><a href="#lmd-脚本" id="toc-lmd-脚本">lmd 脚本</a></li>
+  <li><a href="#附录" id="toc-附录">附录</a>
+  <ul>
+  <li><a href="#pandoc-模板" id="toc-pandoc-模板">pandoc 模板</a></li>
+  <li><a href="#样式表" id="toc-样式表">样式表</a></li>
+  </ul></li>
+  <li><a href="#参考" id="toc-参考">参考</a></li>
+  </ul>
 </nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <h1 id="前言">前言</h1>
 <p>我曾经用过两三个静态网站构建工具，用的最久的，是 <a
 href="https://www.getnikola.com/getting-started.html">nikola</a>，它很优秀，无论是安装，还是使用，都比较简单。不过，我难以回答之前为什么要弃用它。大概是有一次对它进行升级，下载它依赖的一些
@@ -903,11 +906,23 @@ href="https://segmentfault.com/a/1190000039424194">双引号的重要性</a></li
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

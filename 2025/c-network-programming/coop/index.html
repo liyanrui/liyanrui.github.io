@@ -98,20 +98,23 @@
 <p class="date">2025 年 04 月 04 日</p>
 </header>
 <hr />
+
 <nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#前言" id="toc-前言">前言</a></li>
-<li><a href="#sim-项目" id="toc-sim-项目">sim 项目</a></li>
-<li><a href="#示意标记" id="toc-示意标记">示意标记</a></li>
-<li><a href="#字符串类的声明"
-id="toc-字符串类的声明">字符串类的声明</a></li>
-<li><a href="#字符串类的实现"
-id="toc-字符串类的实现">字符串类的实现</a></li>
-<li><a href="#防碰头设计" id="toc-防碰头设计">防碰头设计</a></li>
-<li><a href="#测试" id="toc-测试">测试</a></li>
-<li><a href="#总结" id="toc-总结">总结</a></li>
-</ul>
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#sim-项目" id="toc-sim-项目">sim 项目</a></li>
+  <li><a href="#示意标记" id="toc-示意标记">示意标记</a></li>
+  <li><a href="#字符串类的声明"
+  id="toc-字符串类的声明">字符串类的声明</a></li>
+  <li><a href="#字符串类的实现"
+  id="toc-字符串类的实现">字符串类的实现</a></li>
+  <li><a href="#防碰头设计" id="toc-防碰头设计">防碰头设计</a></li>
+  <li><a href="#测试" id="toc-测试">测试</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
 </nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <h1 id="前言">前言</h1>
 <p>现在，你已经实现了一个简单的 C/S
 架构的程序，这个程序分为两个部分，一个是
@@ -452,11 +455,23 @@ sim-str.c 文件，我允许你通过下面的连接不劳而获：</p>
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

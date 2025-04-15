@@ -98,18 +98,21 @@
 <p class="date">04 月 07 日</p>
 </header>
 <hr />
+
 <nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#前言" id="toc-前言">前言</a></li>
-<li><a href="#客户端集" id="toc-客户端集">客户端集</a></li>
-<li><a href="#接收数据" id="toc-接收数据">接收数据</a></li>
-<li><a href="#发送数据" id="toc-发送数据">发送数据</a></li>
-<li><a href="#大胆假设" id="toc-大胆假设">大胆假设</a></li>
-<li><a href="#小心求证" id="toc-小心求证">小心求证</a></li>
-<li><a href="#你上当了" id="toc-你上当了">你上当了</a></li>
-<li><a href="#结语" id="toc-结语">结语</a></li>
-</ul>
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#客户端集" id="toc-客户端集">客户端集</a></li>
+  <li><a href="#接收数据" id="toc-接收数据">接收数据</a></li>
+  <li><a href="#发送数据" id="toc-发送数据">发送数据</a></li>
+  <li><a href="#大胆假设" id="toc-大胆假设">大胆假设</a></li>
+  <li><a href="#小心求证" id="toc-小心求证">小心求证</a></li>
+  <li><a href="#你上当了" id="toc-你上当了">你上当了</a></li>
+  <li><a href="#结语" id="toc-结语">结语</a></li>
+  </ul>
 </nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <h1 id="前言">前言</h1>
 <p>我们已经初步掌握了 <code>select</code>
 函数的用法，基于它能够监控多个文件，从中选出所有可读、可写以及出现异常的文件，此即同步
@@ -498,11 +501,23 @@ href="../wrapper/index.html">封装</a>」中的 threebody.c
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

@@ -53,11 +53,14 @@ $endif$
 </header>
 $endif$
 <hr />
+
 $if(toc)$
 <nav id="$idprefix$TOC" role="doc-toc">
-$table-of-contents$
+  $table-of-contents$
 </nav>
 $endif$
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 $body$
 $if(footer)$
 <hr />
@@ -65,11 +68,23 @@ $if(footer)$
 $endif$
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

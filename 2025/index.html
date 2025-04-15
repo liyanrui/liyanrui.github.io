@@ -33,6 +33,9 @@
 <h1 class="title">2025 年的日志</h1>
 </header>
 <hr />
+
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <ul>
 <li><span class="post-date">03 月 01 日</span><a
 href="c-network-programming/index.html">网络编程迷踪录</a>：我在想方设法学会
@@ -57,11 +60,23 @@ href="orez-v1/index.html">Orez 1.0 指南</a>：介绍重写的文学编程工�
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

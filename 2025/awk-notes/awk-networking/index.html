@@ -98,21 +98,24 @@
 <p class="date">02 月 23 日</p>
 </header>
 <hr />
+
 <nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#双向管道" id="toc-双向管道">双向管道</a></li>
-<li><a href="#特殊文件" id="toc-特殊文件">特殊文件</a></li>
-<li><a href="#hello-world" id="toc-hello-world">Hello world!</a></li>
-<li><a href="#端口查看" id="toc-端口查看">端口查看</a></li>
-<li><a href="#简单的-http-服务器" id="toc-简单的-http-服务器">简单的
-HTTP 服务器</a></li>
-<li><a href="#可交互的-http-服务器"
-id="toc-可交互的-http-服务器">可交互的 HTTP 服务器</a></li>
-<li><a href="#gawk-网络编程的局限性" id="toc-gawk-网络编程的局限性">gawk
-网络编程的局限性</a></li>
-<li><a href="#总结" id="toc-总结">总结</a></li>
-</ul>
+  <ul>
+  <li><a href="#双向管道" id="toc-双向管道">双向管道</a></li>
+  <li><a href="#特殊文件" id="toc-特殊文件">特殊文件</a></li>
+  <li><a href="#hello-world" id="toc-hello-world">Hello world!</a></li>
+  <li><a href="#端口查看" id="toc-端口查看">端口查看</a></li>
+  <li><a href="#简单的-http-服务器" id="toc-简单的-http-服务器">简单的
+  HTTP 服务器</a></li>
+  <li><a href="#可交互的-http-服务器"
+  id="toc-可交互的-http-服务器">可交互的 HTTP 服务器</a></li>
+  <li><a href="#gawk-网络编程的局限性"
+  id="toc-gawk-网络编程的局限性">gawk 网络编程的局限性</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
 </nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <p>对于一些在使用 Awk 语言处理文本方面颇有经验的人，他们甚至未必认为 Awk
 语言能够实现网络编程。的确如此，Awk 语言并不支持网络编程，但是 gawk
 改变了这个事实。gawk 对 Awk 语言进行了扩展，网络编程便在其中，于 gawk
@@ -367,11 +370,23 @@ Awk 语言的不足，从这一点而言，gawk 为 Awk
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

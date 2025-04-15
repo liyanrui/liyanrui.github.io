@@ -98,26 +98,29 @@
 <p class="date">02 月 15 日</p>
 </header>
 <hr />
+
 <nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#前言" id="toc-前言">前言</a></li>
-<li><a href="#awk-教程" id="toc-awk-教程">Awk 教程</a></li>
-<li><a href="#选择-gawk" id="toc-选择-gawk">选择 gawk</a></li>
-<li><a href="#hello-world" id="toc-hello-world">Hello world!</a></li>
-<li><a href="#模式-动作" id="toc-模式-动作">模式-动作</a></li>
-<li><a href="#c-语言源码渲染" id="toc-c-语言源码渲染">C
-语言源码渲染</a></li>
-<li><a href="#subgsub-和-gensub" id="toc-subgsub-和-gensub">sub、gsub 和
-gensub</a></li>
-<li><a href="#匹配-c-函数的定义" id="toc-匹配-c-函数的定义">匹配 C
-函数的定义</a></li>
-<li><a href="#正则表达式的局限性"
-id="toc-正则表达式的局限性">正则表达式的局限性</a></li>
-<li><a href="#变得更聪明" id="toc-变得更聪明">变得更聪明</a></li>
-<li><a href="#范围模式" id="toc-范围模式">范围模式</a></li>
-<li><a href="#总结" id="toc-总结">总结</a></li>
-</ul>
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#awk-教程" id="toc-awk-教程">Awk 教程</a></li>
+  <li><a href="#选择-gawk" id="toc-选择-gawk">选择 gawk</a></li>
+  <li><a href="#hello-world" id="toc-hello-world">Hello world!</a></li>
+  <li><a href="#模式-动作" id="toc-模式-动作">模式-动作</a></li>
+  <li><a href="#c-语言源码渲染" id="toc-c-语言源码渲染">C
+  语言源码渲染</a></li>
+  <li><a href="#subgsub-和-gensub" id="toc-subgsub-和-gensub">sub、gsub
+  和 gensub</a></li>
+  <li><a href="#匹配-c-函数的定义" id="toc-匹配-c-函数的定义">匹配 C
+  函数的定义</a></li>
+  <li><a href="#正则表达式的局限性"
+  id="toc-正则表达式的局限性">正则表达式的局限性</a></li>
+  <li><a href="#变得更聪明" id="toc-变得更聪明">变得更聪明</a></li>
+  <li><a href="#范围模式" id="toc-范围模式">范围模式</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
 </nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <h1 id="前言">前言</h1>
 <p>很多年后，我可能又一次不知道 Awk 的用法，就像此刻的你。</p>
 <p>Awk 是小语言，能做很多小事。用 Awk
@@ -1049,11 +1052,23 @@ YAML 数据的起始符和终止符，用逗号隔开这两个模式，表示匹
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

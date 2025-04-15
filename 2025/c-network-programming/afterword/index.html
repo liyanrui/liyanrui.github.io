@@ -34,6 +34,9 @@
 <p class="date">2025 年 04 月 14 日</p>
 </header>
 <hr />
+
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <p>有很多人，认为 C 语言非常落后了，没有这个，没有那个。他们说，C++,
 Java, C#, Haskell, go, rust
 以及各式各样的脚本语言，它们既有这个，又有那个……其中任何一门语言都比 C
@@ -69,11 +72,23 @@ Unix 诞生的时候便已经确立了。</p>
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

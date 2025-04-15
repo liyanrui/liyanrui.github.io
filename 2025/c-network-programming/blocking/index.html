@@ -98,19 +98,23 @@
 <p class="date">2025 年 03 月 09 日</p>
 </header>
 <hr />
+
 <nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#前言" id="toc-前言">前言</a></li>
-<li><a href="#接受两个连接" id="toc-接受两个连接">接受两个连接</a></li>
-<li><a href="#阻塞" id="toc-阻塞">阻塞</a></li>
-<li><a href="#不阻塞会如何"
-id="toc-不阻塞会如何">不阻塞会如何？</a></li>
-<li><a href="#可以挽救的错误"
-id="toc-可以挽救的错误">可以挽救的错误</a></li>
-<li><a href="#cpu-很忙" id="toc-cpu-很忙">CPU 很忙</a></li>
-<li><a href="#总结" id="toc-总结">总结</a></li>
-</ul>
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#接受两个连接"
+  id="toc-接受两个连接">接受两个连接</a></li>
+  <li><a href="#阻塞" id="toc-阻塞">阻塞</a></li>
+  <li><a href="#不阻塞会如何"
+  id="toc-不阻塞会如何">不阻塞会如何？</a></li>
+  <li><a href="#可以挽救的错误"
+  id="toc-可以挽救的错误">可以挽救的错误</a></li>
+  <li><a href="#cpu-很忙" id="toc-cpu-很忙">CPU 很忙</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
 </nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <h1 id="前言">前言</h1>
 <p>这份不守江湖规矩的网络编程指南，实际上已经几乎完结了。一台计算机上作为服务端的进程
 A，能够与另一台计算机上作为客户端的进程 B
@@ -511,11 +515,23 @@ href="threebody.c">threebody.c</a></li>
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

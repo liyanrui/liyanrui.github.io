@@ -98,14 +98,17 @@
 <p class="date">2025 年 01 月 27 日</p>
 </header>
 <hr />
+
 <nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#安装" id="toc-安装">安装</a></li>
-<li><a href="#网站初始化" id="toc-网站初始化">网站初始化</a></li>
-<li><a href="#文章" id="toc-文章">文章</a></li>
-<li><a href="#外观" id="toc-外观">外观</a></li>
-</ul>
+  <ul>
+  <li><a href="#安装" id="toc-安装">安装</a></li>
+  <li><a href="#网站初始化" id="toc-网站初始化">网站初始化</a></li>
+  <li><a href="#文章" id="toc-文章">文章</a></li>
+  <li><a href="#外观" id="toc-外观">外观</a></li>
+  </ul>
 </nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <p>近日，重写了 lmd 脚本，详见「<a href="../best-lmd/index.html">lmd
 脚本的设计与实现</a>」。新的 lmd 脚本比<a
 href="../../old-posts/output/bash/lmd.html">它的上个版本</a>更为简单，我觉得也更为易用，本文介绍它的用法。</p>
@@ -186,11 +189,23 @@ post.template，前者为首页模板，后者为文章模板，若你熟悉 pan
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

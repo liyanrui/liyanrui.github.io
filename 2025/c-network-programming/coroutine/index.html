@@ -98,18 +98,21 @@
 <p class="date">03 月 30 日</p>
 </header>
 <hr />
+
 <nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#前言" id="toc-前言">前言</a></li>
-<li><a href="#新的维度" id="toc-新的维度">新的维度</a></li>
-<li><a href="#梳子" id="toc-梳子">梳子</a></li>
-<li><a href="#牛顿" id="toc-牛顿">牛顿</a></li>
-<li><a href="#返回值" id="toc-返回值">返回值</a></li>
-<li><a href="#拉链" id="toc-拉链">拉链</a></li>
-<li><a href="#可重入性" id="toc-可重入性">可重入性</a></li>
-<li><a href="#总结" id="toc-总结">总结</a></li>
-</ul>
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#新的维度" id="toc-新的维度">新的维度</a></li>
+  <li><a href="#梳子" id="toc-梳子">梳子</a></li>
+  <li><a href="#牛顿" id="toc-牛顿">牛顿</a></li>
+  <li><a href="#返回值" id="toc-返回值">返回值</a></li>
+  <li><a href="#拉链" id="toc-拉链">拉链</a></li>
+  <li><a href="#可重入性" id="toc-可重入性">可重入性</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
 </nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <h1 id="前言">前言</h1>
 <p>在超弦理论致力于统一广义相对论与量子力学过程中，令超弦理论学家尴尬的是，他们创造了五种不同的超弦理论，这不是统一，而是更严重的分裂。好在爱德华·威滕出手，在超弦理论的十维空间设定上增加了一个新的维度，并提出了膜的概念，认为以振动的方式形成粒子的弦是
 1-维膜，亦即弦是膜的特例。</p>
@@ -506,11 +509,23 @@ D 膜的结构上，而在 M 理论中，基本粒子是由一种 2 维的 M
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

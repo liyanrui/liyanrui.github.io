@@ -60,13 +60,62 @@ span.post-date {margin-right: 1em;}
   opacity: 0;                   /* 可选：添加淡出效果 */
 }
 
+#backToTop {
+  /* 必须的定位属性 */
+  position: fixed;
+  right: 18px;    /* 与目录相同位置 */
+  top: 30%;      /* 与目录相同位置 */
+  
+  /* 按钮尺寸 */
+  width: 36px;
+  height: 36px;
+  
+  /* 文字样式 */
+  font-size: 18px;
+  line-height: 36px; /* 等于高度实现垂直居中 */
+  text-align: center;
+  color: white;
+  
+  /* 背景样式 */
+  background: darkgray;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(100,100,100,0.3);
+  
+  /* 初始隐藏 */
+  opacity: 0;
+  transform: translateX(120%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  z-index: 1000; /* 确保在顶层 */
+}
+
+/* 显示状态 */
+#backToTop.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* 悬停动效 */
+#backToTop:hover {
+  background: #666666;
+  transform: translateX(0) scale(1.1);
+  box-shadow: 0 6px 16px rgba(102,150,150,0.4);
+}
+
+/* 焦点状态 */
+#backToTop:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(100, 150, 150,0.5);
+}
+
 div.category {
     font-size: 1em;
     width: 1em;
     text-color:white;
     text-align: center;
     position: fixed;
-    right: 1em;
+    right: 24px;
     bottom: 5%;
     line-height: 1.2em;
     padding: .5em .3em;

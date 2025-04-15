@@ -34,6 +34,9 @@
 <p class="date">03 月 01 日</p>
 </header>
 <hr />
+
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <ul>
 <li><span class="post-date">04 月 14 日</span><a
 href="preface/index.html">序</a>：这个春天，我在网络里迷失。</li>
@@ -75,11 +78,23 @@ href="afterword/index.html">跋</a>：可能你需要重新认识 C 语言。</l
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

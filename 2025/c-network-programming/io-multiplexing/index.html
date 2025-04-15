@@ -98,20 +98,23 @@
 <p class="date">03 月 15 日</p>
 </header>
 <hr />
+
 <nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#前言" id="toc-前言">前言</a></li>
-<li><a href="#重温文件" id="toc-重温文件">重温文件</a></li>
-<li><a href="#文件描述符集合"
-id="toc-文件描述符集合">文件描述符集合</a></li>
-<li><a href="#阻塞式轮询" id="toc-阻塞式轮询">阻塞式轮询</a></li>
-<li><a href="#文件可读监视器"
-id="toc-文件可读监视器">文件可读监视器</a></li>
-<li><a href="#select-可堪大用" id="toc-select-可堪大用">select
-可堪大用？</a></li>
-<li><a href="#总结" id="toc-总结">总结</a></li>
-</ul>
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#重温文件" id="toc-重温文件">重温文件</a></li>
+  <li><a href="#文件描述符集合"
+  id="toc-文件描述符集合">文件描述符集合</a></li>
+  <li><a href="#阻塞式轮询" id="toc-阻塞式轮询">阻塞式轮询</a></li>
+  <li><a href="#文件可读监视器"
+  id="toc-文件可读监视器">文件可读监视器</a></li>
+  <li><a href="#select-可堪大用" id="toc-select-可堪大用">select
+  可堪大用？</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
 </nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <h1 id="前言">前言</h1>
 <p>网络编程的那两朵乌云，驱散之道不在网络层面，而在网络中的每台计算机的操作系统层面。操作系统提供了一些监视文件内容是否发生变化的功能。</p>
 <p>假设存在两个文件 a.txt 和 b.txt，基于操作系统的 <code>select</code>
@@ -445,11 +448,23 @@ select 为网络程序的服务端构建同步 I/O
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

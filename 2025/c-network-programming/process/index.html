@@ -98,20 +98,24 @@
 <p class="date">03 月 17 日</p>
 </header>
 <hr />
+
 <nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#前言" id="toc-前言">前言</a></li>
-<li><a href="#电子穿过双缝" id="toc-电子穿过双缝">电子穿过双缝</a></li>
-<li><a href="#麦田守望者" id="toc-麦田守望者">麦田守望者</a></li>
-<li><a href="#守望的艺术" id="toc-守望的艺术">守望的艺术</a></li>
-<li><a href="#非阻塞等待" id="toc-非阻塞等待">非阻塞等待</a></li>
-<li><a href="#信号处理" id="toc-信号处理">信号处理</a></li>
-<li><a href="#更安全的信号处理"
-id="toc-更安全的信号处理">更安全的信号处理</a></li>
-<li><a href="#坍缩" id="toc-坍缩">坍缩</a></li>
-<li><a href="#总结" id="toc-总结">总结</a></li>
-</ul>
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#电子穿过双缝"
+  id="toc-电子穿过双缝">电子穿过双缝</a></li>
+  <li><a href="#麦田守望者" id="toc-麦田守望者">麦田守望者</a></li>
+  <li><a href="#守望的艺术" id="toc-守望的艺术">守望的艺术</a></li>
+  <li><a href="#非阻塞等待" id="toc-非阻塞等待">非阻塞等待</a></li>
+  <li><a href="#信号处理" id="toc-信号处理">信号处理</a></li>
+  <li><a href="#更安全的信号处理"
+  id="toc-更安全的信号处理">更安全的信号处理</a></li>
+  <li><a href="#坍缩" id="toc-坍缩">坍缩</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
 </nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <h1 id="前言">前言</h1>
 <p>进程，也许是绝大多数人既熟悉又陌生的事物。</p>
 <p>若一个人很自信的说，万物皆备于我……他便是一个进程无疑了。在操作系统中运行的任何一个进程，它都会认为，整个系统资源，它可以随意使用，例如，内存可以想要多少，就能拥有多少……完全可以说，孟老夫子在
@@ -650,11 +654,23 @@ CPU 核心，多进程实现的并发，在代码的简洁性上也远胜 I/O
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>

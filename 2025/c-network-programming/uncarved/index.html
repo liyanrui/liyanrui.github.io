@@ -98,20 +98,24 @@
 <p class="date">2025 年 04 月 13 日</p>
 </header>
 <hr />
+
 <nav id="TOC" role="doc-toc">
-<ul>
-<li><a href="#前言" id="toc-前言">前言</a></li>
-<li><a href="#简化" id="toc-简化">简化</a></li>
-<li><a href="#无效的客户端" id="toc-无效的客户端">无效的客户端</a></li>
-<li><a href="#公之于众" id="toc-公之于众">公之于众</a></li>
-<li><a href="#新的-threebody" id="toc-新的-threebody">新的
-threebody</a></li>
-<li><a href="#宏" id="toc-宏">宏</a></li>
-<li><a href="#协程" id="toc-协程">协程</a></li>
-<li><a href="#叮咚或咚叮" id="toc-叮咚或咚叮">叮咚或咚叮</a></li>
-<li><a href="#总结" id="toc-总结">总结</a></li>
-</ul>
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#简化" id="toc-简化">简化</a></li>
+  <li><a href="#无效的客户端"
+  id="toc-无效的客户端">无效的客户端</a></li>
+  <li><a href="#公之于众" id="toc-公之于众">公之于众</a></li>
+  <li><a href="#新的-threebody" id="toc-新的-threebody">新的
+  threebody</a></li>
+  <li><a href="#宏" id="toc-宏">宏</a></li>
+  <li><a href="#协程" id="toc-协程">协程</a></li>
+  <li><a href="#叮咚或咚叮" id="toc-叮咚或咚叮">叮咚或咚叮</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
 </nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
 <h1 id="前言">前言</h1>
 <p>一路行来，甚为艰难，所幸见识和遐想颇多。进程、线程及至协程，我并无计划将这些技术融入
 Sim
@@ -577,11 +581,23 @@ href="sim-network.c">sim-network.c</a></li>
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
 
 <script>
+// 增强滚动监听
 window.addEventListener('scroll', function() {
-  const toc = document.getElementById('TOC');  // 改用 getElementById
-  window.scrollY > 600 
-    ? toc.classList.add('hide') 
-    : toc.classList.remove('hide');
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 });
 </script>
 </body>
