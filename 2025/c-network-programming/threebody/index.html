@@ -119,10 +119,11 @@ ywj 向 www.threebody.com:8080
 <p>不存在的，可以创建，然后欺骗 ywj，让她以为它存在。若是在 Linux
 系统中，可使用超级用户权限编辑 /etc/hosts 文件，为其添加以下内容</p>
 <pre class="plain"><code>127.0.0.1       www.threebody.com</code></pre>
-<p>也许你已识破我的诡计了，我是给这个域名与本机网络回环地址绑定，我只需要写一个程序，接收
+<p>也许你已识破我的诡计了，我在将这个域名与我的计算机的网络回环地址绑定，然后我只需在我的计算机里编写一个程序，用它接收
 ywj
 发来的信息并予以回复，便可完成欺骗。这一瞒天过海之计能否奏效，我心里也没底，试试看。</p>
-<p>现在，我是计算机里的三体人了。</p>
+<p>腺癌，我是计算机里的三体人了。我是服务端，我将接收来自 ywj
+的数据，也将向她发送数据。</p>
 <h1 id="我的套接字地址">我的套接字地址</h1>
 <p>ywj
 给我发送信息，她需要知道我的套接字地址——文字形式的，即我所在的计算机的域名（<code>www.threebody.com</code>）和端口（<code>8080</code>）。这个套接字地址，对我而言，便是
@@ -139,49 +140,55 @@ ywj
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="kw">struct</span> addrinfo <span class="op">*</span>it <span class="op">=</span> addr_list<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>ai_next<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* ... 想必你已很熟悉地址列表遍历过程了 ... */</span></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>转换的结果，即我的套接字地址。</p>
 <h1 id="我的套接字">我的套接字</h1>
-<p>我也需先创建一个空的套接字：</p>
+<p>我需先为自己创建一个无地址的套接字：</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> server <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="kw">struct</span> addrinfo <span class="op">*</span>it <span class="op">=</span> addr_list<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>ai_next<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        server <span class="op">=</span> socket<span class="op">(</span>it<span class="op">-&gt;</span>ai_family<span class="op">,</span>  it<span class="op">-&gt;</span>ai_socktype<span class="op">,</span> it<span class="op">-&gt;</span>ai_protocol<span class="op">);</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>server <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="cf">continue</span><span class="op">;</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p>既然 ywj 认为我是
-<code>server</code>，那我就用它命名我的套接字，但是为这个空的套接字赋予地址时，我不能像
-ywj 那样使用 <code>connect</code>，因为我无需主动连接任何人。我需要使用
-<code>bind</code> 为空套接字赋予地址：</p>
-<p><code>bind</code> 函数的形式如下：</p>
+<p>既然 ywj 认为我是服务端，那我就用 <code>server</code>
+命名我的套接字，只是在为这个套接字赋予地址时，我不能像 ywj 那样用
+<code>connect</code>，因为我是服务端，我无需主动连接任何人。</p>
+<p>我需要使用 <code>bind</code> 为我的套接字赋予地址。<code>bind</code>
+函数的形式如下：</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/socket.h&gt;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> bind<span class="op">(</span><span class="dt">int</span> sockfd<span class="op">,</span> <span class="dt">const</span> <span class="kw">struct</span> sockaddr <span class="op">*</span>addr<span class="op">,</span> socklen_t addrlen<span class="op">);</span></span></code></pre></div>
-<p>调用它的条件实际上已经都满足了，即</p>
+<p><code>getaddrinfo</code> 已经为我们调用 <code>bind</code>
+准备好了所有参数。<code>bind</code>函数的用法如下：</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> server <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="kw">struct</span> <span class="op">*</span>addrinfo it <span class="op">=</span> addr_list<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>ai_next<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        server <span class="op">=</span> socket<span class="op">(</span>it<span class="op">-&gt;</span>ai_family<span class="op">,</span> it<span class="op">-&gt;</span>ai_socktype<span class="op">,</span> it<span class="op">-&gt;</span>ai_protocol<span class="op">);</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>server <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="cf">continue</span><span class="op">;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> bind<span class="op">(</span>server<span class="op">,</span> res<span class="op">-&gt;</span>ai_addr<span class="op">,</span> res<span class="op">-&gt;</span>ai_addrlen<span class="op">);</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> bind<span class="op">(</span>server<span class="op">,</span> res<span class="op">-&gt;</span>ai_addr<span class="op">,</span> res<span class="op">-&gt;</span>ai_addrlen<span class="op">);</span>  <span class="co">/* &lt;== 看此处！ */</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                close<span class="op">(</span>server<span class="op">);</span></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span><span class="op">;</span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span><span class="op">;</span></span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>freeaddrinfo<span class="op">(</span>addr_list<span class="op">);</span> <span class="co">/* 地址列表完成使命 */</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>server <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to bind!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a> <span class="co">/* getaddrinfo 获得的地址列表完成使命 */</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>freeaddrinfo<span class="op">(</span>addr_list<span class="op">);</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">/* 检测所得套接字是否有效 */</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>server <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to bind!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>同之前遇到过的那些套接字 API 函数类似，<code>bind</code>
 运行成功，返回 0，否则返回 -1。</p>
 <h1 id="监听状态">监听状态</h1>
-<p>我要想接收到来自网络上其他套接字的数据，前提是，我的套接字需要处于监听状态。<code>listen</code>
-函数可为已赋予地址的套接字设置监听态，其形式如下：</p>
+<p>我若想接收到来自客户端的数据，前提是我的套接字需要处于监听状态，<code>listen</code>
+函数可为其设定该状态。</p>
+<p><code>listen</code> 的形式如下：</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sys/socket.h&gt;</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> listen<span class="op">(</span><span class="dt">int</span> sockfd<span class="op">,</span> <span class="dt">int</span> backlog<span class="op">);</span></span></code></pre></div>
-<p>若理解 <code>listen</code>
-函数的作用，需要假设你是一个大人物。你可能每天都能收到大量信件，而你根本没时间操心收信这样的琐事。假设你专门成立了一个部门负责接收信件，并且这个部门可能只有
+<p>若要理解 <code>listen</code>
+函数的作用，首先需要假设你是一个大人物。你可能每天都能收到大量信件，而你根本没时间操心收信这样的琐事。假设你专门成立了一个部门负责接收信件，并且这个部门可能只有
 1
 个人处理这一事务，我们可称其为收信员。在每一天里，他接收的信件必定有一个数量限制，这个数量限制即
 <code>backlog</code>。</p>
@@ -226,9 +233,9 @@ ywj 发来的数据，也可以给她一些回复。若 <code>accept</code>
 IP v4 还是 IP v6 地址），倘若不关心它，可将这两个参数皆设为
 <code>NULL</code>。</p>
 <p>ywj
-持有两个套接字，一个表示服务端，一个表示她自己。现在，我也有两个套接字，一个表示我自己，另一个表示客户端。当
+持有两个套接字，一个表示服务端，一个表示她自身。现在，我也有两个套接字，一个表示我自身，另一个表示客户端。如果
 ywj 的服务端是我，而我的客户端是
-ywj，那么便意味我与她建立了连接。我们双方各自持有的两个套接字，本质上都是我们机器上的两份文件。ywj
+ywj，便意味我与她建立了连接。我们双方各自持有的两个套接字，本质上都是我们机器上的两份文件。ywj
 向她的服务端套接字指代的文件写数据，网络系统会将这个数据复制到我的客户端套接字指代的文件里。</p>
 <p>网络系统是什么？它是由不计其数的的计算机在遵守某种信息传输协议的前提下以有线或无线的方式连接起来的系统，客户端和服务端不过是这个系统的末端而已。在数字通信技术诞生之前，我们使用的网络系统就是邮政局，由不计其数的邮政工作人员和邮递员在遵守某种商业契约的前提下构成的系统。</p>
 <h1 id="谁寄来的信">谁寄来的信？</h1>
