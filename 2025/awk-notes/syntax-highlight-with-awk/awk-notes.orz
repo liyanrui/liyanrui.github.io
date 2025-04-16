@@ -415,7 +415,7 @@ typing {
 
 ```console
 $ orez -t awk-notes.orz -e "c-color.map"
-$ orez -t awk-notes.orz -e "c-render.map"
+$ orez -t awk-notes.orz -e "c-render.awk"
 ```
 
 将以下 ConTeXt 源文件 foo.tex 作为示例，

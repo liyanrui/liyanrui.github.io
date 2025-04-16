@@ -138,16 +138,17 @@ C 语言，无需精通。</p>
 语言，有人告诉你需要先了解计算机组成原理，汇编语言编程，操作系统原理，编译原理，然后你才能写一个
 Hello world 程序：</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* hello-world.c */</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;Hello world!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;Hello world!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>然后用 gcc 编译它：</p>
 <pre class="console"><code>$ gcc hello-world.c -o hello-world</code></pre>
 <p>这个人也许是善意的，真心想给你有用的建议，可是他很容易让你根本没有机会写出上述的
-Hello world 程序。</p>
-<p>我看过的网络编程书籍，好像每本书的作者都是这个人。</p>
+Hello world 程序。我看过的网络编程书籍，好像每本书的作者都是这个人。</p>
 <h1 id="是否有些恐慌">是否有些恐慌？</h1>
 <p>现今的操作系统，无论是 Linux 还是任何一种还活着的
 Unix，以及我很少使用的 Windows，它们都以套接字为核心提供了一组 C
@@ -554,12 +555,10 @@ foo.c 中一处代码</p>
 39.156.70.46:80</code></pre>
 <h1 id="总结">总结</h1>
 <p>不知不觉，我们已经基本学会了 4 个套接字 API
-函数了，<code>getaddrinfo</code>、<code>gai_strerror</code>、<code>freeaddrinfo</code>
-以及
-<code>getnameinfo</code>。没什么难的，我甚至有些过度讲解了。倘若你足够聪明，借助
-man 命令便可获得这些函数最为权威的讲解，然后迅速学会它们。只是 man
-命令无法告诉你，学习网络编程居然可以直接从学习 <code>getaddrinfo</code>
-开始。</p>
+函数了，并不难，我甚至有些过度讲解了。你应该比我聪明，原本便可借助 man
+命令便可获得这些函数最为权威的讲解，然后迅速学会它们，免受我的啰嗦。不过，man
+命令最大的问题是，它无法告诉你，学习网络编程居然可以直接从学习
+<code>getaddrinfo</code> 开始。</p>
 <hr />
 <div class="footer">需要联系我吗？请发邮件至 <a
 href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>

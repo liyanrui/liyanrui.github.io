@@ -20,6 +20,8 @@ date: 02 月 27 日
 
 ```c
 /* hello-world.c */
+#include <stdio.h>
+
 int main(void)
 {
         printf("Hello world!\n");
@@ -33,9 +35,7 @@ int main(void)
 $ gcc hello-world.c -o hello-world
 ```
 
-这个人也许是善意的，真心想给你有用的建议，可是他很容易让你根本没有机会写出上述的 Hello world 程序。
-
-我看过的网络编程书籍，好像每本书的作者都是这个人。
+这个人也许是善意的，真心想给你有用的建议，可是他很容易让你根本没有机会写出上述的 Hello world 程序。我看过的网络编程书籍，好像每本书的作者都是这个人。
 
 # 是否有些恐慌？
 
@@ -449,4 +449,4 @@ $ ./foo www.baidu.com 80
 
 # 总结
 
-不知不觉，我们已经基本学会了 4 个套接字 API 函数了，`getaddrinfo`、`gai_strerror`、`freeaddrinfo` 以及 `getnameinfo`。没什么难的，我甚至有些过度讲解了。倘若你足够聪明，借助 man 命令便可获得这些函数最为权威的讲解，然后迅速学会它们。只是 man 命令无法告诉你，学习网络编程居然可以直接从学习 `getaddrinfo` 开始。
+不知不觉，我们已经基本学会了 4 个套接字 API 函数了，并不难，我甚至有些过度讲解了。你应该比我聪明，原本便可借助 man 命令便可获得这些函数最为权威的讲解，然后迅速学会它们，免受我的啰嗦。不过，man 命令最大的问题是，它无法告诉你，学习网络编程居然可以直接从学习 `getaddrinfo` 开始。

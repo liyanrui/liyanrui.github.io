@@ -1,6 +1,7 @@
 ---
-title: 用 Awk 渲染程序源码
-abstract: 这样可以学会 Awk。
+title: Awk：面向文本编程
+subtitle:
+abstract: 专业的事，交给专业的工具。
 date: 02 月 15 日
 ...
 
@@ -146,34 +147,34 @@ $0 ~  /\|/ { print $0 }
 
 <pre id="todo-list.awk" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ todo-list.awk #</span>
-<span class="nb">BEGIN</span> <span class="p">{</span>
-    <span class="nb">FS</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span>
-    <span class="kr">print</span> <span class="s2">&quot;\\usemodule[zhfonts][size=7pt]&quot;</span>
-    <span class="kr">print</span> <span class="s2">&quot;\\definepapersize[card][width=85.6mm,height=53.98mm]&quot;</span>
-    <span class="kr">print</span> <span class="s2">&quot;\\setuppapersize[card]&quot;</span>
-    <span class="kr">print</span> <span class="s2">&quot;\\setuppagenumbering[location=]&quot;</span>
-    <span class="kr">print</span> <span class="s2">&quot;\\starttext&quot;</span>
-    <span class="kr">print</span> <span class="s2">&quot;\\setupxtable[todolist][frame=off]&quot;</span>
-    <span class="kr">print</span> <span class="s2">&quot;\\startxtable[todolist]&quot;</span>
-<span class="p">}</span>
-<span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nb">NF</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="kr">next</span>
-    <span class="kr">print</span> <span class="s2">&quot;  \\startxrow&quot;</span>
-    <span class="kr">print</span> <span class="s2">&quot;    \\startxcell[width=.05\\textwidth] $\\circ$ \\stopxcell&quot;</span>
-    <span class="kr">print</span> <span class="s2">&quot;    \\startxcell[width=.75\\textwidth]&quot;</span><span class="p">,</span> <span class="o">$</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;\\stopxcell&quot;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">$</span><span class="mi">2</span> <span class="o">~</span> <span class="sr">/ *待完成 */</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kr">print</span> <span class="s2">&quot;\\startxcell[width=.2\\textwidth] \\hfill $\\cdots$ \\stopxcell&quot;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">$</span><span class="mi">2</span> <span class="o">~</span> <span class="sr">/ *完成 */</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kr">print</span> <span class="s2">&quot;\\startxcell[width=.2\\textwidth] \\hfill $\\checkmark$ \\stopxcell&quot;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="kr">print</span> <span class="s2">&quot;\\startxcell[width=.2\\textwidth] \\hfill&quot;</span><span class="p">,</span> <span class="o">$</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;\\stopxcell&quot;</span>
-    <span class="p">}</span>
-    <span class="kr">print</span> <span class="s2">&quot;  \\stopxrow&quot;</span>
-<span class="p">}</span>
-<span class="nb">END</span> <span class="p">{</span>
-    <span class="kr">print</span> <span class="s2">&quot;\\stopxtable&quot;</span>
-    <span class="kr">print</span> <span class="s2">&quot;\\stoptext&quot;</span>
-<span class="p">}</span>
+BEGIN {
+    FS = &quot;|&quot;
+    print &quot;\\usemodule[zhfonts][size=7pt]&quot;
+    print &quot;\\definepapersize[card][width=85.6mm,height=53.98mm]&quot;
+    print &quot;\\setuppapersize[card]&quot;
+    print &quot;\\setuppagenumbering[location=]&quot;
+    print &quot;\\starttext&quot;
+    print &quot;\\setupxtable[todolist][frame=off]&quot;
+    print &quot;\\startxtable[todolist]&quot;
+}
+{
+    if (NF != 2) next
+    print &quot;  \\startxrow&quot;
+    print &quot;    \\startxcell[width=.05\\textwidth] $\\circ$ \\stopxcell&quot;
+    print &quot;    \\startxcell[width=.75\\textwidth]&quot;, $1, &quot;\\stopxcell&quot;
+    if ($2 ~ / *待完成 */) {
+        print &quot;\\startxcell[width=.2\\textwidth] \\hfill $\\cdots$ \\stopxcell&quot;
+    } else if ($2 ~ / *完成 */) {
+        print &quot;\\startxcell[width=.2\\textwidth] \\hfill $\\checkmark$ \\stopxcell&quot;
+    } else {
+        print &quot;\\startxcell[width=.2\\textwidth] \\hfill&quot;, $2, &quot;\\stopxcell&quot;
+    }
+    print &quot;  \\stopxrow&quot;
+}
+END {
+    print &quot;\\stopxtable&quot;
+    print &quot;\\stoptext&quot;
+}
 </pre>
 
 可将 foo.txt 转换为 ConTeXt 源文件 foo.tex，后者内容如下：
@@ -333,42 +334,42 @@ comment: darkgray
 
 <pre id="c-render.awk1" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ c-render.awk #</span>
-<span class="nb">BEGIN</span> <span class="p">{</span>
-    <span class="nb">FS</span> <span class="o">=</span> <span class="s2">&quot;:&quot;</span>
-    <span class="k">while</span> <span class="p">(</span><span class="kr">getline</span> <span class="o">&lt;</span><span class="s2">&quot;c-color.map&quot;</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kr">gsub</span><span class="p">(</span><span class="sr">/[ \t]+/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">$</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 去除特殊标记的前后空白字符</span>
-        <span class="kr">gsub</span><span class="p">(</span><span class="sr">/[ \t]+/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">$</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># 去除颜色名的前后空白字符</span>
-        <span class="nx">color</span><span class="p">[</span><span class="o">$</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">$</span><span class="mi">2</span>
-    <span class="p">}</span>
-    <span class="nb">FS</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span>
-    <span class="nx">basic_types</span> <span class="o">=</span> <span class="s2">&quot;char|double|enum|float|int|long|short|signed|struct|union|unsigned|void|const&quot;</span>
-    <span class="nx">keywords</span> <span class="o">=</span> <span class="s2">&quot;static|typedef|sizeof|break|case|continue|default|do|else|for|goto|if|return|switch|while&quot;</span>
-<span class="p">}</span>
+BEGIN {
+    FS = &quot;:&quot;
+    while (getline &lt;&quot;c-color.map&quot; &gt; 0) {
+        gsub(/[ \t]+/, &quot;&quot;, $1) # 去除特殊标记的前后空白字符
+        gsub(/[ \t]+/, &quot;&quot;, $2) # 去除颜色名的前后空白字符
+        color[$1] = $2
+    }
+    FS = &quot; &quot;
+    basic_types = &quot;char|double|enum|float|int|long|short|signed|struct|union|unsigned|void|const&quot;
+    keywords = &quot;static|typedef|sizeof|break|case|continue|default|do|else|for|goto|if|return|switch|while&quot;
+}
 </pre>
 
 然后，探测 ConTeXt 源文件中源码排版区域，
 
 <pre id="c-render.awk2" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
-<span class="sr">/\\starttyping/</span> <span class="p">{</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span><span class="p">}</span>
+/\\starttyping/ { typing = 1; print; next}
 </pre>
 
 在源码排版区域，先对源码中的注释部分进行渲染，以防注释文本中出现与其他被渲染的元素相同的文本而被污染：
 
 <pre id="c-render.awk3" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
-<span class="nx">typing</span> <span class="o">&amp;&amp;</span> <span class="sr">/\/\*/</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="sr">/\*\//</span><span class="p">)</span> <span class="nx">in_comment</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="kr">gsub</span><span class="p">(</span><span class="sr">/\/\*.*/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\m{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\\\m{\\1}&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span> <span class="c1"># 数学公式</span>
-    <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span>
-<span class="p">}</span>
-<span class="nx">typing</span> <span class="o">&amp;&amp;</span> <span class="nx">in_comment</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="sr">/\*\//</span><span class="p">)</span> <span class="nx">in_comment</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="kr">gsub</span><span class="p">(</span><span class="sr">/[^ \t].*/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;comment&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\m{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\\\m{\\1}&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span> <span class="c1"># 数学公式</span>
-    <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span>
-<span class="p">}</span>
+typing &amp;&amp; /\/\*/ {
+    if (!/\*\//) in_comment = 1
+    gsub(/\/\*.*/, &quot;/BTEX\\color[&quot; color[&quot;comment&quot;] &quot;]{&amp;}/ETEX&quot;)
+    $0 = gensub(/\\m{([^}]+)}/, &quot;\\\\m{\\1}&quot;, &quot;g&quot;) # 数学公式
+    print; next
+}
+typing &amp;&amp; in_comment {
+    if (/\*\//) in_comment = 0
+    gsub(/[^ \t].*/, &quot;/BTEX\\color[&quot; color[&quot;comment&quot;] &quot;]{&amp;}/ETEX&quot;)
+    $0 = gensub(/\\m{([^}]+)}/, &quot;\\\\m{\\1}&quot;, &quot;g&quot;) # 数学公式
+    print; next
+}
 </pre>
 
 上述代码可对单行和多行注释进行渲染，渲染完成后，使用 `next` 让主循环无需执行后续的模式-动作语句，提前进入下一次循环。
@@ -377,27 +378,27 @@ comment: darkgray
 
 <pre id="c-render.awk4" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
-<span class="nx">typing</span> <span class="p">{</span>
-    <span class="c1"># 渲染函数名</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\fn{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;\\fn&quot;</span><span class="p">]</span> <span class="s2">&quot;]{\\1}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
-    <span class="c1"># 渲染函数参数类型</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\t{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;\\t&quot;</span><span class="p">]</span> <span class="s2">&quot;]{\\1}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
-    <span class="c1"># 渲染函数参数</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\p{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;\\p&quot;</span><span class="p">]</span> <span class="s2">&quot;]{\\1}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
-    <span class="c1"># 渲染语句内嵌入的注释</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\c{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;\\c&quot;</span><span class="p">]</span> <span class="s2">&quot;]{/* \\1 */}/ETEX&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
-    <span class="c1"># 渲染字符串常量</span>
-    <span class="k">if</span> <span class="p">(</span><span class="sr">/&quot;[^&quot;]*&quot;/</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1"># 处理反斜线</span>
-        <span class="kr">gsub</span><span class="p">(</span><span class="sr">/\\/</span><span class="p">,</span> <span class="s2">&quot;\\backslash &quot;</span><span class="p">)</span>
-        <span class="kr">gsub</span><span class="p">(</span><span class="sr">/&quot;[^&quot;]*&quot;/</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
-    <span class="p">}</span>
-    <span class="c1"># 渲染基本类型</span>
-    <span class="kr">gsub</span><span class="p">(</span><span class="s2">&quot;\\&lt;(&quot;</span> <span class="nx">basic_types</span> <span class="s2">&quot;)\\&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;basic_type&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
-    <span class="c1"># 渲染关键词</span>
-    <span class="kr">gsub</span><span class="p">(</span><span class="s2">&quot;\\&lt;(&quot;</span> <span class="nx">keywords</span> <span class="s2">&quot;)\\&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;/BTEX\\color[&quot;</span> <span class="nx">color</span><span class="p">[</span><span class="s2">&quot;keyword&quot;</span><span class="p">]</span> <span class="s2">&quot;]{&amp;}/ETEX&quot;</span><span class="p">)</span>
-    <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span>
-<span class="p">}</span>
+typing {
+    # 渲染函数名
+    $0 = gensub(/\\fn{([^}]+)}/, &quot;/BTEX\\\\color[&quot; color[&quot;\\fn&quot;] &quot;]{\\1}/ETEX&quot;, &quot;g&quot;)
+    # 渲染函数参数类型
+    $0 = gensub(/\\t{([^}]+)}/, &quot;/BTEX\\\\color[&quot; color[&quot;\\t&quot;] &quot;]{\\1}/ETEX&quot;, &quot;g&quot;)
+    # 渲染函数参数
+    $0 = gensub(/\\p{([^}]+)}/, &quot;/BTEX\\\\color[&quot; color[&quot;\\p&quot;] &quot;]{\\1}/ETEX&quot;, &quot;g&quot;)
+    # 渲染语句内嵌入的注释
+    $0 = gensub(/\\c{([^}]+)}/, &quot;/BTEX\\\\color[&quot; color[&quot;\\c&quot;] &quot;]{/* \\1 */}/ETEX&quot;, &quot;g&quot;)
+    # 渲染字符串常量
+    if (/&quot;[^&quot;]*&quot;/) {
+        # 处理反斜线
+        gsub(/\\/, &quot;\\backslash &quot;)
+        gsub(/&quot;[^&quot;]*&quot;/, &quot;/BTEX\\color[&quot; color[&quot;string&quot;] &quot;]{&amp;}/ETEX&quot;)
+    }
+    # 渲染基本类型
+    gsub(&quot;\\&lt;(&quot; basic_types &quot;)\\&gt;&quot;, &quot;/BTEX\\color[&quot; color[&quot;basic_type&quot;] &quot;]{&amp;}/ETEX&quot;)
+    # 渲染关键词
+    gsub(&quot;\\&lt;(&quot; keywords &quot;)\\&gt;&quot;, &quot;/BTEX\\color[&quot; color[&quot;keyword&quot;] &quot;]{&amp;}/ETEX&quot;)
+    print; next
+}
 </pre>
 
 与渲染注释过程相似，渲染过程结束后，使用 `next` 让主循环提前进入下一次运转。
@@ -406,14 +407,14 @@ comment: darkgray
 
 <pre id="c-render.awk5" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
-<span class="sr">/\\stoptyping/</span> <span class="p">{</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span><span class="p">}</span>
+/\\stoptyping/ { typing = 0; print; next}
 </pre>
 
 对于非源码区域的内容，原样将其输出：
 
 <pre id="c-render.awk6" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
-<span class="p">{</span> <span class="kr">print</span> <span class="p">}</span>
+{ print }
 </pre>
 
 至此，支持在 ConTeXt 源码排版环境中渲染 C 语言源码的 Awk 脚本完成。
@@ -422,7 +423,7 @@ comment: darkgray
 
 ```console
 $ orez -t awk-notes.orz -e "c-color.map"
-$ orez -t awk-notes.orz -e "c-render.map"
+$ orez -t awk-notes.orz -e "c-render.awk"
 ```
 
 将以下 ConTeXt 源文件 foo.tex 作为示例，
@@ -458,20 +459,20 @@ $ context bar.tex
 
 <pre id="c-demark.awk" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ c-demark.awk #</span>
-<span class="sr">/\\starttyping/</span> <span class="p">{</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span><span class="p">}</span>
-<span class="nx">typing</span> <span class="p">{</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\m{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\1&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\fn{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\1&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\t{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\1&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\p{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\1&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
-    <span class="o">$</span><span class="mi">0</span> <span class="o">=</span> <span class="kr">gensub</span><span class="p">(</span><span class="sr">/\\c{([^}]+)}/</span><span class="p">,</span> <span class="s2">&quot;\\1&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="sr">/&quot;[^&quot;]*&quot;/</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kr">gsub</span><span class="p">(</span><span class="sr">/\\backslash[ \t]*/</span><span class="p">,</span> <span class="s2">&quot;\\&quot;</span><span class="p">)</span>
-    <span class="p">}</span>
-    <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span>
-<span class="p">}</span>
-<span class="sr">/\\stoptyping/</span> <span class="p">{</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span><span class="p">}</span>
-<span class="p">{</span> <span class="kr">print</span> <span class="p">}</span>
+/\\starttyping/ { typing = 1; print; next}
+typing {
+    $0 = gensub(/\\m{([^}]+)}/, &quot;\\1&quot;, &quot;g&quot;)
+    $0 = gensub(/\\fn{([^}]+)}/, &quot;\\1&quot;, &quot;g&quot;)
+    $0 = gensub(/\\t{([^}]+)}/, &quot;\\1&quot;, &quot;g&quot;)
+    $0 = gensub(/\\p{([^}]+)}/, &quot;\\1&quot;, &quot;g&quot;)
+    $0 = gensub(/\\c{([^}]+)}/, &quot;\\1&quot;, &quot;g&quot;)
+    if (/&quot;[^&quot;]*&quot;/) {
+        gsub(/\\backslash[ \t]*/, &quot;\\&quot;)
+    }
+    print; next
+}
+/\\stoptyping/ { typing = 0; print; next}
+{ print }
 </pre>
 
 # sub、gsub 和 gensub
@@ -632,28 +633,28 @@ match($0, /(\w+[\* \t\n]+)(\w+)(\s*\()(.*)(\)\s*{.*})/, s)
 
 <pre id="c-function.awk" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ c-function.awk #</span>
-<span class="sr">/\\starttyping/</span> <span class="p">{</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\\\\stoptyping&quot;</span><span class="p">;</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span> <span class="p">}</span>
-<span class="nx">typing</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="mi">0</span><span class="p">,</span> <span class="sr">/(\w+[\* \t\n]+)(\w+)(\s*\()(.*)(\)\s*{.*})/</span><span class="p">,</span> <span class="nx">s</span><span class="p">))</span> <span class="p">{</span>
-        <span class="c1"># 标记函数名</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!~</span> <span class="sr">/\\fn/</span><span class="p">)</span> <span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;\\fn{&quot;</span> <span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="s2">&quot;}&quot;</span>
-        <span class="c1"># 标记参数名</span>
-        <span class="kr">split</span><span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="nx">p</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">in</span> <span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">!~</span> <span class="sr">/\\.+/</span><span class="p">)</span> <span class="p">{</span>
-                <span class="k">if</span> <span class="p">(</span><span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">~</span> <span class="sr">/\w+[\* \t\n]+\([\* \t\n]+\w+\)/</span><span class="p">)</span> <span class="p">{</span>
-                     <span class="c1"># 参数为函数指针的形式，不予处理</span>
-                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                    <span class="nx">n</span> <span class="o">=</span> <span class="kr">split</span><span class="p">(</span><span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">q</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
-                    <span class="kr">gsub</span><span class="p">(</span><span class="nx">q</span><span class="p">[</span><span class="nx">n</span><span class="p">],</span> <span class="s2">&quot;\\p{&amp;}&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="kr">print</span> <span class="nx">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span>
-    <span class="nx">typing</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span><span class="p">;</span> <span class="kr">printf</span> <span class="s2">&quot;\\stoptyping&quot;</span><span class="p">;</span> <span class="kr">next</span>
-<span class="p">}</span>
-<span class="p">{</span> <span class="kr">print</span> <span class="p">}</span>
+/\\starttyping/ { RS = &quot;\\\\stoptyping&quot;; typing = 1; print; next }
+typing {
+    if (match($0, /(\w+[\* \t\n]+)(\w+)(\s*\()(.*)(\)\s*{.*})/, s)) {
+        # 标记函数名
+        if (s[2] !~ /\\fn/) s[2] = &quot;\\fn{&quot; s[2] &quot;}&quot;
+        # 标记参数名
+        split(s[4], p, &quot;,&quot;)
+        for (i in p) {
+            if (p[i] !~ /\\.+/) {
+                if (p[i] ~ /\w+[\* \t\n]+\([\* \t\n]+\w+\)/) {
+                     # 参数为函数指针的形式，不予处理
+                } else {
+                    n = split(p[i], q, &quot; &quot;)
+                    gsub(q[n], &quot;\\p{&amp;}&quot;, s[4])
+                }
+            }
+        }
+        print s[1] s[2] s[3] s[4] s[5]
+    } else print
+    typing = 0; RS = &quot;\n&quot;; printf &quot;\\stoptyping&quot;; next
+}
+{ print }
 </pre>
 
 注意，上述代码为了处理函数的参数列表，使用了两次 Awk 内置的 `split` 函数，第一次是以逗号对参数列表进行分割获得每个参数，第二次以空格对参数进行分割以分离参数类型与参数名。此外，由于 `\stoptyping` 被临时充作 `RS` 的值，会在输出中消失，故而在处理完源码区域后，需要使用 `printf` 将其输出。`printf` 与 `print` 的一个区别是，前者不会在输出内容尾部添加换行符 `\n`。
@@ -741,30 +742,30 @@ void bar(int a, int b) {
 
 <pre id="new-c-function.awk" class="orez-snippet-with-name">
 <span class="orez-snippet-name">@ new-c-function.awk #</span>
-<span class="sr">/\\starttyping/</span> <span class="p">{</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span> <span class="p">}</span>
-<span class="nx">typing</span> <span class="o">&amp;&amp;</span> <span class="sr">/\\fn:start/</span> <span class="p">{</span> <span class="nx">fn</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\\\\fn:stop\n&quot;</span><span class="p">;</span> <span class="kr">next</span> <span class="p">}</span>
-<span class="nx">typing</span> <span class="o">&amp;&amp;</span> <span class="nx">fn</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="mi">0</span><span class="p">,</span> <span class="sr">/(\w+[\* \t\n]+)(\w+)(\s*\()(.*)(\)\s*{.*})/</span><span class="p">,</span> <span class="nx">s</span><span class="p">))</span> <span class="p">{</span>
-        <span class="c1"># 标记函数名</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!~</span> <span class="sr">/\\fn/</span><span class="p">)</span> <span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;\\fn{&quot;</span> <span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="s2">&quot;}&quot;</span>
-        <span class="c1"># 标记参数名</span>
-        <span class="kr">split</span><span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="nx">p</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">in</span> <span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">!~</span> <span class="sr">/\\.+/</span><span class="p">)</span> <span class="p">{</span>
-                <span class="k">if</span> <span class="p">(</span><span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">~</span> <span class="sr">/\w+[\* \t\n]+\([\* \t\n]+\w+\)/</span><span class="p">)</span> <span class="p">{</span>
-                     <span class="c1"># 参数为函数指针的形式，不予处理</span>
-                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                    <span class="nx">n</span> <span class="o">=</span> <span class="kr">split</span><span class="p">(</span><span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">q</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
-                    <span class="kr">gsub</span><span class="p">(</span><span class="nx">q</span><span class="p">[</span><span class="nx">n</span><span class="p">],</span> <span class="s2">&quot;\\p{&amp;}&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="kr">print</span> <span class="nx">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="nx">s</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span>
-    <span class="nx">fn</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span><span class="p">;</span> <span class="kr">next</span>
-<span class="p">}</span>
-<span class="sr">/\\stoptyping/</span> <span class="p">{</span> <span class="nx">typing</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="kr">print</span><span class="p">;</span> <span class="kr">next</span> <span class="p">}</span>
-<span class="p">{</span> <span class="kr">print</span> <span class="p">}</span>
+/\\starttyping/ { typing = 1; print; next }
+typing &amp;&amp; /\\fn:start/ { fn = 1; RS = &quot;\\\\fn:stop\n&quot;; next }
+typing &amp;&amp; fn {
+    if (match($0, /(\w+[\* \t\n]+)(\w+)(\s*\()(.*)(\)\s*{.*})/, s)) {
+        # 标记函数名
+        if (s[2] !~ /\\fn/) s[2] = &quot;\\fn{&quot; s[2] &quot;}&quot;
+        # 标记参数名
+        split(s[4], p, &quot;,&quot;)
+        for (i in p) {
+            if (p[i] !~ /\\.+/) {
+                if (p[i] ~ /\w+[\* \t\n]+\([\* \t\n]+\w+\)/) {
+                     # 参数为函数指针的形式，不予处理
+                } else {
+                    n = split(p[i], q, &quot; &quot;)
+                    gsub(q[n], &quot;\\p{&amp;}&quot;, s[4])
+                }
+            }
+        }
+        print s[1] s[2] s[3] s[4] s[5]
+    } else print
+    fn = 0; RS = &quot;\n&quot;; next
+}
+/\\stoptyping/ { typing = 0; print; next }
+{ print }
 </pre>
 
 有朝一日，我变得更聪明了，再写一个脚本，用于为每个 C 函数的定义自动生成 `\fn:start` 和 `\fn:stop` 标记。
