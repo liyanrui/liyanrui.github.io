@@ -172,7 +172,7 @@ SimServer *sim_server(const char *host, const char *port);
 ```
 
 ```c
-/* sim-network.h ++ */
+/* sim-network.c ++ */
 SimServer *sim_server(const char *host, const char *port) {
         int fd = first_valid_address(host, port, bind); 
         if (fd == -1) return NULL;
