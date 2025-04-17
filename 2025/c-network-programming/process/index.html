@@ -259,17 +259,9 @@ foo 的子进程是否为僵尸进程：</p>
 ...    9233  ...   Z+   ... [foo] &lt;defunct&gt;</code></pre>
 <p>其中含有 <code>Z+</code> 和 <code>defunct</code>
 的进程，便是僵尸进程。</p>
-<p>好的父亲，他无需去干涉孩子的行为，他只需要守望。</p>
-<blockquote>
-一大群小孩儿在一大块麦田里玩一种游戏，有几千个，旁边没人——我是说没有岁数大一点的——我是说只有我。我会站在一道破悬崖边上。我要做的，就是抓住每个跑向悬崖的孩子——我是说要是他们跑起来不看方向，我就得从哪儿过来抓住他们。我整天就干那种事，当个麦田里的守望者。
-<p style="text-align: right;">
-——《麦田守望者》
-</p>
-</blockquote>
-<p>守望是很简单的，只需要使用 <code>wait</code>
-函数，它也是个系统调用，作用是让父进程先不要做别的事情，静静等待子进程的结束。</p>
-<p><code>wait</code>
-的用法并不难，倘若你不想追究细节，只需在父进程中添加</p>
+<p>要避免子进程成为僵尸进程，需要在父进程中使用
+函数，让父进程先不要做别的事情，静静等待子进程的结束。
+也是一个系统调用，用法并不难。倘若你不想追究细节，只需在父进程中添加</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>wait<span class="op">(</span>NULL<span class="op">);</span></span></code></pre></div>
 <p>例如</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></span>
@@ -576,7 +568,7 @@ threebody 赋予并发能力。</p>
 <span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 服务端 */</span></span>
 <span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>        SimServer <span class="op">*</span>threebody <span class="op">=</span> sim_server<span class="op">(</span><span class="st">&quot;localhost&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">);</span></span>
 <span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>                sim_server_run<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>                sim_server_run_once<span class="op">(</span>threebody<span class="op">);</span></span>
 <span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>fork<span class="op">()</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>                         <span class="co">/* 子进程不需要监听套接字 */</span></span>
 <span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>                        sim_server_close_listener<span class="op">(</span>threebody<span class="op">);</span></span>

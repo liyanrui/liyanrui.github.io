@@ -21,7 +21,7 @@ int main(void) {
         /* 服务端 */
         SimServer *threebody = sim_server("localhost", "8080");
         while (1) {
-                sim_server_run(threebody);
+                sim_server_run_once(threebody);
                 if (fork() == 0) {
                          /* 子进程不需要监听套接字 */
                         sim_server_close_listener(threebody);
