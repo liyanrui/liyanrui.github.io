@@ -116,7 +116,7 @@
 <button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
 
 <h1 id="前言">前言</h1>
-<p>sim 项目中的字符串类获得了巨大成功，ywj 和 threebody
+<p>sim 项目的字符串类获得了业界好评，ywj 和 threebody
 也受到了鼓舞，希望加入 sim 的阵营。</p>
 <h1 id="客户端">客户端</h1>
 <p>新建一份文件 sim-network.h，除了防碰头设计，还包含了 sim-str.h：</p>
@@ -131,8 +131,6 @@
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">...</span> <span class="op">...</span> 代码片段 <span class="op">...</span> <span class="op">...</span></span></code></pre></div>
 <p>我希望你能理解成，代码片段是添加在 <code>#define SIM_NETWORK_H</code>
 和 <code>#endif</code> 之间的区域。</p>
-<p>之所以需要
-sim-str.h，是因为我们在学习网络编程时，大部分时间是在收发文本信息。</p>
 <p>创建 sim-network.c 文件，先让它包含 sim-network.h：</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c */</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;unistd.h&gt;</span></span>
