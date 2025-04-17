@@ -6,13 +6,11 @@ date: 2025 年 04 月 11 日
 
 # 前言
 
-我们基于 `select` 显著提升了服务端的并发性能。在高兴之余，一定会有更擅长网络编程的朋友告诉我们，`select` 过时了，`poll` 更好，最好的是 `epoll`……他们是正确的，但是现在我们需要的，还不是这种正确。`select` 的缺陷是，通常情况下最多只能支持 1024 个文件描述符，亦即基于它实现的服务端同时最多只能支持 1024 个客户端。事实上，服务端能同时支持这么多个客户端，已经非常了不起了。以后，待我们需要更了不起的时候，再研究 `poll` 甚至 `epoll` 也不迟。现在，我们要做的是，将基于 `select` 的同步 I/O 多路复用机制融入「[封装](../wrapper/index.html)」中所实现的 Sim 项目。
+我们基于 `select` 显著提升了服务端的并发性能。在高兴之余，一定会有更擅长网络编程的朋友告诉我们，`select` 过时了，`poll` 更好，最好的是 `epoll`……他们是正确的，但是现在我们需要的，还不是这种正确。`select` 的缺陷是，通常情况下最多只能支持 1024 个文件描述符，亦即基于它实现的服务端同时最多只能支持 1024 个客户端。然而，我们的服务端能同时支持这么多个客户端，已经非常了不起了，如同你经营一家超市，每个时间段都能有 1024 个顾客在店内游逛。以后，待我们需要更了不起的时候，再研究 `poll` 甚至 `epoll` 也不迟，而现在我们要做的是，将基于 `select` 的同步 I/O 多路复用机制融入「[封装](../wrapper/index.html)」中所实现的 Sim 项目。
 
 # 单向链表
 
-在「[select 不负重望](../socket-and-select/index.html)」中，我们用了一个固定长度的数组存储了一组套接字，这些套接字由 `accept` 创建，服务端可通过它们与客户端通信。为了便于叙述，我们今后将这类套接字简称为客户端套接字，有时也会图省事，直呼其为客户端。
-
-我们需要实现一个较固定长度的数组更为灵巧的数据结构，将其用于存储客户端套接字。该数据结构应当由一些称为结点的数据单元构成，每个结点可存储 1 个套接字。这种数据结构通常有两种实现，一种是动态数组，一种是链表。我更喜欢链表。
+在「[长缨在手](../socket-and-select/index.html)」中，我们用了一个固定长度的数组存储了一组客户端套接字。我们需要实现一个较固定长度的数组更为灵巧的数据结构，将其用于存储客户端套接字。该数据结构应当由一些称为结点的数据单元构成，每个结点可存储 1 个套接字。这种数据结构通常有两种实现，一种是动态数组，一种是链表。我更喜欢链表。
 
 以下代码定义了一个非常简单的单向链表类 `SimList` 并声明了其析构函数和 `add` 方法：
 
@@ -240,13 +238,13 @@ void sim_server_free(SimServer *server) {
 需要注意的是，`sim_server` 函数中，将用于监听的套接字设成了非阻塞状态，这是实现服务端对 I/O 多路复用机制的支持所必须的。
 
 
-# 修改 sim_server_run
+# 修改 sim_server_run_once
 
-将基于 `select` 的 I/O 多路复用机制纳入 `sim_server_run` 函数：
+将基于 `select` 的 I/O 多路复用机制纳入 `sim_server_run_once` 函数：
 
 ```c
 /* sim-network.c [改] */
-void sim_server_run(SimServer *self) {
+void sim_server_run_once(SimServer *self) {
         int fd_max;
          /* 尽量让 select 成功运行 */
         while (1) {
@@ -267,7 +265,7 @@ void sim_server_run(SimServer *self) {
                            NULL) == -1) {
                         if (errno == EINTR) continue;
                         else {
-                            self->error = "sim_server_run error!";
+                            self->error = "sim_server_run_once error!";
                             break;
                         }
                 } else break;
@@ -281,7 +279,7 @@ void sim_server_run(SimServer *self) {
                         if (fd == -1) {
                                 if (errno == EINTR) continue;
                                 else {
-                                        self->error = "sim_server_run error!";
+                                        self->error = "sim_server_run_once error!";
                                         break;
                                 }
                         } else {
@@ -300,7 +298,7 @@ void sim_server_run(SimServer *self) {
 
 上述代码中，两处 `while (1)` 循环只是为了尽量保证 `select` 和 `accept` 不会受系统中断信号的干扰而出错，详见「[可以挽救的错误](../blocking/index.html#可以挽救的错误)」，在通常情况下，这两处 `while (1)` 的循环体只运行一次便可退出，故而不会无限循环。
 
-正常情况下，每运行一次 `sim_server_run`，`SimServer` 对象的 `clients` 成员便可纳入一个新的客户端套接字。在下一次运行 `sim_server_run` 时，该套接字会被 `select` 提交给系统审批。若审批通过，该套接字会被保留在 `read_fds` 和 `write_fds` 中。
+正常情况下，每运行一次 `sim_server_run_once`，`SimServer` 对象的 `clients` 成员便可纳入一个新的客户端套接字。在下一次运行 `sim_server_run_once` 时，该套接字会被 `select` 提交给系统审批。若审批通过，该套接字会被保留在 `read_fds` 和 `write_fds` 中。
 
 # 修改 sim_server_receive
 
@@ -383,7 +381,7 @@ int main(void) {
         }
         /* 服务端程序运转 */
         while (1) {
-                sim_server_run(threebody);
+                sim_server_run_once(threebody);
                 if (sim_server_safe(threebody)) {
                         /* 从客户端接收信息 */
                         SimList *msgs = sim_server_receive(threebody);

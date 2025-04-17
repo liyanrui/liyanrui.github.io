@@ -100,14 +100,14 @@ void sim_server_free(SimServer *server) {
         }
 }
 
-void sim_server_run(SimServer *self) {
+void sim_server_run_once(SimServer *self) {
         int fd;
         while (1) {
                 fd = accept(self->listener, NULL, NULL);
                  if (fd == -1) {
                         if (errno == EAGAIN || errno == EINTR) continue;
                         else {
-                                self->error = "sim_server_run error!";
+                                self->error = "sim_server_run_once error!";
                                 break;
                         }
                 } else {

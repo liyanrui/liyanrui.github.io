@@ -1,6 +1,6 @@
 ---
-title: select 不负重望
-abstract: 我们有了初步拥抱这个世界的能力。
+title: 长缨在手
+abstract: 何日缚住苍龙？
 date: 04 月 07 日
 ...
 
@@ -81,7 +81,7 @@ while (1) {
 }
 ```
 
-上述代码，这段代码所实现的主要功能是，在一个循环里，用 `clients` 数组不断收集新的客户端套接字，所有的技术细节在「[我是三体人！](../threebody/index.html)」和「[同步 I/O 多路复用](../io-multiplexing/index.html)」里皆有阐述。`clients` 最多能容纳 `MAX_CLIENTS` 个客户端套接字，这意味着基于上述代码实现的服务端，它最多能同时接受 100 个客户端发起的连接。需要注意的一点是，`listener` 先被加入到 `read_fds`，然后经过 `select` 的挑选，若它还在 `read_fds`，则意味着可以用它与客户端建立连接。
+这段代码所实现的主要功能是，在一个循环里，用 `clients` 数组不断收集新的客户端套接字，所有的技术细节在「[我是三体人！](../threebody/index.html)」和「[同步 I/O 多路复用](../io-multiplexing/index.html)」里皆有阐述。`clients` 最多能容纳 `MAX_CLIENTS` 个客户端套接字，这意味着基于上述代码实现的服务端，它最多能同时接受 100 个客户端发起的连接。需要注意的一点是，`listener` 先被加入到 `read_fds`，然后经过 `select` 的挑选，若它还在 `read_fds`，则意味着可以用它与客户端建立连接。
 
 上述代码的末尾，暂缺「从客户端接收数据」和「向客户端发送数据」的实现，下文予以补全。
 

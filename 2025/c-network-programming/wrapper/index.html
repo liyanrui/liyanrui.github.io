@@ -270,12 +270,12 @@ href="../simple-client/index.html">我在这里！</a>」。</p>
 <p><code>SimServer</code> 对象需要一个 <code>run</code>
 方法，表达服务端开始运转，接受客户端的连接，该方法声明和定义如下：</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.h ++ */</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_run<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">);</span></span></code></pre></div>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_run_once<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">);</span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c ++ */</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_run<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_run_once<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> fd <span class="op">=</span> accept<span class="op">(</span>self<span class="op">-&gt;</span>listener<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">);</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>fd <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                self<span class="op">-&gt;</span>error <span class="op">=</span> <span class="st">&quot;sim_server_run error: failed to accept!&quot;</span><span class="op">;</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>                self<span class="op">-&gt;</span>error <span class="op">=</span> <span class="st">&quot;sim_server_run_once error: failed to accept!&quot;</span><span class="op">;</span></span>
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                <span class="co">/* 恢复 self 无错状态 */</span></span>
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>self<span class="op">-&gt;</span>error<span class="op">)</span> self<span class="op">-&gt;</span>error <span class="op">=</span> NULL<span class="op">;</span></span>
@@ -484,7 +484,7 @@ API 函数 <code>send</code> 向套接字写入数据。若 <code>send</code>
 <span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;sim_server failed!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
 <span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
 <span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>        sim_server_run<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>        sim_server_run_once<span class="op">(</span>threebody<span class="op">);</span></span>
 <span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 从客户端读取信息 */</span></span>
 <span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>        SimStr <span class="op">*</span>msg_from <span class="op">=</span> sim_server_receive<span class="op">(</span>threebody<span class="op">);</span></span>
 <span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>sim_str_safe<span class="op">(</span>msg_from<span class="op">))</span> <span class="op">{</span></span>

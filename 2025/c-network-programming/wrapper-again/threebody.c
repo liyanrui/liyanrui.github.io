@@ -8,7 +8,7 @@ int main(void) {
         }
         /* 服务端程序运转 */
         while (1) {
-                sim_server_run(threebody);
+                sim_server_run_once(threebody);
                 if (sim_server_safe(threebody)) {
                         /* 从客户端接收信息 */
                         SimList *msgs = sim_server_receive(threebody);

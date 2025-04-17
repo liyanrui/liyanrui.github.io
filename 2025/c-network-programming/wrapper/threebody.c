@@ -6,7 +6,7 @@ int main(void) {
                 fprintf(stderr, "sim_server failed!\n");
                 exit(-1);
         }
-        sim_server_run(threebody);
+        sim_server_run_once(threebody);
         
         /* 从客户端读取信息 */
         SimStr *msg_from = sim_server_receive(threebody);

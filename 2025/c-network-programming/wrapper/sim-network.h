@@ -13,7 +13,7 @@ typedef struct sim_server SimServer;
 SimServer *sim_server(const char *host, const char *port);
 void sim_server_free(SimServer *server);
 
-void sim_server_run(SimServer *self);
+void sim_server_run_once(SimServer *self);
 void sim_server_close(SimServer *server);
 
 void sim_server_send(SimServer *self, SimStr *msg);

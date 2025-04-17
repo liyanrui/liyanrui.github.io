@@ -108,7 +108,7 @@ void sim_server_free(SimServer *server) {
         }
 }
 
-void sim_server_run(SimServer *self) {
+void sim_server_run_once(SimServer *self) {
         int fd_max;
          /* 尽量让 select 成功运行 */
         while (1) {
@@ -129,7 +129,7 @@ void sim_server_run(SimServer *self) {
                            NULL) == -1) {
                         if (errno == EINTR) continue;
                         else {
-                            self->error = "sim_server_run error!";
+                            self->error = "sim_server_run_once error!";
                             break;
                         }
                 } else break;
@@ -143,7 +143,7 @@ void sim_server_run(SimServer *self) {
                         if (fd == -1) {
                                 if (errno == EINTR) continue;
                                 else {
-                                        self->error = "sim_server_run error!";
+                                        self->error = "sim_server_run_once error!";
                                         break;
                                 }
                         } else {

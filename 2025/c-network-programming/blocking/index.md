@@ -27,7 +27,7 @@ int main(void) {
         }
         /* 接受 2 个连接 */
         for (int i = 0; i < 2; i++) {
-                sim_server_run(threebody);
+                sim_server_run_once(threebody);
                 if (sim_server_safe(threebody)) { 
                         /* 从客户端接收信息 */
                         SimStr *msg = sim_server_receive(threebody);
@@ -127,7 +127,7 @@ $ ./ywj
 /* threebody.c [改] */
 /* 服务端永不停息 */
 while (1) {
-        sim_server_run(threebody);
+        sim_server_run_once(threebody);
         if (sim_server_safe(threebody)) { 
                 /* 从客户端接收信息 */
                 SimStr *msg = sim_server_receive(threebody);
@@ -144,7 +144,7 @@ while (1) {
 }
 ```
 
-在服务端造成通信阻塞的套接字 API 函数是封装在 `sim_server_run` 中的 `accept`，该函数在默认情况下是阻塞的，在与当前连接的客户端通信过程结束之前，`accept` 不会与其他客户端建立连接。实际上，用于发送和接收数据的 `send` 和 `recv` 也是阻塞的。
+在服务端造成通信阻塞的套接字 API 函数是封装在 `sim_server_run_once` 中的 `accept`，该函数在默认情况下是阻塞的，在与当前连接的客户端通信过程结束之前，`accept` 不会与其他客户端建立连接。实际上，用于发送和接收数据的 `send` 和 `recv` 也是阻塞的。
 
 一些非套接字 API 函数也会造成进程阻塞，例如 other-ywj.c 中使用的 `sleep` 函数以及等待用户输入信息的 `scanf` 函数。进程被阻塞时，操作系统会将其由「运行」状态切换为「等待」状态，此时进程不会占用 CPU，直到特定事件发生（例如有客户端发起网络连接），使其能够继续运行。
 
@@ -176,7 +176,7 @@ static int socket_nonblock(int x) {
 
 像 `fcntl` 这样的函数，它的参数以及所用的位运算，散发着古奥的气息。原因是这类函数在早期的 Unix 系统诞生时就存在了。函数名与操作指令之所以简写，犹如在纸张尚未发明的年代，古人在竹简上写着简洁但难懂的语句。我们不仅需要理解它们，还需要让它们具备现代气息。
 
-现在改写 `SimServer` 对象的构造函数 `sim_server` 和方法 `sim_server_run`，为监听套接字和通信套接字增加 `O_NONBLOCK` 标志：
+现在改写 `SimServer` 对象的构造函数 `sim_server` 和方法 `sim_server_run_once`，为监听套接字和通信套接字增加 `O_NONBLOCK` 标志：
 
 ```c
 /* threebody.c [改] */
@@ -200,10 +200,10 @@ SimServer *sim_server(const char *host, const char *port) {
 
 ```c
 /* threebody.c [改] */
-void sim_server_run(SimServer *self) {
+void sim_server_run_once(SimServer *self) {
         int fd = accept(self->listener, NULL, NULL);
         if (fd == -1) {
-                self->error = "sim_server_run error: failed to accept!";
+                self->error = "sim_server_run_once error: failed to accept!";
         } else {
                 socket_nonblock(fd); /* 将 fd 设为非阻塞状态 */
                 /* 恢复 self 无错状态 */
@@ -258,7 +258,7 @@ ssize_t h = recv(x, data + n, remaining, 0);
 
 还有一个事实，`accept`、`send` 和 `recv` 这些套接字函数在工作时，可能会因操作系统发出的中断信号而导致出错，返回 -1，此时 `errno` 的值为 `ENITR`。可能你还不清楚何谓操作系统发出的中断信号，你可简单理解为操作系统必须处理一些紧急事务，无暇关心网络通信之事。遇到这种情况，我们也需要重新启动 `accept`、`send` 和 `recv`，让它们尽可能地运行成功。
 
-基于上述的秘密，我们需要对 `sim_server_run`、`send_robustly` 和 `receive_robustly` 略作修改：
+基于上述的秘密，我们需要对 `sim_server_run_once`、`send_robustly` 和 `receive_robustly` 略作修改：
 
 ```c
 /* sim-network.c ++ */
@@ -268,14 +268,14 @@ ssize_t h = recv(x, data + n, remaining, 0);
 
 ```c
 /* sim-network.c ++ */
-void sim_server_run(SimServer *self) {
+void sim_server_run_once(SimServer *self) {
         int fd;
         while (1) {
                 fd = accept(self->listener, NULL, NULL);
                  if (fd == -1) {
                         if (errno == EAGAIN || errno == EINTR) continue;
                         else {
-                                self->error = "sim_server_run error!";
+                                self->error = "sim_server_run_once error!";
                                 break;
                         }
                 } else {

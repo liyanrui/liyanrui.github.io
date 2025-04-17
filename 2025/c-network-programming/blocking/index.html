@@ -137,7 +137,7 @@ threebody 程序写为以下形式，便可实现与两个客户端通信：</p>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 接受 2 个连接 */</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">2</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                sim_server_run<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                sim_server_run_once<span class="op">(</span>threebody<span class="op">);</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>sim_server_safe<span class="op">(</span>threebody<span class="op">))</span> <span class="op">{</span> </span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>                        <span class="co">/* 从客户端接收信息 */</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>                        SimStr <span class="op">*</span>msg <span class="op">=</span> sim_server_receive<span class="op">(</span>threebody<span class="op">);</span></span>
@@ -230,7 +230,7 @@ threebody 了。基于 other-ywj 和 ywj 的验证，显然 threebody
 <div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* threebody.c [改] */</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">/* 服务端永不停息 */</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        sim_server_run<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        sim_server_run_once<span class="op">(</span>threebody<span class="op">);</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>sim_server_safe<span class="op">(</span>threebody<span class="op">))</span> <span class="op">{</span> </span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                <span class="co">/* 从客户端接收信息 */</span></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                SimStr <span class="op">*</span>msg <span class="op">=</span> sim_server_receive<span class="op">(</span>threebody<span class="op">);</span></span>
@@ -246,7 +246,7 @@ threebody 了。基于 other-ywj 和 ywj 的验证，显然 threebody
 <span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>在服务端造成通信阻塞的套接字 API 函数是封装在
-<code>sim_server_run</code> 中的
+<code>sim_server_run_once</code> 中的
 <code>accept</code>，该函数在默认情况下是阻塞的，在与当前连接的客户端通信过程结束之前，<code>accept</code>
 不会与其他客户端建立连接。实际上，用于发送和接收数据的 <code>send</code>
 和 <code>recv</code> 也是阻塞的。</p>
@@ -297,7 +297,7 @@ Unix
 系统诞生时就存在了。函数名与操作指令之所以简写，犹如在纸张尚未发明的年代，古人在竹简上写着简洁但难懂的语句。我们不仅需要理解它们，还需要让它们具备现代气息。</p>
 <p>现在改写 <code>SimServer</code> 对象的构造函数
 <code>sim_server</code> 和方法
-<code>sim_server_run</code>，为监听套接字和通信套接字增加
+<code>sim_server_run_once</code>，为监听套接字和通信套接字增加
 <code>O_NONBLOCK</code> 标志：</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* threebody.c [改] */</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>SimServer <span class="op">*</span>sim_server<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>host<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>port<span class="op">)</span> <span class="op">{</span></span>
@@ -317,10 +317,10 @@ Unix
 <span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> server<span class="op">;</span></span>
 <span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* threebody.c [改] */</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_run<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_run_once<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> fd <span class="op">=</span> accept<span class="op">(</span>self<span class="op">-&gt;</span>listener<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">);</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>fd <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                self<span class="op">-&gt;</span>error <span class="op">=</span> <span class="st">&quot;sim_server_run error: failed to accept!&quot;</span><span class="op">;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>                self<span class="op">-&gt;</span>error <span class="op">=</span> <span class="st">&quot;sim_server_run_once error: failed to accept!&quot;</span><span class="op">;</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>                socket_nonblock<span class="op">(</span>fd<span class="op">);</span> <span class="co">/* 将 fd 设为非阻塞状态 */</span></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>                <span class="co">/* 恢复 self 无错状态 */</span></span>
@@ -391,19 +391,19 @@ UDP）没有缓冲区，在非阻塞模式下未收到数据时</li>
 <code>accept</code>、<code>send</code> 和
 <code>recv</code>，让它们尽可能地运行成功。</p>
 <p>基于上述的秘密，我们需要对
-<code>sim_server_run</code>、<code>send_robustly</code> 和
+<code>sim_server_run_once</code>、<code>send_robustly</code> 和
 <code>receive_robustly</code> 略作修改：</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c ++ */</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;errno.h&gt;</span></span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c ++ */</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_run<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_run_once<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> fd<span class="op">;</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                fd <span class="op">=</span> accept<span class="op">(</span>self<span class="op">-&gt;</span>listener<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">);</span></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                 <span class="cf">if</span> <span class="op">(</span>fd <span class="op">==</span> <span class="op">-</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="op">(</span>errno <span class="op">==</span> EAGAIN <span class="op">||</span> errno <span class="op">==</span> EINTR<span class="op">)</span> <span class="cf">continue</span><span class="op">;</span></span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">else</span> <span class="op">{</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                                self<span class="op">-&gt;</span>error <span class="op">=</span> <span class="st">&quot;sim_server_run error!&quot;</span><span class="op">;</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                                self<span class="op">-&gt;</span>error <span class="op">=</span> <span class="st">&quot;sim_server_run_once error!&quot;</span><span class="op">;</span></span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>                                <span class="cf">break</span><span class="op">;</span></span>
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span></span>
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
