@@ -157,7 +157,7 @@ SimList *sim_server_clients(SimServer *self) {
         else return NULL;
 }
 
-void sim_server_run(SimServer *self) {
+void sim_server_run_once(SimServer *self) {
         /* 清理无效的套接字 */
         self->clients = clean_clients(self->clients,
                                       self->invalid_clients);
@@ -189,7 +189,7 @@ void sim_server_run(SimServer *self) {
                            NULL) == -1) {
                         if (errno == EINTR) continue;
                         else {
-                            self->error = "sim_server_run error!";
+                            self->error = "sim_server_run_once error!";
                             break;
                         }
                 } else break;
@@ -203,7 +203,7 @@ void sim_server_run(SimServer *self) {
                         if (fd == -1) {
                                 if (errno == EINTR) continue;
                                 else {
-                                        self->error = "sim_server_run error!";
+                                        self->error = "sim_server_run_once error!";
                                         break;
                                 }
                         } else {

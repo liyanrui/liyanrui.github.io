@@ -104,10 +104,10 @@ void sim_server_free(SimServer *server) {
         }
 }
 
-void sim_server_run(SimServer *self) {
+void sim_server_run_once(SimServer *self) {
         int fd = accept(self->listener, NULL, NULL);
         if (fd == -1) {
-                self->error = "sim_server_run error: failed to accept!";
+                self->error = "sim_server_run_once error: failed to accept!";
         } else {
                 /* 恢复 self 无错状态 */
                 if (self->error) self->error = NULL;

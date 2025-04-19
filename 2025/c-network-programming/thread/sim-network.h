@@ -14,7 +14,7 @@ SimServer *sim_server(const char *host, const char *port);
 SimServer *sim_server_copy(SimServer *server);
 void sim_server_free(SimServer *server);
 
-void sim_server_run(SimServer *self);
+void sim_server_run_once(SimServer *self);
 void sim_server_close(SimServer *server);
 
 void sim_server_send(SimServer *self, SimStr *msg);

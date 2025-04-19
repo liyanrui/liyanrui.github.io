@@ -52,6 +52,8 @@ void sim_server_send(SimServer *self, int client, SimStr *data) {
 
 在之前的 `receive` 和 `send` 方法的实现中，遇到无效的客户端套接字，我们是当场将从 `SimServer` 对象的 `clients` 链表中将其删除，这个过程不该交由一个仅负责数据接收或发送的函数完成，如同一个快递员给我送货，他不能因为没能联系到我，便自作聪明，认为我这个人并不存在。网络通信中，收发数据的函数，将无效的套接字暂且记录下来，最终交由 `SimServer` 对象在适当的时机予以处理，更为妥当。
 
+通过上述修改，你是否发现，我们之前实在是太过于追求聪明而创造了许多非自然的功能？
+
 还需要注意，「[再封装](../wrapper-again/index.html)」中实现的 `receive` 和 `send` 方法，判断客户端套接字是否有效时，用的是严格的条件，即要求客户端套接字能同时满足可读和可写，即
 
 ```c
@@ -61,9 +63,7 @@ if (FD_ISSET(client, &read_fds) && FD_ISSET(client, &write_fds)) {
 }
 ```
 
-这个条件，当初在「[select 不负重望](../socket-and-select/index.html#你上当了)」中引入，现在我们放弃了。服务端从一个客户端套接字读数据，只能要求该套接字在 `read_fds` 之内，反之向该客户端套接字写入数据，只能要求它在 `write_fds` 之内。 
-
-通过上述修改，你是否发现，我们之前实在是太过于追求聪明而创造了许多非自然的功能？
+这个条件，当初在「[select 不负重望](../socket-and-select/index.html#你上当了)」中引入，现在我们应该放弃它。服务端从一个客户端套接字读数据，只能要求该套接字在 `read_fds` 之内，反之向该客户端套接字写入数据，只能要求它在 `write_fds` 之内。 
 
 # 无效的客户端
 
@@ -90,7 +90,7 @@ SimServer *sim_server(const char *host, const char *port) {
 }
 ```
 
-在上述修改中，我在「[C 面向对象变成](../coop/index.html)」创造的示意标记的基础上，又创造了一种新的示意标记，即在所修改的代码中，根据上述 `[上文]` 和 `[下文]` 标记中的代码找到相应的两个位置，在它们中间插入代码。我觉得，你应该能理解我在说什么，假如你也不想让我将函数的原有代码都复制过来，然后在其中悄悄插入一行代码。
+在上述修改中，我在「[C 面向对象编程](../coop/index.html)」创造的示意标记的基础上，又创造了一种新的示意标记，即在所修改的代码中，根据上述 `[上文]` 和 `[下文]` 标记中的代码找到相应的两个位置，在它们中间插入代码。我觉得，你应该能理解我在说什么，假如你也不想让我将函数的原有代码都复制过来，然后在其中悄悄插入一行代码。
 
 `SimServer` 的析构函数也要修改，如下：
 
@@ -177,11 +177,11 @@ static SimList *find_node(SimList *list, int fd) {
 
 上述一系列操作，体现了单向列表在查找和删除某个结点时过于耗费时间。不过，现在依然可以容忍。
 
-现在，可以修改 sim-network.c 中的 `sim_server_run` 的定义了，在其开头增加以下代码片段：
+现在，可以修改 sim-network.c 中的 `sim_server_run_once` 的定义了，在其开头增加以下代码片段：
 
 ```c
-/* sim-network.c ++ */
-void sim_server_run(SimServer *self) {
+/* sim-network.c [改] */
+void sim_server_run_once(SimServer *self) {
         /* 清理无效的套接字 */
         SimList *invalid_clients = self->invalid_clients;
         self->clients = clean_clients(self->clients, invalid_clients);
@@ -230,6 +230,7 @@ int client = *(int *)it->data;
 现在，为了验证上述修改是否正确并且演示新的 `SimServer` 类的用法，我们需要重写 threebody 程序，如下
 
 ```c
+/* threebody.c */
 #include "sim-network.h"
 int main(void) {
         SimServer *threebody = sim_server("localhost", "8080");
@@ -240,7 +241,7 @@ int main(void) {
         /* 服务端程序运转 */
         SimStr *hi = sim_str("threebody: hi!");
         while (1) {
-                sim_server_run(threebody);
+                sim_server_run_once(threebody);
                 if (!sim_server_safe(threebody)) continue;
                 
                 SimList *clients = sim_server_clients(threebody);
@@ -480,7 +481,7 @@ int main(void) {
         SimStr *hi = sim_str("threebody: hi!");
         SimCr cr_init = {0, false, hi, NULL, NULL};
         while (1) {
-                sim_server_run(threebody);
+                sim_server_run_once(threebody);
                 if (sim_server_safe(threebody)) {
                          /* 协程调度 */
                         SimList *clients = sim_server_clients(threebody);

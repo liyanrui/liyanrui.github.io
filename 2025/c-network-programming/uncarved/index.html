@@ -165,6 +165,7 @@ href="../wrapper-again/index.html">再封装</a>」里为
 <code>SimServer</code> 对象的 <code>clients</code>
 链表中将其删除，这个过程不该交由一个仅负责数据接收或发送的函数完成，如同一个快递员给我送货，他不能因为没能联系到我，便自作聪明，认为我这个人并不存在。网络通信中，收发数据的函数，将无效的套接字暂且记录下来，最终交由
 <code>SimServer</code> 对象在适当的时机予以处理，更为妥当。</p>
+<p>通过上述修改，你是否发现，我们之前实在是太过于追求聪明而创造了许多非自然的功能？</p>
 <p>还需要注意，「<a
 href="../wrapper-again/index.html">再封装</a>」中实现的
 <code>receive</code> 和 <code>send</code>
@@ -175,10 +176,9 @@ href="../wrapper-again/index.html">再封装</a>」中实现的
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>这个条件，当初在「<a
 href="../socket-and-select/index.html#你上当了">select
-不负重望</a>」中引入，现在我们放弃了。服务端从一个客户端套接字读数据，只能要求该套接字在
+不负重望</a>」中引入，现在我们应该放弃它。服务端从一个客户端套接字读数据，只能要求该套接字在
 <code>read_fds</code> 之内，反之向该客户端套接字写入数据，只能要求它在
 <code>write_fds</code> 之内。</p>
-<p>通过上述修改，你是否发现，我们之前实在是太过于追求聪明而创造了许多非自然的功能？</p>
 <h1 id="无效的客户端">无效的客户端</h1>
 <p><code>SimServer</code>
 对象在收发数据的过程中会遇到一些无效的客户端套接字，上一节的处理方式是将其标记为无效。我们可以在
@@ -200,7 +200,7 @@ href="../socket-and-select/index.html#你上当了">select
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* [下文] server-&gt;error = NULL; */</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>在上述修改中，我在「<a href="../coop/index.html">C
-面向对象变成</a>」创造的示意标记的基础上，又创造了一种新的示意标记，即在所修改的代码中，根据上述
+面向对象编程</a>」创造的示意标记的基础上，又创造了一种新的示意标记，即在所修改的代码中，根据上述
 <code>[上文]</code> 和 <code>[下文]</code>
 标记中的代码找到相应的两个位置，在它们中间插入代码。我觉得，你应该能理解我在说什么，假如你也不想让我将函数的原有代码都复制过来，然后在其中悄悄插入一行代码。</p>
 <p><code>SimServer</code> 的析构函数也要修改，如下：</p>
@@ -271,10 +271,10 @@ href="../socket-and-select/index.html#你上当了">select
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> t<span class="op">;</span></span>
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>上述一系列操作，体现了单向列表在查找和删除某个结点时过于耗费时间。不过，现在依然可以容忍。</p>
-<p>现在，可以修改 sim-network.c 中的 <code>sim_server_run</code>
+<p>现在，可以修改 sim-network.c 中的 <code>sim_server_run_once</code>
 的定义了，在其开头增加以下代码片段：</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c ++ */</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_run<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-network.c [改] */</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_server_run_once<span class="op">(</span>SimServer <span class="op">*</span>self<span class="op">)</span> <span class="op">{</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 清理无效的套接字 */</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        SimList <span class="op">*</span>invalid_clients <span class="op">=</span> self<span class="op">-&gt;</span>invalid_clients<span class="op">;</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        self<span class="op">-&gt;</span>clients <span class="op">=</span> clean_clients<span class="op">(</span>self<span class="op">-&gt;</span>clients<span class="op">,</span> invalid_clients<span class="op">);</span></span>
@@ -311,37 +311,38 @@ Sim
 <h1 id="新的-threebody">新的 threebody</h1>
 <p>现在，为了验证上述修改是否正确并且演示新的 <code>SimServer</code>
 类的用法，我们需要重写 threebody 程序，如下</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;sim-network.h&quot;</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        SimServer <span class="op">*</span>threebody <span class="op">=</span> sim_server<span class="op">(</span><span class="st">&quot;localhost&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">);</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>threebody<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;sim_server failed!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 服务端程序运转 */</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        SimStr <span class="op">*</span>hi <span class="op">=</span> sim_str<span class="op">(</span><span class="st">&quot;threebody: hi!&quot;</span><span class="op">);</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>                sim_server_run<span class="op">(</span>threebody<span class="op">);</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(!</span>sim_server_safe<span class="op">(</span>threebody<span class="op">))</span> <span class="cf">continue</span><span class="op">;</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>                </span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>                SimList <span class="op">*</span>clients <span class="op">=</span> sim_server_clients<span class="op">(</span>threebody<span class="op">);</span></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%lu</span><span class="st"> clients!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> sim_list_size<span class="op">(</span>clients<span class="op">));</span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> <span class="op">(</span>SimList <span class="op">*</span>it <span class="op">=</span> clients<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>next<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">int</span> client <span class="op">=</span> <span class="op">*(</span><span class="dt">int</span> <span class="op">*)</span>it<span class="op">-&gt;</span>data<span class="op">;</span></span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>                        <span class="co">/* 从客户端接收信息 */</span></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>                        SimStr <span class="op">*</span>msg <span class="op">=</span> sim_server_receive<span class="op">(</span>threebody<span class="op">,</span> client<span class="op">);</span></span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="op">(</span>msg<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>                                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> sim_str_raw<span class="op">(</span>msg<span class="op">));</span></span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>                                sim_str_free<span class="op">(</span>msg<span class="op">);</span></span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span> <span class="cf">else</span> <span class="cf">continue</span><span class="op">;</span></span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>                        <span class="co">/* 向客户端发送信息 */</span></span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>                        sim_server_send<span class="op">(</span>threebody<span class="op">,</span> client<span class="op">,</span> hi<span class="op">);</span></span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>        sim_str_free<span class="op">(</span>hi<span class="op">);</span></span>
-<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>        sim_server_free<span class="op">(</span>threebody<span class="op">);</span></span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* threebody.c */</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&quot;sim-network.h&quot;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        SimServer <span class="op">*</span>threebody <span class="op">=</span> sim_server<span class="op">(</span><span class="st">&quot;localhost&quot;</span><span class="op">,</span> <span class="st">&quot;8080&quot;</span><span class="op">);</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>threebody<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;sim_server failed!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(-</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 服务端程序运转 */</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        SimStr <span class="op">*</span>hi <span class="op">=</span> sim_str<span class="op">(</span><span class="st">&quot;threebody: hi!&quot;</span><span class="op">);</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>                sim_server_run_once<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(!</span>sim_server_safe<span class="op">(</span>threebody<span class="op">))</span> <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                SimList <span class="op">*</span>clients <span class="op">=</span> sim_server_clients<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%lu</span><span class="st"> clients!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> sim_list_size<span class="op">(</span>clients<span class="op">));</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> <span class="op">(</span>SimList <span class="op">*</span>it <span class="op">=</span> clients<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>next<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">int</span> client <span class="op">=</span> <span class="op">*(</span><span class="dt">int</span> <span class="op">*)</span>it<span class="op">-&gt;</span>data<span class="op">;</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>                        <span class="co">/* 从客户端接收信息 */</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>                        SimStr <span class="op">*</span>msg <span class="op">=</span> sim_server_receive<span class="op">(</span>threebody<span class="op">,</span> client<span class="op">);</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="op">(</span>msg<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>                                printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> sim_str_raw<span class="op">(</span>msg<span class="op">));</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>                                sim_str_free<span class="op">(</span>msg<span class="op">);</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span> <span class="cf">else</span> <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>                        <span class="co">/* 向客户端发送信息 */</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>                        sim_server_send<span class="op">(</span>threebody<span class="op">,</span> client<span class="op">,</span> hi<span class="op">);</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>        sim_str_free<span class="op">(</span>hi<span class="op">);</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>        sim_server_free<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p>编译 threebody.c：</p>
 <pre class="console"><code>$ gcc -I. sim-str.c sim-list.c sim-network.c threebody.c -o threebody</code></pre>
 <p>运行 threebody：</p>
@@ -516,7 +517,7 @@ I/O
 <span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>        SimStr <span class="op">*</span>hi <span class="op">=</span> sim_str<span class="op">(</span><span class="st">&quot;threebody: hi!&quot;</span><span class="op">);</span></span>
 <span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>        SimCr cr_init <span class="op">=</span> <span class="op">{</span><span class="dv">0</span><span class="op">,</span> <span class="kw">false</span><span class="op">,</span> hi<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">};</span></span>
 <span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>                sim_server_run<span class="op">(</span>threebody<span class="op">);</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>                sim_server_run_once<span class="op">(</span>threebody<span class="op">);</span></span>
 <span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>sim_server_safe<span class="op">(</span>threebody<span class="op">))</span> <span class="op">{</span></span>
 <span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>                         <span class="co">/* 协程调度 */</span></span>
 <span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>                        SimList <span class="op">*</span>clients <span class="op">=</span> sim_server_clients<span class="op">(</span>threebody<span class="op">);</span></span>

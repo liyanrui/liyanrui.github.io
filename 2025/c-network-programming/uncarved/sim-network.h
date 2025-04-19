@@ -16,7 +16,7 @@ void sim_server_free(SimServer *server);
 
 SimList *sim_server_clients(SimServer *self);
 void sim_server_invalid_client(SimServer *self, int client);
-void sim_server_run(SimServer *self);
+void sim_server_run_once(SimServer *self);
 
 SimStr *sim_server_receive(SimServer *self, int client);
 void sim_server_send(SimServer *self, int client, SimStr *msg);

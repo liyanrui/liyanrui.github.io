@@ -27,7 +27,7 @@ void *handler(void *arg) {
 int main(void) {
         SimServer *threebody = sim_server("localhost", "8080");
         while (1) {
-                sim_server_run(threebody);
+                sim_server_run_once(threebody);
                 /* 创建新的线程 */
                 pthread_t t;
                 SimServer *threebody_copy = sim_server_copy(threebody);

@@ -44,7 +44,7 @@ int main(void) {
         SimStr *hi = sim_str("threebody: hi!");
         SimCr cr_init = {0, false, hi, NULL, NULL};
         while (1) {
-                sim_server_run(threebody);
+                sim_server_run_once(threebody);
                 if (sim_server_safe(threebody)) {
                          /* 协程调度 */
                         SimList *clients = sim_server_clients(threebody);
