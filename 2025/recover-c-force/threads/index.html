@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>并发</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="../index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">并发</h1>
+<p class="date">2025 年 05 月 16 日</p>
+</header>
+<hr />
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#线程函数" id="toc-线程函数">线程函数</a></li>
+  <li><a href="#线程创建与回收"
+  id="toc-线程创建与回收">线程创建与回收</a></li>
+  <li><a href="#加锁" id="toc-加锁">加锁</a></li>
+  <li><a href="#条件变量" id="toc-条件变量">条件变量</a></li>
+  <li><a href="#线程局部存储"
+  id="toc-线程局部存储">线程局部存储</a></li>
+  <li><a href="#信号并发处理"
+  id="toc-信号并发处理">信号并发处理</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  <li><a href="#附录" id="toc-附录">附录</a></li>
+  </ul>
+</nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
+<h1 id="前言">前言</h1>
+<p>Sim 项目已经构造了 4 个全局变量。在错误机制的进化中，出现了 3
+个，分别是 <code>sim_err</code>，<code>sim_err2</code> 和
+<code>sim_err3</code>。在 SimMod 模块中，模块表
+<code>sim_module_table</code> 也是全局变量。</p>
+<p>在古代，程序里出现全局变量，便意味着程序在多线程环境里缺乏安全性，于是太需要线程安全的人便将全局变量视为洪水猛兽。这种观念延续至今，甚至导致某些现代编程语言故意为全局变量的使用增加难度，逼迫开发者放弃使用全局变量的想法。我始终觉得，全局变量是无罪的，罪责应该在多线程机制不能自然兼容全局变量的存在。</p>
+<p>直到有一天，多线程机制开始支持线程局部存储，实现了对全局变量的兼容。又直到有一天，C11
+标准开始支持多线程编程，在语言层面统一了多线程编程范式。现在，我们可以允许全局变量一笑倾城，也可以用
+C 语言编写不受操作系统平台兼容性限制的多线程程序了。</p>
+<p>C11 标准问世已十余载，GCC 编译器也已将其设为默认模式，Sim
+项目应当对得起它对多线程编程的支持。现在，开始学习 C11
+的多线程编程，尝试拥有它。</p>
+<h1 id="线程函数">线程函数</h1>
+<p>每个程序都拥有一个主线程，通常我们无需关心它，因为它就是
+<code>main</code> 函数。当程序运行时，操作系统会自动执行
+<code>main</code> 函数。</p>
+<p>除了 <code>main</code>
+函数外，任何一个函数若想作为线程运行，其形式必须像以下示例：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> foo<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>arg<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;i am thread function!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>即接受 1 个无类型指针且返回整型值的函数。</p>
+<h1 id="线程创建与回收">线程创建与回收</h1>
+<p><code>thrd_create</code> 函数可以创建线程，其声明如下：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;threads.h&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> thrd_create<span class="op">(</span>thrd_t <span class="op">*</span>thr<span class="op">,</span> thrd_start_t func<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>arg<span class="op">);</span></span></code></pre></div>
+<p><code>thrd_create</code> 接受 3
+个参数，第一个是线程标识，第二个是线程函数，第三个是传递给线程函数的参数。若
+<code>thrd_create</code> 成功创建线程，会返回
+<code>thrd_success</code>，否则在内存不足以创建线程的情况下会返回
+<code>thrd_nomem</code>，至于其他错误则返回
+<code>thrd_error</code>。</p>
+<p><code>thrd_create</code> 的用法如下：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>thrd_t thread<span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>thrd_create<span class="op">(&amp;</span>thread<span class="op">,</span> foo<span class="op">,</span> NULL<span class="op">)</span> <span class="op">!=</span> thrd_success<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;failed to create thread!&quot;</span><span class="op">);</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>其中 <code>foo</code> 是上一节所述的线程函数。</p>
+<p>线程创建后，操作系统会令其与主线程并发运行。在主线程中，需对
+<code>thrd_create</code>
+创建的线程资源予以回收，否则程序会存在线程资源泄漏的隐患。<code>thrd_join</code>
+函数可以回收线程资源，其声明如下：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;threads.h&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> thrd_join<span class="op">(</span>thrd_t thr<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span>res<span class="op">);</span></span></code></pre></div>
+<p><code>thrd_join</code>
+的第一个参数是线程表示，第二个参数记录了线程函数的返回值。若
+<code>thrd_join</code> 运行成功，会返回
+<code>thrd_sccess</code>，否则返回 <code>thrd_error</code>。</p>
+<p>以下代码演示了 <code>thrd_join</code>
+的用法，回收上述示例创建的线程：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> res<span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>thrd_join<span class="op">(</span>thread<span class="op">,</span> <span class="op">&amp;</span>res<span class="op">)</span> <span class="op">==</span> thrd_success<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;thread returns </span><span class="sc">%d</span><span class="st">.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> res<span class="op">);</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>以下代码是在主线程中创建和回收线程的完整程序 foo.c：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* foo.c */</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;threads.h&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> foo<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>arg<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> <span class="op">*</span>x <span class="op">=</span> arg<span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;thread parameter is </span><span class="sc">%d</span><span class="st">.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">*</span>x<span class="op">);</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 创建线程 */</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        thrd_t thread<span class="op">;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> x <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>thrd_create<span class="op">(&amp;</span>thread<span class="op">,</span> foo<span class="op">,</span> <span class="op">&amp;</span>x<span class="op">)</span> <span class="op">!=</span> thrd_success<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to create thread!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 回收线程 */</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> res<span class="op">;</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>thrd_join<span class="op">(</span>thread<span class="op">,</span> <span class="op">&amp;</span>res<span class="op">)</span> <span class="op">==</span> thrd_error<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to join thread!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;thread returns </span><span class="sc">%d</span><span class="st">.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> res<span class="op">);</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>使用以下命令编译 foo.c：</p>
+<pre class="console"><code>$ gcc -std=c11 foo.c -o foo</code></pre>
+<p>运行 foo，其输出应为</p>
+<pre><code>thread parameter is 3.
+thread returns 0.</code></pre>
+<p>需要永远记住的是，不同的线程是并发运行的，通常你可以将这一点理解为，不同的线程是同时运行的，不分先后。只有记住这一点，你才会对多线程编程有所敬畏。多线程编程范式，若用得好，程序的性能可以倍增，若用得不好，程序的行为难以预测，且程序性能甚至不及传统的单线程范式。</p>
+<h1 id="加锁">加锁</h1>
+<p>一个程序，若存在多个函数共享某个变量的情况，这些函数通常难以作为线程并发运行。若强行使然，必须在以牺牲一定程度的并发性能为代价。使用互斥锁，将程序中访问共享变量的代码区域保护起来，便是强行使然的办法。</p>
+<p><code>mtx_init</code> 函数可创建互斥锁，其声明如下：</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>include <span class="op">&lt;</span>threads<span class="op">.</span>h<span class="op">&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> mtx_init<span class="op">(</span>mtx_t <span class="op">*</span>mutex<span class="op">,</span> <span class="dt">int</span> type<span class="op">);</span></span></code></pre></div>
+<p><code>mtx_init</code>
+的第一个参数是互斥锁标识，第二个参数是互斥锁的类型，最为简单且常用的类型是
+<code>mtx_plain</code>。若 <code>mtx_init</code> 运行成功，会返回
+<code>thrd_success</code>，否则返回 <code>thrd_error</code>。</p>
+<p><code>mtx_init</code> 的用法如下：</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mtx_t mutex<span class="op">;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>mtx_init<span class="op">(&amp;</span>mutex<span class="op">,</span> mtx_plain<span class="op">)</span> <span class="op">==</span> thrd_error<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to init mutex!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>成功创建互斥锁后，便可用它锁定一段代码。互斥锁的锁定和解锁函数是</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>include <span class="op">&lt;</span>threads<span class="op">.</span>h<span class="op">&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> mtx_lock<span class="op">(</span>mtx_t <span class="op">*</span>mutex<span class="op">);</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> mtx_unlock<span class="op">(</span>mtx_t <span class="op">*</span>mutex<span class="op">);</span></span></code></pre></div>
+<p>这两个函数若成功运行，皆返回 <code>thrd_success</code>，否则返回
+<code>thrd_error</code>。下面是在一个线程函数里，对一段访问全局变量的代码进行锁定：</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> shared_counter <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> foo<span class="op">(</span><span class="dt">void</span><span class="op">*</span> arg<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 加锁 */</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>mtx_lock<span class="op">(&amp;</span>mutex<span class="op">)</span> <span class="op">==</span> thrd_error<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to lock mutex!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        shared_counter<span class="op">++;</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;Counter: </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> shared_counter<span class="op">);</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 解锁 */</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>mtx_unlock<span class="op">(&amp;</span>mutex<span class="op">)</span> <span class="op">==</span> thrd_error<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;failed to unlock mutex!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>当 <code>foo</code> 函数在多个线程中运行时，原本并发运行的线程，会在
+<code>foo</code>
+函数的加锁区域前排队，逐一运行加锁区域里的代码。如同人群可以并发涌入车站，但是必须在售票口前排队买票。</p>
+<p>加锁可以解决多线程访问共享变量的问题，但存在着很大的妥协性，导致多线程因此失去并发能力。我的建议是，若某个函数，原本是线程不安全的，用加锁的办法可将其变成线程安全的，但是又可以确定即便如此，程序的运行效率不会因此而得到明显改善，便意味着应该尽量避免让这个函数运行于多线程环境。</p>
+<h1 id="条件变量">条件变量</h1>
+<p>除了并发能力，多线程机制也能构造可以等待时机的线程，即一个线程运行后，可进入休眠或挂起状态，等待另一个线程的唤醒。函数
+<code>cnd_wait</code> 可让线程休眠，而 <code>cnd_signal</code>
+可唤醒休眠的线程。这两个函数的声明如下：</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;threads.h&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> cnd_wait<span class="op">(</span>cnd_t <span class="op">*</span>cond<span class="op">,</span> mtx_t <span class="op">*</span>mutex<span class="op">);</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> cnd_signal<span class="op">(</span>cnd_t <span class="op">*</span>cond<span class="op">);</span></span></code></pre></div>
+<p><code>cnd_wait</code> 和 <code>cnd_signal</code>
+的第一个参数皆为条件变量标识。<code>cnd_wait</code>
+的第二个参数是互斥锁，这意味着线程的休眠和唤醒需要互斥锁。这两个函数若成功运行，皆会返回
+<code>thrd_success</code>，否则返回 <code>thrd_error</code>。</p>
+<p>假设已存在条件变量 <code>cond</code> 和互斥锁
+<code>mutex</code>，<code>cnd_wait</code> 的用法如下：</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>mtx_lock<span class="op">(&amp;</span>mutex<span class="op">);</span> <span class="co">/* 加锁 */</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>cnd_wait<span class="op">(&amp;</span>cond<span class="op">,</span> <span class="op">&amp;</span>mutex<span class="op">);</span> <span class="co">/* 休眠 */</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>mtx_unlock<span class="op">(&amp;</span>mutex<span class="op">);</span> <span class="co">/* 解锁 */</span></span></code></pre></div>
+<p><code>cnd_wait</code>
+会对互斥锁进行解锁，并将线程就此休眠，其后的代码则处于待运行状态。当某个线程，使用
+<code>cnd_signal</code>
+通过同一条件变量唤醒休眠的线程时，<code>cnd_wait</code>
+之后的代码便可得以运行。针对上述示例代码，<code>cnd_signal</code>
+的用法如下：</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>mtx_lock<span class="op">(&amp;</span>mutex<span class="op">);</span> <span class="co">/* 加锁 */</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>cnd_signal<span class="op">(&amp;</span>cond<span class="op">);</span> <span class="co">/* 唤醒休眠线程 */</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>mtx_unlock<span class="op">(&amp;</span>mutex<span class="op">);</span> <span class="co">/* 解锁 */</span></span></code></pre></div>
+<p>通过上述示例代码，应当能领悟到为何 <code>cnd_wait</code> 和
+<code>cnd_signal</code>
+为何需要互斥锁了，因为条件变量是两个线程的共享变量。</p>
+<p>上述 <code>cnd_wait</code>
+的用法示例并不稳定，因为休眠线程可能会被虚假唤醒。有些操作系统可能为了减少线程切换的延迟，允许在某些情况下（如锁竞争激烈时）无视条件变量的存在而提前唤醒休眠线程。为了避免线程被虚假唤醒，需要再引入一个共享变量，以它为条件，让线程在被虚假唤醒时可再度休眠。例如，假设存在全局变量
+<code>ready</code>：</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> ready <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span></code></pre></div>
+<p>使用 <code>ready</code> 防止休眠线程被虚假唤醒的方法如下：</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>mtx_lock<span class="op">(&amp;</span>mutex<span class="op">);</span> <span class="co">/* 加锁 */</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="op">(</span>ready <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        cnd_wait<span class="op">(&amp;</span>cond<span class="op">,</span> <span class="op">&amp;</span>mutex<span class="op">);</span> <span class="co">/* 休眠 */</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>mtx_unlock<span class="op">(&amp;</span>mutex<span class="op">);</span> <span class="co">/* 解锁 */</span></span></code></pre></div>
+<p>唤醒线程的方式如下：</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>mtx_lock<span class="op">(&amp;</span>mutex<span class="op">);</span> <span class="co">/* 加锁 */</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>ready <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>cnd_signal<span class="op">(&amp;</span>cond<span class="op">);</span> <span class="co">/* 唤醒休眠线程 */</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>mtx_unlock<span class="op">(&amp;</span>mutex<span class="op">);</span> <span class="co">/* 解锁 */</span></span></code></pre></div>
+<p>以下代码是线程休眠和唤醒的完整示例。为了简明，该示例码调用的所有线程函数均未作安全防御处理。</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* foobar.c */</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;threads.h&gt;</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>mtx_t mutex<span class="op">;</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>cnd_t cond<span class="op">;</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> ready <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> foo<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>arg<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        mtx_lock<span class="op">(&amp;</span>mutex<span class="op">);</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;foo: sleeping.</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span>ready <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>                cnd_wait<span class="op">(&amp;</span>cond<span class="op">,</span> <span class="op">&amp;</span>mutex<span class="op">);</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;foo: awakened!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>        mtx_unlock<span class="op">(&amp;</span>mutex<span class="op">);</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> bar<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>arg<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>        mtx_lock<span class="op">(&amp;</span>mutex<span class="op">);</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>        ready <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>        cnd_signal<span class="op">(&amp;</span>cond<span class="op">);</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;bar: i woke up foo!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>        mtx_unlock<span class="op">(&amp;</span>mutex<span class="op">);</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 创建线程 */</span></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>        thrd_t foo_thrd<span class="op">,</span> bar_thrd<span class="op">;</span></span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>        thrd_create<span class="op">(&amp;</span>foo_thrd<span class="op">,</span> foo<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>        thrd_create<span class="op">(&amp;</span>bar_thrd<span class="op">,</span> bar<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 回收线程 */</span></span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>        thrd_join<span class="op">(</span>foo_thrd<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>        thrd_join<span class="op">(</span>bar_thrd<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述程序应当输出以下内容：</p>
+<pre><code>bar: i woke up foo!
+foo: sleeping.
+foo: awakened!</code></pre>
+<p>也可能是</p>
+<pre><code>foo: sleeping.
+bar: i woke up foo!
+foo: awakened!</code></pre>
+<h1 id="线程局部存储">线程局部存储</h1>
+<p>线程局部存储（Thread-Local Storage,
+TLS）允许每个线程拥有一个全局变量的独立副本，每个线程对该变量的读写操作仅影响自身的副本，不与其他线程共享。</p>
+<p>线程局部存储技术的原理是，类似于给足球场上的球员每人发了个足球，让他们不再为争抢
+1 个球而头破血流了。此事听起来固然可笑，但的确能解决 Sim
+项目的两个全局变量而导致的线程不安全问题，而且解决的方式非常简单。例如，对于
+<code>sim_err3</code>，只需将 sim-err3.c 中的 <code>sim_err3</code>
+的定义修改为</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-err3.h [改] */</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="kw">extern</span> <span class="kw">_Thread_local</span> SimErr3 sim_err3<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* sim-err3.c [改] */</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="kw">_Thread_local</span> SimErr3 sim_err3 <span class="op">=</span> NULL<span class="op">;</span></span></code></pre></div>
+<p>亦即在 <code>sim_err3</code> 原来的定义前面增加了
+<code>_Thread_local</code> 关键字。该关键字是 C11
+标准引入的，用于将全局变量变为每个线程的独立副本。</p>
+<p>以下示例，展示了 <code>_Thread_local</code>
+修饰的全局变量在两个线程中的表现。</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* foo.c */</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;threads.h&gt;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="kw">_Thread_local</span> <span class="dt">static</span> <span class="dt">int</span> a <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> foo<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>arg<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;foo thread: a = </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> a<span class="op">);</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 在主线程中修改 a 的值 */</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> <span class="dv">3</span><span class="op">;</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;main thread: </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> a<span class="op">);</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>        sleep<span class="op">(</span>a<span class="op">);</span> <span class="co">/* 让程序阻塞 3 秒 */</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 创建 foo 线程 */</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>        thrd_t foo_t<span class="op">;</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>        thrd_create<span class="op">(&amp;</span>foo_t<span class="op">,</span> foo<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>        thrd_join<span class="op">(</span>foo_t<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述程序输出结果类似于以下结果：</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>main thread<span class="op">:</span> <span class="bn">0x756e2a2ac73c</span> <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>foo thread<span class="op">:</span> <span class="bn">0x756e29fff6bc</span> <span class="op">=</span> <span class="dv">0</span></span></code></pre></div>
+<p>在主线程中对全局变量 <code>a</code>
+的值进行了修改，但是这种修改不会影响 <code>foo</code>
+线程，原因是二者所拥有的全局变量 <code>a</code>
+并非同一个变量，通过上述的输出结果可以看到，它们的地址不同。</p>
+<h1 id="信号并发处理">信号并发处理</h1>
+<p>在 Sim
+项目中，有一处代码，若将其修改为多线程形式，是展示多线程编程范式优势的绝佳机会。在「<a
+href="../signal/index.html">信号</a>」中，用于调度总线上所有设备的
+<code>sim_bus_schedule</code> 函数，其定义如下：</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_bus_schedule<span class="op">(</span>SimList <span class="op">*</span>bus<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>bus<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                SIM_ERR3<span class="op">(</span><span class="st">&quot;invalide bus!&quot;</span><span class="op">);</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>SimLink <span class="op">*</span>it <span class="op">=</span> bus<span class="op">-&gt;</span>head<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>next<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>                SimDevice <span class="op">*</span>dev <span class="op">=</span> sim_link_raw<span class="op">(</span>it<span class="op">,</span> SimDevice <span class="op">*);</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>dev<span class="op">-&gt;</span>active<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>                        dev<span class="op">-&gt;</span>output <span class="op">=</span> dev<span class="op">-&gt;</span>router<span class="op">(</span>dev<span class="op">-&gt;</span>sig<span class="op">,</span> dev<span class="op">-&gt;</span>input<span class="op">);</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>倘若将每个设备的路由函数 <code>router</code> 置于一个新的线程，则
+<code>sim_bus_schedule</code>
+便可近乎同时驱动总线上的全部设备。改造方法很简单，首先定义一个线程函数：</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">int</span> router_run<span class="op">(</span><span class="dt">void</span> <span class="op">*</span>data<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>        SimDevice <span class="op">*</span>dev <span class="op">=</span> data<span class="op">;</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>        dev<span class="op">-&gt;</span>output <span class="op">=</span> dev<span class="op">-&gt;</span>router<span class="op">(</span>dev<span class="op">-&gt;</span>sig<span class="op">,</span> dev<span class="op">-&gt;</span>input<span class="op">);</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>然后在 <code>sim_bus_schedule</code> 函数中创建线程：</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> sim_bus_schedule<span class="op">(</span>SimList <span class="op">*</span>bus<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>bus<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                SIM_ERR3<span class="op">(</span><span class="st">&quot;invalide bus!&quot;</span><span class="op">);</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 创建线程 */</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>        SimArray <span class="op">*</span>threads <span class="op">=</span> sim_array<span class="op">(</span>thrd_t<span class="op">);</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>SimLink <span class="op">*</span>it <span class="op">=</span> bus<span class="op">-&gt;</span>head<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>next<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>                SimDevice <span class="op">*</span>dev <span class="op">=</span> sim_link_raw<span class="op">(</span>it<span class="op">,</span> SimDevice <span class="op">*);</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>dev<span class="op">-&gt;</span>active<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>                        thrd_t t<span class="op">;</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>                        thrd_create<span class="op">(&amp;</span>t<span class="op">,</span> router_run<span class="op">,</span> dev<span class="op">);</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>                        sim_array_add<span class="op">(</span>threads<span class="op">,</span> t<span class="op">,</span> thrd_t<span class="op">);</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 回收线程 */</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> threads<span class="op">-&gt;</span>n<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>                thrd_t t <span class="op">=</span> sim_array_raw<span class="op">(</span>threads<span class="op">,</span> i<span class="op">,</span> thrd_t<span class="op">);</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>                thrd_join<span class="op">(</span>t<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>        sim_array_free<span class="op">(</span>threads<span class="op">);</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>由于运行 <code>router_run</code>
+函数的所有线程，面对的设备是不同的，故而不会出现数据读写冲突问题，自然也无需加锁。</p>
+<h1 id="总结">总结</h1>
+<p>不必强行使用多线程，否则代码里就到处都是锁了。</p>
+<p>努力消除程序中低层次的耦合——共享变量和函数调用关系，让真正需要使用多线程的场景清晰地暴露出来。唯有如此，方能真正发挥多线程的力量。</p>
+<h1 id="附录">附录</h1>
+<p>Sim 项目进化到本文所描述的时代，所有的源码可通过以下链接获取。</p>
+<blockquote>
+<ul>
+<li>错误机制：<a href="sim-err.h">sim-err.h</a> 和 <a
+href="sim-err.c">sim-err.c</a></li>
+<li>动态字符串：<a href="sim-str.h">sim-str.h</a> 和 <a
+href="sim-str.c">sim-str.c</a></li>
+<li>错误机制 2：<a href="sim-err2.h">sim-err2.h</a> 和 <a
+href="sim-err2.c">sim-err2.c</a></li>
+<li>动态数组：<a href="sim-array.h">sim-array.h</a> 和 <a
+href="sim-array.c">sim-array.c</a></li>
+<li>错误机制 3（线程安全版本）：<a href="sim-err3.h">sim-err3.h</a> 和
+<a href="sim-err3.c">sim-err3.c</a></li>
+<li>无类型的值：<a href="sim-val.h">sim-val.h</a> 和 <a
+href="sim-val.c">sim-val.c</a></li>
+<li>双向链表：<a href="sim-list.h">sim-list.h</a> 和 <a
+href="sim-list.c">sim-list.c</a></li>
+<li>信号、路由和总线（多线程版本）：<a href="sim-sig.h">sim-sig.h</a> 和
+<a href="sim-sig.c">sim-sig.c</a></li>
+<li>模块类型（线程安全版本）：<a href="sim-mod.h">sim-mod.h</a> 和 <a
+href="sim-mod.c">sim-mod.c</a></li>
+</ul>
+</blockquote>
+<hr />
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+
+<script>
+// 增强滚动监听
+window.addEventListener('scroll', function() {
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+});
+</script>
+</body>
+</html>

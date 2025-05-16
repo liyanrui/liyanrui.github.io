@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>宏</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="../index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">宏</h1>
+<p class="date">2025 年 05 月 15 日</p>
+</header>
+<hr />
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#条件编译" id="toc-条件编译">条件编译</a></li>
+  <li><a href="#续行符" id="toc-续行符">续行符</a></li>
+  <li><a href="#连接符" id="toc-连接符">连接符</a></li>
+  <li><a href="#字符串化" id="toc-字符串化">字符串化</a></li>
+  <li><a href="#可变参数" id="toc-可变参数">可变参数</a></li>
+  <li><a href="#隔离层" id="toc-隔离层">隔离层</a></li>
+  <li><a href="#保护层" id="toc-保护层">保护层</a></li>
+  <li><a href="#宏调用语句" id="toc-宏调用语句">宏调用语句</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
+</nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
+<h1 id="前言">前言</h1>
+<p>当我感觉有必要介绍 C 语言宏的一些经验时，我才发现 Sim
+项目已经存在了许多宏。很多人在谈及 C
+语言的宏时，会皱眉头，说宏是丑陋的，可怕的……上一次他们皱眉头的时候，大概是谈及
+C 语言的指针。</p>
+<p>至目前为止，Sim
+项目里的所有宏，我保证，都是自然出现的，而非我刻意设计。使用 C
+语言编写程序，需要程序员像工匠，将不同形状的木头或石头，用斧头修整成建筑整体所需要的局部形状。宏就像斧头。</p>
+<p>在更为现代的编程语言里，斧头或锤子升级为机床之类的重型装备了。这种升级是面向工业的，适应社会化生产的需求，但不能据此否定斧头或锤子继续存在的必要，毕竟你的家里，很有可能没有机床，却有斧头。一切工具，实际上是平等的，不存在尊卑贵贱的分别，只存在应用场景的分别。</p>
+<p>编程，可以是现代工程化的人类群体活动，崇尚安全和效率，但它依然可以作为一门个人的技艺，用于表达一个人对这个世界的认识和探险。C
+语言尊重前者，它已经实现过甚至依然继续在实现着前者，但它更推崇后者。对个人技艺的崇尚，并不意味着否定工程化的群体活动，甚至能让这种群体活动更为活跃。编程之道，终在工程化的集体无意识与个体技艺的清醒梦之间找到平衡。</p>
+<h1 id="条件编译">条件编译</h1>
+<p>对于 C 编译器而言，每份源文件（.c
+文件），是一个编译单元，通常是唯一的，它不会被其他文件包含。在源文件里，若使用
+<code>#include</code> 包含头文件（.h
+文件）时，编译器会将头文件的内容复制到源文件里，使之参与编译。</p>
+<p>若一份头文件，被多份源文件包含，编译器会重复复制该头文件的内容以使编译单元达到完整。若这种被多份源文件包含的头文件里只存放函数或全局变量的声明而非定义，编译器多次复制它们，只是会降低编译效率，不会影响编译结果。但是，若头文件里存放了函数或全局变量的定义，便会导致编译器因函数或变量重复定义而报错终止。</p>
+<p>使用条件编译指令，并辅以简单的宏定义，便可使得一份头文件成为单例，亦即无论被多少份源文件包含，在编译器的角度，该头文件仅被某个源文件包含了一次。这种方法便是
+Sim 项目从一开始便使用了，例如 sim-err.h 中含有以下代码</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifndef SIM_ERR_H</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SIM_ERR_H</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span></code></pre></div>
+<p><code>#ifndef</code> 和 <code>#endif</code>
+便是条件编译指令。上述代码的含义是，若 SIM_ERR_H 未定义，则以下区域直至
+#endif
+语句之前的代码，都是有效的，否则是无效的，予以忽略。于是，上述代码在第一次被编译时，宏
+<code>SIM_ERR_H</code> 得以定义。当编译器第二次编译这段代码时，因
+<code>SIM_ERR_H</code> 已被定义，这段代码便会被忽略了。</p>
+<p><code>#ifndef</code> 中的 <code>n</code> 表示
+<code>not</code>。<code>#ifdef</code> 表达的逻辑与 <code>#ifndef</code>
+相反，它表达的是，若定义了某个宏，则会如何。在 C
+语言里，条件编译主要用于控制编译器的行为，让编译器有选择的编译代码片段。</p>
+<h1 id="续行符">续行符</h1>
+<p>请记住，宏的定义是单行代码。得益于 C
+语言不依赖缩进于换行，亦即无论多么复杂的 C
+程序，其源代码可以写成一行。之所以对 C
+代码分行，是为了便于人类阅读。</p>
+<p>在宏定义里，为了使得代码便于理解，也需要换行，但是又要满足宏定义的语法规则，此时可用续行符
+<code>\</code> 化解这一矛盾。例如</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SIM_MOD_DECLARE</span><span class="op">(</span><span class="pp">ModType</span><span class="op">,</span><span class="pp"> mod_type</span><span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="pp">        </span><span class="dt">bool</span><span class="pp"> ModType</span><span class="op">##</span><span class="pp">_is</span><span class="op">(</span><span class="pp">ModType </span><span class="op">*</span><span class="pp">mod</span><span class="op">);</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="pp">        ModType </span><span class="op">*</span><span class="pp">mod_type</span><span class="op">##</span><span class="pp">_this</span><span class="op">(</span><span class="pp">ModType </span><span class="op">*</span><span class="pp">mod</span><span class="op">)</span></span></code></pre></div>
+<p>以下宏调用</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>SIM_MOD_DECLARE<span class="op">(</span>FooMod<span class="op">,</span> foo_mod<span class="op">);</span></span></code></pre></div>
+<p>会被展开为</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> FooMod_is<span class="op">(</span>FooMod <span class="op">*</span>mod<span class="op">);</span> FooMod <span class="op">*</span>foo_mod_this<span class="op">(</span>FooMod <span class="op">*</span>mod<span class="op">);</span></span></code></pre></div>
+<p>而不是展开为</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> FooMod_is<span class="op">(</span>FooMod <span class="op">*</span>mod<span class="op">);</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>FooMod <span class="op">*</span>foo_mod_this<span class="op">(</span>FooMod <span class="op">*</span>mod<span class="op">);</span></span></code></pre></div>
+<h1 id="连接符">连接符</h1>
+<p>在「<a href="../module/index.html">模块类型</a>」中，多次使用了
+<code>##</code> 符号。例如</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SIM_MOD_DECLARE</span><span class="op">(</span><span class="pp">ModType</span><span class="op">,</span><span class="pp"> mod_type</span><span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="pp">        </span><span class="dt">bool</span><span class="pp"> ModType</span><span class="op">##</span><span class="pp">_is</span><span class="op">(</span><span class="pp">ModType </span><span class="op">*</span><span class="pp">mod</span><span class="op">);</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="pp">        ModType </span><span class="op">*</span><span class="pp">mod_type</span><span class="op">##</span><span class="pp">_this</span><span class="op">(</span><span class="pp">ModType </span><span class="op">*</span><span class="pp">mod</span><span class="op">)</span></span></code></pre></div>
+<p><code>##</code>
+可以将宏参数与标识符或其他宏参数连接起来，构成新的标识符。所谓标识符，即变量名与函数名等，亦即由非数字开头由大写字母、小写字母、数字或下划线构成的文本。例如，若宏参数
+<code>ModType</code> 的值为 <code>FooMod</code>，<code>mod_type</code>
+的值为 <code>foo_mod</code>，则 <code>ModType##_is</code> 会被展开为
+<code>FooMod_is</code>，而 <code>mod_type##this</code> 会被展开为
+<code>foo_mod_this</code>。</p>
+<h1 id="字符串化">字符串化</h1>
+<p>在「<a href="../module/index.html">模块类型</a>」中，使用了单个
+<code>#</code> 符号。例如</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>this_mod<span class="op">-&gt;</span>name <span class="op">=</span> #ModType<span class="op">;</span></span></code></pre></div>
+<p><code>#</code> 可为其后的标识符增加引号。<code>ModType</code>
+是宏参数，若它的值为 <code>FooMod</code>，则上述代码会被展开为</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>this_mod<span class="op">-&gt;</span>name <span class="op">=</span> <span class="st">&quot;FooMod&quot;</span><span class="op">;</span></span></code></pre></div>
+<p>在 C 语言的宏语法里，<code>#</code>
+是字符串化操作符，其主要用途是，将宏参数转化为字符串字面量。</p>
+<h1 id="可变参数">可变参数</h1>
+<p><code>SIM_ASSERT_RET</code> 是 Sim
+项目的错误机制里定义的断言宏。它能够断言一个布尔表达式的结果为真，否则会返回指定的值。例如</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">*</span>foo<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> <span class="op">*</span>a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        SIM_ASSERT_RET<span class="op">(</span>a<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a<span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码断言内存分配结果是有效的，即 <code>a</code> 的值并非
+<code>NULL</code>。倘若内存分配失败，则函数 <code>foo</code> 在
+<code>SIM_ASSERT_RET</code> 处便会以返回 <code>NULL</code> 而结束。</p>
+<p>可以将 <code>SIM_ASSERT_RET</code> 定义为</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SIM_ASSERT_RET</span><span class="op">(</span><span class="pp">bool_exp</span><span class="op">,</span><span class="pp"> result</span><span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="pp">        </span><span class="cf">if</span><span class="pp"> </span><span class="op">(!(</span><span class="pp">bool_exp</span><span class="op">))</span><span class="pp"> </span><span class="op">{</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="pp">                SIM_ERR3</span><span class="op">(</span><span class="st">&quot;invalid assertion!&quot;</span><span class="op">);</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="pp">                </span><span class="cf">return</span><span class="pp"> result</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="pp">        </span><span class="op">}</span></span></code></pre></div>
+<p>对于大多数情况， <code>SIM_ASSERT_RET</code>
+宏不会出问题，直到它遇到没有返回值的函数。例如</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>a<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>        SIM_ASSERT_RET<span class="op">(</span>a<span class="op">,</span> <span class="op">...);</span> <span class="co">/* SIM_ASSERT_RET 无法使用 */</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;a = </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">*</span>a<span class="op">);</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>此时，无法调用 <code>SIM_ASSERT_RET</code>
+宏，因为无法向它提供一个不应该存在的参数，而它又必须有这个参数。C 语言自
+C99 标准开始支持可变参数宏，可以化解这一窘境。需要将
+<code>SIM_ASSERT_RET</code> 宏定义修改为</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SIM_ASSERT_RET</span><span class="op">(</span><span class="pp">bool_exp</span><span class="op">,</span><span class="pp"> </span><span class="op">...)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="pp">        </span><span class="cf">if</span><span class="pp"> </span><span class="op">(!(</span><span class="pp">bool_exp</span><span class="op">))</span><span class="pp"> </span><span class="op">{</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="pp">                SIM_ERR3</span><span class="op">(</span><span class="st">&quot;invalid assertion!&quot;</span><span class="op">);</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="pp">                </span><span class="cf">return</span><span class="pp"> __VA_ARGS__</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="pp">        </span><span class="op">}</span></span></code></pre></div>
+<p>现在，若在上述无返回值的函数中调用
+<code>SIM_ASSERT_RET</code>，只需</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>a<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>        SIM_ASSERT_RET<span class="op">(</span>a<span class="op">);</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;a = </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">*</span>a<span class="op">);</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>此时，<code>SIM_ASSERT_RET</code> 定义中的 <code>__VA_ARGS__</code>
+的值为空，于是</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> __VA_ARGS__<span class="op">;</span></span></code></pre></div>
+<p>的展开结果是</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> <span class="op">;</span></span></code></pre></div>
+<h1 id="隔离层">隔离层</h1>
+<p>在 C 语言宏的应用中，第一个使用 <code>do { ... } while (0)</code>
+表达式的人，无疑是个天才。这个表达式能够有效阻止宏的展开结果与外围环境产生错误的结合。</p>
+<p>例如，以下代码定义了宏 <code>FOO</code>。</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define FOO</span><span class="op">(</span><span class="pp">x</span><span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="pp">        x </span><span class="op">=</span><span class="pp"> </span><span class="dv">1</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="pp">        printf</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span><span class="pp"> x</span><span class="op">)</span></span></code></pre></div>
+<p>然后在某个条件表达式中调用 <code>FOO</code>：</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> FOO<span class="op">(</span>a<span class="op">);</span></span></code></pre></div>
+<p>则上述代码的展开结果为</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>a <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> x <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">)</span></span></code></pre></div>
+<p>由于 C
+语言的语法规定，条件语句的作用域仅限于其后的第一条语句，故而上述代码中的
+<code>printf</code> 语句，无论条件是否成立，它都会被执行。</p>
+<p>对于上述问题，若不修改宏调用语句，只修改 <code>FOO</code> 的定义，用
+<code>do { ... } while (0)</code> 表达式便可让程序逻辑符合预期。例如</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define FOO</span><span class="op">(</span><span class="pp">x</span><span class="op">)</span><span class="pp"> </span><span class="cf">do</span><span class="pp"> </span><span class="op">{</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="pp">        x </span><span class="op">=</span><span class="pp"> </span><span class="dv">1</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="pp">        printf</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span><span class="pp"> x</span><span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span><span class="pp"> </span><span class="cf">while</span><span class="pp"> </span><span class="op">(</span><span class="dv">0</span><span class="op">)</span></span></code></pre></div>
+<p>在宏定义中使用 <code>do { ... } while (0)</code>
+表达式也能为一些局部变量构造可靠的作用域。例如</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define sim_array_add</span><span class="op">(</span><span class="pp">array</span><span class="op">,</span><span class="pp"> </span>unit<span class="op">,</span><span class="pp"> type</span><span class="op">)</span><span class="pp"> </span><span class="cf">do</span><span class="pp"> </span><span class="op">{</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="pp">        type tmp_unit </span><span class="op">=</span><span class="pp"> </span>unit<span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="pp">        SIM_ARRAY_ADD</span><span class="op">(</span><span class="pp">array</span><span class="op">,</span><span class="pp"> </span><span class="op">&amp;</span><span class="pp">tmp_unit</span><span class="op">,</span><span class="pp"> </span><span class="kw">sizeof</span><span class="op">(</span><span class="pp">type</span><span class="op">));</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span><span class="pp"> </span><span class="cf">while</span><span class="pp"> </span><span class="op">(</span><span class="dv">0</span><span class="op">)</span></span></code></pre></div>
+<h1 id="保护层">保护层</h1>
+<p>在微观层面，有时需要使用括号作为宏参数的保护层。一个非常经典的例子是平方宏的定义：</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SQUARE</span><span class="op">(</span><span class="pp">x</span><span class="op">)</span><span class="pp"> x </span><span class="op">*</span><span class="pp"> x</span></span></code></pre></div>
+<p>若是像下面这样调用 <code>SQUARE</code>，</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>SQUARE<span class="op">(</span>a <span class="op">+</span> b<span class="op">);</span></span></code></pre></div>
+<p>展开结果为</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">+</span> b <span class="op">*</span> a <span class="op">+</span> b</span></code></pre></div>
+<p>而不是预期的</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="op">(</span>a <span class="op">+</span> b<span class="op">)</span> <span class="op">*</span> <span class="op">(</span>a <span class="op">+</span> b<span class="op">)</span></span></code></pre></div>
+<p>若想得到预期结果，需要将 <code>SQUARE</code> 定义为</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define SQUARE</span><span class="op">(</span><span class="pp">x</span><span class="op">)</span><span class="pp"> </span><span class="op">(</span><span class="pp">x</span><span class="op">)</span><span class="pp"> </span><span class="op">*</span><span class="pp"> </span><span class="op">(</span><span class="pp">x</span><span class="op">)</span></span></code></pre></div>
+<h1 id="宏调用语句">宏调用语句</h1>
+<p>C
+程序的语句，总是以分号结束。很多时候，宏调用若为独立的语句，我们自然希望它也能以分号结束。通常情况下，在宏定义末尾本该放置分号的情况下，可以选择不放置分号，而是在宏调用语句后面添加分号。例如上一节最后定义的
+<code>FOO</code> 宏，<code>while (0)</code> 后面本可以放置分号的，在调用
+<code>FOO</code> 宏时，便可用分号补全。</p>
+<p>由于 C 语言标准规定，一个分号可以构成一条空语句，故而在
+<code>FOO</code> 的定义中，即使以分号作为结束，即</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define FOO</span><span class="op">(</span><span class="pp">x</span><span class="op">)</span><span class="pp"> </span><span class="cf">do</span><span class="pp"> </span><span class="op">{</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="pp">        x </span><span class="op">=</span><span class="pp"> </span><span class="dv">1</span><span class="op">;</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="pp">        printf</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span><span class="pp"> x</span><span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span><span class="pp"> </span><span class="cf">while</span><span class="pp"> </span><span class="op">(</span><span class="dv">0</span><span class="op">);</span></span></code></pre></div>
+<p>若 <code>FOO</code> 的调用语句也以分号结束，例如</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>FOO<span class="op">(</span>a<span class="op">);</span></span></code></pre></div>
+<p>则上述语句会被展开为</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span> <span class="op">{</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> a<span class="op">);</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">while</span> <span class="op">(</span><span class="dv">0</span><span class="op">);;</span></span></code></pre></div>
+<p>虽然 <code>while (0)</code> 后面出现了两个分号，但依然是符合 C
+语法的，第 2 个分号表示空语句，副作用是让 C 编译器轻微受阻。</p>
+<p>真正需要认真对待的是，宏的展开结果是函数定义的情况。例如</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define FOO</span><span class="op">(</span><span class="pp">x</span><span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="pp">        </span><span class="dt">void</span><span class="pp"> foo</span><span class="op">(</span><span class="dt">int</span><span class="pp"> x</span><span class="op">)</span><span class="pp"> </span><span class="op">{</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="pp">                printf</span><span class="op">(#</span><span class="pp">x </span><span class="st">&quot;= </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span><span class="pp"> x</span><span class="op">);</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="pp">        </span><span class="op">}</span></span></code></pre></div>
+<p><code>FOO</code> 的调用语句</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>FOO<span class="op">(</span>a<span class="op">);</span></span></code></pre></div>
+<p>与上述宏调用语句展开结果等效的代码如下：</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">int</span> a<span class="op">)</span> <span class="op">{</span> </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;a = </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span> a<span class="op">);</span> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>函数定义之后出现分号，是不符合 C 语法的。为了解决这类问题，在「<a
+href="../module/index.html">模块类型</a>」中发明了一种额外声明函数的方法。基于该方法，可将上述
+<code>FOO</code> 的定义修改为</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define FOO</span><span class="op">(</span><span class="pp">x</span><span class="op">)</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="pp">        </span><span class="dt">void</span><span class="pp"> foo</span><span class="op">(</span><span class="dt">int</span><span class="pp"> x</span><span class="op">)</span><span class="pp"> </span><span class="op">{</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="pp">                printf</span><span class="op">(#</span><span class="pp">x </span><span class="st">&quot;= </span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span><span class="pp"> x</span><span class="op">);</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="pp">        </span><span class="op">}</span><span class="pp"> </span><span class="op">\</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="pp">        </span><span class="dt">void</span><span class="pp"> this_func_not_defined_forever</span><span class="op">(</span><span class="dt">void</span><span class="op">)</span></span></code></pre></div>
+<p>如此便可支持 <code>FOO</code> 的调用语句以分号结束。</p>
+<h1 id="总结">总结</h1>
+<p>C
+语言的宏，实际上与指针差不多简单。我不妨自大一些，本文至此，我已将它的
+90% 的用法都讲完了。剩下的
+10%，我还没有遇到必须使用它们的机会，亦即现在我也不会。</p>
+<p>在实际应用中，宏通常用于简化代码，但是也很容易出现错误。虽有万般法度，但实际上最简单的道理是，只要足够熟练，出错的概率就会足够小。C
+编译器通常会提供 <code>-E</code>
+选项，使用该选项，你可以查看宏调用语句的展开结果。只要见识过的宏的展开结果足够多，容易出错之处便愈发清楚。例如，foo.c
+文件里调用了一些宏，使用以下命令便可得到所有宏的展开结果。</p>
+<pre class="console"><code>$ gcc -E foo.c -o foo.i</code></pre>
+<hr />
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+
+<script>
+// 增强滚动监听
+window.addEventListener('scroll', function() {
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>时至今日，我依然喜欢 C</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="../index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">时至今日，我依然喜欢 C</h1>
+<p class="date">2025 年 04 月 19 日</p>
+</header>
+<hr />
+
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
+<ul>
+<li><span class="post-date">04 月 20 日</span><a
+href="error/index.html">错误</a>：是一种艺术。</li>
+<li><span class="post-date">04 月 21 日</span><a
+href="str/index.html">字符串</a>：计算机给人类的第一缕温情。</li>
+<li><span class="post-date">04 月 23 日</span><a
+href="better-error/index.html">错误 2</a>：更好的错误。</li>
+<li><span class="post-date">04 月 24 日</span><a
+href="array/index.html">动态数组</a>：我有广厦千万间。</li>
+<li><span class="post-date">04 月 25 日</span><a
+href="best-error/index.html">错误
+3</a>：也许是我能创造的最好的错误。</li>
+<li><span class="post-date">04 月 28 日</span><a
+href="value/index.html">无类型的值</a>：本是无一物。</li>
+<li><span class="post-date">04 月 25 日</span><a
+href="list/index.html">双向链表</a>：进退自如。</li>
+<li><span class="post-date">04 月 26 日</span><a
+href="connection/index.html">连接</a>：相濡以沫，不若相忘于江湖。</li>
+<li><span class="post-date">05 月 04 日</span><a
+href="signal/index.html">信号</a>：函数可以说话了。</li>
+<li><span class="post-date">05 月 07 日</span><a
+href="module/index.html">模块类型</a>：沿着掌纹，烙着宿命，今宵酒醒无梦。</li>
+<li><span class="post-date">05 月 14 日</span><a
+href="polymorphism/index.html">子类型多态</a>：一切有为法，如梦幻泡影。</li>
+<li><span class="post-date">05 月 15 日</span><a
+href="macro/index.html">宏</a>：他们说，宏是丑陋的，可怕的……</li>
+<li><span class="post-date">05 月 16 日</span><a
+href="threads/index.html">并发</a>：终有一天，程序的命运，不再由我们掌控。</li>
+</ul>
+<hr />
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+
+<script>
+// 增强滚动监听
+window.addEventListener('scroll', function() {
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+});
+</script>
+</body>
+</html>

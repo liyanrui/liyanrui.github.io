@@ -44,7 +44,7 @@ span.post-date {margin-right: 1em;}
 #TOC {
     min-width: 8em;
     max-width: 11em;
-    padding: 0em .5em;
+    padding: 0em 0em 0em 1em;
     border: 2pt solid darkgray;
     line-height: 1.5em;
     position: fixed;
@@ -208,8 +208,12 @@ blockquote p {
     padding:0.5em;
 }
 /* 列表 */
+ul, ol {
+    margin-inline-start: 0px;
+    padding-inline-start: 1em;
+}
 #TOC ul,  #TOC ol {
-    padding:0em 1em;
+    padding: 0em 1em;
 }
 li {padding-bottom:0.5em}
 /* 文章里小节标题的序号与标题名称之间的间距, 针对我写的生成文章目录的 m4 宏 */

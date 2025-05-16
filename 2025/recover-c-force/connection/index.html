@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>连接</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="../index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">连接</h1>
+<p class="date">2025 年 04 月 26 日</p>
+</header>
+<hr />
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#声明" id="toc-声明">声明</a></li>
+  <li><a href="#回调函数" id="toc-回调函数">回调函数</a></li>
+  <li><a href="#对称性" id="toc-对称性">对称性</a></li>
+  <li><a href="#foobar-程序" id="toc-foobar-程序">foobar 程序</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
+</nav>
+<button id="backToTop" aria-label="返回顶部" class="hidden">▲</button>
+
+<h1 id="前言">前言</h1>
+<p>错误机制已成，程序有了史官。</p>
+<p>动态数组也进化成了双向链表，程序自此可以自由伸展。</p>
+<p>现在我们思考一个新的主题。一个函数 <code>foo</code> 调用了另一个函数
+<code>bar</code>，若后者也想调用前者，该如何实现呢？</p>
+<h1 id="声明">声明</h1>
+<p>在源码文件 foobar.c 里，定义函数 <code>foo</code> 和
+<code>bar</code>，在 <code>main</code> 函数里调用 <code>foo</code>：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* foobar.c */</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;string.h&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bar<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>caller<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;bar: hi, </span><span class="sc">%s</span><span class="st">!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> caller<span class="op">);</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        foo<span class="op">(</span><span class="st">&quot;bar&quot;</span><span class="op">);</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>caller<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;foo: hi, </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> caller<span class="op">);</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>strcmp<span class="op">(</span>caller<span class="op">,</span> <span class="st">&quot;bar&quot;</span><span class="op">)</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        bar<span class="op">(</span><span class="st">&quot;foo&quot;</span><span class="op">);</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        foo<span class="op">(</span><span class="st">&quot;main&quot;</span><span class="op">);</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述的 foobar.c 是无法通过编译的，原因是，在 C
+语言里，若一个函数调用另一个函数，后者的定义必须先于前者出现。若
+<code>bar</code> 能调用 <code>foo</code>，则 <code>foo</code> 必须在
+<code>bar</code> 之前定义，但是上述代码为了让 <code>foo</code> 能调用
+<code>bar</code>，<code>bar</code> 的定义已经先于 <code>foo</code>
+出现了。</p>
+<p>C
+语言的设计者用了声明的语法克服了上述问题，即只要提前声明函数，便可无需考虑函数定义的先后。例如，在上述代码片段添加以下内容，便可实现
+<code>bar</code> 反向调用 <code>foo</code> 了。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* foo.c ++ */</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">/* [上文]: #include &lt;stdio.h&gt; */</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>caller<span class="op">);</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bar<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>caller<span class="op">);</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">/* [下文]: void bar(const char *... */</span></span></code></pre></div>
+<p>现在，便可顺利编译 foobar.c，若运行所得程序，可得到以下输出：</p>
+<pre><code>foo: hi, main!
+bar: hi, foo!
+foo: hi, bar!</code></pre>
+<p>也许你觉得上述的 foobar.c 程序平平无奇，不过是 C
+程序的常规形式，然而越是寻常事物，越可能蕴含着巨大的惊奇。你想藏一件珍奇之物，最好的办法是让所有人都不觉得它珍奇，而非藏舟于壑，藏山于泽，谓之固也。</p>
+<p>若将 C 编译器视为通信业务运营商，我们向其注册了两个电话号码：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>caller<span class="op">);</span>  <span class="co">/* 主叫号码 */</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bar<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>caller<span class="op">);</span>  <span class="co">/* 被叫号码 */</span></span></code></pre></div>
+<p>上述代码片段便可拥有一个新的理解角度，即 <code>main</code> 呼叫了
+<code>foo</code>。<code>foo</code> 呼叫了
+<code>bar</code>。<code>bar</code> 向 <code>foo</code>
+问好。<code>foo</code> 回应了 <code>bar</code>。</p>
+<p>不过，作为通信运营商的 C
+编译器只能在函数之间建立专线通信，这种方式非常浪费线路。试想，若
+<code>foo</code>
+函数呼叫成百上千的不同的函数，则必须为它建立同样数量的线路，亦即在
+<code>foo</code>
+函数的定义里，要写出这些函数的调用语句，想必谁也不愿意做这种体力活。</p>
+<h1 id="回调函数">回调函数</h1>
+<p>在 C
+语言中，可以通过指针，将一个函数作为另一个函数的参数，后者可通过该指针调用前者，通常称前者为回调（Callback）函数。这个术语很容易让初学者跌入它编织的概念陷阱里难以逃逸。倘若你一时不知何谓「回调」，不妨先将其放下，待时机成熟，你自会理解它，这就是回调。callback
+的原意是稍候调用。例如，英文里可以说， I’ll call you back。</p>
+<p>基于回调函数，<code>foo</code>
+函数只需一条线路便可呼叫任何与它连接的函数，亦即任何一个可被
+<code>foo</code> 呼叫的函数，变成了 <code>foo</code>的的参数。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>caller<span class="op">,</span> <span class="dt">void</span> <span class="op">(*</span>callback<span class="op">)(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*))</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;foo: hi, </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> caller<span class="op">);</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>strcmp<span class="op">(</span>caller<span class="op">,</span> <span class="st">&quot;bar&quot;</span><span class="op">)</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        callback<span class="op">(</span><span class="st">&quot;foo&quot;</span><span class="op">);</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码中的 <code>callback</code> 便是函数指针，莫要认为它是返回
+<code>void *</code>
+类型的函数，而应将其理解为指向某个函数的指针，该函数的参数类型为
+<code>const char *</code> 且无返回值。上一节定义的函数 <code>bar</code>
+便符合 <code>callback</code> 所指类型。以下代码里， <code>main</code>
+函数呼叫了 <code>foo</code> 并嘱托它呼叫 <code>bar</code>。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>        foo<span class="op">(</span><span class="st">&quot;main&quot;</span><span class="op">,</span> bar<span class="op">);</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>程序的输出结果与上一节相同。如此，定义 <code>foo</code>
+函数时无需再为它铺设成千上万条线路，不过问题仍在，只是转移到了
+<code>main</code> 函数里了，亦即 <code>main</code> 函数里需要成千上万条
+<code>foo</code> 函数调用语句，例如</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>        foo<span class="op">(</span><span class="st">&quot;main&quot;</span><span class="op">,</span> bar_1<span class="op">);</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        foo<span class="op">(</span><span class="st">&quot;main&quot;</span><span class="op">,</span> bar_2<span class="op">);</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        foo<span class="op">(</span><span class="st">&quot;main&quot;</span><span class="op">,</span> bar_3<span class="op">);</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>这是没有办法的事，总要有人做这件事。做这件事的 <code>main</code>
+函数便成了通信运营商了。倘若将这件事交给 <code>foo</code> 来做，无异于
+<code>foo</code> 呼叫其他函数，自己运营了一个通信公司。</p>
+<h1 id="对称性">对称性</h1>
+<p><code>foo</code>
+函数有什么特殊的吗？为何必须是它主动呼叫其他函数，实际上它不也是被
+<code>main</code> 函数呼叫的吗？除了作为通信运营商的 <code>main</code>
+函数，其他任何一个函数都不具备特殊性，它们应当既可作为主叫方，亦可作为被叫方。</p>
+<p>为了消除 <code>foo</code> 函数的特殊性，将 <code>foo</code> 和
+<code>bar</code> 都变成简单的被叫函数，即二者并不存在调用关系。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>caller<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;foo: hi, </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> caller<span class="op">);</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bar<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>caller<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;bar: hi, </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> caller<span class="op">);</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>然后定义函数 <code>connect</code>，它不呼叫其他函数，也不被除
+<code>main</code>
+函数之外的其他函数呼叫，它的任务就是接线，为通信双方铺设线路。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* 电话机类型 */</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">void</span> <span class="op">(*</span>Phone<span class="op">)(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>caller<span class="op">);</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">/* 通话双方形成的连接 */</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> connection <span class="op">{</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>         <span class="co">/* 通话方 x */</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>         Phone x<span class="op">;</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>x_name<span class="op">;</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>         <span class="co">/* 通话方 y */</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>         Phone y<span class="op">;</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>y_name<span class="op">;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Connection<span class="op">;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">/* 构造连接表 */</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> connect<span class="op">(</span>SimList <span class="op">*</span>connections<span class="op">,</span> </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>             Phone x<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>x_name<span class="op">,</span> </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>             Phone y<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>y_name<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        Connection one <span class="op">=</span> <span class="op">{.</span>x <span class="op">=</span> x<span class="op">,</span> <span class="op">.</span>x_name <span class="op">=</span> x_name<span class="op">,</span> </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>                          <span class="op">.</span>y <span class="op">=</span> y<span class="op">,</span> <span class="op">.</span>y_name <span class="op">=</span> y_name<span class="op">};</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        sim_list_suffix<span class="op">(</span>connections<span class="op">,</span> one<span class="op">,</span> Connection<span class="op">);</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>Phone</code> 是函数指针类型，可以指向上述重新定义的
+<code>foo</code> 和 <code>bar</code> 的函数。<code>connect</code>
+函数很简单，就是将两个回调函数集中到一个 <code>Connection</code>
+对象里，再将该对象存入链表 <code>connections</code>。</p>
+<p>现在，我们在 <code>main</code> 函数中为 <code>foo</code> 和
+<code>bar</code> 接线，并让二者通话：</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>        SimList <span class="op">*</span>x <span class="op">=</span> sim_list<span class="op">();</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 连接 foo 和 bar */</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        connect<span class="op">(</span>x<span class="op">,</span> foo<span class="op">,</span> <span class="st">&quot;foo&quot;</span><span class="op">,</span> bar<span class="op">,</span> <span class="st">&quot;bar&quot;</span><span class="op">);</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 通话 */</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>SimLink <span class="op">*</span>it <span class="op">=</span> x<span class="op">-&gt;</span>head<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>next<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                Connection c <span class="op">=</span> sim_link_raw<span class="op">(</span>it<span class="op">,</span> Connection<span class="op">);</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>                c<span class="op">.</span>x<span class="op">(</span>c<span class="op">.</span>y_name<span class="op">);</span> <span class="co">/* x 呼叫 y */</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                c<span class="op">.</span>y<span class="op">(</span>c<span class="op">.</span>x_name<span class="op">);</span> <span class="co">/* y 回应 x */</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        sim_list_free<span class="op">(</span>x<span class="op">);</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>main</code> 函数的输出应当如下：</p>
+<pre><code>foo: hi, bar!
+bar: hi, foo!</code></pre>
+<p>上述代码，我们用一个生成连接的函数
+<code>connect</code>，将两个看似无关的函数 <code>foo</code> 和
+<code>bar</code>
+绑定为一个连接，然后将该连接添加到一个列表中。之后，遍历列表，执行被绑定的函数。如此，原本存在相互调用关系的
+<code>foo</code> 和
+<code>bar</code>，此时则相当独立，甚至不知在某个时刻，它们彼此形成了调用关系，只是这个调用关系是在
+<code>main</code> 函数中构建的。正所谓，相濡以沫，不若相忘于江湖。</p>
+<h1 id="foobar-程序">foobar 程序</h1>
+<p>完整的 foobar.c 如下：</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* foobar.c */</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;sim-list.h&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">/* 电话机类型 */</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="dt">void</span> <span class="op">(*</span>Phone<span class="op">)(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>caller<span class="op">);</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">/* 通话双方形成的连接 */</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> connection <span class="op">{</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>         <span class="co">/* 通话方 x */</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>         Phone x<span class="op">;</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>x_name<span class="op">;</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>         <span class="co">/* 通话方 y */</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>         Phone y<span class="op">;</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>y_name<span class="op">;</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Connection<span class="op">;</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">/* 构造连接表 */</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> connect<span class="op">(</span>SimList <span class="op">*</span>connections<span class="op">,</span> </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>             Phone x<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>x_name<span class="op">,</span> </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>             Phone y<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>y_name<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        Connection one <span class="op">=</span> <span class="op">{.</span>x <span class="op">=</span> x<span class="op">,</span> <span class="op">.</span>x_name <span class="op">=</span> x_name<span class="op">,</span> </span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>                          <span class="op">.</span>y <span class="op">=</span> y<span class="op">,</span> <span class="op">.</span>y_name <span class="op">=</span> y_name<span class="op">};</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        sim_list_suffix<span class="op">(</span>connections<span class="op">,</span> one<span class="op">,</span> Connection<span class="op">);</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> foo<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>caller<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;foo: hi, </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> caller<span class="op">);</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> bar<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>caller<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;bar: hi, </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> caller<span class="op">);</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>        SimList <span class="op">*</span>x <span class="op">=</span> sim_list<span class="op">();</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 连接 foo 和 bar */</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>        connect<span class="op">(</span>x<span class="op">,</span> foo<span class="op">,</span> <span class="st">&quot;foo&quot;</span><span class="op">,</span> bar<span class="op">,</span> <span class="st">&quot;bar&quot;</span><span class="op">);</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* 通话 */</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>SimLink <span class="op">*</span>it <span class="op">=</span> x<span class="op">-&gt;</span>head<span class="op">;</span> it<span class="op">;</span> it <span class="op">=</span> it<span class="op">-&gt;</span>next<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>                Connection c <span class="op">=</span> sim_link_raw<span class="op">(</span>it<span class="op">,</span> Connection<span class="op">);</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>                c<span class="op">.</span>x<span class="op">(</span>c<span class="op">.</span>y_name<span class="op">);</span> <span class="co">/* x 呼叫 y */</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>                c<span class="op">.</span>y<span class="op">(</span>c<span class="op">.</span>x_name<span class="op">);</span> <span class="co">/* y 回应 x */</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>        sim_list_free<span class="op">(</span>x<span class="op">);</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>在 Bash 环境中编译 foobar.c 并运行所得程序：</p>
+<pre class="console"><code>$ gcc -I. sim-{err,str,err2,array,err3,val,list}.c foobar.c -o foobar
+$ ./foobar
+foo: hi, bar!
+bar: hi, foo!</code></pre>
+<h1 id="总结">总结</h1>
+<p>为什么要颇费心力将函数直接的调用关系转化为通信方式呢？回答这个问题，最好的方式是反问，为什么人类要发明写信、电报以及电话等通信方式呢？函数不是人类，不妨将其视为人类的行为，而函数依赖的数据则可视为人类的躯体。每个人专心于自己的工作和自己的感受，彼此之间以各种通信方式沟通，与耳提面命相比，通信效率固然略低，但是群体协作性却得以飞升，以胜任各种复杂的任务。不过，意义固然重大，但本文仅是
+SimList 模块用法示例，且幸好 C 语言有函数指针类型。</p>
+<hr />
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+
+<script>
+// 增强滚动监听
+window.addEventListener('scroll', function() {
+  const toc = document.getElementById('TOC');
+  const backButton = document.getElementById('backToTop');
+  const showBackButton = window.scrollY > 300;
+
+  // 控制目录和按钮
+  toc.classList.toggle('hide', showBackButton);
+  backButton.classList.toggle('show', showBackButton);
+});
+
+// 返回顶部功能
+document.getElementById('backToTop').addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+});
+</script>
+</body>
+</html>

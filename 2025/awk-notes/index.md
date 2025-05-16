@@ -1,6 +1,6 @@
 ---
 title: Awk 语言学习笔记
-abstract: 以杀人越获的姿态处理文本。
+abstract: 以杀人越货的姿态处理文本。
 date: 02 月 23 日
 ...
 
