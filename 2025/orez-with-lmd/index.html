@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>orez + lmd = ?</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">orez + lmd = ?
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2025 年 01 月 27 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#创建静态站点"
+  id="toc-创建静态站点">创建静态站点</a></li>
+  <li><a href="#文学编程项目"
+  id="toc-文学编程项目">文学编程项目</a></li>
+  <li><a href="#文学编程" id="toc-文学编程">文学编程</a></li>
+  <li><a href="#变过来变过去"
+  id="toc-变过来变过去">变过来，变过去</a></li>
+  <li><a href="#代码渲染" id="toc-代码渲染">代码渲染</a></li>
+  <li><a href="#源码片段的引用和被引用"
+  id="toc-源码片段的引用和被引用">源码片段的引用和被引用</a></li>
+  <li><a href="#同名片段与标签"
+  id="toc-同名片段与标签">同名片段与标签</a></li>
+  <li><a href="#各级页面的关联"
+  id="toc-各级页面的关联">各级页面的关联</a></li>
+  <li><a href="#结束语" id="toc-结束语">结束语</a></li>
+  </ul>
+</nav>
+
+<p>现在，我有了<a href="../orez-v1/index.html">新的
+orez</a>，还有我写的用于制作静态网站的 <a
+href="../how-to-use-lmd/index.html">Bash 脚本
+lmd</a>，这两个工具组合起来，会产生怎样的化学反应呢？我也不清楚，可以试试看，但我知道，在
+Linux
+环境里，反应的结果肯定是一个能够用于发布文学程序文档的静态网站。</p>
+<h1 id="创建静态站点">创建静态站点</h1>
+<p>假设用于发布文学程序文档的静态网站根目录为
+foo，可使用以下命令创建：</p>
+<pre class="consoel"><code>$ lmd init &quot;面向文学编程&quot; &quot;&quot; foo</code></pre>
+<p>进入目录 foo，并查看上述命令的成果：</p>
+<pre class="console"><code>$ cd foo
+$ lmd tree
+foo
+├── appearance
+│   ├── lmd.css
+│   └── pandoc
+│       └── data
+│           └── templates
+│               ├── homepage.template
+│               └── post.template
+├── figures
+├── index.md
+└── lmd.conf</code></pre>
+<p>在进行后续操作前，先将 lmd.conf
+的内容根据自己的情况修改一下。该文件实际上是一个 Bash
+脚本，默认内容是一组变量的定义：</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">LMD_LANGUAGE</span><span class="op">=</span><span class="st">&quot;zh-CN&quot;</span>   <span class="co"># 网站语言为简体中文</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">LMD_EMAIL</span><span class="op">=</span><span class="st">&#39;lyr.m2@live.cn&#39;</span>  <span class="co"># 站长邮箱</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="va">LMD_ISSUES</span><span class="op">=</span><span class="st">&#39;... ... ...&#39;</span> <span class="co"># 讨论区</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 页脚内容</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="va">LMD_FOOTER</span><span class="op">=</span><span class="st">&quot;我的联系方式：&lt;</span><span class="va">$LMD_EMAIL</span><span class="st">&gt; 或在[讨论区](</span><span class="va">$LMD_ISSUES</span><span class="st">)提问。&quot;</span></span></code></pre></div>
+<p>你应该根据你的需求修改上述变量的值。注意，Bash
+变量的定义中的等号，其两侧不能有空格。</p>
+<h1 id="文学编程项目">文学编程项目</h1>
+<p>假设当前的工作目录是 foo，现在你接到了一个项目，名字叫
+<code>Hello world</code>，该项目要在 foo/hello-world
+目录中进行构建，可使用以下命令创建该项目：</p>
+<pre class="console"><code>$ lmd new &quot;Hello world&quot; &quot;&quot; hello-world</code></pre>
+<p>此时若使用 <code>lmd tree</code> 再次查看 foo
+的结构，它应该是下面这样：</p>
+<pre><code>$ lmd tree
+foo
+├── appearance
+│   ├── lmd.css
+│   └── pandoc
+│       └── data
+│           └── templates
+│               ├── homepage.template
+│               └── post.template
+├── figures
+├── hello-world
+│   ├── figures
+│   └── index.md
+├── index.md
+└── lmd.conf</code></pre>
+<h1 id="文学编程">文学编程</h1>
+<p>假设当前工作目录是 foo/hello-world，文学程序的内容应该放在该目录下的
+index.md 文件里，文件被 lmd 脚本生成后，初始内容为</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> Hello world</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">subtitle</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">...</span></span></code></pre></div>
+<p>文学程序应该在文档首部下方，即 <code>...</code>
+之后撰写。现在，将以下内容</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>我是一个很简单的文学程序，这行文字是我的文档，下面是我的代码：</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>@ hello world # <span class="co">[</span><span class="ot">C</span><span class="co">]</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>#include <span class="dt">&lt;</span><span class="kw">stdio.h</span><span class="dt">&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>int main(void)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        printf(&quot;Hello world!\n&quot;);</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        return 0;</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>@</span></code></pre></div>
+<p>添加到 index.md 文件首部之后，你便有了可能是你的第一个文学程序。</p>
+<h1 id="变过来变过去">变过来，变过去</h1>
+<p>现在，使用以下命令处理 index.md：</p>
+<pre class="console"><code>$ mv index.md index.orz
+$ orez -w index.orz | orez-md &gt; index.md</code></pre>
+<p>现在，index.md 的内容变为</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Hello world 程序的实现</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> </span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">...</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>我是一个很简单的文学程序，这行文字是我的文档，下面是我的代码：</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">pre</span> <span class="er">id</span><span class="ot">=</span><span class="st">&quot;helloworld&quot;</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;orez-snippet-with-name&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;orez-snippet-name&quot;</span><span class="dt">&gt;</span>@ hello world #<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;cp&quot;</span><span class="dt">&gt;</span>#include<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;w&quot;</span><span class="dt">&gt;</span> <span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;cpf&quot;</span><span class="dt">&gt;</span><span class="dv">&amp;lt;</span>stdio.h<span class="dv">&amp;gt;</span><span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;kt&quot;</span><span class="dt">&gt;</span>int<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;w&quot;</span><span class="dt">&gt;</span> <span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;nf&quot;</span><span class="dt">&gt;</span>main<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;p&quot;</span><span class="dt">&gt;</span>(<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;kt&quot;</span><span class="dt">&gt;</span>void<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;p&quot;</span><span class="dt">&gt;</span>)<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;p&quot;</span><span class="dt">&gt;</span>{<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;w&quot;</span><span class="dt">&gt;</span>        <span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;n&quot;</span><span class="dt">&gt;</span>printf<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;p&quot;</span><span class="dt">&gt;</span>(<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;s&quot;</span><span class="dt">&gt;</span><span class="dv">&amp;quot;</span>Hello world!<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;se&quot;</span><span class="dt">&gt;</span>\n<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;s&quot;</span><span class="dt">&gt;</span><span class="dv">&amp;quot;</span><span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;p&quot;</span><span class="dt">&gt;</span>);<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;w&quot;</span><span class="dt">&gt;</span>        <span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;k&quot;</span><span class="dt">&gt;</span>return<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;w&quot;</span><span class="dt">&gt;</span> <span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;mi&quot;</span><span class="dt">&gt;</span>0<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;p&quot;</span><span class="dt">&gt;</span>;<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">span</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;p&quot;</span><span class="dt">&gt;</span>}<span class="dt">&lt;/</span><span class="kw">span</span><span class="dt">&gt;</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">pre</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>简而言之，即之前 index.md 中的结构</p>
+<pre><code>@ ... #
+... ... ...
+@</code></pre>
+<p>变成了嵌入在 Markdown 文档中的一段 HTML 文本。</p>
+<p>在 hello-world 目录下，执行以下命令，可将 index.md 转化为 HTML 文件
+index.html：</p>
+<pre class="console"><code>$ lmd build</code></pre>
+<p>生成的 index.html 位于 <code>foo/hello-world</code> 目录，它在 Web
+浏览器的样子大致如下图所示：</p>
+<figure>
+<img src="figures/01.png" alt="朴素风格" />
+<figcaption aria-hidden="true">朴素风格</figcaption>
+</figure>
+<p>并不好看，因为缺乏色彩。</p>
+<h1 id="代码渲染">代码渲染</h1>
+<p>在 foo/appearance/lmd.css 中添加以下代码</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode css"><code class="sourceCode css"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* 渲染文学编程的代码片段 */</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>pre {<span class="kw">line-height</span>: <span class="dv">1.6</span><span class="dt">em</span><span class="op">;</span> <span class="kw">max-height</span>: <span class="dv">40</span><span class="dt">em</span><span class="op">;</span>}</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-name</span><span class="op">,</span> <span class="fu">.orez-symbol</span> {<span class="kw">font-weight</span>:<span class="dv">bold</span><span class="op">;</span> <span class="kw">color</span>: <span class="cn">#cc3333</span><span class="op">;</span>}</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-label</span> {<span class="kw">font-weight</span>:<span class="dv">bold</span><span class="op">;</span> <span class="kw">color</span>:<span class="cn">#008000</span><span class="op">;</span>}</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.hll</span> { <span class="kw">background-color</span>: <span class="cn">#ffffcc</span> }</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span>  { <span class="kw">background</span>: <span class="cn">#f8f8f8</span><span class="op">;</span> }</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.c</span> { <span class="kw">color</span>: <span class="cn">#408080</span><span class="op">;</span>} <span class="co">/* Comment */</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.err</span> { <span class="kw">border</span>: <span class="dv">1</span><span class="dt">px</span> <span class="dv">solid</span> <span class="cn">#FF0000</span> } <span class="co">/* Error */</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.k</span> { <span class="kw">color</span>: <span class="cn">#008000</span><span class="op">;</span>} <span class="co">/* Keyword */</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.o</span> { <span class="kw">color</span>: <span class="cn">#666666</span><span class="op">;</span>} <span class="co">/* Operator */</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.ch</span> { <span class="kw">color</span>: <span class="cn">#408080</span><span class="op">;</span>} <span class="co">/* Comment.Hashbang */</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.cm</span> { <span class="kw">color</span>: <span class="cn">#408080</span><span class="op">;</span>} <span class="co">/* Comment.Multiline */</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.cp</span> { <span class="kw">color</span>: <span class="cn">#BC7A00</span><span class="op">;</span>} <span class="co">/* Comment.Preproc */</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.cpf</span> { <span class="kw">color</span>: <span class="cn">#408080</span><span class="op">;</span>} <span class="co">/* Comment.PreprocFile */</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.c1</span> { <span class="kw">color</span>: <span class="cn">#408080</span><span class="op">;</span>} <span class="co">/* Comment.Single */</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.cs</span> { <span class="kw">color</span>: <span class="cn">#408080</span><span class="op">;</span>} <span class="co">/* Comment.Special */</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.gd</span> { <span class="kw">color</span>: <span class="cn">#A00000</span><span class="op">;</span>} <span class="co">/* Generic.Deleted */</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.ge</span> {} <span class="co">/* Generic.Emph */</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.gr</span> { <span class="kw">color</span>: <span class="cn">#FF0000</span><span class="op">;</span>} <span class="co">/* Generic.Error */</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.gh</span> { <span class="kw">color</span>: <span class="cn">#000080</span><span class="op">;</span>} <span class="co">/* Generic.Heading */</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.gi</span> { <span class="kw">color</span>: <span class="cn">#00A000</span><span class="op">;</span>} <span class="co">/* Generic.Inserted */</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.go</span> { <span class="kw">color</span>: <span class="cn">#888888</span><span class="op">;</span>} <span class="co">/* Generic.Output */</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.gp</span> { <span class="kw">color</span>: <span class="cn">#000080</span><span class="op">;</span>} <span class="co">/* Generic.Prompt */</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.gs</span> {} <span class="co">/* Generic.Strong */</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.gu</span> { <span class="kw">color</span>: <span class="cn">#800080</span><span class="op">;</span>} <span class="co">/* Generic.Subheading */</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.gt</span> { <span class="kw">color</span>: <span class="cn">#0044DD</span><span class="op">;</span>} <span class="co">/* Generic.Traceback */</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.kc</span> { <span class="kw">color</span>: <span class="cn">#008000</span><span class="op">;</span>} <span class="co">/* Keyword.Constant */</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.kd</span> { <span class="kw">color</span>: <span class="cn">#008000</span><span class="op">;</span>} <span class="co">/* Keyword.Declaration */</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.kn</span> { <span class="kw">color</span>: <span class="cn">#008000</span><span class="op">;</span>} <span class="co">/* Keyword.Namespace */</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.kp</span> { <span class="kw">color</span>: <span class="cn">#008000</span><span class="op">;</span>} <span class="co">/* Keyword.Pseudo */</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.kr</span> { <span class="kw">color</span>: <span class="cn">#008000</span><span class="op">;</span>} <span class="co">/* Keyword.Reserved */</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.kt</span> { <span class="kw">color</span>: <span class="cn">#B00040</span><span class="op">;</span>} <span class="co">/* Keyword.Type */</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.m</span> { <span class="kw">color</span>: <span class="cn">#666666</span><span class="op">;</span>} <span class="co">/* Literal.Number */</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.s</span> { <span class="kw">color</span>: <span class="cn">#BA2121</span><span class="op">;</span>} <span class="co">/* Literal.String */</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.na</span> { <span class="kw">color</span>: <span class="cn">#7D9029</span><span class="op">;</span>} <span class="co">/* Name.Attribute */</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.nb</span> { <span class="kw">color</span>: <span class="cn">#008000</span><span class="op">;</span>} <span class="co">/* Name.Builtin */</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.nc</span> { <span class="kw">color</span>: <span class="cn">#0000FF</span><span class="op">;</span>} <span class="co">/* Name.Class */</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.no</span> { <span class="kw">color</span>: <span class="cn">#880000</span><span class="op">;</span>} <span class="co">/* Name.Constant */</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.nd</span> { <span class="kw">color</span>: <span class="cn">#AA22FF</span><span class="op">;</span>} <span class="co">/* Name.Decorator */</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.ni</span> { <span class="kw">color</span>: <span class="cn">#999999</span><span class="op">;</span>} <span class="co">/* Name.Entity */</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.ne</span> { <span class="kw">color</span>: <span class="cn">#D2413A</span><span class="op">;</span>} <span class="co">/* Name.Exception */</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.nf</span> { <span class="kw">color</span>: <span class="cn">#0000FF</span><span class="op">;</span>} <span class="co">/* Name.Function */</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.nl</span> { <span class="kw">color</span>: <span class="cn">#A0A000</span><span class="op">;</span>} <span class="co">/* Name.Label */</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.nn</span> { <span class="kw">color</span>: <span class="cn">#0000FF</span><span class="op">;</span>} <span class="co">/* Name.Namespace */</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.nt</span> { <span class="kw">color</span>: <span class="cn">#008000</span><span class="op">;</span>} <span class="co">/* Name.Tag */</span></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.nv</span> { <span class="kw">color</span>: <span class="cn">#19177C</span><span class="op">;</span>} <span class="co">/* Name.Variable */</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.ow</span> { <span class="kw">color</span>: <span class="cn">#AA22FF</span><span class="op">;</span>} <span class="co">/* Operator.Word */</span></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.w</span> { <span class="kw">color</span>: <span class="cn">#bbbbbb</span><span class="op">;</span>} <span class="co">/* Text.Whitespace */</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.mb</span> { <span class="kw">color</span>: <span class="cn">#666666</span><span class="op">;</span>} <span class="co">/* Literal.Number.Bin */</span></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.mf</span> { <span class="kw">color</span>: <span class="cn">#666666</span><span class="op">;</span>} <span class="co">/* Literal.Number.Float */</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.mh</span> { <span class="kw">color</span>: <span class="cn">#666666</span><span class="op">;</span>} <span class="co">/* Literal.Number.Hex */</span></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.mi</span> { <span class="kw">color</span>: <span class="cn">#666666</span><span class="op">;</span>} <span class="co">/* Literal.Number.Integer */</span></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.mo</span> { <span class="kw">color</span>: <span class="cn">#666666</span><span class="op">;</span>} <span class="co">/* Literal.Number.Oct */</span></span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.sb</span> { <span class="kw">color</span>: <span class="cn">#BA2121</span><span class="op">;</span>} <span class="co">/* Literal.String.Backtick */</span></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.sc</span> { <span class="kw">color</span>: <span class="cn">#BA2121</span><span class="op">;</span>} <span class="co">/* Literal.String.Char */</span></span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.sd</span> { <span class="kw">color</span>: <span class="cn">#BA2121</span><span class="op">;</span>} <span class="co">/* Literal.String.Doc */</span></span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.s2</span> { <span class="kw">color</span>: <span class="cn">#BA2121</span><span class="op">;</span>} <span class="co">/* Literal.String.Double */</span></span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.se</span> { <span class="kw">color</span>: <span class="cn">#BB6622</span><span class="op">;</span>} <span class="co">/* Literal.String.Escape */</span></span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.sh</span> { <span class="kw">color</span>: <span class="cn">#BA2121</span><span class="op">;</span>} <span class="co">/* Literal.String.Heredoc */</span></span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.si</span> { <span class="kw">color</span>: <span class="cn">#BB6688</span><span class="op">;</span>} <span class="co">/* Literal.String.Interpol */</span></span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.sx</span> { <span class="kw">color</span>: <span class="cn">#008000</span><span class="op">;</span>} <span class="co">/* Literal.String.Other */</span></span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.sr</span> { <span class="kw">color</span>: <span class="cn">#BB6688</span><span class="op">;</span>} <span class="co">/* Literal.String.Regex */</span></span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.s1</span> { <span class="kw">color</span>: <span class="cn">#BA2121</span><span class="op">;</span>} <span class="co">/* Literal.String.Single */</span></span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.ss</span> { <span class="kw">color</span>: <span class="cn">#19177C</span><span class="op">;</span>} <span class="co">/* Literal.String.Symbol */</span></span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.bp</span> { <span class="kw">color</span>: <span class="cn">#008000</span><span class="op">;</span>} <span class="co">/* Name.Builtin.Pseudo */</span></span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.vc</span> { <span class="kw">color</span>: <span class="cn">#19177C</span><span class="op">;</span>} <span class="co">/* Name.Variable.Class */</span></span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.vg</span> { <span class="kw">color</span>: <span class="cn">#19177C</span><span class="op">;</span>} <span class="co">/* Name.Variable.Global */</span></span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.vi</span> { <span class="kw">color</span>: <span class="cn">#19177C</span><span class="op">;</span>} <span class="co">/* Name.Variable.Instance */</span></span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a><span class="fu">.orez-snippet-with-name</span> <span class="fu">.il</span> { <span class="kw">color</span>: <span class="cn">#666666</span><span class="op">;</span>} <span class="co">/* Literal.Number.Integer.Long */</span></span></code></pre></div>
+<p>有了上述样式表的加持，Web 浏览器对 index.html
+新的渲染结果如下图所示：</p>
+<figure>
+<img src="figures/02.png" alt="源码片段渲染" />
+<figcaption aria-hidden="true">源码片段渲染</figcaption>
+</figure>
+<h1 id="源码片段的引用和被引用">源码片段的引用和被引用</h1>
+<p>现在，对 index.orz 的内容稍加变动，结果如下（省略了文件首部）：</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>我是一个很简单的文学程序，这行文字是我的文档，下面是我的代码：</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>@ hello world # <span class="co">[</span><span class="ot">C</span><span class="co">]</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu"># 头文件 @</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>int main(void)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        printf(&quot;Hello world!\n&quot;);</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        return 0;</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>@</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>上述源码片段引用的头文件片段，内容如下：</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="fu"># 头文件 @</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>#include <span class="dt">&lt;</span><span class="kw">stdio.h</span><span class="dt">&gt;</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>@</span></code></pre></div>
+<p>使用以下命令再次在 hello-world 目录里将 index.orz 转换为 HTML
+文件：</p>
+<pre class="console"><code>$ orez -w index.orz | orez-md &gt; index.md
+$ lmd build</code></pre>
+<p>结果如下图所示：</p>
+<figure>
+<img src="figures/03.png" alt="交叉引用" />
+<figcaption aria-hidden="true">交叉引用</figcaption>
+</figure>
+<p>一个源码片段中对另一个源码片段的引用，最终呈现为一个链接，通过它可从前者跳至后者，而后者的尾部会有一个回到前者的链接。</p>
+<h1 id="同名片段与标签">同名片段与标签</h1>
+<p>保留 index.orz 文件的首部不变，将剩余部分修改为</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>我是一个很简单的文学程序，这行文字是我的文档，下面是我的代码：</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>@ hello world # <span class="co">[</span><span class="ot">C</span><span class="co">]</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">main</span><span class="dt">&gt;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>int main(void)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        printf(&quot;Hello world!\n&quot;);</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        return 0;</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>@</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>上述源码片段需要包含头文件 stdio.h，</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>@ hello world # <span class="dt">&lt;</span><span class="kw">main</span><span class="dt">&gt;</span> ^+</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>#include <span class="dt">&lt;</span><span class="kw">stdio.h</span><span class="dt">&gt;</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>@</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>使得 C 编译器能够获知 <span class="in">`printf`</span> 函数是已定义的函数。</span></code></pre></div>
+<p>index.orz 再经过 orez 和 orez-md 管线的处理，生成的 index.md 再经过
+lmd 命令转化为 index.html，结果如下图所示：</p>
+<figure>
+<img src="figures/04.png" alt="含有标签的源码片段" />
+<figcaption aria-hidden="true">含有标签的源码片段</figcaption>
+</figure>
+<p>第 1 个 hello world 片段首部存在标签 <code>&lt;main&gt;</code>。第 2
+个 hello world 片段引用了这个标签，在 index.html
+中引用的标签呈现为链接，通过它克跳至含有该标签的源码片段。引用的标签后面可存在
+<code>+</code> 和 <code>^+</code> 运算符，分别用于告知
+orez，将该片段的内容追加到含有这个标签的源码片段的尾部和首部。</p>
+<h1 id="各级页面的关联">各级页面的关联</h1>
+<p><code>lmd build</code> 构建 index.html
+时，会将当前目录对应的文章与上级目录对应的文章自动实现关联。foo/index.html
+便是 foo 这个文学编程静态站点的首页：</p>
+<figure>
+<img src="figures/05.png" alt="站点首页" />
+<figcaption aria-hidden="true">站点首页</figcaption>
+</figure>
+<p>在 foo/index.html 页面点击链接 “Hello world”，便可跳转至 Hello world
+项目的首页 foo/hello-world/index.html：</p>
+<figure>
+<img src="figures/06.png" alt="Hello world 项目首页" />
+<figcaption aria-hidden="true">Hello world 项目首页</figcaption>
+</figure>
+<p>注意，foo/hello-world/index.html
+页面右侧有“回到上级页面”链接，通过它可返至 foo/index.html 页面。</p>
+<h1 id="结束语">结束语</h1>
+<p>工具有了，剩下的事情，是用它创造或改变一些事物。</p>
+
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+</body>
+</html>

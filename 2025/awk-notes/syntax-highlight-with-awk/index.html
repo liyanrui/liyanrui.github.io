@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Awk：面向文本编程</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">Awk：面向文本编程
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">02 月 15 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#awk-教程" id="toc-awk-教程">Awk 教程</a></li>
+  <li><a href="#选择-gawk" id="toc-选择-gawk">选择 gawk</a></li>
+  <li><a href="#hello-world" id="toc-hello-world">Hello world!</a></li>
+  <li><a href="#模式-动作" id="toc-模式-动作">模式-动作</a></li>
+  <li><a href="#c-语言源码渲染" id="toc-c-语言源码渲染">C
+  语言源码渲染</a></li>
+  <li><a href="#subgsub-和-gensub" id="toc-subgsub-和-gensub">sub、gsub
+  和 gensub</a></li>
+  <li><a href="#匹配-c-函数的定义" id="toc-匹配-c-函数的定义">匹配 C
+  函数的定义</a></li>
+  <li><a href="#正则表达式的局限性"
+  id="toc-正则表达式的局限性">正则表达式的局限性</a></li>
+  <li><a href="#变得更聪明" id="toc-变得更聪明">变得更聪明</a></li>
+  <li><a href="#范围模式" id="toc-范围模式">范围模式</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
+</nav>
+
+<h1 id="前言">前言</h1>
+<p>很多年后，我可能又一次不知道 Awk 的用法，就像此刻的你。</p>
+<p>Awk 是小语言，能做很多小事。用 Awk
+的人像农夫，平素话少，在一片土地上做着很多小事。文本，是 Awk
+耕作的土地。人类不喜欢土地，故而不喜欢当农夫。人类也不喜欢文本，故而喜欢使用微软或金山的一系列办公软件和甲骨文公司的数据库，以取得与高楼大厦，宝马香车，西装革履，笙歌燕舞密切的联系，令人觉得先进，而在土地上耕作的生活，是落后的，徒劳的。</p>
+<p>在现代化进程下，大多数时候，有一些小事，我们做不好，甚至不会做了，于是觉得这些都是小事，不会做又有何妨？这是不扫一屋也能扫天下的时代，只是想时常吃到让人放心的萝卜青菜，粗茶淡饭，却愈发变成奢求了。</p>
+<p>应该庆幸，土地还在，耕种土地的方法还在。只要愿意花点时间，学会如何做耕种方面的一些小事，身心便可得到有益的滋养。这就是在这次学习
+Awk 语言的过程中，我颇为认真写下这份笔记的原因，并希望许多年后，我还知道
+Awk 怎么用。</p>
+<h1 id="awk-教程">Awk 教程</h1>
+<p>本文档只是 Awk
+语言的学习笔记，并非面面俱到的教程。我曾经写过一篇文章，介绍了 Awk
+语言的基本用法，详见「<a
+href="https://segmentfault.com/a/1190000016745490">Awk 小传</a>」。</p>
+<p>若需要更完整且更好的教程，请阅读 Awk 语言的三位作者所著的《The Awk
+programming language》。这是一本很薄的书，200 多页，第一版发布于 1988
+年，第二版发布于 2023 年。这本书并非只是讲述如何使用 Awk
+语言编写程序——这部分内容在全书只占不到 1/3，它更多地是基于 Awk
+语言描述了数据库、虚拟机、编译器以及排序算法等计算机科学中的基本原理。在国内，不仅
+Awk
+语言长期被低估和冷落，这本书则更是被低估和冷落，出版社从未组织翻译。该书的第一版，近年有爱好者翻译并公开，详见「<a
+href="https://github.com/wuzhouhui/awk"
+class="uri">https://github.com/wuzhouhui/awk</a>」。</p>
+<p>GNU 所实现的 gawk，其文档「<a
+href="https://www.gnu.org/software/gawk/manual/"
+class="uri">https://www.gnu.org/software/gawk/manual/</a>」内容丰富，面面俱到，在涉及
+Awk 语言细节时，可作为手册查阅。</p>
+<h1 id="选择-gawk">选择 gawk</h1>
+<p>Awk 语言的解释器有多种实现，除 Awk 语言的作者实现的 awk 之外，还有
+GNU 项目 gawk，运行速度很快的 mawk 以及面向嵌入式系统的 BusyBox 环境中的
+awk 等。在众多 Linux 发行版中，gawk 最为常用，只有 Debian (版本 &gt;
+6.0) / Ubuntu (版本 &gt; 12.04) 及其衍生版本的 Linux 系统默认使用
+mawk。</p>
+<p>若不清楚自己所用的 awk 是哪个实现，可执行以下命令</p>
+<pre class="console"><code>$ awk --version</code></pre>
+<p>然后查看该命令的输出信息。</p>
+<p>对于 Debian/Ubuntu 及其衍生版本的 Linux 系统，若确定 awk 并非
+gawk，而是 mawk，将 gawk 设为默认 awk 最简单的方法是：</p>
+<pre class="console"><code>$ sudo apt remove mawk
+$ sudo apt install gawk</code></pre>
+<p>若希望保持多个不同的 awk 实现，可使用以下命令选择 gawk 作为默认
+awk：</p>
+<pre class="console"><code>$ sudo update-alternatives --config awk</code></pre>
+<p>更推荐 gawk 作为默认 awk 的原因是，gawk 对 Awk 语言进行了扩展，使得
+Awk 语言在处理文本时更为简便。本文档中出现的 Awk 程序皆面向
+gawk，在必要时，我会指出 gawk 对 Awk 语言的扩展之处。</p>
+<h1 id="hello-world">Hello world!</h1>
+<p>使用 Awk 语言编写的每个程序（脚本），都假设有一份要处理的文本，故而
+Awk 程序通常用以下方式执行：</p>
+<pre class="console"><code>$ awk -f 脚本 文本文件</code></pre>
+<p>实际上，每个 Awk 程序都可以组织成以下形式：</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span>...<span class="op">}</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>模式 <span class="op">{</span>动作<span class="op">}</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">END</span> <span class="op">{</span>...<span class="op">}</span></span></code></pre></div>
+<p>其中，<code>模式 {动作}</code> 部分用于处理文本，而
+<code>BEGIN</code> 和 <code>END</code>
+块的运行时机分别是处理文本之前和结束。</p>
+<p>倘若只在 <code>BEGIN</code> 块中写一些代码，Awk
+脚本便可在无文本要处理的情况下得以运行，例如以下 Awk 脚本
+hello.awk：</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="st">&quot;Hello world!&quot;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>执行 hello.awk 的命令是</p>
+<pre class="console"><code>$ awk -f hello.awk
+Hello world!</code></pre>
+<p>也可以将 Awk 程序写成 Shell 脚本的形式。例如，上述 Awk 语言的 Hello
+world 程序，可改写为 Bash 脚本 hello.sh：</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;BEGIN {</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="st">    print &quot;Hello world!&quot;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="st">}&#39;</span></span></code></pre></div>
+<p>以下命令可为 hello.sh
+添加可执行权限（让该脚本可以像程序一样运行的权限）并运行它：</p>
+<pre class="console"><code>$ chmod +x hello.sh
+$ ./hello.sh
+Hello world!</code></pre>
+<h1 id="模式-动作">模式-动作</h1>
+<p>Awk 语言将输入的文件视为一组记录，Awk
+解释器会以一个循环过程依序遍历每一条记录，这个循环过程可称为主循环。</p>
+<p>在主循环运行过程中，对于当前读入的记录，即 <code>$0</code>，首先按照
+Awk 解释器维护的全局变量 <code>FS</code>
+的值进行分割，得到一组字段，可使用 <code>$1</code>，<code>$2</code>，…
+形式获取字段的值。然后，Awk 解释器测试 <code>$0</code>
+是否匹配某些模式，即测试 <code>$0</code>
+中是否含有某些模式，若含有，则执行这些模式对应的一组动作，从而对
+<code>$0</code>
+进行处理或做其他一些运算。简而言之，模式是记录筛选器，筛选我们感兴趣的一些记录，并对其进行处理。</p>
+<p>模式可以是条件表达式，也可以是正则表达式。前者用于精确选择某些记录，后者则可用于粗略选择某些记录。例如，使用条件表达式可筛选序号（即
+<code>NR</code>）为偶数的记录：</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">NR</span> <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span> <span class="op">{</span> <span class="kw">print</span> <span class="dt">$0</span> <span class="op">}</span> <span class="co"># $0 可省略</span></span></code></pre></div>
+<p>使用正则表达式，可筛选含有某些字符的记录，例如，筛选含有
+<code>|</code> 符号的记录：</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">$0</span> <span class="op">~</span>  <span class="ot">/\</span><span class="sc">|</span><span class="ot">/</span> <span class="op">{</span> <span class="kw">print</span> <span class="dt">$0</span> <span class="op">}</span></span></code></pre></div>
+<p><code>|</code>
+符号在正则表达式中有特殊含义，若将其视为普通字符，需对其进行转义，即
+<code>\|</code>。位于一对 <code>/</code>
+之间的文本即正则表达式。上述代码中的 <code>$0</code>
+可忽略，以下代码与之等价：</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ot">/\</span><span class="sc">|</span><span class="ot">/</span> <span class="op">{</span> <span class="kw">print</span> <span class="op">}</span></span></code></pre></div>
+<p>模式与动作，使得 Awk 语言在文本处理方面很像使用 SQL
+语言操作数据库，这并非偶然。Awk
+语言三位作者中的一位，正是因为当时他数据库颇感兴趣所以参与了 Awk
+语言的设计与实现。</p>
+<p><code>BEGIN</code> 和 <code>END</code>
+皆为特殊模式，它们不匹配任何一条记录，前者在 Awk
+解释器读入记录之前匹配成功，后者在 Awk
+解释器读入所有记录之后匹配成功。因此，Awk
+语言也许是这世界上最为简单的编程语言，一言蔽之，Awk 程序即</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>模式 <span class="op">{</span> 动作 <span class="op">}</span></span></code></pre></div>
+<p>下面以一个简单又复杂的示例，讲述 Awk 编程的基本思路。</p>
+<p>假设文件 foo.txt 的内容为</p>
+<pre class="plain"><code>晒太阳 | 完成
+包饺子 | 待完成
+拖地板 | 完成
+穿越到 2030 年 | 需 5 年</code></pre>
+<p>以下 Awk 脚本：</p>
+<pre id="todo-list.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ todo-list.awk #</span>
+BEGIN {
+    FS = &quot;|&quot;
+    print &quot;\\usemodule[zhfonts][size=7pt]&quot;
+    print &quot;\\definepapersize[card][width=85.6mm,height=53.98mm]&quot;
+    print &quot;\\setuppapersize[card]&quot;
+    print &quot;\\setuppagenumbering[location=]&quot;
+    print &quot;\\starttext&quot;
+    print &quot;\\setupxtable[todolist][frame=off]&quot;
+    print &quot;\\startxtable[todolist]&quot;
+}
+{
+    if (NF != 2) next
+    print &quot;  \\startxrow&quot;
+    print &quot;    \\startxcell[width=.05\\textwidth] $\\circ$ \\stopxcell&quot;
+    print &quot;    \\startxcell[width=.75\\textwidth]&quot;, $1, &quot;\\stopxcell&quot;
+    if ($2 ~ / *待完成 */) {
+        print &quot;\\startxcell[width=.2\\textwidth] \\hfill $\\cdots$ \\stopxcell&quot;
+    } else if ($2 ~ / *完成 */) {
+        print &quot;\\startxcell[width=.2\\textwidth] \\hfill $\\checkmark$ \\stopxcell&quot;
+    } else {
+        print &quot;\\startxcell[width=.2\\textwidth] \\hfill&quot;, $2, &quot;\\stopxcell&quot;
+    }
+    print &quot;  \\stopxrow&quot;
+}
+END {
+    print &quot;\\stopxtable&quot;
+    print &quot;\\stoptext&quot;
+}
+</pre>
+<p>可将 foo.txt 转换为 ConTeXt 源文件 foo.tex，后者内容如下：</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode tex"><code class="sourceCode latex"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">\usemodule</span>[zhfonts][size=7pt]</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">\definepapersize</span>[card][width=85.6mm,height=53.98mm]</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">\setuppapersize</span>[card]</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">\starttext</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">\setupxtable</span>[todolist][frame=off]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">\startxtable</span>[todolist]</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\startxrow</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.05<span class="fu">\textwidth</span>] <span class="ss">$</span><span class="sc">\circ</span><span class="ss">$</span> <span class="fu">\stopxcell</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.75<span class="fu">\textwidth</span>] 晒太阳 <span class="fu">\stopxcell</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.2<span class="fu">\textwidth</span>] <span class="fu">\hfill</span> <span class="ss">$</span><span class="sc">\checkmark</span><span class="ss">$</span> <span class="fu">\stopxcell</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\stopxrow</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\startxrow</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.05<span class="fu">\textwidth</span>] <span class="ss">$</span><span class="sc">\circ</span><span class="ss">$</span> <span class="fu">\stopxcell</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.75<span class="fu">\textwidth</span>] 包饺子 <span class="fu">\stopxcell</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.2<span class="fu">\textwidth</span>]  <span class="fu">\hfill</span> <span class="ss">$</span><span class="sc">\cdots</span><span class="ss">$</span><span class="fu">\stopxcell</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\stopxrow</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\startxrow</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.05<span class="fu">\textwidth</span>] <span class="ss">$</span><span class="sc">\circ</span><span class="ss">$</span> <span class="fu">\stopxcell</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.75<span class="fu">\textwidth</span>] 拖地板 <span class="fu">\stopxcell</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.2<span class="fu">\textwidth</span>]  <span class="fu">\hfill</span> <span class="ss">$</span><span class="sc">\checkmark</span><span class="ss">$</span><span class="fu">\stopxcell</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\stopxrow</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\startxrow</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.05<span class="fu">\textwidth</span>] <span class="ss">$</span><span class="sc">\circ</span><span class="ss">$</span> <span class="fu">\stopxcell</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.75<span class="fu">\textwidth</span>] 穿越到 2030 年 <span class="fu">\stopxcell</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">\startxcell</span>[width=.2<span class="fu">\textwidth</span>]  <span class="fu">\hfill</span> 需 5 年<span class="fu">\stopxcell</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">\stopxrow</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="fu">\stopxtable</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="fu">\stoptext</span></span></code></pre></div>
+<p>转换命令为</p>
+<pre class="console"><code>$ awk -f todo-list.awk foo.txt &gt; foo.tex</code></pre>
+<p>倘若 ConTeXt 环境安装了 zhfonts 模块（详见 <a
+href="https://github.com/liyanrui/ConTeXt-notes">ConTeXt-notes.pdf</a>
+第 15 章），编译 foo.tex：</p>
+<pre class="console"><code>$ context foo.tex</code></pre>
+<p>可得 foo.pdf，其内容如下图所示：</p>
+<figure>
+<img src="figures/todo-list.png" alt="todo-list" />
+<figcaption aria-hidden="true">todo-list</figcaption>
+</figure>
+<p>脚本 todo-list.awk
+的内容虽然较多，但程序逻辑很简单，核心部分如下：</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">FS</span> <span class="op">=</span> <span class="st">&quot;|&quot;</span>  <span class="co"># 设置用于分割记录每一列的符号</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    ... 输出 ConTeXt 源文档的首部 ...</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 无模式匹配，意味着匹配每一条记录。</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 动作：将记录分割的每一列</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">#      转换为 ConTeXt 表格单元，</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">#      即 \startxcell ... \stopxcell 语句。</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="cf">END</span> <span class="op">{</span> ... 输出 ConTeXt 源文档的首部 ... <span class="op">}</span></span></code></pre></div>
+<p>todo-list.awk
+中用于处理记录的模式-动作，未提供模式，意味着匹配每一条记录，但是在动作语句中，有检测记录分割所得列数是否为
+2 的语句：</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="bu">NF</span> <span class="op">!=</span> <span class="dv">2</span><span class="op">)</span> <span class="kw">next</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    ... ... ...</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>NF</code> 即当前记录分割所得列数。若它不为 2，则执行
+<code>next</code>
+命令，即终止当前动作的后续语句以及后续的所有模式-动作语句，awk
+解释器会读入文件的下一条记录，并再度执行 BEGIN
+模式及动作语句之后的模式-动作语句。实际上该条件语句可以写成模式的形式，即</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">NF</span> <span class="op">==</span> <span class="dv">2</span> <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    ... ... ...</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>下一节会用到更多的模式-动作语句。</p>
+<h1 id="c-语言源码渲染">C 语言源码渲染</h1>
+<p>使用 ConTeXt（若不了解 ConTeXt，可阅读《<a
+href="https://github.com/liyanrui/ConTeXt-notes">ConTeXt
+笔记</a>》）排版含有程序源码的文档时，由于 ConTeXt 用于排版源码的命令
+<code>\starttyping ... \stoptyping</code>
+在源码渲染方面对编程语言支持的种类过少，例如不支持 C
+语言，故而只能将代码中的所有文字渲染为单一颜色。例如以下 C
+语言源码：</p>
+<pre class="plain"><code>\starttyping
+int main(void) {
+        printf(&quot;Hello world!\n&quot;);
+        return 0;
+}
+\stoptyping</code></pre>
+<p>上述代码对应的 ConTeXt 排版结果如下图所示：</p>
+<figure>
+<img src="figures/c-hello.png"
+alt="C 语言源码在 ConTeXt 中的渲染结果" />
+<figcaption aria-hidden="true">C 语言源码在 ConTeXt
+中的渲染结果</figcaption>
+</figure>
+<p>ConTeXt 提供了<a
+href="https://segmentfault.com/a/1190000043405105">源码渲染机制</a>，用户可通过
+Lua 语言的 lpeg 库，对能够以 BNF（巴科斯范式）
+形式描述的语言进行解析，从而实现该语言的源码渲染。这种解析方式存在一个问题，它会导致无法在
+<code>\starttyping ... \stoptyping</code> 环境中实现 TeX
+逃逸。例如，以下代码以 TeX 逃逸的方式实现了在源码中排版数学公式：</p>
+<pre class="plain"><code>\starttyping[escape=yes]
+/* 计算 /BTEX $a^2$ /ETEX */
+double /BTEX\inframed{foo}/ETEX(double a) {
+        return a * a;
+}
+\stoptyping</code></pre>
+<p>排版结果为</p>
+<figure>
+<img src="figures/tex-escape.png" alt="源码排版命令中的 TeX 逃逸" />
+<figcaption aria-hidden="true">源码排版命令中的 TeX 逃逸</figcaption>
+</figure>
+<p>在很多情况下，我既需要渲染源码，也需要在源码中插入以 TeX
+逃逸方式实现的排版效果，二者如何兼得呢？很简单，只需以 TeX
+逃逸的方式对源码进行渲染即可。只是含有 TeX
+逃逸的源码会破坏源码所属编程语言的
+BNF，无法再通过语法分析的方式渲染源码。事实上，这也是 ConTeXt
+的源码渲染机制与 TeX
+逃逸存在冲突的根源。我想出来的方案是不必强求语法的方案，如下：</p>
+<ul>
+<li>渲染注释</li>
+<li>渲染含有特殊标记的片段。</li>
+<li>渲染字符串；</li>
+<li>渲染基本类型；</li>
+<li>渲染关键词；</li>
+</ul>
+<p>上述方案中第 2 条，特殊标记是我自行定义的标记。例如</p>
+<pre class="plain"><code>\starttyping
+/* 计算 \m{a^2} */
+double \fn{foo}(double \p{a}) {
+        return a * a;
+}
+\stoptyping</code></pre>
+<p>上述代码中的 <code>\m{...}</code>，<code>\fn{...}</code> 以及
+<code>\p{...}</code>
+便是特殊标记，分别用于表示数学公式、函数名和参数名。在源码渲染过程中，若遇到特殊标记，便将其转化为相应的
+TeX 逃逸语句。下面，用 Awk 语言实现上述方案。</p>
+<p>首先，定义颜色映射文件：</p>
+<pre id="c-color.map" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-color.map #</span>
+basic_type: GreenBlue
+keyword: ForestGreen
+string: Fuchsia
+comment: darkgray
+\fn: Maroon
+\t: GreenBlue
+\p:OutrageousOrange
+\c: darkgray
+</pre>
+<p>简单起见，只为关键字、字符串、注释、函数名（<code>\fn</code>）、自定义类型（<code>\t</code>）、函数参数名（<code>\p</code>）以及语句内嵌注释（<code>\c</code>）定义了颜色。若日后需要更多的特殊标记，可对
+c-color.map 进行扩充。</p>
+<p>在 Awk 程序的 <code>BEGIN</code> 块读入颜色文件，将其内容转化为 Awk
+数组 color，并定义 C 语言的基本类型和常见关键词：</p>
+<pre id="c-render.awk1" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-render.awk #</span>
+BEGIN {
+    FS = &quot;:&quot;
+    while (getline &lt;&quot;c-color.map&quot; &gt; 0) {
+        gsub(/[ \t]+/, &quot;&quot;, $1) # 去除特殊标记的前后空白字符
+        gsub(/[ \t]+/, &quot;&quot;, $2) # 去除颜色名的前后空白字符
+        color[$1] = $2
+    }
+    FS = &quot; &quot;
+    basic_types = &quot;char|double|enum|float|int|long|short|signed|struct|union|unsigned|void|const&quot;
+    keywords = &quot;static|typedef|sizeof|break|case|continue|default|do|else|for|goto|if|return|switch|while&quot;
+}
+</pre>
+<p>然后，探测 ConTeXt 源文件中源码排版区域，</p>
+<pre id="c-render.awk2" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
+/\\starttyping/ { typing = 1; print; next}
+</pre>
+<p>在源码排版区域，先对源码中的注释部分进行渲染，以防注释文本中出现与其他被渲染的元素相同的文本而被污染：</p>
+<pre id="c-render.awk3" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
+typing &amp;&amp; /\/\*/ {
+    if (!/\*\//) in_comment = 1
+    gsub(/\/\*.*/, &quot;/BTEX\\color[&quot; color[&quot;comment&quot;] &quot;]{&amp;}/ETEX&quot;)
+    $0 = gensub(/\\m{([^}]+)}/, &quot;\\\\m{\\1}&quot;, &quot;g&quot;) # 数学公式
+    print; next
+}
+typing &amp;&amp; in_comment {
+    if (/\*\//) in_comment = 0
+    gsub(/[^ \t].*/, &quot;/BTEX\\color[&quot; color[&quot;comment&quot;] &quot;]{&amp;}/ETEX&quot;)
+    $0 = gensub(/\\m{([^}]+)}/, &quot;\\\\m{\\1}&quot;, &quot;g&quot;) # 数学公式
+    print; next
+}
+</pre>
+<p>上述代码可对单行和多行注释进行渲染，渲染完成后，使用
+<code>next</code>
+让主循环无需执行后续的模式-动作语句，提前进入下一次循环。</p>
+<p>接下来，渲染 C 语句及内嵌注释：</p>
+<pre id="c-render.awk4" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
+typing {
+    # 渲染函数名
+    $0 = gensub(/\\fn{([^}]+)}/, &quot;/BTEX\\\\color[&quot; color[&quot;\\fn&quot;] &quot;]{\\1}/ETEX&quot;, &quot;g&quot;)
+    # 渲染函数参数类型
+    $0 = gensub(/\\t{([^}]+)}/, &quot;/BTEX\\\\color[&quot; color[&quot;\\t&quot;] &quot;]{\\1}/ETEX&quot;, &quot;g&quot;)
+    # 渲染函数参数
+    $0 = gensub(/\\p{([^}]+)}/, &quot;/BTEX\\\\color[&quot; color[&quot;\\p&quot;] &quot;]{\\1}/ETEX&quot;, &quot;g&quot;)
+    # 渲染语句内嵌入的注释
+    $0 = gensub(/\\c{([^}]+)}/, &quot;/BTEX\\\\color[&quot; color[&quot;\\c&quot;] &quot;]{/* \\1 */}/ETEX&quot;, &quot;g&quot;)
+    # 渲染字符串常量
+    if (/&quot;[^&quot;]*&quot;/) {
+        # 处理反斜线
+        gsub(/\\/, &quot;\\backslash &quot;)
+        gsub(/&quot;[^&quot;]*&quot;/, &quot;/BTEX\\color[&quot; color[&quot;string&quot;] &quot;]{&amp;}/ETEX&quot;)
+    }
+    # 渲染基本类型
+    gsub(&quot;\\&lt;(&quot; basic_types &quot;)\\&gt;&quot;, &quot;/BTEX\\color[&quot; color[&quot;basic_type&quot;] &quot;]{&amp;}/ETEX&quot;)
+    # 渲染关键词
+    gsub(&quot;\\&lt;(&quot; keywords &quot;)\\&gt;&quot;, &quot;/BTEX\\color[&quot; color[&quot;keyword&quot;] &quot;]{&amp;}/ETEX&quot;)
+    print; next
+}
+</pre>
+<p>与渲染注释过程相似，渲染过程结束后，使用 <code>next</code>
+让主循环提前进入下一次运转。</p>
+<p>在遇到 <code>\stoptyping</code> 行时，将源码区域关闭：</p>
+<pre id="c-render.awk5" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
+/\\stoptyping/ { typing = 0; print; next}
+</pre>
+<p>对于非源码区域的内容，原样将其输出：</p>
+<pre id="c-render.awk6" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-render.awk #</span>  <span class="orez-symbol">+</span>
+{ print }
+</pre>
+<p>至此，支持在 ConTeXt 源码排版环境中渲染 C 语言源码的 Awk
+脚本完成。</p>
+<p>使用 <a href="../orez-v1/index.html">orez 工具</a> 从本文档（<a
+href="awk-notes.orz">awk-notes.orz</a>）中提取 c-color.map 和
+c-render.awk 文件：</p>
+<pre class="console"><code>$ orez -t awk-notes.orz -e &quot;c-color.map&quot;
+$ orez -t awk-notes.orz -e &quot;c-render.awk&quot;</code></pre>
+<p>将以下 ConTeXt 源文件 foo.tex 作为示例，</p>
+<pre class="text"><code>\usecolors[crayola]
+\starttext
+\starttyping[escape=yes]
+/* This is a program which can
+   print &quot;hello world&quot; in screen.
+   It can not print any mathematical formula,
+   e.g. \m{a^2 + b^2 = c^2} */
+int \fn{main}(int \p{argc} \c{foo}, char **\p{argv}) {
+        print(&quot;Hello world!\n&quot;);
+        return 0;
+}
+\stoptyping
+\stoptext</code></pre>
+<p>测试 c-render.awk 脚本：</p>
+<pre class="console"><code>$ awk -f c-render.awk foo.tex &gt; bar.tex
+$ context bar.tex</code></pre>
+<p>所得排版结果如下图所示：</p>
+<figure>
+<img src="figures/c-render-result.png" alt="C 语言源码渲染结果" />
+<figcaption aria-hidden="true">C 语言源码渲染结果</figcaption>
+</figure>
+<p>源码排版区域所使用的特殊标记，若有删除需求，可通过以下脚本实现：</p>
+<pre id="c-demark.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-demark.awk #</span>
+/\\starttyping/ { typing = 1; print; next}
+typing {
+    $0 = gensub(/\\m{([^}]+)}/, &quot;\\1&quot;, &quot;g&quot;)
+    $0 = gensub(/\\fn{([^}]+)}/, &quot;\\1&quot;, &quot;g&quot;)
+    $0 = gensub(/\\t{([^}]+)}/, &quot;\\1&quot;, &quot;g&quot;)
+    $0 = gensub(/\\p{([^}]+)}/, &quot;\\1&quot;, &quot;g&quot;)
+    $0 = gensub(/\\c{([^}]+)}/, &quot;\\1&quot;, &quot;g&quot;)
+    if (/&quot;[^&quot;]*&quot;/) {
+        gsub(/\\backslash[ \t]*/, &quot;\\&quot;)
+    }
+    print; next
+}
+/\\stoptyping/ { typing = 0; print; next}
+{ print }
+</pre>
+<h1 id="subgsub-和-gensub">sub、gsub 和 gensub</h1>
+<p>上一节所写的脚本，频繁使用了 gawk 内置的字符串替换函数
+<code>gsub</code> 和 <code>gensub</code>，常用的还有
+<code>sub</code>。使用 Awk
+解决各种文本处理问题，必须熟悉这三个函数的用法。</p>
+<p><code>sub</code> 函数接受 3
+个参数。第一个参数正则表达式。第二个参数是替换文本。第三个参数是可选的，即目标字符串，若未提供，<code>sub</code>
+函数会将当前读入的一行文本 <code>$0</code> 作为该参数。Awk
+程序读入的一行文本，称为一条记录。以下 Awk
+脚本可去除任何一条记录的前导空白字符：</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]*/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">);</span> <span class="kw">print</span> <span class="op">}</span></span></code></pre></div>
+<p>上述代码与以下代码等价</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]*/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> <span class="dt">$0</span><span class="op">);</span> <span class="kw">print</span> <span class="dt">$0</span> <span class="op">}</span></span></code></pre></div>
+<p>例如，对于 foo.txt 文件：</p>
+<pre class="plain"><code>a
+    b
+        c</code></pre>
+<p>执行以下命令</p>
+<pre class="console"><code>$ awk &#39;{ sub(/^[ \t]*/, &quot;&quot;); print }&#39; foo.txt</code></pre>
+<p>输出为</p>
+<pre class="plain"><code>a
+b
+c</code></pre>
+<p>未向 <code>print</code> 函数提供参数时，它会打印
+<code>$0</code>。始终都要记住，<code>$0</code> 是当前正在处理的记录，在
+<code>sub</code>、<code>gsub</code>、<code>gensub</code> 以及
+<code>print</code> 函数中，它可以作为默认的输入参数，使得 Awk
+代码更为简约，当然在不熟悉 Awk
+语言的情况下，也会更让人觉得难懂。不必为此苛责 Awk
+语言不友好，不直观，毕竟任何一种语言都有许多初学者不明就里的惯用法。</p>
+<p>上述代码中，<code>sub</code> 从 <code>$0</code>
+中搜索第一次与正则表达式 <code>/^[ \t]*/</code>
+匹配的部分，将其替换为空字符串。<code>/^[ \t]*/</code>
+表示以一个或多个（<code>*</code>）空格或制表符（<code>\t</code>）作为开头（<code>^</code>）。关于正则表达式，我无力讲太多，因为关于它的知识足以写一本
+700 多页的书。我建议在实际问题中去学习它的用法。需要注意的是，在 Awk
+语言中，正则表达式可以写成 <code>/.../</code>
+的形式，也可以写为字符串的形式，例如 <code>"^[ \t]*"</code>。</p>
+<p><code>sub</code> 只能替换目标字符串中第一次与正则表达式匹配的部分，而
+<code>gsub</code> 和 <code>gensub</code>
+可以替换目标字符串中所有与正则表达式匹配的部分。gawk 实现的这三个
+<code>sub</code> 函数，有着其他 Awk
+语言的实现所不具备的功能，即正则表达式匹配过程中的捕获功能。例如，对于上述的
+foo.txt，以下示例可为每一条记录中被捕获的部分增加花扩号：</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>$ awk &#39;<span class="op">{</span> <span class="fu">sub</span><span class="op">(</span><span class="ot">/[^</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+/</span><span class="op">,</span> <span class="st">&quot;{&amp;}&quot;</span><span class="op">);</span> <span class="kw">print</span> <span class="op">}</span>&#39; foo.txt</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span>a<span class="op">}</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>b<span class="op">}</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">{</span>c<span class="op">}</span></span></code></pre></div>
+<p>上述代码中的正则表达式 <code>/[^ \t]+/</code>
+表示一个或多个非空白字符，<code>sub</code>
+函数匹配到的部分，在替换文本中表示为 <code>&amp;</code>。</p>
+<p>现在，有文件 bar.txt：</p>
+<pre class="plain"><code>A B C
+a b c
+1 2 3</code></pre>
+<p>以下命令使用 <code>gsub</code> 函数，为每个字符都增加花扩号：</p>
+<pre class="console"><code>$ awk &#39;{ gsub(/[^ \t]+/, &quot;{&amp;}&quot;); print }&#39; bar.txt
+{A} {B} {C}
+{a} {b} {c}
+{1} {2} {3}</code></pre>
+<p><code>gensub</code> 函数与 <code>gsub</code>
+相似，能够替换目标字符串中所有与正则表达式匹配的部分，但是扩展了捕获功能。<code>gensub</code>
+在正则表达式中可使用 <code>(...)</code>
+设置捕获区域，且捕获区域可以是多个，在替换文本中，使用
+<code>\1</code>，<code>\2</code> …
+依序获得每个捕获区域匹配的文本，例如</p>
+<pre class="console"><code>$ awk &#39;{ print gensub(/([^ \t]+)[ \t]+(.*)/, &quot;{\\1} {\\2}&quot;, &quot;g&quot;) }&#39; bar.txt
+{A} {B C}
+{a} {b c}
+{1} {2 3}</code></pre>
+<p>对于目标字符串，上述正则表达式中的 <code>([^ \t]+)</code>
+用于捕获一个或个非空白字符构成的文本，<code>[ \t]+</code> 用于匹配 1
+个或多个空白字符构成的文本，而 <code>(.*)</code>
+用于捕获剩下的所有文本。<code>gensub</code>
+第三个参数用于选择与正则表达式第 n 次匹配的文本参与替换，该参数为 “g”
+表示与正则表达式匹配的文本全部参与替换。<code>gensub</code> 第 4
+个参数是目标字符串，若未提供，则该参数为
+<code>$0</code>。需要注意的是，<code>gensub</code> 与 <code>sub</code>
+和 <code>gsub</code>
+还有一点不同，它不修改目标字符串，而是返回替换结果，故而上例直接将其结果作为
+<code>print</code> 的参数。还需要注意的是，获取捕获区域文本的符号
+<code>\1</code>，<code>\2</code>，…，在 <code>gensub</code> 中需要对
+<code>\</code> 进行转义，故而形式是
+<code>\\1</code>，<code>\\2</code>，…倘若未对 <code>\</code> 转义，awk
+会认为像 <code>\1</code> 这样的形式是对 <code>1</code> 进行转义，结果为
+<code>1</code>。</p>
+<p>标准的 Awk 实现，没有 <code>gensub</code>，另外 <code>sub</code> 和
+<code>gsub</code> 皆不具备捕获功能。若使用标准 Awk
+语言实现与以下命令等价的功能</p>
+<pre class="console"><code>$ awk &#39;{ sub(/^[ \t]*/, &quot;&quot;); print }&#39; foo.txt</code></pre>
+<p>需要使用 <code>match</code>
+函数进行文本匹配，获得与正则表达式匹配的文本的开始位置和文本长度。awk
+解释器维护的全局变量 <code>RSTART</code> 和
+<code>RLENGTH</code>，它们分别表示与正则表达式匹配的文本的开始位置和文本长度，由
+<code>match</code> 函数予以设定。基于这两个全局变量，使用
+<code>substr</code> 提取文本，从而模拟捕获。例如</p>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]*/</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="bu">RSTART</span> <span class="op">+</span> <span class="bu">RLENGTH</span><span class="op">)</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>执行以下命令，便可消除 foo.txt 中每一行的前导空白：</p>
+<pre class="console"><code>$ awk &#39;{
+    if (match($0, /^[ \t]*/)) {
+        print substr($0, RSTART + RLENGTH)
+    }
+}&#39; foo.txt
+a
+b
+c</code></pre>
+<p>基于 <code>match</code> 和 <code>substr</code> 也可以模拟
+<code>gsub</code>，但是需要借助循环结构，逐步消解目标字符串，每一步都获得一个匹配结果并对其进行处理。在标准
+Awk 实现中模拟 <code>gensub</code> 会更为困难。从应用 Awk
+语言解决问题的角度，没必要为难自己，建议使用 gawk，让其他 Awk
+实现安其天命。</p>
+<p>最后，观察上一节的 Awk 代码，在 <code>gensub</code>
+的替换文本参数中，出现了 <code>\\\\color</code>
+的形式，虽然它对应的替换后的文本是
+<code>\corlor</code>，但是在参数中必须写成至少 4 个
+<code>\</code>，否则替换后的文本就是
+<code>color</code>。原因是，<code>gensub</code>
+的参数会被多次处理，每次处理便会丢失一个用于逃逸的
+<code>\</code>，详情见「<a
+href="https://www.gnu.org/software/gawk/manual/gawk.html#Gory-Details">More
+about ‘’ and ‘&amp;’ with sub(), gsub(), and
+gensub()</a>」，但是，对此也无需过于严肃，在实践中，尝试几次便可获得够用的经验了。</p>
+<h1 id="匹配-c-函数的定义">匹配 C 函数的定义</h1>
+<p>「<a href="#源码渲染">源码渲染</a>」一节中，我为 C
+函数的渲染定义了几个标记，有函数名 <code>\fn</code>，变量类型
+<code>\t</code> 以及参数名 <code>\p</code>，之所以需要这些标记，是因为
+Awk 语言对文件默认是逐行处理，而 C
+函数的定义通常跨越多行，正则表达式匹配 C
+函数的定义存在困难。不过，通过修改全局变量 <code>RS</code> 的值，Awk
+语言也能实现跨行处理记录，亦即 Awk 所处理的记录可以由多行文本构成。</p>
+<p><code>RS</code> 是记录分隔符，默认值为 <code>\n</code>，故而 Awk
+语言默认是以文件中的每一行作为记录来处理。当匹配到记录含有
+<code>\starttyping</code> 时，意味着进入了 ConTeXt
+源文件中的源码排版区域，此时，可将 <code>RS</code> 的值修改为
+<code>\stoptyping</code>，然后 Awk
+的主循环下一次读入的记录便是整个源码排版区域的内容。例如，以下 Awk
+程序</p>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ot">/\</span><span class="sc">\</span><span class="ss">starttyping</span><span class="ot">/</span> <span class="op">{</span> <span class="bu">RS</span> <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\\\\</span><span class="st">stoptyping&quot;</span><span class="op">;</span> typing <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> <span class="kw">next</span> <span class="op">}</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>typing <span class="op">{</span> typing <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="bu">RS</span> <span class="op">=</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span> <span class="kw">next</span><span class="op">}</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="kw">print</span> <span class="op">}</span></span></code></pre></div>
+<p>可消除 ConTeXt 源文件中的所有源码排版区域。需要注意的是，将
+<code>\stoptyping</code> 赋予 <code>RS</code>
+时，需要进行反斜线转义，而且需要连续转义 3 次，请忍受这个事实。</p>
+<p>上述代码的 <code>typing { ... }</code>
+部分得到的记录便是一个源码排版区域的所有内容，因此匹配 C
+函数的定义需要在这部分实现。首先需要考虑 C
+函数定义的正则表达式结构。以下面的 C 函数定义作为参考，</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">*</span> foo <span class="op">(</span><span class="dt">int</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> <span class="op">*</span>c <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">*</span>c <span class="op">=</span> a <span class="op">+</span> b<span class="op">;</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> c<span class="op">;</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>可写出以下这则表达式：</p>
+<ul>
+<li><code>(\w+[\* \t\n]+)</code>：匹配并捕获函数的返回值类型，如上例中
+<code>int *</code> 部分；</li>
+<li><code>(\w+)</code>：匹配并捕获函数名，如上例的
+<code>foo</code>；</li>
+<li><code>(\s*\()</code>：匹配并捕获函数参数列表的左括号；</li>
+<li><code>(.*)</code>：匹配并捕获函数的参数列表；</li>
+<li><code>(\)\s*{.*})</code>：匹配并捕获函数参数列表的右括号以及函数定义的剩余部分。</li>
+</ul>
+<p>将上述各正则表达式片段组装起来，使用 Awk 的 <code>match</code>
+函数中便可对函数的定义进行匹配并捕获各个部分，捕获结果存于一个数组 s
+中：</p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">match</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="ot">/(\</span><span class="sc">w</span><span class="ot">+[\</span><span class="sc">*</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ot">]+)(\</span><span class="sc">w</span><span class="ot">+)(\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">)(.*)(\</span><span class="sc">)</span><span class="ot">\</span><span class="sc">s</span><span class="ot">*</span><span class="ss">{</span><span class="ot">.*</span><span class="ss">}</span><span class="ot">)/</span><span class="op">,</span> s<span class="op">)</span></span></code></pre></div>
+<p>在上述正则表达式中，<code>\s</code> 和 <code>\w</code> 皆为 gawk
+扩展的正则表达式语法，它们分别表示空白字符（空格，制表符和换行符）和单词字符（大小写字母、数字和下划线）。此外，上述使用的
+<code>match</code> 函数也是 gawk
+特有的，它可将含有捕获功能的正则表达式匹配的部分存入数组。</p>
+<p>基于上述知识，现在可以写出一个能够自动标记函数名和参数名的脚本：</p>
+<pre id="c-function.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ c-function.awk #</span>
+/\\starttyping/ { RS = &quot;\\\\stoptyping&quot;; typing = 1; print; next }
+typing {
+    if (match($0, /(\w+[\* \t\n]+)(\w+)(\s*\()(.*)(\)\s*{.*})/, s)) {
+        # 标记函数名
+        if (s[2] !~ /\\fn/) s[2] = &quot;\\fn{&quot; s[2] &quot;}&quot;
+        # 标记参数名
+        split(s[4], p, &quot;,&quot;)
+        for (i in p) {
+            if (p[i] !~ /\\.+/) {
+                if (p[i] ~ /\w+[\* \t\n]+\([\* \t\n]+\w+\)/) {
+                     # 参数为函数指针的形式，不予处理
+                } else {
+                    n = split(p[i], q, &quot; &quot;)
+                    gsub(q[n], &quot;\\p{&amp;}&quot;, s[4])
+                }
+            }
+        }
+        print s[1] s[2] s[3] s[4] s[5]
+    } else print
+    typing = 0; RS = &quot;\n&quot;; printf &quot;\\stoptyping&quot;; next
+}
+{ print }
+</pre>
+<p>注意，上述代码为了处理函数的参数列表，使用了两次 Awk 内置的
+<code>split</code>
+函数，第一次是以逗号对参数列表进行分割获得每个参数，第二次以空格对参数进行分割以分离参数类型与参数名。此外，由于
+<code>\stoptyping</code> 被临时充作 <code>RS</code>
+的值，会在输出中消失，故而在处理完源码区域后，需要使用
+<code>printf</code> 将其输出。<code>printf</code> 与 <code>print</code>
+的一个区别是，前者不会在输出内容尾部添加换行符 <code>\n</code>。</p>
+<p>使用 c-function.awk 脚本先对 ConTeXt 源文件中的 C
+语言源码中的函数进行处理，以自动生成函数名和参数名的标记，然后将处理后的文件交于「<a
+href="#源码渲染">源码渲染</a>」一节实现的 c-render.awk
+进行后续渲染处理。如此可在不对 c-render.awk
+变动的情况下省却手动标记函数定义的繁琐，并且保持脚本代码的简单。这是我喜欢的程序演进方式。「<a
+href="#源码渲染">源码渲染</a>」一节是在无奈之下选择手动标记处理函数定义，这一节保持了手动标记功能，只是在一定程度上将手动标记过程自动化处理。手动标记，是
+c-function.awk 和 c-render.awk 协作时的一层连接。</p>
+<p>此时的无奈，化为协议层，衔接着彼时的进化……换句话说，祖传的屎山代码可以不要动。</p>
+<h1 id="正则表达式的局限性">正则表达式的局限性</h1>
+<p>上一节所写的脚本 c-function.awk
+实际上有一个很严重的缺陷，即它不具备任何实用性。例如对于以下 C
+语言源码：</p>
+<pre class="plain"><code>\starttyping
+void foo(void) {
+}
+void bar(int a, int b) {
+}
+\stoptyping</code></pre>
+<p>c-function.awk 的处理结果为</p>
+<pre class="plain"><code>\starttyping
+void \fn{foo}(void) {
+}
+void \p{b}\p{a}r(int \p{a}, int \p{b}) {
+}
+\stoptyping</code></pre>
+<p>显然 c-function.awk
+中用于匹配函数定义的正则表达式匹配结果出错了，它将</p>
+<pre class="plain"><code>void) {
+}
+void \p{b}\p{a}r(int \p{a}, int \p{b}</code></pre>
+<p>视为参数列表了。此错误是 Awk 的正则表达式的贪婪所致。</p>
+<p>为了更清楚的说明上述问题，需要对问题进行简化。假设有以下文本：</p>
+<pre class="plain"><code>(a b) c (d e f)</code></pre>
+<p>使用以下 Awk 语句对其进行匹配并捕获：</p>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> <span class="ot">/\</span><span class="sc">(</span><span class="ot">(.*)\</span><span class="sc">)</span><span class="ot">/</span><span class="op">,</span> s<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> s[<span class="dv">1</span>]</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>得到的结果是</p>
+<pre class="plain"><code>a b) c (d e f</code></pre>
+<p>而我的本意是想得到</p>
+<pre class="plain"><code>a b</code></pre>
+<p>这便是 c-function.awk
+遇到多个函数时出错的原因。若想解决这个问题，需要实现一个更为复杂的字符串处理过程，但是也有一个简单的方案，增加新标记，例如：</p>
+<pre class="plain"><code>\starttyping
+\fn:start
+void foo(void) {
+}
+\fn:stop
+\fn:start
+void bar(int a, int b) {
+}
+\fn:stop
+\stoptyping</code></pre>
+<p>在新标记规划出的范围内，c-function.awk 是可用的，只需略加修改：</p>
+<pre id="new-c-function.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ new-c-function.awk #</span>
+/\\starttyping/ { typing = 1; print; next }
+typing &amp;&amp; /\\fn:start/ { fn = 1; RS = &quot;\\\\fn:stop\n&quot;; next }
+typing &amp;&amp; fn {
+    if (match($0, /(\w+[\* \t\n]+)(\w+)(\s*\()(.*)(\)\s*{.*})/, s)) {
+        # 标记函数名
+        if (s[2] !~ /\\fn/) s[2] = &quot;\\fn{&quot; s[2] &quot;}&quot;
+        # 标记参数名
+        split(s[4], p, &quot;,&quot;)
+        for (i in p) {
+            if (p[i] !~ /\\.+/) {
+                if (p[i] ~ /\w+[\* \t\n]+\([\* \t\n]+\w+\)/) {
+                     # 参数为函数指针的形式，不予处理
+                } else {
+                    n = split(p[i], q, &quot; &quot;)
+                    gsub(q[n], &quot;\\p{&amp;}&quot;, s[4])
+                }
+            }
+        }
+        print s[1] s[2] s[3] s[4] s[5]
+    } else print
+    fn = 0; RS = &quot;\n&quot;; next
+}
+/\\stoptyping/ { typing = 0; print; next }
+{ print }
+</pre>
+<p>有朝一日，我变得更聪明了，再写一个脚本，用于为每个 C
+函数的定义自动生成 <code>\fn:start</code> 和 <code>\fn:stop</code>
+标记。</p>
+<h1 id="变得更聪明">变得更聪明</h1>
+<p>现在开始尝试解决上一节最后的问题——变得更聪明。</p>
+<p>假设我已取到一个 <code>\starttyping...\stoptyping</code>
+区域的内容，并将其作为一条记录，即 <code>$0</code>。使用「<a
+href="#匹配-c-函数的定义">匹配 C
+函数的定义</a>」一节中的方法达成这一目的并不困难。</p>
+<p>为了精准捕捉到一个 C 函数的定义，必须逐字符遍历
+<code>$0</code>，推断当前字符及其之后的一段文本是否满足 C
+函数定义的最短特征：返回类型 + 函数名 + 参数列表 +
+第一个花括号。这是最笨的方法，然而对于本节要解决的问题而言，却是最聪明的做法。</p>
+<p>Awk 语言逐字符遍历字符串的方式需要基于 <code>substr</code>
+方能实现。例如，以下脚本可逐字符输出当前记录：</p>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">printf</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码中的 <code>substr</code> 函数从 <code>$0</code> 中截取从第
+<code>i</code> 个字符开始的，长度为 <code>1</code> 的子字符串，亦即第
+<code>i</code> 个字符自身。不过，对于一些 Awk 语言的实现，例如
+mawk，它不支持
+Unicode，故而上述代码对它而言只是逐字节遍历字符串。以下命令可用于彰显
+gawk 在 Unicode 支持方面的功绩：</p>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>$ awk &#39;BEGIN <span class="op">{</span> x <span class="op">=</span> <span class="st">&quot;中文&quot;</span><span class="op">;</span> <span class="kw">print</span> <span class="fu">length</span><span class="op">(</span>x<span class="op">)</span> <span class="op">}</span>&#39;</span></code></pre></div>
+<p>若 awk 为 gawk，上述命令的输出为 2；若 awk 为 mawk，则输出为 6。标准
+Awk（即 Awk 语言的三位创始人）实现的 awk 是 2022 年实现了 Unicode
+支持。单从这一点，我极力不推荐 mawk，虽然它解释 Awk
+语言更快，但是作为脚本语言，要务是让用户在编程时更为直观地实现自己的想法，在这一点上，gawk
+优于其他所有 Awk 实现。</p>
+<p>现在回到本节要解决的问题上来。由于 <code>$0</code>
+中每一个字符都可能是函数定义的开头第一个字符，故而在遍历 <code>$0</code>
+的过程中，每次都要用一个能够匹配函数定义最短特征的正则表达式进行探测：</p>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">)</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span>x<span class="op">,</span> <span class="ot">/^\</span><span class="sc">w</span><span class="ot">+[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ss">*</span><span class="ot">]+\</span><span class="sc">w</span><span class="ot">+\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">/</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> i</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;found function!&quot;</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码中，未向 <code>substr</code>
+提供第三个参数——字符串截取长度，则截取的子字符串是从 <code>$0</code>
+的第 <code>i</code> 个字符及其之后所有字符。正则表达式
+<code>/^\w+[ \t\n*]+\w+\s*\(/</code>
+可匹配以函数的返回类型、函数名和参数列表的左括号构成的字符串且该字符串是
+<code>x</code>
+的开头。凡遇到以这种形式开头的文本，便可视为遇到了一个函数定义的开头，用
+<code>a</code> 记录当前的下标 <code>i</code>。可以用一个变量
+<code>in_function</code> 记录这一重大发现：</p>
+<div class="sourceCode" id="cb53"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">)</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span>x<span class="op">,</span> <span class="ot">/^\</span><span class="sc">w</span><span class="ot">+[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ss">*</span><span class="ot">]+\</span><span class="sc">w</span><span class="ot">+\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">/</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> i</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>        in_function <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;found function!&quot;</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码变动之处所表达的逻辑是，在没有遇到函数定义时，探测
+<code>x</code> 的开头是否满足函数定义特征，若满足则将
+<code>in_function</code> 的值置为 1，下一次便无需对 <code>x</code>
+进行探测了，因为已经发现了一处函数定义。不用担心上述代码的
+<code>if</code> 语句中的 <code>!in_function</code>
+表达式在使用一个未定义的变量，因为在 Awk 语言中，未定义的变量的值为 0
+或空字符串，对其进行逻辑求反运算，结果为真。此外，在 Awk
+语言中，为一个变量赋值即定义，故而 <code>in_function = 1</code> 定义了
+<code>in_function</code>
+并对其赋值，从而在下一次循环中，<code>!in_function</code>
+表达式是在对一个已定义的变量进行逻辑求反。</p>
+<p>在发现函数的定义后，需要探测该函数的定义在何处结束。将该问题具体化，即寻找一对封闭的花括号，它所囊括的内容便是函数体。在
+<code>in_function</code> 状态中，只需要找到第一次出现的
+<code>{</code>，然后再寻找一个与之配对的
+<code>}</code>，则后者便是函数定义的结束之处。实现这个过程，无法使用正则表达式，因为函数体内部可能存在俄罗斯套娃似的嵌套的
+<code>{...}</code> 结构，而正则表达式无力识别嵌套结构。</p>
+<p>假设循环正在进行，在 <code>in_function</code>
+状态下，遇到了第一个、第二个…… <code>{</code>，只需要对其进行计数：</p>
+<div class="sourceCode" id="cb54"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>        in_function_body <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">++</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>同时，在 <code>in_function</code> 状态下，遇到了第一个、第二个……
+<code>}</code>，也对其进行计数，只是这个计数是在对
+<code>brace_count</code> 的削减：</p>
+<div class="sourceCode" id="cb55"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">--</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述两段代码可合并为</p>
+<div class="sourceCode" id="cb56"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>        in_function_body <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">++</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>        brace_count<span class="op">--</span></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span>    </span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>当 <code>brace_count</code> 的值为 0
+时，便意味着发现了囊括函数体的一对花括号，此时用 b
+记住函数定义的终止位置，并将 <code>in_function_body = 0</code> 和
+<code>in_function</code> 置为 0，以备检测下一个可能存在的函数定义：</p>
+<div class="sourceCode" id="cb57"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>in_function_body <span class="op">&amp;&amp;</span> brace_count <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> i</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> a<span class="op">,</span> b <span class="op">-</span> a <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> <span class="st">&quot;function end.&quot;</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>    in_function_body <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>    in_function <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码中的 <code>substr($0, a, b - a)</code>
+便是捕获的一个函数的定义。</p>
+<p>完整的捕获每个函数定义的代码如下：</p>
+<div class="sourceCode" id="cb58"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span><span class="dt">$0</span><span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> i<span class="op">)</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(!</span>in_function <span class="op">&amp;&amp;</span> <span class="fu">match</span><span class="op">(</span>x<span class="op">,</span> <span class="ot">/^\</span><span class="sc">w</span><span class="ot">+[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">n</span><span class="ss">*</span><span class="ot">]+\</span><span class="sc">w</span><span class="ot">+\</span><span class="sc">s</span><span class="ot">*\</span><span class="sc">(</span><span class="ot">/</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> i</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>        in_function <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;found function!&quot;</span></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">continue</span></span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>in_function<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>        c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>x<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>            in_function_body <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>            brace_count<span class="op">++</span></span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>            brace_count<span class="op">--</span></span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>in_function_body <span class="op">&amp;&amp;</span> brace_count <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a>        b <span class="op">=</span> i</span>
+<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="fu">substr</span><span class="op">(</span><span class="dt">$0</span><span class="op">,</span> a<span class="op">,</span> b <span class="op">-</span> a <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;function end.&quot;</span></span>
+<span id="cb58-23"><a href="#cb58-23" aria-hidden="true" tabindex="-1"></a>        in_function_body <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb58-24"><a href="#cb58-24" aria-hidden="true" tabindex="-1"></a>        in_function <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb58-25"><a href="#cb58-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb58-26"><a href="#cb58-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>既然能从一条记录中发现所有 C 函数的定义，那么便可为每个函数的定义添加
+<code>\fn:start</code> 和 <code>\fn:stop</code>
+标记，从而上一节的难题便得以解决，而且无需修改 new-c-function.awk。</p>
+<p>至此，在 ConTeXt 排版环境中渲染 C
+语言源码的问题便基本得以解决。有一些 C
+语法元素的渲染尚未涉及，诸如预处理指令、宏定义等，但是渲染这些语法元素的思路不会比识别
+C 函数的定义更难。</p>
+<h1 id="范围模式">范围模式</h1>
+<p>文档转换工具 <a href="https://pandoc.org/">pandoc</a>
+允许在它所处理的 Markdown 文档首部存在 YAML 数据作为文档的元信息。例如
+awk-notes.md：</p>
+<div class="sourceCode" id="cb59"><pre
+class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> Awk：面向文本编程</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="an">abstract:</span><span class="co"> 专业的事，交给专业的工具。</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="co">...</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>很多年后，我可能又一次不知道 Awk 的用法，就像此刻的你……</span></code></pre></div>
+<p>其中，起始符 <code>---</code> 和终止符 <code>...</code>
+包括的内容便是 YAML 格式的文档首部。现在我需要在上述 YAML
+数据区域加入一个时间戳</p>
+<div class="sourceCode" id="cb60"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> 02 月 20 日</span></span></code></pre></div>
+<p>由于 awk-notes.md 的内容区域也可能存在 <code>---</code> 和
+<code>...</code>，故而需要确定时间戳只插入第一次出现的被
+<code>---</code> 和 <code>...</code>
+包含的区域。解决这个问题，有多种方法，但是最稳健且最简单的方法是用 Awk
+语言的范围模式：</p>
+<div class="sourceCode" id="cb61"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="ot">/</span><span class="ss">---</span><span class="ot">/</span><span class="op">,</span> <span class="ot">/\</span><span class="sc">.</span><span class="ot">\</span><span class="sc">.</span><span class="ot">\</span><span class="sc">.</span><span class="ot">/</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>finished <span class="op">{</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="ot">/\</span><span class="sc">.</span><span class="ot">\</span><span class="sc">.</span><span class="ot">\</span><span class="sc">.</span><span class="ot">/</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;date: 02 月 20 日&quot;</span></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> <span class="st">&quot;...&quot;</span></span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>        finished <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="kw">print</span></span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">next</span></span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> <span class="kw">print</span> <span class="op">}</span></span></code></pre></div>
+<p>上述代码中，模式 <code>/---/</code> 和 <code>/\.\.\./</code> 可以匹配
+YAML 数据的起始符和终止符，用逗号隔开这两个模式，表示匹配从
+<code>---</code> 到 <code>...</code>
+的所有行，这便是范围模式。在上述范围模式对应的动作语句里，若当前记录为
+<code>...</code>，则在它之前输出时间戳，问题便得以解决，用 finished
+变量表示时间戳插入任务完成，以保证在文档的后续内容遇到 <code>---</code>
+和 <code>...</code> 时会予以忽略。</p>
+<h1 id="总结">总结</h1>
+<p>这段时间，我几乎又将 Awk
+语言完整地学习了一遍，事实证明，我以前只是假装会了 Awk 的用法。这次在 C
+语言源码渲染方面的实践驱动的学习中，我发现了 Awk
+语言一些细节。基于这些细节，可以大幅简化之前所写的一些 Awk
+脚本。虽然此处已是总结，但未来在用 Awk
+语言解决一些实际问题时，可能还会更新这份文档。也许，这次我只是又一次假装学会了。我的生活，就在一场又一场假装中，踉跄前行。</p>
+
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+</body>
+</html>

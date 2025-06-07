@@ -1,0 +1,235 @@
+@media screen and (max-width:1024px) {
+    #TOC {display: none;}
+    body {max-width: 65% !important;}
+}
+@media screen and (max-width:640px) {
+    body {max-width: 80% !important;}
+    div.category {display: none;}
+}
+
+html {
+    font-size: 15px;
+    line-height: 26px;
+}
+
+body {
+    max-width: 54%;
+    margin: 0 auto;
+    padding: 20px;
+    hyphens: auto;
+    word-wrap: break-word;
+    /* 对于 firefox，font-kerning 需要设为 auto，中文标点才会正常。*/
+    /* font-kerning: normal; */
+    font-family: "Arial", "Noto Sans CJK SC", sans-serif;
+}
+
+header {
+    width: fit-content;
+    border-bottom: 2px solid #a9b5df;
+}
+
+h1, h2, h3, h4, h5 {
+    margin: .5em auto;
+    line-height: 1.5em;
+}
+
+h1.title { font-size: 1.8em; margin: 0 auto; color: #c93a68;}
+.back-to-top-span {margin: 0 0 0 .5em; }
+#back-to-top {width: 2.5em; height: 1.8em; position: relative; top: -4px;}
+
+h1 { font-size: 1.5em; color: #c93a68;}
+h2 { font-size: 1.3em; color: #c93a68;}
+h3 { font-size: 1.1em; color: #c93a68;}
+p.subtitle {
+    color: #c93a68;
+}
+span.post-date {margin-right: 1em;}
+
+
+#TOC {
+    min-width: 8em;
+    max-width: 11em;
+    padding: 0em 0em 0em 1em;
+    border: 2pt solid darkgray;
+    line-height: 1.5em;
+    position: fixed;
+    right: 3em;
+    top: 6em;
+    overflow: auto;
+    /* 新增过渡动画 */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+/* 新增隐藏状态 */
+#TOC.hide {
+  transform: translateX(120%);  /* 向右移动 120% 确保完全隐藏 */
+  opacity: 0;                   /* 可选：添加淡出效果 */
+}
+
+#TOC a {
+    font-size: 0.9em;
+    font-weight: normal;
+}
+hr {
+    color: #a9b5df;
+}
+div.category a {
+    text-decoration: none;
+}
+div.category a:link {
+    color: white;
+    font-weight: bold;
+}
+div.category a:hover {
+    color: white;
+    text-decoration: none;
+}
+div.category a:visited {
+    color: white;
+    text-decoration: none;
+}
+p {
+    margin: 1.3em 0;
+    text-align: justify;
+}
+figure {
+    margin: auto;
+    text-align: center;
+}
+img {
+    margin: 0 0;
+    max-width: 100%;
+}
+figcaption {
+    font-size: 0.9em;
+    text-align: center;
+    display: none;
+}
+pre {
+    font-size: 0.9em;
+    padding: 1em;
+    line-height: 1.5em;
+    overflow:auto !important;
+    background: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 0.25em;
+    max-height: 400px;
+    font-family: Monaco, 'Lucida Console', monospace;
+}
+code, code span {
+    color: #e83e8c;
+    font-family: Monaco, 'Lucida Console', monospace;
+}
+pre code {
+    overflow:auto !important;
+    color: #000000;
+}
+a:link {
+    color: #c93a68;
+    font-weight: bold;
+    text-decoration: underline; 
+}
+a:hover {
+    color: #a9b5df;
+    text-decoration: none;
+}
+a:visited {
+    color: #c93a68;
+    text-decoration: none;
+}
+/* metadata */
+p.author, p.date {margin: 1em auto;}
+
+blockquote {
+    margin: 0px !important;
+    padding-left: 1em !important;
+    padding-right:1em !important;
+    border-left: 4px solid #009A61;
+}
+blockquote p {
+    font-size: 1em;
+    margin: 0px !important;
+    text-align: justify;
+    padding:0.5em;
+}
+/* 列表 */
+ul, ol {
+    margin-inline-start: 0px;
+    padding-inline-start: 1em;
+}
+#TOC ul,  #TOC ol {
+    padding: 0em 1em;
+}
+li {padding-bottom:0.5em}
+/* 文章里小节标题的序号与标题名称之间的间距, 针对我写的生成文章目录的 m4 宏 */
+span.section-sep { margin-left: 0.5em; margin-right: 0.5em; }
+div.footer {color:#c93a68;}
+
+/* 渲染文学编程的代码片段 */
+pre {line-height: 1.6em; max-height: 40em;}
+.orez-snippet-name, .orez-symbol {font-weight:bold; color: #cc3333;}
+.orez-label {font-weight:bold; color:#008000;}
+.orez-snippet-with-name .hll { background-color: #ffffcc }
+.orez-snippet-with-name  { background: #f8f8f8; }
+.orez-snippet-with-name .c { color: #408080;} /* Comment */
+.orez-snippet-with-name .err { border: 1px solid #FF0000 } /* Error */
+.orez-snippet-with-name .k { color: #008000;} /* Keyword */
+.orez-snippet-with-name .o { color: #666666;} /* Operator */
+.orez-snippet-with-name .ch { color: #408080;} /* Comment.Hashbang */
+.orez-snippet-with-name .cm { color: #408080;} /* Comment.Multiline */
+.orez-snippet-with-name .cp { color: #BC7A00;} /* Comment.Preproc */
+.orez-snippet-with-name .cpf { color: #408080;} /* Comment.PreprocFile */
+.orez-snippet-with-name .c1 { color: #408080;} /* Comment.Single */
+.orez-snippet-with-name .cs { color: #408080;} /* Comment.Special */
+.orez-snippet-with-name .gd { color: #A00000;} /* Generic.Deleted */
+.orez-snippet-with-name .ge {} /* Generic.Emph */
+.orez-snippet-with-name .gr { color: #FF0000;} /* Generic.Error */
+.orez-snippet-with-name .gh { color: #000080;} /* Generic.Heading */
+.orez-snippet-with-name .gi { color: #00A000;} /* Generic.Inserted */
+.orez-snippet-with-name .go { color: #888888;} /* Generic.Output */
+.orez-snippet-with-name .gp { color: #000080;} /* Generic.Prompt */
+.orez-snippet-with-name .gs {} /* Generic.Strong */
+.orez-snippet-with-name .gu { color: #800080;} /* Generic.Subheading */
+.orez-snippet-with-name .gt { color: #0044DD;} /* Generic.Traceback */
+.orez-snippet-with-name .kc { color: #008000;} /* Keyword.Constant */
+.orez-snippet-with-name .kd { color: #008000;} /* Keyword.Declaration */
+.orez-snippet-with-name .kn { color: #008000;} /* Keyword.Namespace */
+.orez-snippet-with-name .kp { color: #008000;} /* Keyword.Pseudo */
+.orez-snippet-with-name .kr { color: #008000;} /* Keyword.Reserved */
+.orez-snippet-with-name .kt { color: #B00040;} /* Keyword.Type */
+.orez-snippet-with-name .m { color: #666666;} /* Literal.Number */
+.orez-snippet-with-name .s { color: #BA2121;} /* Literal.String */
+.orez-snippet-with-name .na { color: #7D9029;} /* Name.Attribute */
+.orez-snippet-with-name .nb { color: #008000;} /* Name.Builtin */
+.orez-snippet-with-name .nc { color: #0000FF;} /* Name.Class */
+.orez-snippet-with-name .no { color: #880000;} /* Name.Constant */
+.orez-snippet-with-name .nd { color: #AA22FF;} /* Name.Decorator */
+.orez-snippet-with-name .ni { color: #999999;} /* Name.Entity */
+.orez-snippet-with-name .ne { color: #D2413A;} /* Name.Exception */
+.orez-snippet-with-name .nf { color: #0000FF;} /* Name.Function */
+.orez-snippet-with-name .nl { color: #A0A000;} /* Name.Label */
+.orez-snippet-with-name .nn { color: #0000FF;} /* Name.Namespace */
+.orez-snippet-with-name .nt { color: #008000;} /* Name.Tag */
+.orez-snippet-with-name .nv { color: #19177C;} /* Name.Variable */
+.orez-snippet-with-name .ow { color: #AA22FF;} /* Operator.Word */
+.orez-snippet-with-name .w { color: #bbbbbb;} /* Text.Whitespace */
+.orez-snippet-with-name .mb { color: #666666;} /* Literal.Number.Bin */
+.orez-snippet-with-name .mf { color: #666666;} /* Literal.Number.Float */
+.orez-snippet-with-name .mh { color: #666666;} /* Literal.Number.Hex */
+.orez-snippet-with-name .mi { color: #666666;} /* Literal.Number.Integer */
+.orez-snippet-with-name .mo { color: #666666;} /* Literal.Number.Oct */
+.orez-snippet-with-name .sb { color: #BA2121;} /* Literal.String.Backtick */
+.orez-snippet-with-name .sc { color: #BA2121;} /* Literal.String.Char */
+.orez-snippet-with-name .sd { color: #BA2121;} /* Literal.String.Doc */
+.orez-snippet-with-name .s2 { color: #BA2121;} /* Literal.String.Double */
+.orez-snippet-with-name .se { color: #BB6622;} /* Literal.String.Escape */
+.orez-snippet-with-name .sh { color: #BA2121;} /* Literal.String.Heredoc */
+.orez-snippet-with-name .si { color: #BB6688;} /* Literal.String.Interpol */
+.orez-snippet-with-name .sx { color: #008000;} /* Literal.String.Other */
+.orez-snippet-with-name .sr { color: #BB6688;} /* Literal.String.Regex */
+.orez-snippet-with-name .s1 { color: #BA2121;} /* Literal.String.Single */
+.orez-snippet-with-name .ss { color: #19177C;} /* Literal.String.Symbol */
+.orez-snippet-with-name .bp { color: #008000;} /* Name.Builtin.Pseudo */
+.orez-snippet-with-name .vc { color: #19177C;} /* Name.Variable.Class */
+.orez-snippet-with-name .vg { color: #19177C;} /* Name.Variable.Global */
+.orez-snippet-with-name .vi { color: #19177C;} /* Name.Variable.Instance */
+.orez-snippet-with-name .il { color: #666666;} /* Literal.Number.Integer.Long */

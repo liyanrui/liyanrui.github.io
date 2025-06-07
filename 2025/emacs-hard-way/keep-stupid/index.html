@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>无住</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">无住
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2025 年 05 月 26 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#本质" id="toc-本质">本质</a></li>
+  <li><a href="#组合键" id="toc-组合键">组合键</a></li>
+  <li><a href="#窗口" id="toc-窗口">窗口</a></li>
+  <li><a href="#守拙" id="toc-守拙">守拙</a></li>
+  <li><a href="#elisp" id="toc-elisp">Elisp</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
+</nav>
+
+<h1 id="前言">前言</h1>
+<p>作为 Emacs 的资深新手，我见过很多人立下宏愿，要学会
+Emacs，甚至希望成为个中高手。我也曾有此奢求。现在我已明白，凡持此心者，注定极有可能学不会
+Emacs。</p>
+<p>你可能会觉得自己是个有毅力的人，只要你想做，这世上没有你做不好的事。然而对于学习
+Emacs 这件事而言，毅力反而是有害的。毅力只能让你比寻常人晚一些放弃
+Emacs，但无论你坚持多久，最终还是会放弃，甚至最终你会以自身为反面教材，谆谆教诲他人放下
+Emacs，改入 Vim 或 VSCode 的门庭。</p>
+<p>其他文本编辑器也不乏可与 Emacs 媲美的优秀之处，但是学过
+Emacs，却不知为何学不会，这恰是 Emacs 独有的优秀之处。</p>
+<p>你每天活着，活在这个你已经觉得异常熟悉的世界里。你可曾想过，要学会这个世界？倘若你从未有过这样的念头，那么为什么你会觉得
+Emacs 是可以学会的呢？那些发现自己学不会 Emacs
+的人，非常可惜的是他们选择放弃 Emacs，而不是放弃学习 Emacs。</p>
+<p>Emacs
+并非文本编辑器，而是一个完整且开放的世界。文本编辑器功能只是这个世界的门户而已。世界不可学，却可进入，可感受。若你从未尝试进入和感受
+Emacs，而是试图学会它，掌控它，注定会徒劳而返。</p>
+<h1 id="本质">本质</h1>
+<p>Emacs 的特点是，其形易得，其神难求。</p>
+<p>最让初学者难以自持的是 Emacs
+在文本编辑方面过于强大的功能且得之甚易。你总是能直接将他人对 Emacs
+所作的配置化为己有，如同用北冥神功或吸星大法，直接吸收他人的内力。你化用他人的配置越多，越会觉得
+Emacs 高深莫测，难以掌控，最终会被一种难以克服的巨大挫败感吞噬。</p>
+<p>Emacs 其神非常简单，在 Linux 里，即位于 $HOME/emacs.d 目录下的
+init.el 文件。当你第一次启用 Emacs
+时，这份文件尚不存在，你需自行创建它。</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> emacs    <span class="co"># 运行 Emacs。用鼠标关闭 Emacs 窗口，便可结束该命令。</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd <span class="va">$HOME</span>/emacs.d    <span class="co"># 进入 $HOME/emacs.d 目录</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> touch init.el    <span class="co"># 创建空的 init.el 文件</span></span></code></pre></div>
+<figure>
+<img src="figures/01.png" alt="Emacs 第一次启用时的形貌" />
+<figcaption aria-hidden="true">Emacs 第一次启用时的形貌</figcaption>
+</figure>
+<p>每次启用 Emacs 时，它也会自动载入 init.el，以得其神，亦即 Emacs
+其神需要你亲手塑造。若你的 init.el 是空的，或者照搬他人的 init.el
+的内容而不知其意，那么你的 Emacs 终归徒具躯壳而无其神。</p>
+<h1 id="组合键">组合键</h1>
+<p>任何一份 Emacs 教程都会先传授你一堆组合键的功能和用法。诸如
+<code>C-x C-f</code> 用于打开或创建文件，<code>C-x C-s</code>
+用于保存文件内容，<code>C-x C-c</code> 用于退出 Emacs。有耐心且希望学会
+Emacs
+的人，也许会制作一些卡片，记下这些快捷键及其功能，作为备忘，随时查看。</p>
+<p>我不建议刻意记住这些组合键。你需要记住的是 Emacs
+组合键的表示及操作方法。例如当你看到 <code>C-x C-f</code>
+时，立刻明白其含义是按下 Ctrl 键不放，击 x 键，再击 f 键，然后松开 Ctrl
+键。所谓的「击键」，即摁下某键后快速松开。再例如，当你看到
+<code>M-x find-file RET</code> 时，能立刻明白其含义是，摁下 Alt
+键不放，单击 x 键，再松开 Alt 键，输入 <code>find-file</code>
+命令，击回车键。你需要知道的是，Emacs 里响应这些组合键的区域是 Emacs
+界面下方的单行区域，即微缓冲区（minibuffer）。</p>
+<figure>
+<img src="figures/02.png" alt="微缓冲区" />
+<figcaption aria-hidden="true">微缓冲区</figcaption>
+</figure>
+<p><strong>练习 1</strong>：你会操作 <code>C-h k C-x C-f</code>
+吗？若你能通过这个组合键开启如下图所示的帮助区域——Help
+缓冲区，便意味着你的操作是正确的。用鼠标将输入焦点定位到 help 缓冲区，击
+q 键便可关闭该缓冲区。</p>
+<figure>
+<img src="figures/03.png" alt="组合键查询" />
+<figcaption aria-hidden="true">组合键查询</figcaption>
+</figure>
+<p><strong>练习 2</strong>：你会操作 <code>C-h f find-file RET</code>
+吗？若你能通过这个组合键开启如下图所示的帮助区域——Help
+缓冲区，便意味着你的操作是正确的。</p>
+<figure>
+<img src="figures/04.png" alt="函数查询" />
+<figcaption aria-hidden="true">函数查询</figcaption>
+</figure>
+<p><code>C-h k</code>
+可用于查询组合键所绑定的命令。默认情况下，<code>C-x C-f</code>
+绑定的命令是 <code>find-file</code>。<code>C-h f</code>
+可用于查询某个命令的帮助文档，以了解其功用。<code>C-x C-f</code> 与
+<code>M-x find-file RET</code> 是等效的，前者通过组合键隐式调用
+<code>find-file</code>，后者是通过 <code>M-x</code> 显式调用
+<code>find-file</code>。组合键绑定的命令并非固定不变，事实上你可以用
+<code>C-x C-f</code> 绑定其他命令，Emacs
+对此并无禁止。这就是我建议你不要刻意去记组合键的原因。一些常用的组合键，其功用在频繁使用时，自然能记住，而那些不常用的组合键，它们所绑定的命令往往是变动的。</p>
+<p><strong>练习 3</strong>：执行
+<code>M-x find-file RET foo.txt RET</code>，在执行过程中，输入
+<code>find</code> 后，单击空格，观察所发生的现象，然后再单击 Tab
+键，观察所发生的现象。</p>
+<p>Emacs 的组合键是虚的，命令是实的。在 Emacs
+的世界里，虚实相生是非常普遍的现象。</p>
+<h1 id="窗口">窗口</h1>
+<p>Emacs 输入焦点所在的窗口可称为当前窗口。<code>C-x 2</code> 和
+<code>C-x 3</code>
+可分别将当前窗口横向和纵向分割为两个窗口。反复使用这两个组合键，可将
+Emacs
+界面分割得七零八落，不过，这些窗口显示的内容却是相同的，亦即在任一窗口里对内容所作的修改，会同时作用于其他窗口，这种特性自然没什么用处。不过，Emacs
+允许在每个窗口里用 <code>C-x C-f</code>
+打开或新建文件，如此便可实现在单个 Emacs
+进程中编辑多份文件，亦即无需为每份文件的编辑任务单独开启一个 Emacs
+进程。</p>
+<figure>
+<img src="figures/05.png" alt="窗口分割" />
+<figcaption aria-hidden="true">窗口分割</figcaption>
+</figure>
+<p>Emacs
+会在内存中为它所编辑的每份文件开辟一个缓冲区，缓冲区的名字即文件的名字。Emacs
+的每个窗口都可以关联一个缓冲区，但后者可随时切换。这又是一种虚实相生的现象。窗口是虚的，缓冲区是实的。无论你在
+Emacs 里打开了多少个窗口，破除虚幻，万物归一的法门是
+<code>C-x 1</code>。</p>
+<h1 id="守拙">守拙</h1>
+<p>Emacs
+的图形界面，默认有菜单、工具栏、滚动条等组件。这些组件，如同儿童单车上的辅助轮。当你初步熟悉了如何骑单车时，这些辅助轮就该拆除了。当你知道如何使用
+<code>C-c C-f</code> 打开一份文件时，你还需要在菜单里找到
+<code>File</code>，再从中找到 <code>Open</code>
+么？不需要的组件，需要拆除，否则它们的存在不仅会分散你的注意力，甚至可能会让你对它们产生依赖。</p>
+<p>现在，在你的 Emacs 里执行
+<code>C-x C-f ~/emacs.d/init.el RET</code>，打开 init.el
+文件，在其中添加以下内容：</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">;;关闭菜单、工具栏、滚动条</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>(tool-bar-mode -1)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>(menu-bar-mode -1)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>(scroll-bar-mode -1)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">;;关闭 Emacs 启动时的 “开机画面”</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>(<span class="kw">setq</span> inhibit-startup-message <span class="kw">t</span>)</span></code></pre></div>
+<p>然后，<code>C-x C-s</code> 保存对 init.el 的修改，再
+<code>C-x C-c</code> 退出 Emacs。以后每次开启 emacs
+时，默认的界面是朴素的，除了一个 <code>scratch</code>
+缓冲区，便只有微缓冲区了。倘若你足够细心，应该早已发现上文中的一些插图表明，我的
+Emacs 早已去除了这些辅助组件。</p>
+<figure>
+<img src="figures/06.png" alt="朴素的界面" />
+<figcaption aria-hidden="true">朴素的界面</figcaption>
+</figure>
+<p>你可能并不理解上述 init.el
+中每条配置语句的形式或语法，但是你大致可以猜出它们的用途。<code>tool-bar-mode</code>，<code>menu-bar-mode</code>
+以及 <code>scroll-bar-mode</code> 皆为命令。以
+<code>tool-bar-mode</code> 为例，你可以通过
+<code>M-x tool-bar-mode RET</code> 随时打开或关闭 Emacs
+的工具条组件。<code>inhibit-startup-message</code>
+是什么呢？它是一个变量，用 <code>setq</code> 将它的值设为
+<code>t</code>，即 <code>true</code> 的简写，便可关闭 Emacs
+的开机画面。</p>
+<p><strong>练习 4</strong>：你会操作
+<code>C-h v inhibit-startup-message RET</code> 吗？请阅读这个操作打开的
+Help 缓冲区里对 <code>inhibit-startup-message</code>
+变量的介绍。若英文不好也无妨，现在的 AI
+时代了，语言隔阂已不再是问题。</p>
+<h1 id="elisp">Elisp</h1>
+<p>倘若你懂得一些编程，应该能够有所察觉，在 init.el
+里居然可以执行一些命令，也能设置变量，这意味着 init.el
+似乎是一个程序。倘若你有此觉悟，前途可谓不可限量，至少在 Emacs
+的世界里不可限量。</p>
+<p>init.el 的确是一个程序。Emacs 是一台计算机，它在启动时，会运行
+init.el 这个程序。init.el 所用的编程语言是 Emacs Lisp，简称
+Elisp，故而其后缀是 <code>.el</code>。</p>
+<p>现在你是否能够明白，为什么很多人学不会 Emacs
+了么？计算机，可以学会么？事实上，没任何一个人能学会计算机，包括 Linux
+之父 Linus。于是，也没有人能学会 Emacs，包括 Emacs 之父兼自由软件之父
+Richard
+Stallman。如同你在荒原上点着了一团火，接下来这团火会如何燃烧和蔓延，你无法控制。</p>
+<p>使用 Emacs，本质上是用 elisp
+语言编程，即使你只是在缓冲区里插入一个字符，或移动一下光标，也是 Emacs
+计算机在运行一条 elisp 命令，更确切地说，是一个 elisp 函数。例如，上文的
+init.el 的配置：</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(menu-bar-mode -1)</span></code></pre></div>
+<p>实际上是对函数 <code>menu-bar-mode</code> 求值，该函数接受 1
+个参数且其值为 -1，求值结果是 <code>nil</code>，求值过程产生的效应是
+Emacs 菜单被关闭。</p>
+<h1 id="总结">总结</h1>
+<p>若某种事物是可学习的，意味着该事物是静止的，学习它，即熟悉它，测量它。Emacs
+并非静止之物，它是活动的。倘若你以为记住一些组合键，从别处获得一些
+init.el 的配置——这些配置也许异常强大，便是在学习
+Emacs，结果是可预料的，迟早有一天你会发现，你耗费了大量的时间，学到的一切皆是僵死之物，它们从来都不是
+Emacs。</p>
+<p>真正的 Emacs 是一台完备的计算机，其中最根本的静物是 Elisp
+语言。你可以学习 Elisp，通过一个又一个 Elisp 程序与 Emacs
+交流。这些程序可以是你亲手写的，也可以是他人写的，然而它们不是
+Emacs。如同 Windows
+系统虽然用户众多，但它不过是运行在计算机实体上的软件，而非计算机本身。计算机上的操作系统也不止
+Windows，还有 macOS，还有
+Linux。甚至有些计算机，没有操作系统。大学里会设立计算机专业，却从不会出现
+Windows 专业……</p>
+<p>我们的现实世界何尝不是如此呢？无论你是成功者，还是失败者，你应该保持清醒，这个世界未必如你所见，如你所想，也未必如他人所见，如他人所想。故而佛教经典《金刚经》说，应无所住而生其心。倘若你不明白这句话，Emacs
+应当能让你明白它。</p>
+
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+</body>
+</html>

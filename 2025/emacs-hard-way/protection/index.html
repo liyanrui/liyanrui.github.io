@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>保护</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">保护
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2025 年 05 月 30 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#备份" id="toc-备份">备份</a></li>
+  <li><a href="#补丁" id="toc-补丁">补丁</a></li>
+  <li><a href="#关联列表" id="toc-关联列表">关联列表</a></li>
+  <li><a href="#自动保存" id="toc-自动保存">自动保存</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
+</nav>
+
+<h1 id="前言">前言</h1>
+<p>也许你早已注意到，当你用 Emacs 编辑文件时，例如编辑 foo.txt
+文件，在完成编辑后，你会使用已颇为熟悉的组合键 <code>C-x C-s</code> 将
+Emacs 的 foo.txt 缓冲区里的内容保存至 foo.txt 文件。此时，你会发现，在
+foo.txt 文件所在的目录里，会出现名为 <code>foo.txt~</code> 的文件。</p>
+<p>也许你还注意到了另一个事实。当你在编辑 foo.txt
+文件的过程中，若有所停顿，偶尔你会看到微缓冲区会闪过「Auto-saving…done」字样，同时在
+foo.txt 文件所在目录下，会出现名为 <code>#foo.txt#</code>
+的文件，其内容与 foo.txt 缓冲区内容相同。当你对 foo.txt 缓冲区执行
+<code>C-x C-s</code> 后，#foo.txt# 文件便自动消失。</p>
+<p>这两件事实际上是 Emacs 的文件保护机制的外在表现。很多 Emacs
+教程对文件保护机制似乎不以为然，有一些嫌弃像 <code>foo.txt~</code>
+这样的文件有碍观瞻，便在 init.el 文件里作以下设定：</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; 禁用自动备份功能</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>(<span class="kw">setq</span> make-backup-files <span class="kw">nil</span>)</span></code></pre></div>
+<p>你可以如此设定，这是 Emacs
+赋予你的自由，不过我还是建议你知悉详情后再作定夺，而不是从一些 Emacs
+高手的 init.el 中抄来这一设定，并以为自动备份机制是 Emacs
+无用甚至不好的功能。</p>
+<h1 id="备份">备份</h1>
+<p>像 foo.txt~ 这样的文件，是 Emacs 为 foo.txt
+文件自动生成的备份。你可以基于以下试验，理解其存在的意义和用法。</p>
+<p>在某个目录下，用 Emacs 新建一份文件 foo.txt，亦即在 Emacs
+里开启一个名为 foo.txt 的缓冲区，其内容如下：</p>
+<pre><code>this is foo.txt.</code></pre>
+<p>当你用 <code>C-x C-s</code> 将上述内容保存至文件 foo.txt 后，此时
+Emacs 并不创建 foo.txt~ 文件。</p>
+<p>现在，用 Emacs 再次打开 foo.txt 文件，将其内容修改为</p>
+<pre><code>this is foo.txt.
+there are some modifications.</code></pre>
+<p>然后，再次保存，此时 Emacs 便会创建 foo.txt~ 文件，其内容为</p>
+<pre><code>this is foo.txt.</code></pre>
+<p>亦即 foo.txt~ 文件存储的内容是修改前的 foo.txt 文件内容，故而可以认为
+foo.txt~ 文件是 foo.txt 文件的上一个版本。</p>
+<p>倘若你对 foo.txt 所作的修改并不满意，希望能回退到它的上一个版本，在
+Unix 或 Linux 系统里，只需在 Shell 里执行以下命令：</p>
+<pre class="console"><code>$ mv foo.txt~ foo.txt</code></pre>
+<p>然后用 Emacs 重新打开 foo.txt 文件，再作编辑即可。</p>
+<p><strong>练习</strong>：倘若你刚才修改了 foo.txt
+文件并予以保存，但此时 Emacs 并未退出，即依然存在 foo.txt 缓冲区，请执行
+<code>C-x x g</code>，观察所发生的现象。</p>
+<h1 id="补丁">补丁</h1>
+<p>倘若你懂得如何使用 diff/patch 工具，那么 Emacs
+为文件保存的上个版本，也能帮助你制作文件补丁。例如</p>
+<pre class="console"><code>$ diff -u foo.txt~ foo.txt &gt; foo.patch</code></pre>
+<p>diff 命令可以分析 foo.txt~ 和 foo.txt 的差异，并将分析结果写入
+foo.patch 文件。你可以将 foo.patch 发送给他人。若后者的机器上同样存在
+foo.txt 文件，且其内容与你机器上的 foo.txt~ 文件相同，他可使用 patch
+命令，引入你对 foo.txt 所作的全部修改。</p>
+<pre class="console"><code>$ patch foo.txt &lt; foo.patch</code></pre>
+<p>对于打了补丁的 foo.txt，只要补丁文件尚在，也可以使用 patch
+命令撤销补丁，例如</p>
+<pre class="console"><code>$ patch -R foo.txt &lt; foo.patch</code></pre>
+<p>diff 和 patch 都是源自 Unix
+系统的伟大的小工具，有必要用一些时间熟悉它们的用法，并在与他人在合作编写同一份文档时使用它们，可以有效实现工作同步。</p>
+<h1 id="关联列表">关联列表</h1>
+<p>Emacs
+会自动为你编辑的文件备份上一个版本，即使你从未使用过这个备份，但只要它存在，你便会有一些肆意妄为的底气。让你觉得难以接受的，并非是这种机制，而是你不希望文件目录里有一堆备份文件。</p>
+<p>实际上，Emacs
+允许你设定一个目录，统一存放所有备份文件。例如，你可以在 $HOME/.emacs.d
+目录创建 backups 目录：</p>
+<pre class="console"><code>$ cd ~/.emacs.d
+$ mkdir backups</code></pre>
+<p>在 Linux 的 Shell 里，<code>$HOME</code> 通常可以简写为
+<code>~</code>。</p>
+<p>然后在 init.el 里添加以下配置：</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; 备份文件存放目录</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>(<span class="kw">setq</span> backup-directory-alist &#39;((<span class="st">&quot;.&quot;</span> . <span class="st">&quot;~/.emacs.d/backups&quot;</span>)))</span></code></pre></div>
+<p>上述表达式中的 <code>setq</code>，你已经很熟悉它了。你应该还不懂
+Elisp 的关联列表。<code>backup-directory-alist</code>
+便是一个关联列表，其值是只包含一个元素的列表：</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>&#39;((<span class="st">&quot;.&quot;</span> . <span class="st">&quot;~/.emacs.d/backups&quot;</span>))</span></code></pre></div>
+<p>你可以通过以下代码，明白何为关联列表。</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((this-list &#39;((<span class="st">&quot;foo&quot;</span> . <span class="st">&quot;i am foo!&quot;</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                   (<span class="st">&quot;bar&quot;</span> . <span class="st">&quot;i am bar!&quot;</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                   (<span class="st">&quot;hello&quot;</span> . <span class="st">&quot;Hello world!&quot;</span>))))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">dolist</span> (it this-list)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        (message <span class="st">&quot;%s: %s&quot;</span> (<span class="kw">car</span> it) (<span class="kw">cdr</span> it))))</span></code></pre></div>
+<p>在上述代码中，<code>this-list</code>
+是局部变量，其值是三个键值对构成的列表，这样的列表即为关联列表。键值对的形式为</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(键 . 值)</span></code></pre></div>
+<p>之前，在配置字体时，我们曾用 <code>dolist</code> 遍历过 Unicode
+脚本列表。虽然 <code>this-list</code>
+是键值对元素构成的列表，但终归是列表，故而可用 <code>dolist</code>
+遍历。遍历过程中，<code>it</code> 指向 <code>this-list</code>
+的每个元素，用 <code>car</code> 可以获得 <code>it</code>
+所指代元素的「键」的部分，而 <code>cdr</code>
+可获得该元素的「值」的部分。</p>
+<p>在 Emacs
+里对上述代码求值，求值过程中，会输出多行信息，而微缓冲区只能看到最后一行。在
+Emacs 图形界面里，倘若你用鼠标左键点一下微缓冲区，Emacs
+便会自动开启新窗口，显示 <code>*Messages*</code>
+缓冲区中的所有内容，在该缓冲区里，可以看到上述表达式求值过程中的全部输出，如下：</p>
+<pre><code>foo: i am foo!
+bar: i am bar!
+hello: Hello world!
+nil</code></pre>
+<p>前三行信息是 <code>message</code> 输出。最后的 <code>nil</code> 是
+Emacs 对 <code>let</code> 表达式的求值结果。将光标定位到
+<code>*Message*</code> 缓冲区，摁 q 键便可关闭该缓冲区所在的窗口。</p>
+<p>当你明白何为关联列表后，对上述 init.el
+中的文件备份目录的设置代码所剩的疑惑应该是键值对</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(<span class="st">&quot;.&quot;</span> . <span class="st">&quot;~/.emacs.d/backups&quot;</span>)</span></code></pre></div>
+<p>表示什么？键 <code>"."</code> 表示所有的备份文件，值
+<code>"~/.emacs.d/backups"</code> 表示存放所有备份文件的目录。</p>
+<p>当上述 init.el 的设定生效后，Emacs 便会将所有文件的备份存放于
+~/.emacs.d/backups 目录。例如，倘若我在 ~/test/emacs 目录内编辑 foo.txt
+文件，则该文件在 ~/.emacs.d/backups 目录里对应的备份文件是</p>
+<pre><code>!home!garfileo!test!emacs!foo.txt~</code></pre>
+<p>倘若你将 <code>!</code> 理解为
+<code>/</code>，那么上述文件名便可理解为，这份文件是
+/home/garfileo/test/emacs 目录中的 foo.txt 文件的备份。</p>
+<h1 id="自动保存">自动保存</h1>
+<p>默认情况下，Emacs 会在每输入 300 个字符（可通过
+<code>auto-save-interval</code> 变量修改此值）或在 30 秒内无操作（可通过
+<code>auto-save-timeout</code>
+变量修改此值），便会自动将缓冲区内容保存。本文前言所述的名为
+<code>#foo.txt#</code> 的文件，便是 Emacs 对 foo.txt
+缓冲区内容自动保存的结果。</p>
+<p>也许你会觉得奇怪，为何 Emacs
+不直接将缓冲区内容自动保存到对应的文件里呢？例如，将 foo.txt
+缓冲区的内容自动保存到 foo.txt 文件里。实际上，Emacs
+可以如你所愿，只是需要你在 init.el 里予以配置：</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; 直接保存到正在编辑的文件（非临时文件）</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>(auto-save-visited-mode <span class="dv">1</span>)</span></code></pre></div>
+<p>但是我不建议你如此设定，原因是，若 Emacs
+每次按这一设定，将缓冲区内容保存到所编辑的文件，则意味着要对文件的上一个版本作一次备份，而整个过程是在你毫无察觉的情况完成的。有时，你需要的某个备份，会被
+Emacs 的自动保存机制悄无声息的篡改了，而 Emacs
+默认的自动保存机制，可以完美兼容文件的自动备份机制。</p>
+<p>倘若你决定继续使用 Emacs
+默认的基于临时文件的自动保存机制，你需要掌握如何基于该临时文件对抗一些意外风险。例如，当你正在编辑一份文件时，可能会有一些意外发生，导致计算机突然关机，你对文件的许多改动会因未能及时保存而丢失。当你重新开机后，便可基于
+Emacs 自动保存的临时文件，恢复这些改动。</p>
+<p>以下试验，可以模拟上述的意外场景。用 Emacs 编辑前文所述的
+foo.txt，令其内容变为</p>
+<pre><code>this is foo.txt.
+there are some modifications.
+more modifications!</code></pre>
+<p>然后略等约 1 分钟，知道你看到在 foo.txt 文件所在目录出现 #foo.txt#
+文件，然后记住，不要保存 foo.txt 缓冲区，而是直接关闭 Emacs。这时，Emacs
+会提醒你，是否保存对文件的修改，你选择「Close Without
+Saving」，如此便模拟了类似计算机突然关闭，而你来不及保存文件内容的场景。</p>
+<figure>
+<img src="figures/01.png" alt="要保存吗？" />
+<figcaption aria-hidden="true">要保存吗？</figcaption>
+</figure>
+<p>之后，你在 #foo.txt# 文件所在的目录里，重新打开或创建 foo.txt
+文件时，Emacs 会在微缓冲区里提示：</p>
+<pre><code>foo.txt has auto save data; consider M-x recover-this-file</code></pre>
+<p>当你执行 <code>M-x recover-this-file</code> 后，Emacs
+会在微缓冲区询问：</p>
+<pre><code>Recover auto save file /home/garfileo/test/emacs/#foo.txt#? (yes or no)</code></pre>
+<p>此时，在微缓冲区输入 <code>yes RET</code>，便可在 foo.txt
+缓冲区里恢复在意外关机前 Emacs 为你自动保存的内容，然后再正常将其保存至
+foo.txt 文件，之后 #foo.txt#
+便事了拂衣去，深藏功与名，除非下一次意外关机，你才能再一次看到它。</p>
+<h1 id="总结">总结</h1>
+<p>我虽身为 Emacs 多年的资深新手，但是和你一样，也是初次使用 Emacs
+的文件自动备份与保存机制。我们也学习了 Elisp
+的关联列表，它像一个词典，只是缺乏索引，无论从中查找什么，都需要对整个列表遍历一次。</p>
+
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+</body>
+</html>

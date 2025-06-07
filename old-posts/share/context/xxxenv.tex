@@ -1,0 +1,109 @@
+%\usemodule[visual]
+%\showboxes
+\usemodule[zhfonts]
+\setupzhfonts[serif][bold=notoserifcjkscbold]
+\setupzhfonts[features][onum=yes]
+\setupzhfonts[math][antykwa]%[xits]
+%\setupzhfonts[math][euler]
+
+\setuppapersize[A4][A4]
+%\showframe
+\setuplayout[backspace=2.5cm,width=middle,
+             topspace=1cm,header=1cm,
+             height=middle,footer=1cm]
+
+
+\setuppagenumbering[location=]
+\setupinterlinespace[1.75em]
+
+\setupheads[indentnext=yes]
+\setuphead[title][style=\bfb,align=center,color=darkred,after={\blank[2cm]}]
+
+\def\blankbar{\hiddenbar{blabblab}}
+\def\option[#1][#2][#3]#4{\hbox to #1\textwidth{#2#3 #4\hfill}}
+\def\optionm[#1][#2][#3]#4{\hbox to #1\textwidth{#2#3 $#4$\hfill}}
+
+\usecolors[svg]
+\startuniqueMPgraphic{blue box2}
+path p;
+numeric s;
+w := \overlaywidth; h := \overlayheight;
+p := (0, 0) -- (0, h) -- (w, h) -- (w, 0) -- cycle;
+pickup pencircle scaled 2pt;
+s := .1 * h;
+if s < 2mm:
+  s := 2mm;
+fi
+draw p randomized s withcolor \MPcolor{lightsteelblue};
+\stopuniqueMPgraphic
+\defineoverlay[blue box2][\uniqueMPgraphic{blue box2}]
+\def\bluebox#1{%
+  \kern.25em%
+  \inframed[frame=off,background={blue box2},
+            offset=none,loffset=20pt,
+            roffset=20pt,toffset=10pt,boffset=10pt]{#1}%
+  \kern.25em%
+}
+%---------------文字下加点-----------------------------
+\definebar
+  [dotbar]
+  [text=\kern.4em\lower1.5\exheight\hbox{\darkred $\cdot$}]
+%-----------------选择题环境----------------------------
+\startluacode
+my = {}
+my.text = ""
+my.count = 1
+my.labels = {"A", "B", "C", "D"}
+my.count = 0
+my.math = false  
+local function item(a)
+    if my.math then
+        my.text = my.text .. [[\hbox to .25\textwidth{]]
+                  .. my.labels[my.count]  .. ". $" .. a .. [[$\hss}]]
+    else
+        my.text = my.text .. [[\hbox to .25\textwidth{]]
+                  .. my.labels[my.count]  .. ". " .. a .. [[\hss}]]
+    end
+    my.count = my.count + 1
+end
+
+local P, V, S, Cs = lpeg.P, lpeg.V, lpeg.S, lpeg.Cs
+function my.options(text)
+    my.text = ""
+    my.count = 1
+    my.math = false
+    local maybe_sp = S" \t"^0 
+    local math_opt = Cs((maybe_sp * P"[" * maybe_sp * P"m" * maybe_sp * P"]" * maybe_sp / "") * P(1)^0)
+    local new_text = math_opt:match(text)
+    if new_text then
+        text = new_text
+        my.math = true
+    end
+    local g = P {
+        "A",
+        A = (V"leader" * ((1 - P"*" * V"sp")^1 / item))^1;
+        leader = P"*" * V"sp";
+        sp = S" \t"^1;
+    }
+    g:match(text)
+    context(my.text)
+end
+\stopluacode
+\def\startoptions #1 \stopoptions{%
+  \blank[halfline]
+  \hbox{\ctxlua{my.options([==[#1]==])}}
+  \blank[halfline]%
+}
+
+% 带圈数字
+\startuseMPgraphic{foo}
+path p;
+p := fullcircle scaled 12pt;
+draw p withpen pencircle scaled .4pt
+withcolor darkred;
+\stopuseMPgraphic
+\defineoverlay[rsquare][\useMPgraphic{foo}]
+\def\fooframe#1{%
+  \framed[frame=off,background=rsquare,offset=0pt,strut=no,width=12pt]{\small #1}%
+}
+\defineconversion[foo][\fooframe]

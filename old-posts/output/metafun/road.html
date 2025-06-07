@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>新蜗牛 · 路</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">新蜗牛 · 路</h1>
+<p class="date">2023 年 05 月 08 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#老路">老路</a></li>
+<li><a href="#经转和纬转">经转和纬转</a></li>
+<li><a href="#经至和纬至">经至和纬至</a></li>
+<li><a href="#路">路</a></li>
+<li><a href="#弯路和小弯路">弯路和小弯路</a></li>
+<li><a href="#标注">标注</a></li>
+</ul>
+</nav>
+<blockquote>
+<p>上一篇：<a href="new-snail.html">新蜗牛 · 基本对象</a></p>
+</blockquote>
+<blockquote>
+<p>下一篇：<a href="secret.html">新蜗牛 · 秘密</a></p>
+</blockquote>
+<p>本篇主要介绍如何为蜗界基本对象构造各种连线并对其进行文字标注。</p>
+<h1 id="老路">老路</h1>
+<p>蜗界三大基本对象宫、廷、景，都有非常丰富的锚点，若熟悉 MetaPost 的路径构造语法，构造这些对象之间的连线并不困难，<a href="http://www.pragma-ade.nl/general/manuals/metafun-p.pdf">MetaFun 手册</a>的 1.1 和 1.3 节所介绍的 MetaPost 路径构造方法和技巧便已足够。</p>
+<blockquote>
+<p>注：在 ConTeXt LMTX 环境里，使用命令「<code>mtxrun --script base --search metafun-s.pdf</code>」便可找到 MetaFun 手册。</p>
+</blockquote>
+<p>例如</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>宫(甲, <span class="st">&quot;A&quot;</span>);</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>宫(乙, <span class="st">&quot;B&quot;</span>) 位于 乙 偏 (东 <span class="fl">4cm</span> <span class="op">+</span> 北 <span class="fl">2cm</span>);</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>呜呼 甲, 乙;</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="dt">path</span> 甲乙;</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>甲乙 <span class="op">:=</span> 甲.卯门{<span class="kw">right</span>} <span class="op">..</span> 乙.午门{<span class="kw">up</span>};</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a>drawarrowpath 甲乙;</span></code></pre></div>
+<figure>
+<img src="../../figures/metafun/road/01.png" alt="" /><figcaption>老路-1</figcaption>
+</figure>
+<p>上述路径 <code>甲乙</code> 亦可采用 <code>dir</code> 宏构造：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="dt">path</span> 甲乙;</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>甲乙 <span class="op">:=</span> 甲.卯门{<span class="kw">dir</span>(<span class="dv">0</span>)} <span class="op">..</span> 乙.午门{<span class="kw">dir</span>(<span class="dv">90</span>)};</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>drawarrowpath 甲乙;</span></code></pre></div>
+<p>snail 模块定义了一个宏 <code>老路</code>，可将上述路径构造代码简化为</p>
+<pre class="metapost"><code>老路(甲乙, 甲.卯门{right} .. 乙.午门{up});</code></pre>
+<p>或</p>
+<pre class="metapost"><code>老路(甲乙, 甲.卯门{dir(0)} .. 乙.午门{dir(90)});</code></pre>
+<h1 id="经转和纬转">经转和纬转</h1>
+<p>以下代码使用 <code>老路</code> 构造两条折线路径：</p>
+<pre class="metapost"><code>宫(甲, &quot;A&quot;);
+宫(乙, &quot;B&quot;) 位于 乙 偏 (东 4cm + 北 2cm);
+呜呼 甲, 乙;
+
+老路(甲乙, 甲.卯门 -- (xpart 乙.午门, ypart 甲.卯门) -- 乙.午门);
+老路(甲乙, 甲.子门 -- (xpart 甲.子门, ypart 乙.酉门) -- 乙.酉门);</code></pre>
+<figure>
+<img src="../../figures/metafun/road/02.png" alt="" /><figcaption>折线路径</figcaption>
+</figure>
+<p>折线路径的转折点坐标需要基于路径首尾两个端点的坐标分量进行构造，该过程略微繁琐。snail 模块为此定义了宏 <code>经转</code> 和 <code>纬转</code>，可将上述示例中的路径构造代码简化为</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>老路(甲乙, 甲.卯门 纬转 乙.午门);</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>老路(甲乙, 甲.子门 经转 乙.酉门);</span></code></pre></div>
+<p><code>经转</code> 表示路径在经向（横向或东西走向）发生变化。<code>纬转</code> 表示路径在纬向（纵向或南北走向）发生变化，</p>
+<h1 id="经至和纬至">经至和纬至</h1>
+<p>以下代码使用 <code>老路</code> 构造两条直线路径：</p>
+<pre class="metapost"><code>宫(甲, &quot;A&quot;);
+宫(乙, &quot;B&quot;) 位于 乙 偏 (东 4cm + 北 2cm);
+呜呼 甲, 乙;
+
+老路(甲东, 甲.卯门 -- (xpart 乙.午门, ypart 甲.卯门));
+老路(甲北, 甲.子门 -- (xpart 甲.子门, ypart 乙.酉门));</code></pre>
+<figure>
+<img src="../../figures/metafun/road/a.png" alt="" /><figcaption>经至和纬至</figcaption>
+</figure>
+<p><code>甲北</code> 和 <code>甲东</code> 末端点的构造语句可使用 <code>经至</code> 和 <code>纬至</code> 予以简化：</p>
+<pre class="metapost"><code>老路(甲东, 甲.卯门 经至 乙.午门);
+老路(甲北, 甲.子门 纬至 乙.酉门);</code></pre>
+<h1 id="路">路</h1>
+<p>蜗界的标准路径是圆角化的折线路径，可基于 <code>路</code> 进行构建。例如</p>
+<pre class="metapost"><code>宫(甲, &quot;A&quot;);
+宫(乙, &quot;B&quot;) 位于 乙 偏 (东 4cm + 北 2cm);
+呜呼 甲, 乙;
+
+设 &quot;蜗界.路径.圆角 = 14pt&quot;;
+路(甲乙, 甲.卯门 纬转 乙.午门);</code></pre>
+<figure>
+<img src="../../figures/metafun/road/03.png" alt="" /><figcaption>圆角化的折线路径</figcaption>
+</figure>
+<h1 id="弯路和小弯路">弯路和小弯路</h1>
+<p><code>弯路</code> 和 <code>小弯路</code> 可将折线路径转化为曲线路径。例如</p>
+<pre class="metapost"><code>宫(甲, &quot;A&quot;);
+宫(乙, &quot;B&quot;) 位于 甲 偏 (东 4cm + 北 2cm);
+呜呼 甲, 乙;
+
+弯路(甲乙, 甲.午门 经转 甲.巽位 经转 甲.震位 经转 乙.酉门);</code></pre>
+<figure>
+<img src="../../figures/metafun/road/04.png" alt="" /><figcaption>弯路</figcaption>
+</figure>
+<p>倘若将上例中的 <code>弯路</code> 换为 <code>小弯路</code>，结果为</p>
+<figure>
+<img src="../../figures/metafun/road/05.png" alt="" /><figcaption>小弯路</figcaption>
+</figure>
+<p><code>小弯路</code> 与 <code>弯路</code> 的区别是，前者更贴近原折线路径。</p>
+<h1 id="标注">标注</h1>
+<p>snail 为路径添加文字标注提供了三种方式，前两种是在 <code>老路</code>，<code>路</code>，<code>弯路</code> 和 <code>小弯路</code> 语句中为路径添加标注，第三种是为既有路径添加标注，三者区别见以下示例：</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>宫(甲, <span class="st">&quot;A&quot;</span>);</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>宫(乙, <span class="st">&quot;B&quot;</span>) 位于 乙 偏 (东 <span class="fl">4cm</span> <span class="op">+</span> 北 <span class="fl">2cm</span>);</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a>呜呼 甲, 乙;</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a>老路(甲甲, 甲.子门 {<span class="kw">up</span>} <span class="op">..</span> 甲.酉门 {<span class="kw">right</span>});</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true"></a>路标(甲甲, <span class="st">&quot;无聊&quot;</span>, <span class="fl">.5</span>, <span class="dv">45</span>);</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true"></a>弯路(甲乙, 甲.卯门 纬转 乙.午门) 定位标注(<span class="st">&quot;奔赴&quot;, .7, -120);</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true"></a><span class="st">路(乙甲, 乙.酉门 纬转 甲.丑门) 标注(&quot;</span>回归<span class="st">&quot;, 0);</span></span></code></pre></div>
+<figure>
+<img src="../../figures/metafun/road/06.png" alt="" /><figcaption>三种标注</figcaption>
+</figure>
+<p>这三种标注方式里，最后一个参数，诸如上述示例中的 <code>45</code>，<code>-120</code> 和 <code>0</code> 皆为标注文本的倾斜角度。<code>0</code> 表示不倾斜。<code>45</code> 表示绕标注文本中心逆时针旋转 <code>45</code> 度角，<code>-120</code> 表示绕标注文本中心逆时针旋转 <code>120</code> 度角。标注文本倾斜角度参数仅仅是定性用途，不必追求准确，因为这三个标注宏会根据标注基准点位置的切向和法向确定标注文本的方位。</p>
+<p><code>路标</code> 的第 3 个参数和 <code>定位标注</code> 的第 2 个参数结尾曲线参数值，，取值范围为 [0, 1]，参数值为 0 或 1 时，表示曲线的起点或终点；这两个宏可基于该参数值获得曲线上的相应位置作为标注文本的基准点。</p>
+<p><code>标注</code> 不需要基于曲线参数确定标注基准点，因为它会自动选择路径中最长的一段，以其中点（曲线参数值为 <code>.5</code>）作为标注基准点。</p>
+<p>在上述示例中，<code>甲乙</code> 的标注，其倾角 <code>-120</code> 只能获得我们期望的标注方位，但是文字倒立，影响观感，只需在 ConTeXt 层面将文字旋转 180 度，便可使之正立。例如</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>\<span class="kw">def</span>\旋转[#<span class="dv">1</span>]#<span class="dv">2</span>{\rotate[rotation<span class="op">=</span>#<span class="dv">1</span>]{#<span class="dv">2</span>}}</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>\startuseMPgraphic{foo}</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a><span class="op">..</span>. <span class="op">..</span>. <span class="op">..</span>.</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a>弯路(甲乙, 甲.卯门 纬转 乙.午门) 定位标注(<span class="st">&quot;\旋转[180]{奔赴}&quot;</span>, <span class="fl">.7</span>, <span class="op">-</span><span class="dv">120</span>);</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a><span class="op">..</span>. <span class="op">..</span>. <span class="op">..</span>.</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a>\stopuseMPgraphic</span></code></pre></div>
+<figure>
+<img src="../../figures/metafun/road/07.png" alt="" /><figcaption>文字正位</figcaption>
+</figure>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

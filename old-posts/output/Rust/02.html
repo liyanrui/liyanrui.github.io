@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>正则表达式</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">正则表达式</h1>
+<p class="date">2023 年 06 月 19 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#问题">问题</a></li>
+<li><a href="#正则表达式">正则表达式</a></li>
+<li><a href="#cargo">cargo</a></li>
+<li><a href="#unwrap-和"><code>unwrap</code> 和 <code>?</code></a></li>
+<li><a href="#c-版本">C 版本</a></li>
+<li><a href="#小结">小结</a></li>
+</ul>
+</nav>
+<h1 id="问题">问题</h1>
+<p>上一章给出的文本分割方案仅适用于一种情况，分割符以确定的形式出现。对于以下文本</p>
+<pre><code>num@ 123@456  @ 789</code></pre>
+<p><code>@</code> 前后可能存在 1
+个或更多个空白字符，若以该形式的分割符对文本进行分割，则分割符便存在着不确定性，该如何表达这种分割符并将其用于文本分割呢？</p>
+<h1 id="正则表达式">正则表达式</h1>
+<p>2023
+年了，如果一个为计算机编写程序的人不知正则表达式为何物，他的名字可能叫南郭先生。</p>
+<p>正则表达式本质上是一种微型语言，例如字符串形式的正则表达式
+<code>" *@ *"</code> 可表达形式为「前后可能存在 1 个或更多个空白字符的
+<code>@</code> 」的字符串。在正则表达式语法中，<code>*</code>
+表示位于它之前的字符可以不存在，或出现 1 此，或重复无数次，故而当
+<code>*</code> 之前是一个空白字符时，便可表示该空白字符可能存在 1
+个或更多个。</p>
+<p>有很多编程语言本身或其标准库提供了而对正则表达式的支持，诸如
+AWK，Perl，Python 等语言。Rust
+编译器以及标准库未提供正则表达式的解析功能，故而无法直接使用正则表达式实现文本匹配和分割等功能。对于大多数程序员而言，自行编写正则表达式解析器是一项艰难的任务，可参考「<a
+href="https://www.zhihu.com/question/27434493">如何从零写一个正则表达式引擎？</a>」。不过，大可不必为此焦虑，Rust
+有一些第三方库提供了正则表达式支持，其中应用最为广泛的是 Regex。</p>
+<h1 id="cargo">cargo</h1>
+<p>使用第三方库，就很难继续维持徒手使用 rustc
+构建程序的田园时光了，需要使用 Rust 官方提供的项目构建工具
+cargo。下面使用 cargo
+逐步构建一个可使用正则表达式作为分割符对文本进行分割的项目，假设该项目名为
+regex-split。</p>
+<p>首先，使用 cargo 创建 regex-split 项目，并查看项目的目录结构：</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cargo new regex-split</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd regex-split</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> tree .</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> Cargo.toml</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> src</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="ex">└──</span> main.rs</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ex">1</span> directory, 2 files</span></code></pre></div>
+<p>其中 Cargo.toml 内容为</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode toml"><code class="sourceCode toml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">package</span><span class="kw">]</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="dt">name</span> <span class="op">=</span> <span class="st">&quot;regex-split&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="dt">version</span> <span class="op">=</span> <span class="st">&quot;0.1.0&quot;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="dt">edition</span> <span class="op">=</span> <span class="st">&quot;2021&quot;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">dependencies</span><span class="kw">]</span></span></code></pre></div>
+<p>现在虽然是 2023 年了，但是由于我的 cargo 工具的版本还是 2021，故而
+Cargo.toml 中的 <code>edition</code> 的值切不可擅自修改为
+<code>2023</code>，否则接下来执行 cargo 命令时，会得到以下错误信息：</p>
+<pre><code>error: failed to parse manifest at `/tmp/regex-split/Cargo.toml`
+
+Caused by:
+  failed to parse the `edition` key</code></pre>
+<p>使用以下命令为 regex-split 增加对版本号为 “1” 的 regex 库的依赖：</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cargo add regex@1</span></code></pre></div>
+<p>执行上述命令，cargo 会在 Cargo.toml 中的 <code>[dependencies]</code>
+部分增加以下内容：</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode toml"><code class="sourceCode toml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">regex</span> <span class="op">=</span> <span class="st">&quot;1&quot;</span></span></code></pre></div>
+<p>此处需要一个小插曲。上述 cargo 命令需要从 <a href="https://crates.io"
+class="uri">https://crates.io</a> 获取该网站上的 Rust
+第三方库库文件信息。由于众所周知的原因，国内大陆地区对 <a
+href="https://crates.io" class="uri">https://crates.io</a>
+的访问速度尤为缓慢，若想提速，需要使用该网站在国内大陆的镜像。对于 Linux
+用户，只需在 $HOME/.cargo 目录创建（或修改）config 文件，令其内容为</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode toml"><code class="sourceCode toml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">source</span><span class="kw">.</span><span class="dt">crates-io</span><span class="kw">]</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="dt">registry</span> <span class="op">=</span> <span class="st">&quot;https://github.com/rust-lang/crates.io-index&quot;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="dt">replace-with</span> <span class="op">=</span> <span class="st">&#39;</span><span class="vs">ustc</span><span class="st">&#39;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="dt">source</span><span class="kw">.</span><span class="dt">ustc</span><span class="kw">]</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="dt">registry</span> <span class="op">=</span> <span class="st">&quot;git://mirrors.ustc.edu.cn/crates.io-index&quot;</span></span></code></pre></div>
+<p>便可使用中国科技大学的镜像站点代替 <a href="https://crates.io"
+class="uri">https://crates.io</a>，使得 regex-split 项目得以引入 regex
+库，否则只能望洋兴叹。</p>
+<p>若上述 cargo 命令皆执行无误，现在便可编辑 regex-split 项目的 src
+子目录下的 main.rs 文件，令其内容为</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 从 regex 库导入 Regex 类型</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">regex::</span>Regex<span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 构造正则表达式</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> re <span class="op">=</span> <span class="pp">Regex::</span>new(<span class="st">&quot; *@ *&quot;</span>)<span class="op">.</span>unwrap()<span class="op">;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 调用正则表达式的字符串分割方法</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> v <span class="op">=</span> re<span class="op">.</span>split(<span class="st">&quot;num@ 123@456  @ 789&quot;</span>)<span class="op">;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> v <span class="op">{</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>然后在 regex-split 项目根目录执行以下命令：</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cargo run</span></code></pre></div>
+<p>该命令的输出信息为</p>
+<pre><code>  Downloaded aho-corasick v1.0.2 (registry `ustc`)
+  Downloaded regex-syntax v0.7.2 (registry `ustc`)
+  Downloaded regex v1.8.4 (registry `ustc`)
+  Downloaded 3 crates (757.0 KB) in 2.46s
+   Compiling memchr v2.5.0
+   Compiling regex-syntax v0.7.2
+   Compiling aho-corasick v1.0.2
+   Compiling regex v1.8.4
+   Compiling regex-split v0.1.0 (/tmp/regex-split)
+    Finished dev [unoptimized + debuginfo] target(s) in 15.18s
+     Running `target/debug/regex-split`
+num
+123
+456
+789</code></pre>
+<p>基于上述输出信息可知，上述的 <code>cargo run</code>
+命令完成了以下四件事情：</p>
+<ul>
+<li>从 <a href="https://crates.io"
+class="uri">https://crates.io</a>（或其镜像网站）下载 regex-split
+项目依赖的所有库文件；</li>
+<li>编译下载的的库文件；</li>
+<li>编译 regex-split 项目；</li>
+<li>执行编译所得程序
+target/debug/regex-split，且程序输出结果符合预期。</li>
+</ul>
+<h1 id="unwrap-和"><code>unwrap</code> 和 <code>?</code></h1>
+<p>我在第一次学习 Rust 语言时，从一些教程中看到 <code>unwrap</code>
+方法时，觉得它像噪音。例如上一节的代码里有</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> re <span class="op">=</span> <span class="pp">Regex::</span>new(<span class="st">&quot; *@ *&quot;</span>)<span class="op">.</span>unwrap()<span class="op">;</span></span></code></pre></div>
+<p>即便后来我明白了这是 Rust
+语言的好意，但依然觉得很不舒服，因为它破坏了语义，亦即为什么我创建了一个正则表达式对象，还要对它进行解封装？</p>
+<p>随着对 Rust 语言有了更多的了解，就会明白 Rust
+的标准库以及大多数第三方库为了程序的安全性强迫程序员去检测函数的返回值是否正确，故而许多函数将其计算结果封装为
+<code>Result</code> 类型（枚举类型）的值并返回。上述代码实际上等同于</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> re <span class="op">=</span> <span class="cf">match</span> <span class="pp">Regex::</span>new(<span class="st">&quot; *@ *&quot;</span>) <span class="op">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cn">Ok</span>(v) <span class="op">=&gt;</span> v<span class="op">,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="cn">Err</span>(e) <span class="op">=&gt;</span> <span class="pp">panic!</span>(<span class="st">&quot;Error: {}&quot;</span><span class="op">,</span> e)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>使用 Rust 的模式匹配语法可对 <code>Result</code>
+或其他复合类型的值进行解析。上述代码的含义是，如果
+<code>Regex::new</code> 返回的是 <code>Ok(v)</code>
+形式的值，则从该值中提取 <code>v</code>，而如果 <code>Regex::new</code>
+返回的是 <code>Err(e)</code> 形式的值，则通过 Rust 宏
+<code>panic!</code>
+让程序直接报错并终止。当然，倘若你认为一个程序出现了错误，但未必要判它死刑，可在
+<code>Err(e) =&gt; ...</code> 分支中给出你觉得合理的判决。</p>
+<p>还有一种推卸责任的办法，将 <code>Result</code>
+类型的值返回，让调用者负责处理错误情况。例如</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 从 regex 库导入 Regex 和 Error 类型</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">regex::</span><span class="op">{</span>Regex<span class="op">,</span> <span class="bu">Error</span><span class="op">};</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>()<span class="op">,</span> <span class="bu">Error</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 构造正则表达式</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> re <span class="op">=</span> <span class="cf">match</span> <span class="pp">Regex::</span>new(<span class="st">&quot; *@ *&quot;</span>) <span class="op">{</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        <span class="cn">Ok</span>(v) <span class="op">=&gt;</span> v<span class="op">,</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="cn">Err</span>(e) <span class="op">=&gt;</span> <span class="cf">return</span> <span class="cn">Err</span>(e)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">};</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 调用正则表达式的字符串分割方法</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> v <span class="op">=</span> re<span class="op">.</span>split(<span class="st">&quot;num@ 123@456  @ 789&quot;</span>)<span class="op">;</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> v <span class="op">{</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">Ok</span>(())<span class="op">;</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>在 Rust 语言中，<code>()</code>
+类型表达的是不包含任何元素的元组，若将其作为函数的返回值，可用于表示该函数没有返回值。没有返回值的函数或者以分号结尾的表达式，都返回
+<code>()</code> 类型。上述代码将 <code>()</code> 类型的值封装为一个
+<code>Result</code> 类型的值，并将其作为 <code>main</code>
+函数的返回值。在上述代码中，<code>main</code> 函数本身不再处理
+<code>Regex::new</code> 可能会返回的错误信息，并且将该信息转移给
+<code>main</code> 函数的使用者处理。由于 <code>main</code> 函数是 Rust
+程序的入口函数，因此它的使用者是操作系统。</p>
+<p>在 Rust
+语言中，将错误信息转移给调用者处理，这种推卸责任的方法所形成的代码可使用
+<code>?</code> 予以简化。例如，上述代码可简化为</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">regex::</span><span class="op">{</span>Regex<span class="op">,</span> <span class="bu">Error</span><span class="op">};</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>()<span class="op">,</span> <span class="bu">Error</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> re <span class="op">=</span> <span class="pp">Regex::</span>new(<span class="st">&quot; *@ *&quot;</span>)<span class="op">?;</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> v <span class="op">=</span> re<span class="op">.</span>split(<span class="st">&quot;num@ 123@456  @ 789&quot;</span>)<span class="op">;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> v <span class="op">{</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">Ok</span>(())<span class="op">;</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h1 id="c-版本">C 版本</h1>
+<p>同 Rust 一样，C 本身及其标准库也未提供正则表达式支持。C
+语言有一个功能很丰富的第三方库 GLib，该库对正则表达式提供的实现，名曰与
+Perl 兼容的正则表达式。若你有一定的阅历，可能知道 Perl
+语言以正则表达式而闻名。</p>
+<p>几乎所有的 Linux 系统发行版都提供了 GLib 库。下面给出在 Ubuntu
+系统中安装 GLib 库开发包的命令：</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sudo apt install libglib2.0-dev</span></code></pre></div>
+<p>调用 GLib 库的正则表达式函数，实现与上文 Rust 程序同等功能的 C
+代码如下：</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;glib.h&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        GRegex <span class="op">*</span>re <span class="op">=</span> g_regex_new<span class="op">(</span><span class="st">&quot; *@ *&quot;</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        gchar <span class="op">**</span>v <span class="op">=</span> g_regex_split<span class="op">(</span>re<span class="op">,</span> <span class="st">&quot;num@ 123@456  @ 789&quot;</span><span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> v<span class="op">[</span>i<span class="op">];</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>                g_print<span class="op">(</span><span class="st">&quot;%s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> v<span class="op">[</span>i<span class="op">]);</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        g_strfreev<span class="op">(</span>v<span class="op">);</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        g_regex_unref<span class="op">(</span>re<span class="op">);</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>g_regex_new</code> 的第 2、3
+个参数用于设定正则表达式的编译和匹配选项，<code>g_regex_split</code>
+的第 3 个参数用于设定正则表达式的匹配选项。这些参数可以在细节上调整 GLib
+的正则表达式功能，倘若并无特殊要求，它们通常可设为 0。</p>
+<p>编译上述代码的命令为</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> gcc <span class="at">-std</span><span class="op">=</span>c2x <span class="at">-pedantic</span> foo.c <span class="va">$(</span><span class="ex">pkg-config</span> <span class="at">--cflags</span> <span class="at">--libs</span> glib-2.0<span class="va">)</span> <span class="at">-o</span> foo</span></code></pre></div>
+<p>根据 GLib 的文档的「Perl-compatible regular expressions」部分对
+<code>g_regex_new</code> 函数的描述，该函数失败时会返回
+<code>NULL</code>，但是在上述代码中，并未对这种情况进行检测。若故意让指针类型的变量
+<code>re</code> 的值为 <code>NULL</code>，将其传递给
+<code>g_regex_split</code>：</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>GRegex <span class="op">*</span>re <span class="op">=</span> NULL<span class="op">;</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>gchar <span class="op">**</span>v <span class="op">=</span> g_regex_split<span class="op">(</span>re<span class="op">,</span> <span class="st">&quot;num@ 123@456  @ 789&quot;</span><span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span></code></pre></div>
+<p>程序可以通过 gcc
+的编译，但是在运行编译所得的程序时，会得到以下错误信息：</p>
+<pre><code>(process:11184): GLib-CRITICAL **: 11:41:56.585: g_regex_split_full: assertion &#39;regex != NULL&#39; failed
+Segmentation fault (core dumped)</code></pre>
+<p><code>g_regex_split</code> 函数内部调用了
+<code>g_regex_split_full</code> 函数，并将 <code>re</code>
+传递给了后者，而后者检测到 <code>re</code> 为
+<code>NULL</code>，便给出了警告，但并未终止程序运行，于是程序最终以段错误而告终。</p>
+<h1 id="小结">小结</h1>
+<p>本章实现了基于正则表达式的文本分割任务，同时也展示了 Rust 和 C
+对待错误的不同态度。Rust
+语言的错误处理方式倾向于将错误处理的决定权推卸给库或程序的用户，好处是提高了程序的容错能力，缺点是难免会给用户造成一些负担，最终免不了要写许多
+<code>unwrap</code>。C
+语言对待程序容错则是可有可无，可得可失，取决于程序员的责任感。我的看法是，写商业软件（包括开源软件），若不考虑生态，Rust
+胜过 C/C++；写自由软件，C 依然堪当重任。</p>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
+class="email">lyr.m2@live.cn</a> 或在<a
+href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

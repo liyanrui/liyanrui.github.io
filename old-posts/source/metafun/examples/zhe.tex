@@ -1,0 +1,20 @@
+\usemodule[zhfonts]
+\input snail.tex
+\startuseMPgraphic{foo}
+景(甲, "figures/internal.png", 7cm, "auto");
+景(乙, "figures/macros.png", 7cm, "auto") 位于 甲 偏 (南 5.5cm);
+景(丙, "figures/txt.png", 6cm, "auto") 位于 甲 偏 (东 7cm);
+宫(丁, "\bf\type{$ zhe -i macros.m4 foo.txt}") 位于 丙 偏 (南 3.5cm);
+景(戊, "figures/output.png", 6cm, "auto") 位于 丁 偏 (南 2.8cm);
+呜呼 甲, 乙, 丙, 丁, 戊;
+
+用虚线;
+路(甲乙, 甲.午门 -- 乙.子门) 标注 ("include", 90);
+用实线;
+路(乙丁, 乙.丑门 纬至 丁.艮位 纬转 丁.亥门);
+路(丙丁, 丙.巳门 纬至 丁.子门);
+路(丁戊, 丁.午门 -- 戊.子门);
+\stopuseMPgraphic
+\startTEXpage[offset=4pt]
+\useMPgraphic{foo}
+\stopTEXpage

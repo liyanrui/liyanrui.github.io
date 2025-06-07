@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>新蜗牛 · 指针</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">新蜗牛 · 指针</h1>
+<p class="date">2023 年 05 月 11 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#scantokens">scantokens</a></li>
+<li><a href="#字符串表">字符串表</a></li>
+<li><a href="#名">名</a></li>
+<li><a href="#合并">合并</a></li>
+<li><a href="#横陈纵列">横陈纵列</a></li>
+</ul>
+</nav>
+<blockquote>
+<p>上一篇：<a href="secret.html">新蜗牛 · 秘密</a></p>
+</blockquote>
+<blockquote>
+<p>下一篇：<a href="others.html">新蜗牛 · 其他</a></p>
+</blockquote>
+<p>基于指针（或引用）可以间接访问某个变量。例如，在 C 语言中，</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="dt">int</span> a = <span class="dv">3</span>;</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="dt">int</span> *p = &amp;a;</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>*p = <span class="dv">4</span>;</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>printf(<span class="st">&quot;%d</span><span class="sc">\n</span><span class="st">&quot;</span>, a);  <span class="co">/* 结果为 4 */</span></span></code></pre></div>
+<p>MetaPost 这样的宏语言，该如何像 C 语言这样间接访问变量呢？</p>
+<h1 id="scantokens">scantokens</h1>
+<p>scantokens 是 MetaPost 原语，可将字符串转化为 Token（记号）。由于 MetaPost 的原语、宏以及变量等对象的名字皆为 Token，故而其字符串变量便可以作为指针使用。例如，以下代码</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="dt">numeric</span> a; a <span class="op">:=</span> <span class="dv">3</span>;</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="dt">string</span> p; p <span class="op">:=</span> <span class="st">&quot;a&quot;</span>;</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>scantokens(p) <span class="op">:=</span> <span class="dv">4</span>;</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="kw">draw</span> textext(decimal a);</span></code></pre></div>
+<p>与上文的 C 代码等效。</p>
+<h1 id="字符串表">字符串表</h1>
+<p>有了指针，便可以构造表。有了表，便可批量构造或访问一组变量。例如</p>
+<pre class="metapost"><code>string a[];  a[0] := &quot;空&quot;; a[1] := &quot;甲&quot;; a[2] := &quot;乙&quot;; a[3] := &quot;丙&quot;; 
+宫(scantokens(a[0]), a[0]);
+for i = 1 upto 3: 
+  宫(scantokens(a[i]), a[i]) 位于 scantokens(a[i - 1]) 偏 (东 1.5cm);
+endfor
+呜呼 甲, 乙, 丙;</code></pre>
+<figure>
+<img src="../../figures/metafun/pointer/01.png" alt="" /><figcaption>指针-1</figcaption>
+</figure>
+<p>上述代码看上去有些繁琐。宏最擅长化解繁琐：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="kw">def</span> 表 (suffix a) (text b) <span class="op">=</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>  <span class="dt">string</span> a[];</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>  <span class="kw">begingroup</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>    save i; <span class="dt">numeric</span> i; i <span class="op">:=</span> <span class="dv">0</span>;</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a>    <span class="kw">for</span> j <span class="op">=</span> b:</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>      a[i] <span class="op">:=</span> j;</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a>      i <span class="op">:=</span> i <span class="op">+</span> <span class="dv">1</span>;</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a>    <span class="kw">endfor</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a>  <span class="kw">endgroup</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a><span class="kw">enddef</span>;</span></code></pre></div>
+<p>基于 <code>表</code>，上述构造表的代码</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="dt">string</span> a[];  a[<span class="dv">0</span>] <span class="op">:=</span> <span class="st">&quot;空&quot;</span>; a[<span class="dv">1</span>] <span class="op">:=</span> <span class="st">&quot;甲&quot;</span>; a[<span class="dv">2</span>] <span class="op">:=</span> <span class="st">&quot;乙&quot;; a[3] := &quot;</span>丙<span class="st">&quot;; </span></span></code></pre></div>
+<p>可简化为</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>表(a, <span class="st">&quot;空&quot;</span>, <span class="st">&quot;甲&quot;</span>, <span class="st">&quot;乙&quot;, &quot;</span>丙<span class="st">&quot;);</span></span></code></pre></div>
+<p>在遍历一个表时，为了避免使用幻数，需要定义一个宏，用于查询表中元素个数：</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="kw">vardef</span> 表长 suffix a <span class="op">=</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>  save i; <span class="dt">numeric</span> i; i <span class="op">:=</span> <span class="dv">0</span>;</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a>  <span class="kw">forever</span>:</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a>    <span class="kw">exitif</span> <span class="kw">unknown</span> a[i <span class="op">+</span> <span class="dv">1</span>];</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a>    i <span class="op">:=</span> i <span class="op">+</span> <span class="dv">1</span>;</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a>  <span class="kw">endfor</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true"></a>  i</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true"></a><span class="kw">enddef</span>;</span></code></pre></div>
+<p>基于 <code>表长</code>，对表 <code>a</code> 的遍历代码可写为</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="kw">for</span> i <span class="op">=</span> <span class="dv">1</span> <span class="kw">upto</span> 表长 a:</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>  <span class="op">..</span>. <span class="op">..</span>. <span class="op">..</span>.</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a><span class="kw">endfor</span></span></code></pre></div>
+<h1 id="名">名</h1>
+<p>在代码中频繁使用 <code>scantokens</code>，也颇为繁琐，以 <code>名</code> 代之：</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="kw">def</span> 名 expr a <span class="op">=</span> scantokens(a) <span class="kw">enddef</span>;</span></code></pre></div>
+<p>于是</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>宫(scantokens(a[i]), a[i]) 位于 scantokens(a[i <span class="op">-</span> <span class="dv">1</span>]) 偏 (东 <span class="fl">1.5</span>cm);</span></code></pre></div>
+<p>可简写为</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>宫(名 a[i], a[i]) 位于 (名 a[i <span class="op">-</span> <span class="dv">1</span>]) 偏 (东 <span class="fl">1.5</span>cm);</span></code></pre></div>
+<h1 id="合并">合并</h1>
+<p>若为字符串表定义宏 <code>聚</code>，将表中除第一个字符串之外的其他字符串依序合并为一个字符串，例如将</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>表(a, <span class="st">&quot;空&quot;</span>, <span class="st">&quot;甲&quot;</span>, <span class="st">&quot;乙&quot;, &quot;</span>丙<span class="st">&quot;, &quot;</span>丁<span class="st">&quot;, &quot;</span>戊<span class="st">&quot;);</span></span></code></pre></div>
+<p>所构造的表 <code>a</code> 合并为 <code>"甲, 乙, 丙, 丁, 戊"</code>，则</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a>呜呼 甲, 乙, 丙, 丁, 戊;</span></code></pre></div>
+<p>便可简写为</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a>呜呼 名(聚 a);</span></code></pre></div>
+<p>宏 <code>聚</code> 可定义为</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="kw">vardef</span> 聚 suffix a <span class="op">=</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a>  save s, n; <span class="dt">string</span> s; <span class="dt">numeric</span> n;</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a>  s <span class="op">:=</span> <span class="st">&quot;&quot;</span>;</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true"></a>  n <span class="op">:=</span> 表长 a;</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true"></a>  <span class="kw">for</span> i <span class="op">=</span> <span class="dv">1</span> <span class="kw">upto</span> n:</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true"></a>    s <span class="op">:=</span> (tostring s) &amp; a[i] &amp; <span class="st">&quot;,&quot;</span>;</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true"></a>  <span class="kw">endfor</span>;</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true"></a>  s <span class="op">:=</span> s &amp; a[n];</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true"></a>  s</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true"></a><span class="kw">enddef</span>;</span></code></pre></div>
+<p><code>&amp;</code> 可将两个字符串合并为一个。</p>
+<h1 id="横陈纵列">横陈纵列</h1>
+<p>基于上述宏，不难定义以下三个宏，用于构造一组对象并横向或纵向放置它们：</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode metafont"><code class="sourceCode metafont"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="kw">def</span> 之乎者也 suffix a <span class="op">=</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true"></a>  <span class="kw">for</span> i <span class="op">=</span> <span class="dv">0</span> <span class="kw">upto</span> 表长 a: 宫(名 a[i], a[i]); <span class="kw">endfor</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true"></a><span class="kw">enddef</span>;</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true"></a><span class="kw">def</span> 横陈 (suffix a) (expr 间距) <span class="op">=</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true"></a>  <span class="kw">for</span> i <span class="op">=</span> <span class="dv">1</span> <span class="kw">upto</span> 表长 a:</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true"></a>    定位(名 a[i], 名(a[i]).酉门 位于 名(a[i <span class="op">-</span> <span class="dv">1</span>]).卯门 偏 (东 间距));</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true"></a>  <span class="kw">endfor</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true"></a><span class="kw">enddef</span>;</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true"></a><span class="kw">def</span> 纵列 (suffix a) (expr 间距) <span class="op">=</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true"></a>  <span class="kw">for</span> i <span class="op">=</span> <span class="dv">1</span> <span class="kw">upto</span> 表长 a:</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true"></a>    定位(名 a[i], 名(a[i]).子门 位于 名(a[i <span class="op">-</span> <span class="dv">1</span>]).午门 偏 (南 间距));</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true"></a>  <span class="kw">endfor</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true"></a><span class="kw">enddef</span>;</span></code></pre></div>
+<figure>
+<img src="../../figures/metafun/pointer/02.png" alt="" /><figcaption>指针-2</figcaption>
+</figure>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

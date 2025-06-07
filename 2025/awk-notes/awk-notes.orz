@@ -1,0 +1,939 @@
+---
+title: Awk：面向文本编程
+subtitle:
+abstract: 专业的事，交给专业的工具。
+date: 02 月 15 日
+...
+
+# 前言
+
+很多年后，我可能又一次不知道 Awk 的用法，就像此刻的你。
+
+Awk 是小语言，能做很多小事。用 Awk 的人像农夫，平素话少，在一片土地上做着很多小事。文本，是 Awk 耕作的土地。人类不喜欢土地，故而不喜欢当农夫。人类也不喜欢文本，故而喜欢使用微软或金山的一系列办公软件和甲骨文公司的数据库，以取得与高楼大厦，宝马香车，西装革履，笙歌燕舞密切的联系，令人觉得先进，而在土地上耕作的生活，是落后的，徒劳的。
+
+在现代化进程下，大多数时候，有一些小事，我们做不好，甚至不会做了，于是觉得这些都是小事，不会做又有何妨？这是不扫一屋也能扫天下的时代，只是想时常吃到让人放心的萝卜青菜，粗茶淡饭，却愈发变成奢求了。
+
+应该庆幸，土地还在，耕种土地的方法还在。只要愿意花点时间，学会如何做耕种方面的一些小事，身心便可得到有益的滋养。这就是在这次学习 Awk 语言的过程中，我颇为认真写下这份笔记的原因，并希望许多年后，我还知道 Awk 怎么用。
+
+# Awk 教程
+
+本文档只是 Awk 语言的学习笔记，并非面面俱到的教程。我曾经写过一篇文章，介绍了 Awk 语言的基本用法，详见「[Awk 小传](https://segmentfault.com/a/1190000016745490)」。
+
+若需要更完整且更好的教程，请阅读 Awk 语言的三位作者所著的《The Awk programming language》。这是一本很薄的书，200 多页，第一版发布于 1988 年，第二版发布于 2023 年。这本书并非只是讲述如何使用 Awk 语言编写程序——这部分内容在全书只占不到 1/3，它更多地是基于 Awk 语言描述了数据库、虚拟机、编译器以及排序算法等计算机科学中的基本原理。在国内，不仅 Awk 语言长期被低估和冷落，这本书则更是被低估和冷落，出版社从未组织翻译。该书的第一版，近年有爱好者翻译并公开，详见「<https://github.com/wuzhouhui/awk>」。
+
+GNU 所实现的 gawk，其文档「<https://www.gnu.org/software/gawk/manual/>」内容丰富，面面俱到，在涉及 Awk 语言细节时，可作为手册查阅。
+
+# 选择 gawk
+
+Awk 语言的解释器有多种实现，除 Awk 语言的作者实现的 awk 之外，还有 GNU 项目 gawk，运行速度很快的 mawk 以及面向嵌入式系统的 BusyBox 环境中的 awk 等。在众多 Linux 发行版中，gawk 最为常用，只有 Debian (版本 > 6.0) / Ubuntu (版本 > 12.04) 及其衍生版本的 Linux 系统默认使用 mawk。
+
+若不清楚自己所用的 awk 是哪个实现，可执行以下命令
+
+```console
+$ awk --version
+```
+
+然后查看该命令的输出信息。
+
+对于 Debian/Ubuntu 及其衍生版本的 Linux 系统，若确定 awk 并非 gawk，而是 mawk，将 gawk 设为默认 awk 最简单的方法是：
+
+```console
+$ sudo apt remove mawk
+$ sudo apt install gawk
+```
+
+若希望保持多个不同的 awk 实现，可使用以下命令选择 gawk 作为默认 awk：
+
+```console
+$ sudo update-alternatives --config awk
+```
+
+更推荐 gawk 作为默认 awk 的原因是，gawk 对 Awk 语言进行了扩展，使得 Awk 语言在处理文本时更为简便。本文档中出现的 Awk 程序皆面向 gawk，在必要时，我会指出 gawk 对 Awk 语言的扩展之处。
+
+# Hello world!
+
+使用 Awk 语言编写的每个程序（脚本），都假设有一份要处理的文本，故而 Awk 程序通常用以下方式执行：
+
+```console
+$ awk -f 脚本 文本文件
+```
+
+实际上，每个 Awk 程序都可以组织成以下形式：
+
+```awk
+BEGIN {...}
+模式 {动作}
+END {...}
+```
+
+其中，`模式 {动作}` 部分用于处理文本，而 `BEGIN` 和 `END` 块的运行时机分别是处理文本之前和结束。
+
+倘若只在 `BEGIN` 块中写一些代码，Awk 脚本便可在无文本要处理的情况下得以运行，例如以下 Awk 脚本 hello.awk：
+
+```awk
+BEGIN {
+    print "Hello world!"
+}
+```
+
+执行 hello.awk 的命令是
+
+```console
+$ awk -f hello.awk
+Hello world!
+```
+
+也可以将 Awk 程序写成 Shell 脚本的形式。例如，上述 Awk 语言的 Hello world 程序，可改写为 Bash 脚本 hello.sh：
+
+```bash
+#!/bin/bash
+awk 'BEGIN {
+    print "Hello world!"
+}'
+```
+
+以下命令可为 hello.sh 添加可执行权限（让该脚本可以像程序一样运行的权限）并运行它：
+
+```console
+$ chmod +x hello.sh
+$ ./hello.sh
+Hello world!
+```
+
+# 模式-动作
+
+Awk 语言将输入的文件视为一组记录，Awk 解释器会以一个循环过程依序遍历每一条记录，这个循环过程可称为主循环。
+
+在主循环运行过程中，对于当前读入的记录，即 `$0`，首先按照 Awk 解释器维护的全局变量 `FS` 的值进行分割，得到一组字段，可使用 `$1`，`$2`，... 形式获取字段的值。然后，Awk 解释器测试 `$0` 是否匹配某些模式，即测试 `$0` 中是否含有某些模式，若含有，则执行这些模式对应的一组动作，从而对 `$0` 进行处理或做其他一些运算。简而言之，模式是记录筛选器，筛选我们感兴趣的一些记录，并对其进行处理。
+
+模式可以是条件表达式，也可以是正则表达式。前者用于精确选择某些记录，后者则可用于粗略选择某些记录。例如，使用条件表达式可筛选序号（即 `NR`）为偶数的记录：
+
+```awk
+NR % 2 == 0 { print $0 } # $0 可省略
+```
+
+使用正则表达式，可筛选含有某些字符的记录，例如，筛选含有 `|` 符号的记录：
+
+```awk
+$0 ~  /\|/ { print $0 }
+```
+
+`|` 符号在正则表达式中有特殊含义，若将其视为普通字符，需对其进行转义，即 `\|`。位于一对 `/` 之间的文本即正则表达式。上述代码中的 `$0` 可忽略，以下代码与之等价：
+
+```awk
+/\|/ { print }
+```
+
+模式与动作，使得 Awk 语言在文本处理方面很像使用 SQL 语言操作数据库，这并非偶然。Awk 语言三位作者中的一位，正是因为当时他数据库颇感兴趣所以参与了 Awk 语言的设计与实现。
+
+`BEGIN` 和 `END` 皆为特殊模式，它们不匹配任何一条记录，前者在 Awk 解释器读入记录之前匹配成功，后者在 Awk 解释器读入所有记录之后匹配成功。因此，Awk 语言也许是这世界上最为简单的编程语言，一言蔽之，Awk 程序即
+
+```awk
+模式 { 动作 }
+```
+
+下面以一个简单又复杂的示例，讲述 Awk 编程的基本思路。
+
+假设文件 foo.txt 的内容为
+
+```plain
+晒太阳 | 完成
+包饺子 | 待完成
+拖地板 | 完成
+穿越到 2030 年 | 需 5 年
+```
+
+以下 Awk 脚本：
+
+@ todo-list.awk # [awk]
+BEGIN {
+    FS = "|"
+    print "\\usemodule[zhfonts][size=7pt]"
+    print "\\definepapersize[card][width=85.6mm,height=53.98mm]"
+    print "\\setuppapersize[card]"
+    print "\\setuppagenumbering[location=]"
+    print "\\starttext"
+    print "\\setupxtable[todolist][frame=off]"
+    print "\\startxtable[todolist]"
+}
+{
+    if (NF != 2) next
+    print "  \\startxrow"
+    print "    \\startxcell[width=.05\\textwidth] $\\circ$ \\stopxcell"
+    print "    \\startxcell[width=.75\\textwidth]", $1, "\\stopxcell"
+    if ($2 ~ / *待完成 */) {
+        print "\\startxcell[width=.2\\textwidth] \\hfill $\\cdots$ \\stopxcell"
+    } else if ($2 ~ / *完成 */) {
+        print "\\startxcell[width=.2\\textwidth] \\hfill $\\checkmark$ \\stopxcell"
+    } else {
+        print "\\startxcell[width=.2\\textwidth] \\hfill", $2, "\\stopxcell"
+    }
+    print "  \\stopxrow"
+}
+END {
+    print "\\stopxtable"
+    print "\\stoptext"
+}
+@
+
+可将 foo.txt 转换为 ConTeXt 源文件 foo.tex，后者内容如下：
+
+```tex
+\usemodule[zhfonts][size=7pt]
+\definepapersize[card][width=85.6mm,height=53.98mm]
+\setuppapersize[card]
+\starttext
+\setupxtable[todolist][frame=off]
+\startxtable[todolist]
+  \startxrow
+    \startxcell[width=.05\textwidth] $\circ$ \stopxcell
+    \startxcell[width=.75\textwidth] 晒太阳 \stopxcell
+    \startxcell[width=.2\textwidth] \hfill $\checkmark$ \stopxcell
+  \stopxrow
+  \startxrow
+    \startxcell[width=.05\textwidth] $\circ$ \stopxcell
+    \startxcell[width=.75\textwidth] 包饺子 \stopxcell
+    \startxcell[width=.2\textwidth]  \hfill $\cdots$\stopxcell
+  \stopxrow
+  \startxrow
+    \startxcell[width=.05\textwidth] $\circ$ \stopxcell
+    \startxcell[width=.75\textwidth] 拖地板 \stopxcell
+    \startxcell[width=.2\textwidth]  \hfill $\checkmark$\stopxcell
+  \stopxrow
+  \startxrow
+    \startxcell[width=.05\textwidth] $\circ$ \stopxcell
+    \startxcell[width=.75\textwidth] 穿越到 2030 年 \stopxcell
+    \startxcell[width=.2\textwidth]  \hfill 需 5 年\stopxcell
+  \stopxrow
+\stopxtable
+\stoptext
+```
+
+转换命令为
+
+```console
+$ awk -f todo-list.awk foo.txt > foo.tex
+```
+
+倘若 ConTeXt 环境安装了 zhfonts 模块（详见 [ConTeXt-notes.pdf](https://github.com/liyanrui/ConTeXt-notes) 第 15 章），编译 foo.tex：
+
+```console
+$ context foo.tex
+```
+
+可得 foo.pdf，其内容如下图所示：
+
+![todo-list](figures/todo-list.png)
+
+脚本 todo-list.awk 的内容虽然较多，但程序逻辑很简单，核心部分如下：
+
+```awk
+BEGIN {
+    FS = "|"  # 设置用于分割记录每一列的符号
+    ... 输出 ConTeXt 源文档的首部 ...
+}
+# 无模式匹配，意味着匹配每一条记录。
+{
+    # 动作：将记录分割的每一列
+    #      转换为 ConTeXt 表格单元，
+    #      即 \startxcell ... \stopxcell 语句。
+}
+END { ... 输出 ConTeXt 源文档的首部 ... }
+```
+
+todo-list.awk 中用于处理记录的模式-动作，未提供模式，意味着匹配每一条记录，但是在动作语句中，有检测记录分割所得列数是否为 2 的语句：
+
+```awk
+{
+    if (NF != 2) next
+    ... ... ...
+}
+```
+
+`NF` 即当前记录分割所得列数。若它不为 2，则执行 `next` 命令，即终止当前动作的后续语句以及后续的所有模式-动作语句，awk 解释器会读入文件的下一条记录，并再度执行 BEGIN 模式及动作语句之后的模式-动作语句。实际上该条件语句可以写成模式的形式，即
+
+```awk
+NF == 2 {
+    ... ... ...
+}
+```
+
+下一节会用到更多的模式-动作语句。
+
+# C 语言源码渲染
+
+使用 ConTeXt（若不了解 ConTeXt，可阅读《[ConTeXt 笔记](https://github.com/liyanrui/ConTeXt-notes)》）排版含有程序源码的文档时，由于 ConTeXt 用于排版源码的命令 `\starttyping ... \stoptyping` 在源码渲染方面对编程语言支持的种类过少，例如不支持 C 语言，故而只能将代码中的所有文字渲染为单一颜色。例如以下 C 语言源码：
+
+```plain
+\starttyping
+int main(void) {
+        printf("Hello world!\n");
+        return 0;
+}
+\stoptyping
+```
+
+上述代码对应的 ConTeXt 排版结果如下图所示：
+
+![C 语言源码在 ConTeXt 中的渲染结果](figures/c-hello.png)
+
+ConTeXt 提供了[源码渲染机制](https://segmentfault.com/a/1190000043405105)，用户可通过 Lua 语言的 lpeg 库，对能够以 BNF（巴科斯范式） 形式描述的语言进行解析，从而实现该语言的源码渲染。这种解析方式存在一个问题，它会导致无法在 `\starttyping ... \stoptyping` 环境中实现 TeX 逃逸。例如，以下代码以 TeX 逃逸的方式实现了在源码中排版数学公式：
+
+```plain
+\starttyping[escape=yes]
+/* 计算 /BTEX $a^2$ /ETEX */
+double /BTEX\inframed{foo}/ETEX(double a) {
+        return a * a;
+}
+\stoptyping
+```
+
+排版结果为
+
+![源码排版命令中的 TeX 逃逸](figures/tex-escape.png)
+
+在很多情况下，我既需要渲染源码，也需要在源码中插入以 TeX 逃逸方式实现的排版效果，二者如何兼得呢？很简单，只需以 TeX 逃逸的方式对源码进行渲染即可。只是含有 TeX 逃逸的源码会破坏源码所属编程语言的 BNF，无法再通过语法分析的方式渲染源码。事实上，这也是 ConTeXt 的源码渲染机制与 TeX 逃逸存在冲突的根源。我想出来的方案是不必强求语法的方案，如下：
+
+* 渲染注释
+* 渲染含有特殊标记的片段。
+* 渲染字符串；
+* 渲染基本类型；
+* 渲染关键词；
+
+上述方案中第 2 条，特殊标记是我自行定义的标记。例如
+
+```plain
+\starttyping
+/* 计算 \m{a^2} */
+double \fn{foo}(double \p{a}) {
+        return a * a;
+}
+\stoptyping
+```
+
+上述代码中的 `\m{...}`，`\fn{...}` 以及 `\p{...}` 便是特殊标记，分别用于表示数学公式、函数名和参数名。在源码渲染过程中，若遇到特殊标记，便将其转化为相应的 TeX 逃逸语句。下面，用 Awk 语言实现上述方案。
+
+首先，定义颜色映射文件：
+
+@ c-color.map # [plain]
+basic_type: GreenBlue
+keyword: ForestGreen
+string: Fuchsia
+comment: darkgray
+\fn: Maroon
+\t: GreenBlue
+\p:OutrageousOrange
+\c: darkgray
+@
+
+简单起见，只为关键字、字符串、注释、函数名（`\fn`）、自定义类型（`\t`）、函数参数名（`\p`）以及语句内嵌注释（`\c`）定义了颜色。若日后需要更多的特殊标记，可对 c-color.map 进行扩充。
+
+在 Awk 程序的 `BEGIN` 块读入颜色文件，将其内容转化为 Awk 数组 color，并定义 C 语言的基本类型和常见关键词：
+
+@ c-render.awk # [awk]
+BEGIN {
+    FS = ":"
+    while (getline <"c-color.map" > 0) {
+        gsub(/[ \t]+/, "", $1) # 去除特殊标记的前后空白字符
+        gsub(/[ \t]+/, "", $2) # 去除颜色名的前后空白字符
+        color[$1] = $2
+    }
+    FS = " "
+    basic_types = "char|double|enum|float|int|long|short|signed|struct|union|unsigned|void|const"
+    keywords = "static|typedef|sizeof|break|case|continue|default|do|else|for|goto|if|return|switch|while"
+}
+@
+
+然后，探测 ConTeXt 源文件中源码排版区域，
+
+@ c-render.awk # +
+/\\starttyping/ { typing = 1; print; next}
+@
+
+在源码排版区域，先对源码中的注释部分进行渲染，以防注释文本中出现与其他被渲染的元素相同的文本而被污染：
+
+@ c-render.awk # +
+typing && /\/\*/ {
+    if (!/\*\//) in_comment = 1
+    gsub(/\/\*.*/, "/BTEX\\color[" color["comment"] "]{&}/ETEX")
+    $0 = gensub(/\\m{([^}]+)}/, "\\\\m{\\1}", "g") # 数学公式
+    print; next
+}
+typing && in_comment {
+    if (/\*\//) in_comment = 0
+    gsub(/[^ \t].*/, "/BTEX\\color[" color["comment"] "]{&}/ETEX")
+    $0 = gensub(/\\m{([^}]+)}/, "\\\\m{\\1}", "g") # 数学公式
+    print; next
+}
+@
+
+上述代码可对单行和多行注释进行渲染，渲染完成后，使用 `next` 让主循环无需执行后续的模式-动作语句，提前进入下一次循环。
+
+接下来，渲染 C 语句及内嵌注释：
+
+@  c-render.awk # +
+typing {
+    # 渲染函数名
+    $0 = gensub(/\\fn{([^}]+)}/, "/BTEX\\\\color[" color["\\fn"] "]{\\1}/ETEX", "g")
+    # 渲染函数参数类型
+    $0 = gensub(/\\t{([^}]+)}/, "/BTEX\\\\color[" color["\\t"] "]{\\1}/ETEX", "g")
+    # 渲染函数参数
+    $0 = gensub(/\\p{([^}]+)}/, "/BTEX\\\\color[" color["\\p"] "]{\\1}/ETEX", "g")
+    # 渲染语句内嵌入的注释
+    $0 = gensub(/\\c{([^}]+)}/, "/BTEX\\\\color[" color["\\c"] "]{/* \\1 */}/ETEX", "g")
+    # 渲染字符串常量
+    if (/"[^"]*"/) {
+        # 处理反斜线
+        gsub(/\\/, "\\backslash ")
+        gsub(/"[^"]*"/, "/BTEX\\color[" color["string"] "]{&}/ETEX")
+    }
+    # 渲染基本类型
+    gsub("\\<(" basic_types ")\\>", "/BTEX\\color[" color["basic_type"] "]{&}/ETEX")
+    # 渲染关键词
+    gsub("\\<(" keywords ")\\>", "/BTEX\\color[" color["keyword"] "]{&}/ETEX")
+    print; next
+}
+@
+
+与渲染注释过程相似，渲染过程结束后，使用 `next` 让主循环提前进入下一次运转。
+
+在遇到 `\stoptyping` 行时，将源码区域关闭：
+
+@  c-render.awk # +
+/\\stoptyping/ { typing = 0; print; next}
+@
+
+对于非源码区域的内容，原样将其输出：
+
+@  c-render.awk # +
+{ print }
+@
+
+至此，支持在 ConTeXt 源码排版环境中渲染 C 语言源码的 Awk 脚本完成。
+
+使用 [orez 工具](../orez-v1/index.html) 从本文档（[awk-notes.orz](awk-notes.orz)）中提取 c-color.map 和 c-render.awk 文件：
+
+```console
+$ orez -t awk-notes.orz -e "c-color.map"
+$ orez -t awk-notes.orz -e "c-render.map"
+```
+
+将以下 ConTeXt 源文件 foo.tex 作为示例，
+
+```text
+\usecolors[crayola]
+\starttext
+\starttyping[escape=yes]
+/* This is a program which can
+   print "hello world" in screen.
+   It can not print any mathematical formula,
+   e.g. \m{a^2 + b^2 = c^2} */
+int \fn{main}(int \p{argc} \c{foo}, char **\p{argv}) {
+        print("Hello world!\n");
+        return 0;
+}
+\stoptyping
+\stoptext
+```
+
+测试 c-render.awk 脚本：
+
+```console
+$ awk -f c-render.awk foo.tex > bar.tex
+$ context bar.tex
+```
+
+所得排版结果如下图所示：
+
+![C 语言源码渲染结果](figures/c-render-result.png)
+
+源码排版区域所使用的特殊标记，若有删除需求，可通过以下脚本实现：
+
+@ c-demark.awk # [awk]
+/\\starttyping/ { typing = 1; print; next}
+typing {
+    $0 = gensub(/\\m{([^}]+)}/, "\\1", "g")
+    $0 = gensub(/\\fn{([^}]+)}/, "\\1", "g")
+    $0 = gensub(/\\t{([^}]+)}/, "\\1", "g")
+    $0 = gensub(/\\p{([^}]+)}/, "\\1", "g")
+    $0 = gensub(/\\c{([^}]+)}/, "\\1", "g")
+    if (/"[^"]*"/) {
+        gsub(/\\backslash[ \t]*/, "\\")
+    }
+    print; next
+}
+/\\stoptyping/ { typing = 0; print; next}
+{ print }
+@
+
+# sub、gsub 和 gensub
+
+上一节所写的脚本，频繁使用了 gawk 内置的字符串替换函数 `gsub` 和 `gensub`，常用的还有 `sub`。使用 Awk 解决各种文本处理问题，必须熟悉这三个函数的用法。
+
+`sub` 函数接受 3 个参数。第一个参数正则表达式。第二个参数是替换文本。第三个参数是可选的，即目标字符串，若未提供，`sub` 函数会将当前读入的一行文本 `$0` 作为该参数。Awk 程序读入的一行文本，称为一条记录。以下 Awk 脚本可去除任何一条记录的前导空白字符：
+
+```awk
+{ sub(/^[ \t]*/, ""); print }
+```
+
+上述代码与以下代码等价
+
+```awk
+{ sub(/^[ \t]*/, "", $0); print $0 }
+```
+
+例如，对于 foo.txt 文件：
+
+```plain
+a
+    b
+        c
+```
+
+执行以下命令
+
+```console
+$ awk '{ sub(/^[ \t]*/, ""); print }' foo.txt
+```
+
+输出为
+
+```plain
+a
+b
+c
+```
+
+未向 `print` 函数提供参数时，它会打印 `$0`。始终都要记住，`$0` 是当前正在处理的记录，在 `sub`、`gsub`、`gensub` 以及 `print` 函数中，它可以作为默认的输入参数，使得 Awk 代码更为简约，当然在不熟悉 Awk 语言的情况下，也会更让人觉得难懂。不必为此苛责 Awk 语言不友好，不直观，毕竟任何一种语言都有许多初学者不明就里的惯用法。
+
+上述代码中，`sub` 从 `$0` 中搜索第一次与正则表达式 `/^[ \t]*/` 匹配的部分，将其替换为空字符串。`/^[ \t]*/` 表示以一个或多个（`*`）空格或制表符（`\t`）作为开头（`^`）。关于正则表达式，我无力讲太多，因为关于它的知识足以写一本 700 多页的书。我建议在实际问题中去学习它的用法。需要注意的是，在 Awk 语言中，正则表达式可以写成 `/.../` 的形式，也可以写为字符串的形式，例如 `"^[ \t]*"`。
+
+`sub` 只能替换目标字符串中第一次与正则表达式匹配的部分，而 `gsub` 和 `gensub` 可以替换目标字符串中所有与正则表达式匹配的部分。gawk 实现的这三个 `sub` 函数，有着其他 Awk 语言的实现所不具备的功能，即正则表达式匹配过程中的捕获功能。例如，对于上述的 foo.txt，以下示例可为每一条记录中被捕获的部分增加花扩号：
+
+```awk
+$ awk '{ sub(/[^ \t]+/, "{&}"); print }' foo.txt
+{a}
+    {b}
+        {c}
+```
+
+上述代码中的正则表达式 `/[^ \t]+/` 表示一个或多个非空白字符，`sub` 函数匹配到的部分，在替换文本中表示为 `&`。
+
+现在，有文件 bar.txt：
+
+```plain
+A B C
+a b c
+1 2 3
+```
+
+以下命令使用 `gsub` 函数，为每个字符都增加花扩号：
+
+```console
+$ awk '{ gsub(/[^ \t]+/, "{&}"); print }' bar.txt
+{A} {B} {C}
+{a} {b} {c}
+{1} {2} {3}
+```
+
+`gensub` 函数与 `gsub` 相似，能够替换目标字符串中所有与正则表达式匹配的部分，但是扩展了捕获功能。`gensub` 在正则表达式中可使用 `(...)` 设置捕获区域，且捕获区域可以是多个，在替换文本中，使用 `\1`，`\2` ... 依序获得每个捕获区域匹配的文本，例如
+
+```console
+$ awk '{ print gensub(/([^ \t]+)[ \t]+(.*)/, "{\\1} {\\2}", "g") }' bar.txt
+{A} {B C}
+{a} {b c}
+{1} {2 3}
+```
+
+对于目标字符串，上述正则表达式中的 `([^ \t]+)` 用于捕获一个或个非空白字符构成的文本，`[ \t]+` 用于匹配 1 个或多个空白字符构成的文本，而 `(.*)` 用于捕获剩下的所有文本。`gensub` 第三个参数用于选择与正则表达式第 n 次匹配的文本参与替换，该参数为 "g" 表示与正则表达式匹配的文本全部参与替换。`gensub` 第 4 个参数是目标字符串，若未提供，则该参数为 `$0`。需要注意的是，`gensub` 与 `sub` 和 `gsub` 还有一点不同，它不修改目标字符串，而是返回替换结果，故而上例直接将其结果作为 `print` 的参数。还需要注意的是，获取捕获区域文本的符号 `\1`，`\2`，...，在 `gensub` 中需要对 `\` 进行转义，故而形式是 `\\1`，`\\2`，...倘若未对 `\` 转义，awk 会认为像 `\1` 这样的形式是对 `1` 进行转义，结果为 `1`。
+
+标准的 Awk 实现，没有 `gensub`，另外 `sub` 和 `gsub` 皆不具备捕获功能。若使用标准 Awk 语言实现与以下命令等价的功能
+
+```console
+$ awk '{ sub(/^[ \t]*/, ""); print }' foo.txt
+```
+
+需要使用 `match` 函数进行文本匹配，获得与正则表达式匹配的文本的开始位置和文本长度。awk 解释器维护的全局变量 `RSTART` 和 `RLENGTH`，它们分别表示与正则表达式匹配的文本的开始位置和文本长度，由 `match` 函数予以设定。基于这两个全局变量，使用 `substr` 提取文本，从而模拟捕获。例如
+
+```awk
+{
+    if (match($0, /^[ \t]*/)) {
+        print substr($0, RSTART + RLENGTH)
+    }
+}
+```
+
+执行以下命令，便可消除 foo.txt 中每一行的前导空白：
+
+```console
+$ awk '{
+    if (match($0, /^[ \t]*/)) {
+        print substr($0, RSTART + RLENGTH)
+    }
+}' foo.txt
+a
+b
+c
+```
+
+基于 `match` 和 `substr` 也可以模拟 `gsub`，但是需要借助循环结构，逐步消解目标字符串，每一步都获得一个匹配结果并对其进行处理。在标准 Awk 实现中模拟 `gensub` 会更为困难。从应用 Awk 语言解决问题的角度，没必要为难自己，建议使用 gawk，让其他 Awk 实现安其天命。
+
+最后，观察上一节的 Awk 代码，在 `gensub` 的替换文本参数中，出现了 `\\\\color` 的形式，虽然它对应的替换后的文本是 `\corlor`，但是在参数中必须写成至少 4 个 `\`，否则替换后的文本就是 `color`。原因是，`gensub` 的参数会被多次处理，每次处理便会丢失一个用于逃逸的 `\`，详情见「[More about ‘\’ and ‘&’ with sub(), gsub(), and gensub()](https://www.gnu.org/software/gawk/manual/gawk.html#Gory-Details)」，但是，对此也无需过于严肃，在实践中，尝试几次便可获得够用的经验了。
+
+# 匹配 C 函数的定义
+
+「[源码渲染](#源码渲染)」一节中，我为 C 函数的渲染定义了几个标记，有函数名 `\fn`，变量类型 `\t` 以及参数名 `\p`，之所以需要这些标记，是因为 Awk 语言对文件默认是逐行处理，而 C 函数的定义通常跨越多行，正则表达式匹配 C 函数的定义存在困难。不过，通过修改全局变量 `RS` 的值，Awk 语言也能实现跨行处理记录，亦即 Awk 所处理的记录可以由多行文本构成。
+
+`RS` 是记录分隔符，默认值为 `\n`，故而 Awk 语言默认是以文件中的每一行作为记录来处理。当匹配到记录含有 `\starttyping` 时，意味着进入了 ConTeXt 源文件中的源码排版区域，此时，可将 `RS` 的值修改为 `\stoptyping`，然后 Awk 的主循环下一次读入的记录便是整个源码排版区域的内容。例如，以下 Awk 程序
+
+```awk
+/\\starttyping/ { RS = "\\\\stoptyping"; typing = 1; next }
+typing { typing = 0; RS = "\n"; next}
+{ print }
+```
+
+可消除 ConTeXt 源文件中的所有源码排版区域。需要注意的是，将 `\stoptyping` 赋予 `RS` 时，需要进行反斜线转义，而且需要连续转义 3 次，请忍受这个事实。
+
+上述代码的 `typing { ... }` 部分得到的记录便是一个源码排版区域的所有内容，因此匹配 C 函数的定义需要在这部分实现。首先需要考虑 C 函数定义的正则表达式结构。以下面的 C 函数定义作为参考，
+
+```c
+int * foo (int a, int b) {
+        int *c = malloc(sizeof(int));
+        *c = a + b;
+        return c;
+}
+```
+
+可写出以下这则表达式：
+
+* `(\w+[\* \t\n]+)`：匹配并捕获函数的返回值类型，如上例中 `int *` 部分；
+* `(\w+)`：匹配并捕获函数名，如上例的 `foo`；
+* `(\s*\()`：匹配并捕获函数参数列表的左括号；
+* `(.*)`：匹配并捕获函数的参数列表；
+* `(\)\s*{.*})`：匹配并捕获函数参数列表的右括号以及函数定义的剩余部分。
+
+将上述各正则表达式片段组装起来，使用 Awk 的 `match` 函数中便可对函数的定义进行匹配并捕获各个部分，捕获结果存于一个数组 s 中：
+
+```awk
+match($0, /(\w+[\* \t\n]+)(\w+)(\s*\()(.*)(\)\s*{.*})/, s)
+```
+
+在上述正则表达式中，`\s` 和 `\w` 皆为 gawk 扩展的正则表达式语法，它们分别表示空白字符（空格，制表符和换行符）和单词字符（大小写字母、数字和下划线）。此外，上述使用的 `match` 函数也是 gawk 特有的，它可将含有捕获功能的正则表达式匹配的部分存入数组。
+
+基于上述知识，现在可以写出一个能够自动标记函数名和参数名的脚本：
+
+@ c-function.awk # [awk]
+/\\starttyping/ { RS = "\\\\stoptyping"; typing = 1; print; next }
+typing {
+    if (match($0, /(\w+[\* \t\n]+)(\w+)(\s*\()(.*)(\)\s*{.*})/, s)) {
+        # 标记函数名
+        if (s[2] !~ /\\fn/) s[2] = "\\fn{" s[2] "}"
+        # 标记参数名
+        split(s[4], p, ",")
+        for (i in p) {
+            if (p[i] !~ /\\.+/) {
+                if (p[i] ~ /\w+[\* \t\n]+\([\* \t\n]+\w+\)/) {
+                     # 参数为函数指针的形式，不予处理
+                } else {
+                    n = split(p[i], q, " ")
+                    gsub(q[n], "\\p{&}", s[4])
+                }
+            }
+        }
+        print s[1] s[2] s[3] s[4] s[5]
+    } else print
+    typing = 0; RS = "\n"; printf "\\stoptyping"; next
+}
+{ print }
+@
+
+注意，上述代码为了处理函数的参数列表，使用了两次 Awk 内置的 `split` 函数，第一次是以逗号对参数列表进行分割获得每个参数，第二次以空格对参数进行分割以分离参数类型与参数名。此外，由于 `\stoptyping` 被临时充作 `RS` 的值，会在输出中消失，故而在处理完源码区域后，需要使用 `printf` 将其输出。`printf` 与 `print` 的一个区别是，前者不会在输出内容尾部添加换行符 `\n`。
+
+使用 c-function.awk 脚本先对 ConTeXt 源文件中的 C 语言源码中的函数进行处理，以自动生成函数名和参数名的标记，然后将处理后的文件交于「[源码渲染](#源码渲染)」一节实现的 c-render.awk 进行后续渲染处理。如此可在不对 c-render.awk 变动的情况下省却手动标记函数定义的繁琐，并且保持脚本代码的简单。这是我喜欢的程序演进方式。「[源码渲染](#源码渲染)」一节是在无奈之下选择手动标记处理函数定义，这一节保持了手动标记功能，只是在一定程度上将手动标记过程自动化处理。手动标记，是 c-function.awk 和 c-render.awk 协作时的一层连接。
+
+此时的无奈，化为协议层，衔接着彼时的进化……换句话说，祖传的屎山代码可以不要动。
+
+# 正则表达式的局限性
+
+上一节所写的脚本 c-function.awk 实际上有一个很严重的缺陷，即它不具备任何实用性。例如对于以下 C 语言源码：
+
+```plain
+\starttyping
+void foo(void) {
+}
+void bar(int a, int b) {
+}
+\stoptyping
+```
+
+c-function.awk 的处理结果为
+
+```plain
+\starttyping
+void \fn{foo}(void) {
+}
+void \p{b}\p{a}r(int \p{a}, int \p{b}) {
+}
+\stoptyping
+```
+
+显然 c-function.awk 中用于匹配函数定义的正则表达式匹配结果出错了，它将
+
+```plain
+void) {
+}
+void \p{b}\p{a}r(int \p{a}, int \p{b}
+```
+
+视为参数列表了。此错误是 Awk 的正则表达式的贪婪所致。
+
+为了更清楚的说明上述问题，需要对问题进行简化。假设有以下文本：
+
+```plain
+(a b) c (d e f)
+```
+
+使用以下 Awk 语句对其进行匹配并捕获：
+
+```awk
+if (match($0, /\((.*)\)/, s)) {
+    print s[1]
+}
+```
+
+得到的结果是
+
+```plain
+a b) c (d e f
+```
+
+而我的本意是想得到
+
+```plain
+a b
+```
+
+这便是 c-function.awk 遇到多个函数时出错的原因。若想解决这个问题，需要实现一个更为复杂的字符串处理过程，但是也有一个简单的方案，增加新标记，例如：
+
+```plain
+\starttyping
+\fn:start
+void foo(void) {
+}
+\fn:stop
+\fn:start
+void bar(int a, int b) {
+}
+\fn:stop
+\stoptyping
+```
+
+在新标记规划出的范围内，c-function.awk 是可用的，只需略加修改：
+
+@ new-c-function.awk # [awk]
+/\\starttyping/ { typing = 1; print; next }
+typing && /\\fn:start/ { fn = 1; RS = "\\\\fn:stop\n"; next }
+typing && fn {
+    if (match($0, /(\w+[\* \t\n]+)(\w+)(\s*\()(.*)(\)\s*{.*})/, s)) {
+        # 标记函数名
+        if (s[2] !~ /\\fn/) s[2] = "\\fn{" s[2] "}"
+        # 标记参数名
+        split(s[4], p, ",")
+        for (i in p) {
+            if (p[i] !~ /\\.+/) {
+                if (p[i] ~ /\w+[\* \t\n]+\([\* \t\n]+\w+\)/) {
+                     # 参数为函数指针的形式，不予处理
+                } else {
+                    n = split(p[i], q, " ")
+                    gsub(q[n], "\\p{&}", s[4])
+                }
+            }
+        }
+        print s[1] s[2] s[3] s[4] s[5]
+    } else print
+    fn = 0; RS = "\n"; next
+}
+/\\stoptyping/ { typing = 0; print; next }
+{ print }
+@
+
+有朝一日，我变得更聪明了，再写一个脚本，用于为每个 C 函数的定义自动生成 `\fn:start` 和 `\fn:stop` 标记。
+
+# 变得更聪明
+
+现在开始尝试解决上一节最后的问题——变得更聪明。
+
+假设我已取到一个 `\starttyping...\stoptyping` 区域的内容，并将其作为一条记录，即 `$0`。使用「[匹配 C 函数的定义](#匹配-c-函数的定义)」一节中的方法达成这一目的并不困难。
+
+为了精准捕捉到一个 C 函数的定义，必须逐字符遍历 `$0`，推断当前字符及其之后的一段文本是否满足 C 函数定义的最短特征：返回类型 + 函数名 + 参数列表 + 第一个花括号。这是最笨的方法，然而对于本节要解决的问题而言，却是最聪明的做法。
+
+Awk 语言逐字符遍历字符串的方式需要基于 `substr` 方能实现。例如，以下脚本可逐字符输出当前记录：
+
+```awk
+for (i = 1; i <= length($0); i++) {
+    printf substr($0, i, 1)
+}
+```
+
+上述代码中的 `substr` 函数从 `$0` 中截取从第 `i` 个字符开始的，长度为 `1` 的子字符串，亦即第 `i` 个字符自身。不过，对于一些 Awk 语言的实现，例如 mawk，它不支持 Unicode，故而上述代码对它而言只是逐字节遍历字符串。以下命令可用于彰显 gawk 在 Unicode 支持方面的功绩：
+
+```awk
+$ awk 'BEGIN { x = "中文"; print length(x) }'
+```
+
+若 awk 为 gawk，上述命令的输出为 2；若 awk 为 mawk，则输出为 6。标准 Awk（即 Awk 语言的三位创始人）实现的 awk 是 2022 年实现了 Unicode 支持。单从这一点，我极力不推荐 mawk，虽然它解释 Awk 语言更快，但是作为脚本语言，要务是让用户在编程时更为直观地实现自己的想法，在这一点上，gawk 优于其他所有 Awk 实现。
+
+现在回到本节要解决的问题上来。由于 `$0` 中每一个字符都可能是函数定义的开头第一个字符，故而在遍历 `$0` 的过程中，每次都要用一个能够匹配函数定义最短特征的正则表达式进行探测：
+
+```awk
+for (i = 1; i <= length($0); i++) {
+    x = substr($0, i)
+    if (match(x, /^\w+[ \t\n*]+\w+\s*\(/)) {
+        a = i
+        print "found function!"
+    }
+}
+```
+
+上述代码中，未向 `substr` 提供第三个参数——字符串截取长度，则截取的子字符串是从 `$0` 的第 `i` 个字符及其之后所有字符。正则表达式 `/^\w+[ \t\n*]+\w+\s*\(/` 可匹配以函数的返回类型、函数名和参数列表的左括号构成的字符串且该字符串是 `x` 的开头。凡遇到以这种形式开头的文本，便可视为遇到了一个函数定义的开头，用 `a` 记录当前的下标 `i`。可以用一个变量 `in_function` 记录这一重大发现：
+
+```awk
+for (i = 1; i <= length($0); i++) {
+    x = substr($0, i)
+    if (match(x, /^\w+[ \t\n*]+\w+\s*\(/) && !in_function) {
+        a = i
+        in_function = 1
+        print "found function!"
+    }
+}
+```
+
+上述代码变动之处所表达的逻辑是，在没有遇到函数定义时，探测 `x` 的开头是否满足函数定义特征，若满足则将 `in_function` 的值置为 1，下一次便无需对 `x` 进行探测了，因为已经发现了一处函数定义。不用担心上述代码的 `if` 语句中的 `!in_function` 表达式在使用一个未定义的变量，因为在 Awk 语言中，未定义的变量的值为 0 或空字符串，对其进行逻辑求反运算，结果为真。此外，在 Awk 语言中，为一个变量赋值即定义，故而 `in_function = 1` 定义了 `in_function` 并对其赋值，从而在下一次循环中，`!in_function` 表达式是在对一个已定义的变量进行逻辑求反。
+
+在发现函数的定义后，需要探测该函数的定义在何处结束。将该问题具体化，即寻找一对封闭的花括号，它所囊括的内容便是函数体。在 `in_function` 状态中，只需要找到第一次出现的 `{`，然后再寻找一个与之配对的 `}`，则后者便是函数定义的结束之处。实现这个过程，无法使用正则表达式，因为函数体内部可能存在俄罗斯套娃似的嵌套的 `{...}` 结构，而正则表达式无力识别嵌套结构。
+
+假设循环正在进行，在 `in_function` 状态下，遇到了第一个、第二个…… `{`，只需要对其进行计数：
+
+```awk
+if (in_function) {
+    c = substr(x, i, 1)
+    if (c == "{") {
+        in_function_body = 1
+        brace_count++
+    }
+}
+```
+
+同时，在 `in_function` 状态下，遇到了第一个、第二个…… `}`，也对其进行计数，只是这个计数是在对 `brace_count` 的削减：
+
+```awk
+if (in_function) {
+    c = substr(x, 1, 1)
+    if (c == "}") {
+        brace_count--
+    }
+}
+```
+
+上述两段代码可合并为
+
+```awk
+if (in_function) {
+    c = substr(x, i, 1)
+    if (c == "{") {
+        in_function_body = 1
+        brace_count++
+    }
+    if (c == "}") {
+        brace_count--
+    }    
+}
+```
+
+当 `brace_count` 的值为 0 时，便意味着发现了囊括函数体的一对花括号，此时用 b 记住函数定义的终止位置，并将 `in_function_body = 0` 和 `in_function` 置为 0，以备检测下一个可能存在的函数定义：
+
+```awk
+if (in_function_body && brace_count == 0) {
+    b = i
+    print substr($0, a, b - a + 1)
+    print "function end."
+    in_function_body = 0
+    in_function = 0
+}
+```
+
+上述代码中的 `substr($0, a, b - a)` 便是捕获的一个函数的定义。
+
+完整的捕获每个函数定义的代码如下：
+
+```awk
+for (i = 1; i <= length($0); i++) {
+    x = substr($0, i)
+    if (!in_function && match(x, /^\w+[ \t\n*]+\w+\s*\(/)) {
+        a = i
+        in_function = 1
+        print "found function!"
+        continue
+    }
+    if (in_function) {
+        c = substr(x, 1, 1)
+        if (c == "{") {
+            in_function_body = 1
+            brace_count++
+        }
+        if (c == "}") {
+            brace_count--
+        }
+    }
+    if (in_function_body && brace_count == 0) {
+        b = i
+        print substr($0, a, b - a + 1)
+        print "function end."
+        in_function_body = 0
+        in_function = 0
+    }
+}
+```
+
+既然能从一条记录中发现所有 C 函数的定义，那么便可为每个函数的定义添加 `\fn:start` 和 `\fn:stop` 标记，从而上一节的难题便得以解决，而且无需修改 new-c-function.awk。
+
+至此，在 ConTeXt 排版环境中渲染 C 语言源码的问题便基本得以解决。有一些 C 语法元素的渲染尚未涉及，诸如预处理指令、宏定义等，但是渲染这些语法元素的思路不会比识别 C 函数的定义更难。
+
+# 范围模式
+
+文档转换工具 [pandoc](https://pandoc.org/) 允许在它所处理的 Markdown 文档首部存在 YAML 数据作为文档的元信息。例如 awk-notes.md：
+
+```markdown
+---
+title: Awk：面向文本编程
+abstract: 专业的事，交给专业的工具。
+...
+
+很多年后，我可能又一次不知道 Awk 的用法，就像此刻的你……
+```
+
+其中，起始符 `---` 和终止符 `...` 包括的内容便是 YAML 格式的文档首部。现在我需要在上述 YAML 数据区域加入一个时间戳
+
+```yaml
+date: 02 月 20 日
+```
+
+由于 awk-notes.md 的内容区域也可能存在 `---` 和 `...`，故而需要确定时间戳只插入第一次出现的被 `---` 和 `...` 包含的区域。解决这个问题，有多种方法，但是最稳健且最简单的方法是用 Awk 语言的范围模式：
+
+```awk
+/---/, /\.\.\./ && !finished {
+    if (/\.\.\./) {
+        print "date: 02 月 20 日"
+        print "..."
+        finished = 1
+    } else print
+    next
+}
+{ print }
+```
+
+上述代码中，模式 `/---/` 和 `/\.\.\./` 可以匹配 YAML 数据的起始符和终止符，用逗号隔开这两个模式，表示匹配从 `---` 到 `...` 的所有行，这便是范围模式。在上述范围模式对应的动作语句里，若当前记录为 `...`，则在它之前输出时间戳，问题便得以解决，用 finished 变量表示时间戳插入任务完成，以保证在文档的后续内容遇到 `---` 和 `...` 时会予以忽略。
+
+# 总结
+
+这段时间，我几乎又将 Awk 语言完整地学习了一遍，事实证明，我以前只是假装会了 Awk 的用法。这次在 C 语言源码渲染方面的实践驱动的学习中，我发现了 Awk 语言一些细节。基于这些细节，可以大幅简化之前所写的一些 Awk 脚本。虽然此处已是总结，但未来在用 Awk 语言解决一些实际问题时，可能还会更新这份文档。也许，这次我只是又一次假装学会了。我的生活，就在一场又一场假装中，踉跄前行。

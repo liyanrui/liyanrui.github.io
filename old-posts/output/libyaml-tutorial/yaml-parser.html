@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>YAML 解析</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">YAML 解析</h1>
+<p class="date">2024 年 03 月 08 日</p>
+</header>
+<hr />
+<p>假设存在以下 YAML 文档</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="pp">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="fu">故乡</span><span class="kw">:</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="at">  </span><span class="fu">地名</span><span class="kw">:</span><span class="at"> 郯城</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="at">  </span><span class="fu">经度</span><span class="kw">:</span><span class="at"> </span><span class="fl">118.374</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="at">  </span><span class="fu">纬度</span><span class="kw">:</span><span class="at"> </span><span class="fl">34.619</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a><span class="co">...</span></span></code></pre></div>
+<p>基 LibYAML 库将上述 YAML 文档内容解析为 C 结构体</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">struct</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>        <span class="dt">char</span> *name;</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>        <span class="dt">float</span> longitude;</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>        <span class="dt">float</span> latitude;</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>} </span></code></pre></div>
+<p>为了从 YAML 事件流中获取所需要的数据流，需要将 YAML 事件构成的状态机嵌入到针对上述 C 结构体而构造的状态机中，以下是完整的解析代码：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;yaml.h&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;string.h&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="pp">#define STR(x) ((x) ? (char *)(x) : &quot;&quot;)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> *argv[])</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a>{</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a>        <span class="kw">struct</span> {</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a>                <span class="dt">char</span> *name;</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a>                <span class="dt">float</span> longtitude;</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a>                <span class="dt">float</span> latitude;</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a>        } hometown;</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a>        <span class="kw">enum</span> hometown_state {</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a>                INIT,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a>                MAYBE_HOMETOWN,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a>                HOMETOWN,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true"></a>                HOMETOWN_NAME,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a>                HOMETOWN_LONGTITUDE,</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true"></a>                HOMETOWN_LATITUDE,</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true"></a>                TERMINAL</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true"></a>                </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true"></a>        } s = INIT;</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true"></a>        <span class="dt">FILE</span> *file = fopen(<span class="st">&quot;foo.yaml&quot;</span>, <span class="st">&quot;r&quot;</span>);</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true"></a>        yaml_parser_t parser;</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true"></a>        yaml_event_t event;</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true"></a>        yaml_parser_initialize(&amp;parser);</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true"></a>        yaml_parser_set_input_file(&amp;parser, file);</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true"></a>        <span class="cf">do</span> {</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true"></a>                <span class="cf">if</span> (!yaml_parser_parse(&amp;parser, &amp;event)) <span class="cf">goto</span> error;</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true"></a>                <span class="cf">switch</span> (s) {</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true"></a>                <span class="cf">case</span> INIT:</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true"></a>                        <span class="cf">switch</span> (event.type) {</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true"></a>                        <span class="cf">case</span> YAML_MAPPING_START_EVENT:</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true"></a>                                s = MAYBE_HOMETOWN;</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true"></a>                                <span class="cf">break</span>;</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true"></a>                        }</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true"></a>                        <span class="cf">break</span>;</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true"></a>                <span class="cf">case</span> MAYBE_HOMETOWN:</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true"></a>                        <span class="cf">switch</span> (event.type) {</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true"></a>                        <span class="cf">case</span> YAML_SCALAR_EVENT:</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true"></a>                                <span class="dt">char</span> *value = STR(event.data.scalar.value);</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true"></a>                                <span class="cf">if</span> (strcmp(value, <span class="st">&quot;故乡&quot;</span>) == <span class="dv">0</span>) {</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true"></a>                                        s = HOMETOWN;</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true"></a>                                }</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true"></a>                                <span class="cf">break</span>;</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true"></a>                        }</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true"></a>                        <span class="cf">break</span>;</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true"></a>                <span class="cf">case</span> HOMETOWN:</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true"></a>                        <span class="cf">switch</span> (event.type) {</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true"></a>                        <span class="cf">case</span> YAML_SCALAR_EVENT:</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true"></a>                                <span class="dt">char</span> *value = STR(event.data.scalar.value);</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true"></a>                                <span class="cf">if</span> (strcmp(value, <span class="st">&quot;地名&quot;</span>) == <span class="dv">0</span>) s = HOMETOWN_NAME;</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true"></a>                                <span class="cf">if</span> (strcmp(value, <span class="st">&quot;经度&quot;</span>) == <span class="dv">0</span>) s = HOMETOWN_LONGTITUDE;</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true"></a>                                <span class="cf">if</span> (strcmp(value, <span class="st">&quot;纬度&quot;</span>) == <span class="dv">0</span>) s = HOMETOWN_LATITUDE;</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true"></a>                                <span class="cf">break</span>;</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true"></a>                        <span class="cf">case</span> YAML_MAPPING_END_EVENT:</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true"></a>                                s = TERMINAL;</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true"></a>                                <span class="cf">break</span>;</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true"></a>                        }</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true"></a>                        <span class="cf">break</span>;</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true"></a>                <span class="cf">case</span> HOMETOWN_NAME:</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true"></a>                        <span class="cf">switch</span> (event.type) {</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true"></a>                        <span class="cf">case</span> YAML_SCALAR_EVENT:</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true"></a>                                <span class="dt">char</span> *value = STR(event.data.scalar.value);</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true"></a>                                hometown.name = strdup(value);</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true"></a>                                s = HOMETOWN;</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true"></a>                                <span class="cf">break</span>;</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true"></a>                        }</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true"></a>                        <span class="cf">break</span>;</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true"></a>                <span class="cf">case</span> HOMETOWN_LONGTITUDE:</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true"></a>                        <span class="cf">switch</span> (event.type) {</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true"></a>                        <span class="cf">case</span> YAML_SCALAR_EVENT:</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true"></a>                                <span class="dt">char</span> *value = STR(event.data.scalar.value);</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true"></a>                                hometown.longtitude = atof(value);</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true"></a>                                s = HOMETOWN;</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true"></a>                                <span class="cf">break</span>;</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true"></a>                        }</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true"></a>                        <span class="cf">break</span>;</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true"></a>                <span class="cf">case</span> HOMETOWN_LATITUDE:</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true"></a>                        <span class="cf">switch</span> (event.type) {</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true"></a>                        <span class="cf">case</span> YAML_SCALAR_EVENT:</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true"></a>                                <span class="dt">char</span> *value = STR(event.data.scalar.value);</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true"></a>                                hometown.latitude = atof(value);</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true"></a>                                s = HOMETOWN;</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true"></a>                                <span class="cf">break</span>;</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true"></a>                        }</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true"></a>                        <span class="cf">break</span>;</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true"></a>                }</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true"></a>                yaml_event_delete(&amp;event);</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true"></a>        } <span class="cf">while</span> (s != TERMINAL);</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true"></a>        yaml_parser_delete(&amp;parser);</span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true"></a>        fclose(file);</span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true"></a>        printf(<span class="st">&quot;{%s, %.3f, %.3f}</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true"></a>               hometown.name, hometown.longtitude, hometown.latitude);</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true"></a>        free(hometown.name);</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true"></a>        <span class="cf">return</span> EXIT_SUCCESS;</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true"></a>error:</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true"></a>        fprintf(stderr, <span class="st">&quot;Failed to parse: %s</span><span class="sc">\n</span><span class="st">&quot;</span>, parser.problem);</span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true"></a>        yaml_parser_delete(&amp;parser);</span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true"></a>        fclose(file);</span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true"></a>        <span class="cf">return</span> EXIT_FAILURE;</span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true"></a>}</span></code></pre></div>
+<p>程序的输出为</p>
+<pre class="text"><code>{郯城, 118.374, 34.619}</code></pre>
+<p>若觉 LibYAML 解析 YAML 文档的过程过于繁琐，且所解析的 YAML 文档中规中矩，建议使用 LibCYAML 库，可参考「<a href="https://github.com/tlsa/libcyaml/blob/main/docs/guide.md" class="uri">https://github.com/tlsa/libcyaml/blob/main/docs/guide.md</a>」。</p>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

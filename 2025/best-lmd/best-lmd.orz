@@ -1,0 +1,815 @@
+---
+title: lmd 的设计与实现
+date: 2025 年 01 月 24 日
+abstract: 文学程序，实现了静态网站的构建脚本。
+...
+
+# 前言
+
+我曾经用过两三个静态网站构建工具，用的最久的，是 [nikola](https://www.getnikola.com/getting-started.html)，它很优秀，无论是安装，还是使用，都比较简单。不过，我难以回答之前为什么要弃用它。大概是有一次对它进行升级，下载它依赖的一些 Python 包时出现了我难以解决的问题，导致升级失败，这件事让我不太舒服，便弃用了。刚才我又试了一次，即使按照官方文档提醒的，在 Ubuntu 或其衍生版本中，应使用 Python 的包管理器 pip 进行安装，然而在我的 Linux Mint 22 环境中依然在安装过程中出错。
+
+大概是 Bash 语言太过于古老，以至于我什么时候认真学过它都有些记忆模糊了。大概是在 2020 年，也可能更早一些，我在学习了几天 Bash 语言之后，想写个脚本练手，恰好我又略懂号称[文档格式转换界的瑞士军刀——pandoc](https://pandoc.org/) 的用法，于是基于 Bash 和 pandoc 写了个脚本，取名为 gar，它能够借助 pandoc 将 Markdown 文档转化为网页，并且提供了文章基本管理功能。gar 脚本虽然简陋，但是它让我意识到，实现一个静态网站构建工具，并不需要流行的静态网站构建工具所表现出的那般复杂。当然，它们的复杂有它们的理由，只是那些理由不是我的。
+
+2023 年，我在又一次温习 Bash 和 Awk 时，对 gar 脚本进行了改进，基于 Awk 脚本为其实现了文档目录管理的功能，并将 gar 更名为 lmd，并写了一份文档，介绍了[它的用法](https://liyanrui.github.io/old-posts/output/bash/lmd.html)。
+
+今年，我在为 [orez 的新版本](https://liyanrui.github.io/old-posts/output/2025/orez-v1.html)构造 Markdown 后端时，尝试将它与 lmd 脚本配合起来，以静态网站的形式发布文学程序的文档，详见「[orez + lmd = ?](https://liyanrui.github.io/old-posts/output/2025/orez-lmd.html)」一文。在此过程中，我发现 lmd 脚本外围的部分 Awk 代码与 Ubuntu 系的发行版默认使用的 mawk 不兼容，在修改这部分 Awk 代码时，发现我对 lmd 脚本里的代码也感觉非常陌生。于是，决定重新实现 lmd，以文学编程的方式，除了作为文学编程以及 orez 的 Markdown 后端是否可用的一次实践，也用于防备以后再次阅读 lmd 脚本里的代码觉得陌生。
+
+# pandoc
+
+构造一个静态网站，用于发布日志、想法、感悟以及类似讨武曌檄或共产主义宣言之类的内容，首先需要放弃直接使用 HTML 语言撰写文档这种想法，因为现在已经不是 2000 年代了。Markdown 语言可以实现杠杆作用，让你用更小的力气撬动 HTML 的繁冗笨重，而具体的杠杆就是类像 pandoc 这样的工具。
+
+lmd 脚本所构建的静态网站，网页只有两种形式：网站的首页和文章。在 lmd 脚本的视域，静态网站相当于文集，网站的首页相当于文集的目录。这意味着，从 Markdown 到 HTML，需要为 pandoc 事先定义两份文档模板。对于 pandoc 而言，用户定义的文档模板并非必须，因为它有一些默认模板可用。但是，倘若需要对页面部分内容是否需要 pandoc 呈现出来有搜要求，则必须为 pandoc 提供自定义的模板。
+
+我为网站首页和文章分别定义了模板 homepage.template 和 post.template，其内容见附录 [pandoc 模板](#pandoc-模板)。下面以一份简单但完备的 Markdown 文档为例，演示如何使用 pandoc 按照模板 post.template 生成 HTML 文档。假设这份 Markdown 文档为 foo.md，其内容为
+
+@ foo.md # [markdown]
+---
+title: 标题
+lang: zh-CN
+date: 2025 年 01 月 14 日
+abstract: 这是一份示例。
+category: 
+footer: 页脚
+...
+
+# 第一节
+
+... 内容 ...
+
+![插图](foo.png)
+
+# 第二节
+
+... 行内公式：$a^2 + b^2 = c^2$
+
+行间公式：
+
+$$
+E = mc^2
+$$
+@
+
+将模板文件 post.template 放到一个名为 templates 的目录（目录名只能是 templates）里，假设 /tmp/templates，则以下命令可基于 post.template 模板和 MathJax 脚本，将 foo.md 转化为支持 TeX 数学公式的 HTML 文件 foo.html：
+
+```console
+$ pandoc foo.md --standalone --table-of-contents \
+         --data-dir=/tmp --template=post.template \
+         --mathjax=https://cdn.bootcss.com/mathjax/3.2.2/es5/tex-mml-chtml.js \
+         --output foo.html
+```
+
+下面对上述命令中的参数予以说明：
+
+* `--standalone`：可让 pandoc 生成完整的 HTML 文件，即可直接在网络浏览器中呈现的网页文件。
+* `--table-of-contents`：生成目录。
+* `--data-dir`：设定模板文件目录所在路径。
+* `--mathjax`：设定 MathJax 脚本 CDN 地址，用于渲染文档中的数学公式。
+* `--output`：设定输出文件名。
+
+以上命令生成的 HTML 页面并不美观，存在标题和正文字体皆过大，页脚文字未居中，目录占据空间过多等问题。这些问题皆属于排版问题，可通过 CSS 予以解决。pandoc 的 `--css` 选项支持加载用户定义的样式文件。附录的[样式表](#样式表)提供了 lmd.css 文件，假设它与 pandoc 生成的 foo.html 位于同一目录，以下命令可解决上述排版问题：
+
+```console
+$ pandoc foo.md --standalone --table-of-contents \
+         --data-dir=/tmp --template=post.template \
+         --mathjax=https://cdn.bootcss.com/mathjax/3.2.2/es5/tex-mml-chtml.js \
+         --css=lmd.css \
+         --output foo.html
+```
+
+至于网站首页的构建，对应的 pandoc 命令要简单一些：
+
+```console
+$ pandoc foo.md --standalone \
+         --data-dir=/tmp --template=homepage.template \
+         --css=lmd.css \
+         --output foo.html
+```
+
+上述的 pandoc 命令是下文要实现的 lmd 脚本的核心。即使不借助 lmd 脚本，单纯使用 pandoc 命令也能构建静态网站，只是过程会较为繁琐。
+
+# 文章
+
+对于 lmd 脚本而言，若一个目录包含 index.md 和 figures 目录，则该目录构成一篇文章的主体。以下代码定义了一个 Bash 函数 `lmd_new_post`，用于创建符合上述定义的文章：
+
+@ 函数：创建文章 #
+function lmd_new_post {
+    mkdir "$2" && cd "$2"
+    echo "---" > index.md
+    echo "title: $1" >> index.md
+    echo "subtitle: " >> index.md
+    echo "abstract: " >> index.md
+    echo -e "...\n" >> index.md
+    mkdir figures
+}
+@
+
+`lmd_new_post` 函数接受 2 个参数，第 1 个是文章的标题，第 2 个参数是文章目录。
+
+# 网站初始化
+
+网站本质上也是一篇文章，只是它需要一些额外的数据，例如网站的配置文件，网页样式表以及 pandoc 模板，故而为网站初始化过程单独定义一个函数：
+
+@ 函数：网站初始化 #
+function lmd_init {
+    lmd_new_post "$1" "$2"
+    # 从 lmd 脚本所在目录复制数据到网站根目录 @
+}
+@
+
+上述代码中 `lmd_new_post` 接受的参数，为其添加引号是必须的，因为该参数中可能存在空格，若对其不加引号，会导致 bash 错以为参数是多个。关于这一点，详解见 [2]。
+
+网站所需的额外数据皆在 lmd 脚本所在目录，可是如何获得该目录的路径呢？根据文档 [1] 的探讨，确定 lmd 脚本所在路径的 Bash 代码如下：
+
+@ 确定脚本自身所在 -> LMD_SELF_PATH #
+LMD_SELF_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+@
+
+假设 lmd 脚本所在目录的结构如下：
+
+```
+lmd 所在目录
+├── data
+│   └── appearance
+│       ├── lmd.css
+│       └── pandoc
+│           └── data
+│               └── templates
+│                   ├── homepage.template
+│                   └── post.template
+│── lmd.conf
+└── lmd 脚本
+```
+
+
+基于 `LMD_SELF_PATH` 变量，向网站根目录复制数据的过程如下：
+
+@ 从 lmd 脚本所在目录复制数据到网站根目录 #
+cp -r "$LMD_SELF_PATH/data/appearance" ./
+cp $LMD_SELF_PATH/lmd.conf ./
+@
+
+lmd.conf 文件中定义了网站的一些基本信息：
+
+@ lmd.conf # [bash]
+LMD_LANGUAGE="zh-CN"   # 文章语言为简体中文
+LMD_EMAIL='lyr.m2@live.cn'  # 站长邮箱
+LMD_ISSUES='... ... ...' # 讨论区
+# 页脚内容
+LMD_FOOTER="我的联系方式：<$LMD_EMAIL> 或在[讨论区]($LMD_ISSUES)提问。"
+@
+
+这些基本信息在网站初始化后，可在网站根目录下编辑 lmd.conf 文件，根据自身情况予以修改。
+
+# 陈仓暗渡
+
+将文章转化为网页，过程有些复杂，因为涉及一些文本处理任务，单纯使用 Bash 语言难以实现，我选择使用 Awk 语言编写一些辅助脚本来解决这些问题。
+
+首先，需要向文章首部添加一些隐含字段。在创建文章时，为了保持文章的 Markdown 源文档的洁净，这些字段皆未出现。在将文章转化为网页时，lmd 脚本会为文章的源文档 index.md 增加这些字段，并形成一份临时的 Markdown 源文档 .tmp_index.md，经 pandoc 转换为网页后，再从该临时文档中消除这些隐含字段，最后用 .tmp_index.md 代替文章的源文档 index.md。
+
+以下 Awk 脚本可向文章首部添加 `category`、`lang` 和 `footer` 字段：
+
+@ append-meta-data.awk # [awk]
+BEGIN { RS = "\n\\.\\.\\.\n+" }
+{
+    if (NR == 1) {
+        print $0
+        if (category) print "category:", category
+        if (lang) print "lang:", lang
+        if (footer) print "footer:", footer
+        print "...\n"
+        RS = "\n"
+    } else print $0
+}
+@
+
+假设上述脚本存放于 lmd 脚本所在目录的 helper 目录。
+
+若不熟悉 Awk 语言，可阅读在下多年前写的拙文「Awk 小传」[3]。上述脚本中的  `category`、`lang` 和 `footer` 变量，可以 awk 命令参数的形式定义并传入，其中 `catetgory` 是已知的，即 `../index.html`（假如它存在），另两个变量需要从 lmd.conf 文件中获取。函数 `lmd_path_to_root` 可从当前目录上溯到网站根目录获得相对路径，基于该路径，通过 `source` 命令便可「纳入」lmd.conf 的内容。
+
+@ 函数：获取当前目录到网站根目录的相对路径 #
+function path_to_root {
+    local relative_path="$1"
+    if [ "$(pwd)" = "/" ]
+    then
+        echo "Error: I can not find right path!"
+        exit -1
+    elif [ -e lmd.conf ]
+    then
+        echo "${relative_path%/}"
+    else
+        relative_path="../$relative_path"
+        cd ../
+        path_to_root "$relative_path"
+    fi
+}
+function lmd_path_to_root {
+    local current_path="$(pwd)"
+    local relative_path="$(path_to_root "")"
+    if [ "$relative_path" = "" ]; then
+        relative_path="."
+    fi
+    echo "$relative_path"
+    cd "$current_path"
+}
+@
+
+基于 `lmd_path_to_root`，载入 lmd.conf 的代码如下：
+
+@ 载入 lmd.conf #
+source "$(lmd_path_to_root)/lmd.conf"
+@
+
+基于 lmd.conf 里的变量，便可实现向文章首部追加字段的代码，如下：
+
+@ 函数：向文件首部追加 category、lang 和 footer 字段 #
+function lmd_append_meta_data {
+    # 载入 lmd.conf @
+    if [ -e lmd.conf ]; then
+        awk -v lang="$LMD_LANGUAGE" \
+            -v footer="$LMD_FOOTER" \
+            -f "$LMD_SELF_PATH/helper/append-meta-data.awk" \
+            "$1" > "$2"
+    else
+        awk -v category="../index.html" \
+            -v lang="$LMD_LANGUAGE" \
+            -v footer="$LMD_FOOTER" \
+            -f "$LMD_SELF_PATH/helper/append-meta-data.awk" \
+            "$1" > "$2"
+    fi
+}
+@
+
+向文件首部追加的 category、lang 和 footer 字段，可通过以下 Awk 脚本予以清除：
+
+@ delete-meta-data.awk # [awk]
+BEGIN { RS = "\n\\.\\.\\.\n+"; FS = "\n" }
+{
+    if (NR == 1) {
+        x = "---"
+        for (i = 2; i <= NF; i++) {
+            if (match($i, /^category:/)) ;
+            else if (match($i, /^lang:/)) ;
+            else if (match($i, /^footer:/)) ;
+            else x = x "\n" $i
+        }
+        print x "\n...\n"
+        RS = "\n"; FS = " "
+    } else print $0
+}
+@
+
+与上述 Awk 脚本配合的 Bash 代码如下：
+
+@ 函数：从文件首部删除 category、lang 和 footer 字段 #
+function lmd_delete_meta_data {
+    awk -f "$LMD_SELF_PATH/helper/delete-meta-data.awk" "$1" > "${1#.tmp_}"
+}
+@
+
+为了建立与上级文章的关联，还需要考虑如何将文章的路径、摘要以及时间戳（假如存在）添加到上级文章里。以下 Awk 脚本用于解决该问题：
+
+@ add-post.awk # [awk]
+BEGIN {
+    RS = "\n\\.\\.\\.[ \t]*\n+"
+    post_date = ""
+    if (date) {
+        sub(/.+年[ ]*/, "", date)
+        post_date = "<span class=\"post-date\">" date "</span>"
+    }
+    item = "* " post_date "[" title "](" post_path ")"
+    if (abstract) item = item "：" abstract
+}
+{
+    if (NR == 2) {
+        print "...\n\n" item
+        print $0
+        RS = "\n"
+    } else print $0
+}
+END {
+    # 页面内容为空
+    if (NR < 2) {
+        print "...\n\n" item
+    }
+}
+@
+
+为了能在 awk 命令中传入上述脚本需要的 `title`、`date` 和 `abstract` 变量，还需要下面的 Awk 脚本从文章首部中这些字段的值：
+
+@ get-title.awk # [awk]
+/^ *title:.*$/ {
+    s = $0
+    sub(/[ \t]*title:[ \t]*/, "", s)
+    sub(/[ \t]*$/, "", s)
+    print s
+    exit 0
+}
+@
+
+@ get-date.awk # [awk]
+/^ *date:.*$/ {
+    s = $0
+    sub(/[ \t]*date:[ \t]*/, "", s)
+    sub(/[ \t]*$/, "", s)
+    print s
+    exit 0
+}
+@
+
+@ get-abstract.awk # [awk]
+/^ *abstract:.*$/ {
+    s = $0
+    sub(/[ \t]*abstract:[ \t]*/, "", s)
+    sub(/[ \t]*$/, "", s)
+    print s
+    exit 0
+}
+@
+
+至于 add-post.awk 脚本中的 `post_path` 可在 lmd 脚本中结合工作目录的路径进行构造。
+
+向上级文章添加文章链接时，需要事先判定文章是否已在上级页面出现。find-post.awk 脚本用于解决该问题，其实现如下：
+
+@ find-post.awk # [awk]
+/\[[^\]]*\]\(.*\)/ {
+    s = $0
+    sub(/.*\[[ \t]*/, "", s)
+    sub(/[ \t]*\].*/, "", s)
+    if (s == title) {
+        print "true"
+        exit 0
+    }
+}
+@
+
+与 add-post.awk 脚本配合的 Bash 代码如下：
+
+@ 函数：向上级文章添加文章链接 #
+function lmd_add_post {
+    if [ -e ../index.md ]; then
+        local title=$(awk -f "$LMD_SELF_PATH/helper/get-title.awk" index.md)
+        local date=$(awk -f "$LMD_SELF_PATH/helper/get-date.awk" index.md)
+        local abstract=$(awk -f "$LMD_SELF_PATH/helper/get-abstract.awk" index.md)
+        local exist=$(awk -v title="$title" \
+                          -f "$LMD_SELF_PATH/helper/find-post.awk" ../index.md)
+        if [ "$exist" != "true" ]; then
+            awk -v title="$title" \
+                -v date="$date" \
+                -v abstract="$abstract" \
+                -v post_path="$(basename $(pwd))/index.html" \
+                -f "$LMD_SELF_PATH/helper/add-post.awk" \
+                "$1" > "$2"
+        fi
+    fi
+}
+@
+
+很多时候，需要文章带有写作日期的时间戳，但是当文章只用于存放下级文章的链接时，它不需要时间戳，所以下面的 Awk 脚本可以为文章增加时间戳，但是什么时机使用，由用户决定。该 Awk 脚本内容如下：
+
+@ add-timestamp.awk # [awk]
+BEGIN { RS = "\n\\.\\.\\.\n+" }
+{
+    if (NR == 1) {
+        gsub(/\n[ \t]*date:[^\n]*/, "", $0)
+        print $0
+        if (date) print "date: " date
+        print "...\n"
+        RS = "\n"
+    } else print $0
+}
+@
+
+与 add-timestamp.awk 配合的 Bash 代码如下：
+
+@ 函数：为文章增加时间戳 #
+function lmd_add_timestamp {
+    local date="$(date +'%m 月 %d 日')"
+    awk -v date="$date" \
+        -f "$LMD_SELF_PATH/helper/add-timestamp.awk" \
+        index.md > .tmp_index.md
+    mv .tmp_index.md index.md
+}
+@
+
+# 网页
+
+调用 pandoc，将文章转化为网页的 Bash 代码如下：
+
+@ 函数：构建网页 #
+function build_post {
+    lmd_append_meta_data  "$1" "$2"
+    local appearance_path="$(lmd_path_to_root)/appearance"
+    if [ "$appearance_path" = "./appearance" ]; then
+        pandoc "$2" --standalone \
+            --css "$appearance_path/lmd.css" \
+            --data-dir="$appearance_path/pandoc/data" \
+            --template=homepage.template \
+            -o "index.html"
+    else
+        pandoc "$2" --standalone --table-of-contents \
+            --css "$appearance_path/lmd.css" \
+            --data-dir="$appearance_path/pandoc/data" \
+            --template=post.template \
+            --mathjax=https://cdnbootcss.com/mathjax/3.2.2/es5/tex-mml-chtml.js \
+            --highlight-style=pygments \
+            -o "index.html"
+    fi
+    awk -f "$LMD_SELF_PATH/helper/delete-meta-data.awk" "$2" > index.md
+}
+@
+
+以下代码可将当前文章转化为网页：
+
+@ 函数：将文章转化为网页 #
+function lmd_build_post {
+    build_post index.md .tmp_index.md
+    rm .tmp_index.md
+}
+@
+
+若当前文章未在上级文章里出现，以下代码可将其路径添加到上级文章，并将其转化为网页：
+
+@ 函数：将上级文章转化为网页 #
+function lmd_build_upper_post {
+    lmd_add_post ../index.md ../.tmp_0_index.md
+    cd ..
+    if [ -e .tmp_0_index.md ]; then
+        build_post .tmp_0_index.md .tmp_index.md
+        rm .tmp_0_index.md .tmp_index.md
+    fi
+}
+@
+
+# 删除文章
+
+除删除文章目录之外，还要从上级文章里删除该文章的链接：
+
+@ 函数：删除文章 #
+function lmd_delete_post {
+    local post=${1%/}
+    local title=$(awk -f "$LMD_SELF_PATH/helper/get-title.awk" "$post/index.md")
+    awk -v title="$title" \
+        -f "$LMD_SELF_PATH/helper/delete-item.awk" \
+        index.md > .tmp_index.md
+    mv .tmp_index.md index.md
+    lmd_build_post
+    rm -rf "$post"
+}
+@
+
+从上级文章里删除文章链接的 Awk 脚本如下：
+
+@ delete-item.awk # [awk]
+{
+    if (match($0, /^\*[ \t]*\[[^\]]*\]\(.*\)/)) {
+        s = $0
+        sub(/^\*[ \t]*\[[ \t]*/, "", s)
+        sub(/[ \t]*\].*$/, "", s)
+        if (s != title) print $0
+    } else print $0
+}
+@
+
+
+# lmd 脚本
+
+@ lmd 脚本 # [bash]
+# 确定脚本自身所在 -> LMD_SELF_PATH @
+# 函数：获取当前目录到网站根目录的相对路径 @
+# 函数：创建文章 @
+# 函数：网站初始化 @
+# 函数：向文件首部追加 category、lang 和 footer 字段 @
+# 函数：从文件首部删除 category、lang 和 footer 字段 @
+# 函数：为文章增加时间戳 @
+# 函数：向上级文章添加文章链接 @
+# 函数：构建网页 @
+# 函数：将文章转化为网页 @
+# 函数：将上级文章转化为网页 @
+# 函数：删除文章 @
+# 界面 @
+@
+
+@ 界面 #
+case $1 in 
+    init) lmd_init "${@:2}" ;;
+    new) lmd_new_post "${@:2}" ;;
+    delete) lmd_delete_post "${@:2}" ;;
+    add)
+        if [ "$2" = "timestamp" ]; then
+            lmd_add_timestamp
+        fi
+        ;;
+    build) lmd_build_post && lmd_build_upper_post ;;
+    root) echo $(lmd_path_to_start) ;;
+    tree)
+        cd "$(lmd_path_to_root)"
+        WORKS="$(basename $(pwd))"
+        cd ../
+        tree ${@:2} "$WORKS"
+        ;;
+    *) 
+        echo "lmd: I do not understand you!"
+        #exit -1
+        ;;
+esac
+@
+
+# 附录
+
+## pandoc 模板
+
+网站首页模板： 
+
+@ homepage.template # [HTML]
+ESC_LEFT_ANGLE !DOCTYPE html ESC_RIGHT_ANGLE
+# pandoc 模板首部 @
+$for(author-meta)$
+  <meta name="author" content="$author-meta$" />
+$endfor$
+$if(date-meta)$
+  <meta name="dcterms.date" content="$date-meta$" />
+$endif$
+$if(keywords)$
+  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
+$endif$
+$if(description-meta)$
+  <meta name="description" content="$description-meta$" />
+$endif$
+  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
+  <style>
+    $styles.html()$
+  </style>
+$for(css)$
+  <link rel="stylesheet" href="$css$" />
+$endfor$
+$for(header-includes)$
+  $header-includes$
+$endfor$
+$if(math)$
+  $math$
+$endif$
+</head>
+<body>
+$for(include-before)$
+$include-before$
+$endfor$
+$if(title)$
+<header id="title-block-header">
+<h1 class="home-title">$title$</h1>
+</header>
+$endif$
+$if(subtitle)$
+<p class="subtitle">$subtitle$</p>
+$endif$
+<hr />
+$body$
+$if(footer)$
+<hr />
+<div class="footer">$footer$</div>
+$endif$
+</body>
+</html>
+@
+
+网站文章模板：
+
+@ post.template # [HTML]
+ESC_LEFT_ANGLE !DOCTYPE html ESC_RIGHT_ANGLE
+# pandoc 模板首部 @
+$for(author-meta)$
+  <meta name="author" content="$author-meta$" />
+$endfor$
+$if(date-meta)$
+  <meta name="dcterms.date" content="$date-meta$" />
+$endif$
+$if(keywords)$
+  <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
+$endif$
+$if(description-meta)$
+  <meta name="description" content="$description-meta$" />
+$endif$
+  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
+  <style>
+    $styles.html()$
+  </style>
+$for(css)$
+  <link rel="stylesheet" href="$css$" />
+$endfor$
+$for(header-includes)$
+  $header-includes$
+$endfor$
+$if(math)$
+  $math$
+$endif$
+</head>
+<body>
+$for(include-before)$
+$include-before$
+$endfor$
+$if(category)$
+<div class="category">
+<a href="$category$">回上级页面</a>
+</div>
+$endif$
+$if(title)$
+<header id="title-block-header">
+<h1 class="title">$title$</h1>
+$if(subtitle)$
+<p class="subtitle">$subtitle$</p>
+$endif$
+$if(date)$
+<p class="date">$date$</p>
+$endif$
+</header>
+$endif$
+<hr />
+$if(toc)$
+<nav id="$idprefix$TOC" role="doc-toc">
+$table-of-contents$
+</nav>
+$endif$
+$body$
+$if(footer)$
+<hr />
+<div class="footer">$footer$</div>
+$endif$
+</body>
+</html>
+@
+
+上述两个模板引用了以下片段：
+
+@ pandoc 模板首部 #
+ESC_LEFT_ANGLE html xmlns="http://www.w3.org/1999/xhtml" lang="$lang$" 
+      xml:lang="$lang$"$if(dir)$ dir="$dir$"$endif$ ESC_RIGHT_ANGLE
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+@
+
+pandoc 的文档模板，除了 HTML 标记之外，还有一些变量，例如 `$title$`——表示文档标题，以及一些条件语句。若对 HTML 语言有所了解，上述文档模板的内容不难理解。pandoc 可将 Markdown 里的一些信息提取出来并转化为 HTML 文本，嵌入文档模板中由变量和条件语句构造的相应位置，从而形成具体的 HTML 文档。
+
+## 样式表
+
+@ lmd.css # [CSS]
+ESC_AT media screen and (max-width:1024px) {
+    #TOC {display: none;}
+    body {max-width: 65% !important;}
+}
+ESC_AT media screen and (max-width:720px) {
+    body {max-width: 80% !important;}
+    div.category {right: .5em !important;}
+}
+html {
+    font-size: 14px;
+    line-height: 24px;
+}
+body {
+    max-width: 50%;
+    margin: 0 auto;
+    padding: 20px;
+    hyphens: auto;
+    word-wrap: break-word;
+    /* 对于 firefox，font-kerning 需要设为 auto，中文标点才会正常。*/
+    /* font-kerning: normal; */
+    font-family: "Arial", "Noto Sans CJK SC", sans-serif;
+}
+header {
+    text-align: center;
+}
+h1, h2, h3, h4, h5 {
+    margin: .5em auto;
+    line-height: 1.5em;
+}
+h1.home-title { font-size: 2.65em; margin: .5em auto;}
+h1.title { font-size: 2em; margin: .5em auto;}
+h1 { font-size: 1.6em;}
+h2 { font-size: 1.4em;}
+h3 { font-size: 1.2em;}
+p.subtitle {
+    font-size:1.2em;
+    text-align: center;
+}
+span.post-date {margin-right: 1em; text-color: darkgray}
+#TOC {
+    padding: 0em .5em;
+    border: 2pt solid darkgray;
+    line-height: 1.5em;
+    position: fixed;
+    right: 1.75em;
+    top: 6em;
+    overflow: hidden;
+}
+div.category {
+    font-size: 1em;
+    width: 1em;
+    text-color:white;
+    text-align: center;
+    position: fixed;
+    right: 1.75em;
+    bottom: 6em;
+    line-height: 1.2em;
+    padding: .5em .3em;
+    background: #666666;
+}
+#TOC a {
+    font-size: 0.9em;
+    font-weight: normal;
+}
+hr {
+    color: #eeeeee;
+    size: 10;
+}
+div.category a {
+    text-decoration: none;
+}
+div.category a:link {
+    color: white;
+    font-weight: bold;
+}
+div.category a:hover {
+    color: white;
+    text-decoration: none;
+}
+div.category a:visited {
+    color: white;
+    text-decoration: none;
+}
+p {
+    margin: 1.3em 0;
+    text-align: justify;
+}
+figure {
+    margin: auto;
+    text-align: center;
+}
+img {
+    margin: 0 0;
+    max-width: 100%;
+}
+figcaption {
+    font-size: 0.9em;
+    text-align: center;
+    display: none;
+}
+pre {
+    font-size: 0.9em;
+    padding: 1em;
+    line-height: 1.5em;
+    overflow:auto !important;
+    background: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 0.25em;
+    max-height: 400px;
+}
+code, code span {
+    color: #e83e8c;
+    font-family: Monaco, 'Lucida Console', monospace;
+}
+pre code {
+    overflow:auto !important;
+    color: #000000;
+    font-family: Monaco, 'Lucida Console', monospace;
+}
+a:link {
+    color: #993333;
+    font-weight: bold;
+    text-decoration: underline; 
+}
+a:hover {
+    color: #FF6666;
+    text-decoration: none;
+}
+a:visited {
+    color: #0066CC;
+    text-decoration: none;
+}
+/* metadata */
+p.author, p.date { text-align: center; margin: 0 auto;}
+blockquote {
+    margin: 0px !important;
+    border-left: 4px solid #009A61;
+}
+blockquote p {
+    font-size: 1em;
+    margin: 0px !important;
+    text-align: justify;
+    padding:0.5em;
+}
+/* 列表 */
+#TOC ul,  #TOC ol {
+    padding:0em 1em;
+}
+li {padding-bottom:0.25em}
+/* 文章里小节标题的序号与标题名称之间的间距, 针对我写的生成文章目录的 m4 宏 */
+span.section-sep { margin-left: 0.5em; margin-right: 0.5em; }
+div.footer {text-align:center;}
+@
+
+# 参考
+
+1. [获取脚本自身路径](https://segmentfault.com/a/1190000039423978)
+2. [双引号的重要性](https://segmentfault.com/a/1190000039424194)
+3. [Awk 小传](https://segmentfault.com/a/1190000016745490)

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title># rm -rf / (关于文章 FFmpeg)</title><link>/</link><description></description><atom:link href="/categories/ffmpeg.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2020 &lt;a href="mailto:lyr.m2@live.cn"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Tue, 22 Sep 2020 00:59:11 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>为视频做小手术</title><link>/posts/some-minor-operation-for-videos.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;FFmpeg 命令的一般格式为：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg &lt;span class="o"&gt;[&lt;/span&gt;全局选项&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;输入选项&lt;span class="o"&gt;]&lt;/span&gt; -i input.mp4 &lt;span class="o"&gt;[&lt;/span&gt;输出选项&lt;span class="o"&gt;]&lt;/span&gt; output.mp4
+&lt;/pre&gt;
+
+
+&lt;h2&gt;屏幕录制&lt;/h2&gt;
+&lt;p&gt;在 Linux 中，我的桌面屏幕分辨率是 (1920\times 1080)，使用命令&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -video_size 1920x1080 -framerate &lt;span class="m"&gt;25&lt;/span&gt; -f x11grab -i :0.0 output.mp4
+&lt;/pre&gt;
+
+
+&lt;p&gt;可将录制整个屏幕。&lt;code&gt;-i ：0.0&lt;/code&gt; 表示将当前的屏幕作为 ffmpeg 的输入。&lt;/p&gt;
+&lt;p&gt;若想录制屏幕中的指定区域，例如录制左上角点坐标为 (300, 100)、宽 500、高 200 的区域，只需&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -video_size 500x200 -framerate &lt;span class="m"&gt;25&lt;/span&gt; -f x11grab -i :0.0+300,100 output.mp4
+&lt;/pre&gt;
+
+
+&lt;p&gt;摁 &lt;code&gt;q&lt;/code&gt; 键可退出屏幕录制过程。&lt;/p&gt;
+&lt;p&gt;FFmpeg 的 Wiki 页面[1]给出了 Windows、Mac OS X 中的屏幕录制命令。&lt;/p&gt;
+&lt;h2&gt;从时间轴上裁剪&lt;/h2&gt;
+&lt;p&gt;使用命令&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -ss &lt;span class="m"&gt;00&lt;/span&gt;:10:25 -i input.mp4 -frames:v &lt;span class="m"&gt;1&lt;/span&gt; output.png
+&lt;/pre&gt;
+
+
+&lt;p&gt;可从视频的时间轴上截取时间戳为 00:10:25 时的画面。&lt;code&gt;-i&lt;/code&gt; 表输入。&lt;code&gt;-ss&lt;/code&gt; 位于 &lt;code&gt;-i&lt;/code&gt; 之前，意味着跳到所输入的视频文件的给定的时间戳对应的位置。至于 &lt;code&gt;-i&lt;/code&gt; 之后的设定，作用于输出。&lt;code&gt;-frames:v 1&lt;/code&gt; 的意思是获取视频的 1 帧，亦即图片；若给定的帧数大于 1，那么输出的文件应当是视频，因此可以用这个参数截取一段视频。&lt;/p&gt;
+&lt;p&gt;若给定起始时间戳和持续时长，截取输入的视频里的一段，可以用 &lt;code&gt;-t&lt;/code&gt; 选项与 &lt;code&gt;-ss&lt;/code&gt; 选项相配合而实现。&lt;code&gt;-ss&lt;/code&gt; 选项放在 &lt;code&gt;-i&lt;/code&gt; 选项之前，用于确定所截取视频的起始帧。&lt;code&gt;-t&lt;/code&gt; 选项尾随 &lt;code&gt;-ss&lt;/code&gt;。例如，从输入的视频中截取从时间戳 00:10:25 开始，持续 10 分钟的一段，只需&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -ss &lt;span class="m"&gt;00&lt;/span&gt;:10:25 -t &lt;span class="m"&gt;600&lt;/span&gt; -i input.mp4 output.mp4
+&lt;/pre&gt;
+
+
+&lt;p&gt;或&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -ss &lt;span class="m"&gt;00&lt;/span&gt;:10:25 -t &lt;span class="m"&gt;00&lt;/span&gt;:10:00 -i input.mp4 output.mp4
+&lt;/pre&gt;
+
+
+&lt;p&gt;若想按给定起始和终止时间戳截取视频，需要用 &lt;code&gt;-to&lt;/code&gt; 选项，但这个选项只能作用于视频的输出，亦即它必须位于 &lt;code&gt;-i&lt;/code&gt; 选项之后。例如，&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -i input.mp4 -ss &lt;span class="m"&gt;00&lt;/span&gt;:10:25 -to &lt;span class="m"&gt;00&lt;/span&gt;:20:25 output.mp4
+&lt;/pre&gt;
+
+
+&lt;p&gt;也能实现从时间戳 00:10:25 开始并持续 10 分钟的一段视频的截取，但是与上述将 &lt;code&gt;-ss&lt;/code&gt; 选项放在 &lt;code&gt;-i&lt;/code&gt; 选项之前的命令相比，这个命令通常较为低效。因为 ffmpeg 会逐帧对输入视频进行解码，这个过程结束后，进入输出阶段时，再按照给定的起止时间戳截取视频。&lt;code&gt;-ss&lt;/code&gt; 选项放在 &lt;code&gt;-i&lt;/code&gt; 之前，ffmpeg 不会对 &lt;code&gt;-ss&lt;/code&gt; 给定的时间戳之前的帧进行解码。&lt;/p&gt;
+&lt;p&gt;在 &lt;code&gt;-ss&lt;/code&gt; 和 &lt;code&gt;-to&lt;/code&gt; 配合使用时，将 &lt;code&gt;-ss&lt;/code&gt; 放在 &lt;code&gt;-i&lt;/code&gt; 选项之前，并非不可以，但是 &lt;code&gt;-to&lt;/code&gt; 的含义就变了，它不再表示视频截取的终止点。因为 &lt;code&gt;-to&lt;/code&gt; 原本的起点被 &lt;code&gt;-ss&lt;/code&gt; 篡改了。例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -ss &lt;span class="m"&gt;00&lt;/span&gt;:10:25 -i input.mp4 -to &lt;span class="m"&gt;00&lt;/span&gt;:20:25 output.mp4
+&lt;/pre&gt;
+
+
+&lt;p&gt;实际上截取的是输入视频中的从 00:10:25 到 00:30:25 这一段，而非从 00:10:25 到 00:20:25 这一段。&lt;/p&gt;
+&lt;p&gt;在上述命令中，输出视频是经过 ffmpeg 重新编码的，因此与输入视频的编码不相同。若希望输入视频的编码格式与输入视频相同，需要用 &lt;code&gt;-c&lt;/code&gt; 选项将输出视频的编码格式设为 &lt;code&gt;copy&lt;/code&gt;，例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -i input.mp4 -ss &lt;span class="m"&gt;00&lt;/span&gt;:10:25 -to &lt;span class="m"&gt;00&lt;/span&gt;:20:25 -c copy output.mp4
+&lt;/pre&gt;
+
+
+&lt;p&gt;实际上，&lt;code&gt;-c copy&lt;/code&gt; 选项可分解为&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;-c:v copy -c:a copy
+&lt;/pre&gt;
+
+
+&lt;p&gt;即复制输入视频的视频编码和音频编码。&lt;/p&gt;
+&lt;p&gt;不过，在截取视频时，若使用 &lt;code&gt;-c copy&lt;/code&gt; 选项，并且截取的视频要与其他视频拼接，那么应当再加上 &lt;code&gt;-avoid_negative_ts 1&lt;/code&gt; 选项，例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -ss &lt;span class="m"&gt;00&lt;/span&gt;:10:25 -t &lt;span class="m"&gt;600&lt;/span&gt; -i input.mp4 -c copy -avoid_negative_ts &lt;span class="m"&gt;1&lt;/span&gt; output.mp4
+&lt;/pre&gt;
+
+
+&lt;p&gt;原因不明，未作深究。推测是，若将截取视频拼接到其他视频的尾部，&lt;code&gt;-avoid_negative_ts 1&lt;/code&gt; 可以避免前者的第 1 帧覆盖后者的最后一帧。&lt;/p&gt;
+&lt;h2&gt;去除视频水印&lt;/h2&gt;
+&lt;p&gt;ffmpeg 具有类似于图像处理软件那样的滤镜（Filter）功能，作用于视频输出阶段。滤镜有很多种。delogo 滤镜可用于消除视频上的水印。&lt;/p&gt;
+&lt;p&gt;delogo 滤镜的基本用法是&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -i input.mp4 -vf &lt;span class="s2"&gt;"delogo=x=a:y=b:w=c:h=d"&lt;/span&gt; -c:a copy output.mp4
+&lt;/pre&gt;
+
+
+&lt;p&gt;表示将一个左上角点坐标为 (a, b)、宽为 c、高为 d 的矩形区域置于视频的每一帧上。这个矩形区域内的像素由矩形边缘之外的像素确定。因此，若用 delogo 滤镜覆盖视频中的水印，结果产生的效果类似于模糊的毛玻璃。&lt;/p&gt;
+&lt;p&gt;若视频里有多处水印，可以用多个 delogo 去覆盖，各条 delogo 语句之间以「&lt;code&gt;,&lt;/code&gt;」隔开。例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;-vf "delogo=x=a:y=b:w=c:h=d, delogo=x=e:y=f:w=g:h=h, ..."
+&lt;/pre&gt;
+
+
+&lt;p&gt;有些人为了保护视频里的水印不会被他人轻易消除，在添加水印的时候，会让水印在一定时间内出现，例如每隔 5 分钟出现，并停留 1 分钟。对于这样的视频，若是将 delogo 滤镜作用于视频的每一帧画面，就会对视频里没有水印的帧造成一些破坏。应对此类水印，可以使用 delogo 滤镜的 &lt;code&gt;enable&lt;/code&gt; 参数，使得 delogo 滤镜与水印保持同时出现和消失的效果。例如，&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;-vf "delogo=x=a:y=b:w=c:h=d:enable='between(t, e, f)'"
+&lt;/pre&gt;
+
+
+&lt;p&gt;&lt;code&gt;t&lt;/code&gt; 表示视频当前的时间戳，&lt;code&gt;e&lt;/code&gt; 表示一段时间的起点，&lt;code&gt;f&lt;/code&gt; 表示一段时间的终点。这样的 &lt;code&gt;enable&lt;/code&gt; 参数，其作用是，当视频当前的时间戳 &lt;code&gt;t&lt;/code&gt; 不小于 &lt;code&gt;e&lt;/code&gt; 且不大于 &lt;code&gt;f&lt;/code&gt; 时，就让 delogo 滤镜生效。亦即，只要让 &lt;code&gt;e&lt;/code&gt; 和 &lt;code&gt;f&lt;/code&gt; 的值与水印出现和消失的时间吻合，就能够保证 delogo 滤镜与水印保持同时出现和消失。&lt;/p&gt;
+&lt;p&gt;滤镜作用于视频的输出过程，这意味着 FFmpeg 会对输入视频重新进行编码，视频画面质量有所损失在所难免。不过，通过调整输出视频的码率，可以使得输出视频的画面质量与输入视频相近。调整输出视频码率的选项为 &lt;code&gt;-b:v&lt;/code&gt;，我通常将其值设为 &lt;code&gt;1600k&lt;/code&gt;（对于蓝光高清视频，这个值有些小），例如：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -i input.mp4 -vf &lt;span class="s2"&gt;"delogo=x=a:y=b:w=c:h=d"&lt;/span&gt; -c:a copy -b:v 1600k output.mp4
+&lt;/pre&gt;
+
+
+&lt;h2&gt;为视频增加水印&lt;/h2&gt;
+&lt;p&gt;使用 overlay 滤镜可以将图片置于到视频的每一帧画面上。用这种滤镜可以在视频中增加水印，当然也能用于覆盖视频中一些不希望出现的区域。&lt;/p&gt;
+&lt;p&gt;overlay 滤镜的基本用法为&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -i input.mp4 -i logo.png -vf &lt;span class="s2"&gt;"overlay=a:b"&lt;/span&gt; -c:a copy -b:v 1600k output.mp4
+&lt;/pre&gt;
+
+
+&lt;p&gt;&lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; 用于设定 &lt;code&gt;logo.png&lt;/code&gt; 图片在视频每一帧上的位置，即图片的左上角点在帧画面上的坐标。&lt;/p&gt;
+&lt;p&gt;增加多个水印也是可以的，例如&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gp"&gt;$&lt;/span&gt; ffmpeg -i input.mp4 -i logo1.png -i logo2.png &lt;span class="se"&gt;\&lt;/span&gt;
+  -filter_complex &lt;span class="s2"&gt;"overlay=a:b, overlay=c:d"&lt;/span&gt; -c:a copy -b:v 1600k output.mp4
+&lt;/pre&gt;
+
+
+&lt;p&gt;需要注意每个 &lt;code&gt;-i&lt;/code&gt; 输入的图片文件与 &lt;code&gt;overlay&lt;/code&gt; 的对应关系。&lt;code&gt;-vf&lt;/code&gt; 用于设定单输入文件的滤镜，对于多份输入，需要用 &lt;code&gt;-filter_complex&lt;/code&gt; 选项。&lt;/p&gt;
+&lt;p&gt;overlay 滤镜也支持 &lt;code&gt;enable&lt;/code&gt; 参数。&lt;/p&gt;
+&lt;h3&gt;&lt;strong&gt;引用的文档&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;[1]&lt;/strong&gt;　&lt;a href="https://trac.ffmpeg.org/wiki/Capture/Desktop"&gt;https://trac.ffmpeg.org/wiki/Capture/Desktop&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;[2]&lt;/strong&gt;　&lt;a href="https://trac.ffmpeg.org/wiki/Seeking"&gt;https://trac.ffmpeg.org/wiki/Seeking&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;</description><category>FFmpeg</category><guid>/posts/some-minor-operation-for-videos.html</guid><pubDate>Wed, 14 Nov 2018 02:34:36 GMT</pubDate></item></channel></rss>

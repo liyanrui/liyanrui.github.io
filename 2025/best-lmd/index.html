@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>lmd 的设计与实现</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">lmd 的设计与实现
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2025 年 01 月 24 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#pandoc" id="toc-pandoc">pandoc</a></li>
+  <li><a href="#文章" id="toc-文章">文章</a></li>
+  <li><a href="#网站初始化" id="toc-网站初始化">网站初始化</a></li>
+  <li><a href="#陈仓暗渡" id="toc-陈仓暗渡">陈仓暗渡</a></li>
+  <li><a href="#网页" id="toc-网页">网页</a></li>
+  <li><a href="#删除文章" id="toc-删除文章">删除文章</a></li>
+  <li><a href="#lmd-脚本" id="toc-lmd-脚本">lmd 脚本</a></li>
+  <li><a href="#附录" id="toc-附录">附录</a>
+  <ul>
+  <li><a href="#pandoc-模板" id="toc-pandoc-模板">pandoc 模板</a></li>
+  <li><a href="#样式表" id="toc-样式表">样式表</a></li>
+  </ul></li>
+  <li><a href="#参考" id="toc-参考">参考</a></li>
+  </ul>
+</nav>
+
+<h1 id="前言">前言</h1>
+<p>我曾经用过两三个静态网站构建工具，用的最久的，是 <a
+href="https://www.getnikola.com/getting-started.html">nikola</a>，它很优秀，无论是安装，还是使用，都比较简单。不过，我难以回答之前为什么要弃用它。大概是有一次对它进行升级，下载它依赖的一些
+Python
+包时出现了我难以解决的问题，导致升级失败，这件事让我不太舒服，便弃用了。刚才我又试了一次，即使按照官方文档提醒的，在
+Ubuntu 或其衍生版本中，应使用 Python 的包管理器 pip 进行安装，然而在我的
+Linux Mint 22 环境中依然在安装过程中出错。</p>
+<p>大概是 Bash
+语言太过于古老，以至于我什么时候认真学过它都有些记忆模糊了。大概是在
+2020 年，也可能更早一些，我在学习了几天 Bash
+语言之后，想写个脚本练手，恰好我又略懂号称<a
+href="https://pandoc.org/">文档格式转换界的瑞士军刀——pandoc</a>
+的用法，于是基于 Bash 和 pandoc 写了个脚本，取名为 gar，它能够借助
+pandoc 将 Markdown 文档转化为网页，并且提供了文章基本管理功能。gar
+脚本虽然简陋，但是它让我意识到，实现一个静态网站构建工具，并不需要流行的静态网站构建工具所表现出的那般复杂。当然，它们的复杂有它们的理由，只是那些理由不是我的。</p>
+<p>2023 年，我在又一次温习 Bash 和 Awk 时，对 gar 脚本进行了改进，基于
+Awk 脚本为其实现了文档目录管理的功能，并将 gar 更名为
+lmd，并写了一份文档，介绍了<a
+href="https://liyanrui.github.io/old-posts/output/bash/lmd.html">它的用法</a>。</p>
+<p>今年，我在为 <a
+href="https://liyanrui.github.io/old-posts/output/2025/orez-v1.html">orez
+的新版本</a>构造 Markdown 后端时，尝试将它与 lmd
+脚本配合起来，以静态网站的形式发布文学程序的文档，详见「<a
+href="https://liyanrui.github.io/old-posts/output/2025/orez-lmd.html">orez
++ lmd = ?</a>」一文。在此过程中，我发现 lmd 脚本外围的部分 Awk 代码与
+Ubuntu 系的发行版默认使用的 mawk 不兼容，在修改这部分 Awk
+代码时，发现我对 lmd 脚本里的代码也感觉非常陌生。于是，决定重新实现
+lmd，以文学编程的方式，除了作为文学编程以及 orez 的 Markdown
+后端是否可用的一次实践，也用于防备以后再次阅读 lmd
+脚本里的代码觉得陌生。</p>
+<h1 id="pandoc">pandoc</h1>
+<p>构造一个静态网站，用于发布日志、想法、感悟以及类似讨武曌檄或共产主义宣言之类的内容，首先需要放弃直接使用
+HTML 语言撰写文档这种想法，因为现在已经不是 2000 年代了。Markdown
+语言可以实现杠杆作用，让你用更小的力气撬动 HTML
+的繁冗笨重，而具体的杠杆就是类像 pandoc 这样的工具。</p>
+<p>lmd 脚本所构建的静态网站，网页只有两种形式：网站的首页和文章。在 lmd
+脚本的视域，静态网站相当于文集，网站的首页相当于文集的目录。这意味着，从
+Markdown 到 HTML，需要为 pandoc 事先定义两份文档模板。对于 pandoc
+而言，用户定义的文档模板并非必须，因为它有一些默认模板可用。但是，倘若需要对页面部分内容是否需要
+pandoc 呈现出来有搜要求，则必须为 pandoc 提供自定义的模板。</p>
+<p>我为网站首页和文章分别定义了模板 homepage.template 和
+post.template，其内容见附录 <a href="#pandoc-模板">pandoc
+模板</a>。下面以一份简单但完备的 Markdown 文档为例，演示如何使用 pandoc
+按照模板 post.template 生成 HTML 文档。假设这份 Markdown 文档为
+foo.md，其内容为</p>
+<pre id="foo.md" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ foo.md #</span>
+---
+title: 标题
+lang: zh-CN
+date: 2025 年 01 月 14 日
+abstract: 这是一份示例。
+category: 
+footer: 页脚
+...
+
+<span class="gh"># 第一节</span>
+
+... 内容 ...
+
+![<span class="nt">插图</span>](<span class="na">foo.png</span>)
+
+<span class="gh"># 第二节</span>
+
+... 行内公式：$a^2 + b^2 = c^2$
+
+行间公式：
+
+$$
+E = mc^2
+$$
+</pre>
+<p>将模板文件 post.template 放到一个名为 templates 的目录（目录名只能是
+templates）里，假设 /tmp/templates，则以下命令可基于 post.template
+模板和 MathJax 脚本，将 foo.md 转化为支持 TeX 数学公式的 HTML 文件
+foo.html：</p>
+<pre class="console"><code>$ pandoc foo.md --standalone --table-of-contents \
+         --data-dir=/tmp --template=post.template \
+         --mathjax=https://cdn.bootcss.com/mathjax/3.2.2/es5/tex-mml-chtml.js \
+         --output foo.html</code></pre>
+<p>下面对上述命令中的参数予以说明：</p>
+<ul>
+<li><code>--standalone</code>：可让 pandoc 生成完整的 HTML
+文件，即可直接在网络浏览器中呈现的网页文件。</li>
+<li><code>--table-of-contents</code>：生成目录。</li>
+<li><code>--data-dir</code>：设定模板文件目录所在路径。</li>
+<li><code>--mathjax</code>：设定 MathJax 脚本 CDN
+地址，用于渲染文档中的数学公式。</li>
+<li><code>--output</code>：设定输出文件名。</li>
+</ul>
+<p>以上命令生成的 HTML
+页面并不美观，存在标题和正文字体皆过大，页脚文字未居中，目录占据空间过多等问题。这些问题皆属于排版问题，可通过
+CSS 予以解决。pandoc 的 <code>--css</code>
+选项支持加载用户定义的样式文件。附录的<a href="#样式表">样式表</a>提供了
+lmd.css 文件，假设它与 pandoc 生成的 foo.html
+位于同一目录，以下命令可解决上述排版问题：</p>
+<pre class="console"><code>$ pandoc foo.md --standalone --table-of-contents \
+         --data-dir=/tmp --template=post.template \
+         --mathjax=https://cdn.bootcss.com/mathjax/3.2.2/es5/tex-mml-chtml.js \
+         --css=lmd.css \
+         --output foo.html</code></pre>
+<p>至于网站首页的构建，对应的 pandoc 命令要简单一些：</p>
+<pre class="console"><code>$ pandoc foo.md --standalone \
+         --data-dir=/tmp --template=homepage.template \
+         --css=lmd.css \
+         --output foo.html</code></pre>
+<p>上述的 pandoc 命令是下文要实现的 lmd 脚本的核心。即使不借助 lmd
+脚本，单纯使用 pandoc 命令也能构建静态网站，只是过程会较为繁琐。</p>
+<h1 id="文章">文章</h1>
+<p>对于 lmd 脚本而言，若一个目录包含 index.md 和 figures
+目录，则该目录构成一篇文章的主体。以下代码定义了一个 Bash 函数
+<code>lmd_new_post</code>，用于创建符合上述定义的文章：</p>
+<pre id="函数：创建文章" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：创建文章 #</span>
+<span class="k">function</span><span class="w"> </span>lmd_new_post<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>mkdir<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;---&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>index.md
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;title: </span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>index.md
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;subtitle: &quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>index.md
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;abstract: &quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>index.md
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;...\n&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>index.md
+<span class="w">    </span>mkdir<span class="w"> </span>figures
+<span class="o">}</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+<p><code>lmd_new_post</code> 函数接受 2 个参数，第 1 个是文章的标题，第
+2 个参数是文章目录。</p>
+<h1 id="网站初始化">网站初始化</h1>
+<p>网站本质上也是一篇文章，只是它需要一些额外的数据，例如网站的配置文件，网页样式表以及
+pandoc 模板，故而为网站初始化过程单独定义一个函数：</p>
+<pre id="函数：网站初始化" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：网站初始化 #</span>
+<span class="k">function</span><span class="w"> </span>lmd_init<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>lmd_new_post<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+    <a href="#从lmd脚本所在目录复制数据到网站根目录" class="orez-callee-link"># 从 lmd 脚本所在目录复制数据到网站根目录 @</a>
+<span class="o">}</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+<p>上述代码中 <code>lmd_new_post</code>
+接受的参数，为其添加引号是必须的，因为该参数中可能存在空格，若对其不加引号，会导致
+bash 错以为参数是多个。关于这一点，详解见 [2]。</p>
+<p>网站所需的额外数据皆在 lmd
+脚本所在目录，可是如何获得该目录的路径呢？根据文档 [1] 的探讨，确定 lmd
+脚本所在路径的 Bash 代码如下：</p>
+<pre id="确定脚本自身所在->LMD_SELF_PATH" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 确定脚本自身所在 -> LMD_SELF_PATH #</span>
+<span class="nv">LMD_SELF_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>dirname<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">BASH_SOURCE</span><span class="p">[0]</span><span class="si">}</span><span class="s2">&quot;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+<p>假设 lmd 脚本所在目录的结构如下：</p>
+<pre><code>lmd 所在目录
+├── data
+│   └── appearance
+│       ├── lmd.css
+│       └── pandoc
+│           └── data
+│               └── templates
+│                   ├── homepage.template
+│                   └── post.template
+│── lmd.conf
+└── lmd 脚本</code></pre>
+<p>基于 <code>LMD_SELF_PATH</code>
+变量，向网站根目录复制数据的过程如下：</p>
+<pre id="从lmd脚本所在目录复制数据到网站根目录" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 从 lmd 脚本所在目录复制数据到网站根目录 #</span>
+cp<span class="w"> </span>-r<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/data/appearance&quot;</span><span class="w"> </span>./
+cp<span class="w"> </span><span class="nv">$LMD_SELF_PATH</span>/lmd.conf<span class="w"> </span>./
+<span class="orez-symbol">=&gt;</span> <a href="#函数：网站初始化" class="proc-emissions-name">函数：网站初始化</a>
+</pre>
+<p>lmd.conf 文件中定义了网站的一些基本信息：</p>
+<pre id="lmd.conf" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ lmd.conf #</span>
+<span class="nv">LMD_LANGUAGE</span><span class="o">=</span><span class="s2">&quot;zh-CN&quot;</span><span class="w">   </span><span class="c1"># 文章语言为简体中文</span>
+<span class="nv">LMD_EMAIL</span><span class="o">=</span><span class="s1">&#39;lyr.m2@live.cn&#39;</span><span class="w">  </span><span class="c1"># 站长邮箱</span>
+<span class="nv">LMD_ISSUES</span><span class="o">=</span><span class="s1">&#39;... ... ...&#39;</span><span class="w"> </span><span class="c1"># 讨论区</span>
+<span class="c1"># 页脚内容</span>
+<span class="nv">LMD_FOOTER</span><span class="o">=</span><span class="s2">&quot;我的联系方式：&lt;</span><span class="nv">$LMD_EMAIL</span><span class="s2">&gt; 或在[讨论区](</span><span class="nv">$LMD_ISSUES</span><span class="s2">)提问。&quot;</span>
+</pre>
+<p>这些基本信息在网站初始化后，可在网站根目录下编辑 lmd.conf
+文件，根据自身情况予以修改。</p>
+<h1 id="陈仓暗渡">陈仓暗渡</h1>
+<p>将文章转化为网页，过程有些复杂，因为涉及一些文本处理任务，单纯使用
+Bash 语言难以实现，我选择使用 Awk
+语言编写一些辅助脚本来解决这些问题。</p>
+<p>首先，需要向文章首部添加一些隐含字段。在创建文章时，为了保持文章的
+Markdown 源文档的洁净，这些字段皆未出现。在将文章转化为网页时，lmd
+脚本会为文章的源文档 index.md 增加这些字段，并形成一份临时的 Markdown
+源文档 .tmp_index.md，经 pandoc
+转换为网页后，再从该临时文档中消除这些隐含字段，最后用 .tmp_index.md
+代替文章的源文档 index.md。</p>
+<p>以下 Awk 脚本可向文章首部添加
+<code>category</code>、<code>lang</code> 和 <code>footer</code>
+字段：</p>
+<pre id="append-meta-data.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ append-meta-data.awk #</span>
+<span class="nb">BEGIN</span> <span class="p">{</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n\\.\\.\\.\n+&quot;</span> <span class="p">}</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NR</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">category</span><span class="p">)</span> <span class="kr">print</span> <span class="s2">&quot;category:&quot;</span><span class="p">,</span> <span class="nx">category</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">lang</span><span class="p">)</span> <span class="kr">print</span> <span class="s2">&quot;lang:&quot;</span><span class="p">,</span> <span class="nx">lang</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">footer</span><span class="p">)</span> <span class="kr">print</span> <span class="s2">&quot;footer:&quot;</span><span class="p">,</span> <span class="nx">footer</span>
+        <span class="kr">print</span> <span class="s2">&quot;...\n&quot;</span>
+        <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+<span class="p">}</span>
+</pre>
+<p>假设上述脚本存放于 lmd 脚本所在目录的 helper 目录。</p>
+<p>若不熟悉 Awk 语言，可阅读在下多年前写的拙文「Awk
+小传」[3]。上述脚本中的 <code>category</code>、<code>lang</code> 和
+<code>footer</code> 变量，可以 awk 命令参数的形式定义并传入，其中
+<code>catetgory</code> 是已知的，即
+<code>../index.html</code>（假如它存在），另两个变量需要从 lmd.conf
+文件中获取。函数 <code>lmd_path_to_root</code>
+可从当前目录上溯到网站根目录获得相对路径，基于该路径，通过
+<code>source</code> 命令便可「纳入」lmd.conf 的内容。</p>
+<pre id="函数：获取当前目录到网站根目录的相对路径" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：获取当前目录到网站根目录的相对路径 #</span>
+<span class="k">function</span><span class="w"> </span>path_to_root<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">relative_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/&quot;</span><span class="w"> </span><span class="o">]</span>
+<span class="w">    </span><span class="k">then</span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Error: I can not find right path!&quot;</span>
+<span class="w">        </span><span class="nb">exit</span><span class="w"> </span>-1
+<span class="w">    </span><span class="k">elif</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-e<span class="w"> </span>lmd.conf<span class="w"> </span><span class="o">]</span>
+<span class="w">    </span><span class="k">then</span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">relative_path</span><span class="p">%/</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="nv">relative_path</span><span class="o">=</span><span class="s2">&quot;../</span><span class="nv">$relative_path</span><span class="s2">&quot;</span>
+<span class="w">        </span><span class="nb">cd</span><span class="w"> </span>../
+<span class="w">        </span>path_to_root<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$relative_path</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="o">}</span>
+<span class="k">function</span><span class="w"> </span>lmd_path_to_root<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">current_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">relative_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>path_to_root<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="k">)</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$relative_path</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="nv">relative_path</span><span class="o">=</span><span class="s2">&quot;.&quot;</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$relative_path</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$current_path</span><span class="s2">&quot;</span>
+<span class="o">}</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+<p>基于 <code>lmd_path_to_root</code>，载入 lmd.conf 的代码如下：</p>
+<pre id="载入lmd.conf" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 载入 lmd.conf #</span>
+<span class="nb">source</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>lmd_path_to_root<span class="k">)</span><span class="s2">/lmd.conf&quot;</span>
+<span class="orez-symbol">=&gt;</span> <a href="#函数：向文件首部追加category、lang和footer字段" class="proc-emissions-name">函数：向文件首部追加 category、lang 和 footer 字段</a>
+</pre>
+<p>基于 lmd.conf 里的变量，便可实现向文章首部追加字段的代码，如下：</p>
+<pre id="函数：向文件首部追加category、lang和footer字段" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：向文件首部追加 category、lang 和 footer 字段 #</span>
+<span class="k">function</span><span class="w"> </span>lmd_append_meta_data<span class="w"> </span><span class="o">{</span>
+    <a href="#载入lmd.conf" class="orez-callee-link"># 载入 lmd.conf @</a>
+    <span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-e<span class="w"> </span>lmd.conf<span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">lang</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$LMD_LANGUAGE</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>-v<span class="w"> </span><span class="nv">footer</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$LMD_FOOTER</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/append-meta-data.awk&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">category</span><span class="o">=</span><span class="s2">&quot;../index.html&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>-v<span class="w"> </span><span class="nv">lang</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$LMD_LANGUAGE</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>-v<span class="w"> </span><span class="nv">footer</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$LMD_FOOTER</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/append-meta-data.awk&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="o">}</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+<p>向文件首部追加的 category、lang 和 footer 字段，可通过以下 Awk
+脚本予以清除：</p>
+<pre id="delete-meta-data.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ delete-meta-data.awk #</span>
+<span class="nb">BEGIN</span> <span class="p">{</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n\\.\\.\\.\n+&quot;</span><span class="p">;</span> <span class="nb">FS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span> <span class="p">}</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NR</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">x</span> <span class="o">=</span> <span class="s2">&quot;---&quot;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="nb">NF</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="nx">i</span><span class="p">,</span> <span class="sr">/^category:/</span><span class="p">))</span> <span class="p">;</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="nx">i</span><span class="p">,</span> <span class="sr">/^lang:/</span><span class="p">))</span> <span class="p">;</span>
+            <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="nx">i</span><span class="p">,</span> <span class="sr">/^footer:/</span><span class="p">))</span> <span class="p">;</span>
+            <span class="k">else</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">x</span> <span class="s2">&quot;\n&quot;</span> <span class="o">$</span><span class="nx">i</span>
+        <span class="p">}</span>
+        <span class="kr">print</span> <span class="nx">x</span> <span class="s2">&quot;\n...\n&quot;</span>
+        <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span><span class="p">;</span> <span class="nb">FS</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+<span class="p">}</span>
+</pre>
+<p>与上述 Awk 脚本配合的 Bash 代码如下：</p>
+<pre id="函数：从文件首部删除category、lang和footer字段" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：从文件首部删除 category、lang 和 footer 字段 #</span>
+<span class="k">function</span><span class="w"> </span>lmd_delete_meta_data<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/delete-meta-data.awk&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">1</span><span class="p">#.tmp_</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="o">}</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+<p>为了建立与上级文章的关联，还需要考虑如何将文章的路径、摘要以及时间戳（假如存在）添加到上级文章里。以下
+Awk 脚本用于解决该问题：</p>
+<pre id="add-post.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ add-post.awk #</span>
+<span class="nb">BEGIN</span> <span class="p">{</span>
+    <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n\\.\\.\\.[ \t]*\n+&quot;</span>
+    <span class="nx">post_date</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">date</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">sub</span><span class="p">(</span><span class="sr">/.+年[ ]*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">date</span><span class="p">)</span>
+        <span class="nx">post_date</span> <span class="o">=</span> <span class="s2">&quot;&lt;span class=\&quot;post-date\&quot;&gt;&quot;</span> <span class="nx">date</span> <span class="s2">&quot;&lt;/span&gt;&quot;</span>
+    <span class="p">}</span>
+    <span class="nx">item</span> <span class="o">=</span> <span class="s2">&quot;* &quot;</span> <span class="nx">post_date</span> <span class="s2">&quot;[&quot;</span> <span class="nx">title</span> <span class="s2">&quot;](&quot;</span> <span class="nx">post_path</span> <span class="s2">&quot;)&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">abstract</span><span class="p">)</span> <span class="nx">item</span> <span class="o">=</span> <span class="nx">item</span> <span class="s2">&quot;：&quot;</span> <span class="nx">abstract</span>
+<span class="p">}</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NR</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">print</span> <span class="s2">&quot;...\n\n&quot;</span> <span class="nx">item</span>
+        <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+        <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+<span class="p">}</span>
+<span class="nb">END</span> <span class="p">{</span>
+    <span class="c1"># 页面内容为空</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NR</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">print</span> <span class="s2">&quot;...\n\n&quot;</span> <span class="nx">item</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre>
+<p>为了能在 awk 命令中传入上述脚本需要的
+<code>title</code>、<code>date</code> 和 <code>abstract</code>
+变量，还需要下面的 Awk 脚本从文章首部中这些字段的值：</p>
+<pre id="get-title.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ get-title.awk #</span>
+<span class="sr">/^ *title:.*$/</span> <span class="p">{</span>
+    <span class="nx">s</span> <span class="o">=</span> <span class="o">$</span><span class="mi">0</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/[ \t]*title:[ \t]*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/[ \t]*$/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="kr">print</span> <span class="nx">s</span>
+    <span class="k">exit</span> <span class="mi">0</span>
+<span class="p">}</span>
+</pre>
+<pre id="get-date.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ get-date.awk #</span>
+<span class="sr">/^ *date:.*$/</span> <span class="p">{</span>
+    <span class="nx">s</span> <span class="o">=</span> <span class="o">$</span><span class="mi">0</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/[ \t]*date:[ \t]*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/[ \t]*$/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="kr">print</span> <span class="nx">s</span>
+    <span class="k">exit</span> <span class="mi">0</span>
+<span class="p">}</span>
+</pre>
+<pre id="get-abstract.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ get-abstract.awk #</span>
+<span class="sr">/^ *abstract:.*$/</span> <span class="p">{</span>
+    <span class="nx">s</span> <span class="o">=</span> <span class="o">$</span><span class="mi">0</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/[ \t]*abstract:[ \t]*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/[ \t]*$/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="kr">print</span> <span class="nx">s</span>
+    <span class="k">exit</span> <span class="mi">0</span>
+<span class="p">}</span>
+</pre>
+<p>至于 add-post.awk 脚本中的 <code>post_path</code> 可在 lmd
+脚本中结合工作目录的路径进行构造。</p>
+<p>向上级文章添加文章链接时，需要事先判定文章是否已在上级页面出现。find-post.awk
+脚本用于解决该问题，其实现如下：</p>
+<pre id="find-post.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ find-post.awk #</span>
+<span class="sr">/\[[^\]]*\]\(.*\)/</span> <span class="p">{</span>
+    <span class="nx">s</span> <span class="o">=</span> <span class="o">$</span><span class="mi">0</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/.*\[[ \t]*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="kr">sub</span><span class="p">(</span><span class="sr">/[ \t]*\].*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">s</span> <span class="o">==</span> <span class="nx">title</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">print</span> <span class="s2">&quot;true&quot;</span>
+        <span class="k">exit</span> <span class="mi">0</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre>
+<p>与 add-post.awk 脚本配合的 Bash 代码如下：</p>
+<pre id="函数：向上级文章添加文章链接" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：向上级文章添加文章链接 #</span>
+<span class="k">function</span><span class="w"> </span>lmd_add_post<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-e<span class="w"> </span>../index.md<span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-title.awk&quot;</span><span class="w"> </span>index.md<span class="k">)</span>
+<span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nv">date</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-date.awk&quot;</span><span class="w"> </span>index.md<span class="k">)</span>
+<span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nv">abstract</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-abstract.awk&quot;</span><span class="w"> </span>index.md<span class="k">)</span>
+<span class="w">        </span><span class="nb">local</span><span class="w"> </span><span class="nv">exist</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$title</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                          </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/find-post.awk&quot;</span><span class="w"> </span>../index.md<span class="k">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$exist</span><span class="s2">&quot;</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">            </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$title</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                </span>-v<span class="w"> </span><span class="nv">date</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$date</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                </span>-v<span class="w"> </span><span class="nv">abstract</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$abstract</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                </span>-v<span class="w"> </span><span class="nv">post_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>basename<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">))</span><span class="s2">/index.html&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/add-post.awk&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+<span class="w">        </span><span class="k">fi</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="o">}</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+<p>很多时候，需要文章带有写作日期的时间戳，但是当文章只用于存放下级文章的链接时，它不需要时间戳，所以下面的
+Awk 脚本可以为文章增加时间戳，但是什么时机使用，由用户决定。该 Awk
+脚本内容如下：</p>
+<pre id="add-timestamp.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ add-timestamp.awk #</span>
+<span class="nb">BEGIN</span> <span class="p">{</span> <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n\\.\\.\\.\n+&quot;</span> <span class="p">}</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">NR</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">gsub</span><span class="p">(</span><span class="sr">/\n[ \t]*date:[^\n]*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">$</span><span class="mi">0</span><span class="p">)</span>
+        <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">date</span><span class="p">)</span> <span class="kr">print</span> <span class="s2">&quot;date: &quot;</span> <span class="nx">date</span>
+        <span class="kr">print</span> <span class="s2">&quot;...\n&quot;</span>
+        <span class="nb">RS</span> <span class="o">=</span> <span class="s2">&quot;\n&quot;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+<span class="p">}</span>
+</pre>
+<p>与 add-timestamp.awk 配合的 Bash 代码如下：</p>
+<pre id="函数：为文章增加时间戳" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：为文章增加时间戳 #</span>
+<span class="k">function</span><span class="w"> </span>lmd_add_timestamp<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">date</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>date<span class="w"> </span>+<span class="s1">&#39;%m 月 %d 日&#39;</span><span class="k">)</span><span class="s2">&quot;</span>
+<span class="w">    </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">date</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$date</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/add-timestamp.awk&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>index.md<span class="w"> </span>&gt;<span class="w"> </span>.tmp_index.md
+<span class="w">    </span>mv<span class="w"> </span>.tmp_index.md<span class="w"> </span>index.md
+<span class="o">}</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+<h1 id="网页">网页</h1>
+<p>调用 pandoc，将文章转化为网页的 Bash 代码如下：</p>
+<pre id="函数：构建网页" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：构建网页 #</span>
+<span class="k">function</span><span class="w"> </span>build_post<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>lmd_append_meta_data<span class="w">  </span><span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">appearance_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>lmd_path_to_root<span class="k">)</span><span class="s2">/appearance&quot;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$appearance_path</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;./appearance&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span>pandoc<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span>--standalone<span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--css<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$appearance_path</span><span class="s2">/lmd.css&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--data-dir<span class="o">=</span><span class="s2">&quot;</span><span class="nv">$appearance_path</span><span class="s2">/pandoc/data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--template<span class="o">=</span>homepage.template<span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>-o<span class="w"> </span><span class="s2">&quot;index.html&quot;</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span>pandoc<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span>--standalone<span class="w"> </span>--table-of-contents<span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--css<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$appearance_path</span><span class="s2">/lmd.css&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--data-dir<span class="o">=</span><span class="s2">&quot;</span><span class="nv">$appearance_path</span><span class="s2">/pandoc/data&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--template<span class="o">=</span>post.template<span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--mathjax<span class="o">=</span>https://cdnbootcss.com/mathjax/3.2.2/es5/tex-mml-chtml.js<span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>--highlight-style<span class="o">=</span>pygments<span class="w"> </span><span class="se">\</span>
+<span class="w">            </span>-o<span class="w"> </span><span class="s2">&quot;index.html&quot;</span>
+<span class="w">    </span><span class="k">fi</span>
+<span class="w">    </span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/delete-meta-data.awk&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>index.md
+<span class="o">}</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+<p>以下代码可将当前文章转化为网页：</p>
+<pre id="函数：将文章转化为网页" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：将文章转化为网页 #</span>
+<span class="k">function</span><span class="w"> </span>lmd_build_post<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>build_post<span class="w"> </span>index.md<span class="w"> </span>.tmp_index.md
+<span class="w">    </span>rm<span class="w"> </span>.tmp_index.md
+<span class="o">}</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+<p>若当前文章未在上级文章里出现，以下代码可将其路径添加到上级文章，并将其转化为网页：</p>
+<pre id="函数：将上级文章转化为网页" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：将上级文章转化为网页 #</span>
+<span class="k">function</span><span class="w"> </span>lmd_build_upper_post<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>lmd_add_post<span class="w"> </span>../index.md<span class="w"> </span>../.tmp_0_index.md
+<span class="w">    </span><span class="nb">cd</span><span class="w"> </span>..
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-e<span class="w"> </span>.tmp_0_index.md<span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">        </span>build_post<span class="w"> </span>.tmp_0_index.md<span class="w"> </span>.tmp_index.md
+<span class="w">        </span>rm<span class="w"> </span>.tmp_0_index.md<span class="w"> </span>.tmp_index.md
+<span class="w">    </span><span class="k">fi</span>
+<span class="o">}</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+<h1 id="删除文章">删除文章</h1>
+<p>除删除文章目录之外，还要从上级文章里删除该文章的链接：</p>
+<pre id="函数：删除文章" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 函数：删除文章 #</span>
+<span class="k">function</span><span class="w"> </span>lmd_delete_post<span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">post</span><span class="o">=</span><span class="si">${</span><span class="nv">1</span><span class="p">%/</span><span class="si">}</span>
+<span class="w">    </span><span class="nb">local</span><span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="k">$(</span>awk<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/get-title.awk&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$post</span><span class="s2">/index.md&quot;</span><span class="k">)</span>
+<span class="w">    </span>awk<span class="w"> </span>-v<span class="w"> </span><span class="nv">title</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$title</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$LMD_SELF_PATH</span><span class="s2">/helper/delete-item.awk&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">        </span>index.md<span class="w"> </span>&gt;<span class="w"> </span>.tmp_index.md
+<span class="w">    </span>mv<span class="w"> </span>.tmp_index.md<span class="w"> </span>index.md
+<span class="w">    </span>lmd_build_post
+<span class="w">    </span>rm<span class="w"> </span>-rf<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$post</span><span class="s2">&quot;</span>
+<span class="o">}</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+<p>从上级文章里删除文章链接的 Awk 脚本如下：</p>
+<pre id="delete-item.awk" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ delete-item.awk #</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="kr">match</span><span class="p">(</span><span class="o">$</span><span class="mi">0</span><span class="p">,</span> <span class="sr">/^\*[ \t]*\[[^\]]*\]\(.*\)/</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nx">s</span> <span class="o">=</span> <span class="o">$</span><span class="mi">0</span>
+        <span class="kr">sub</span><span class="p">(</span><span class="sr">/^\*[ \t]*\[[ \t]*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+        <span class="kr">sub</span><span class="p">(</span><span class="sr">/[ \t]*\].*$/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nx">s</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">s</span> <span class="o">!=</span> <span class="nx">title</span><span class="p">)</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="kr">print</span> <span class="o">$</span><span class="mi">0</span>
+<span class="p">}</span>
+</pre>
+<h1 id="lmd-脚本">lmd 脚本</h1>
+<pre id="lmd脚本" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ lmd 脚本 #</span>
+<a href="#确定脚本自身所在->LMD_SELF_PATH" class="orez-callee-link"># 确定脚本自身所在 -> LMD_SELF_PATH @</a>
+<a href="#函数：获取当前目录到网站根目录的相对路径" class="orez-callee-link"># 函数：获取当前目录到网站根目录的相对路径 @</a>
+<a href="#函数：创建文章" class="orez-callee-link"># 函数：创建文章 @</a>
+<a href="#函数：网站初始化" class="orez-callee-link"># 函数：网站初始化 @</a>
+<a href="#函数：向文件首部追加category、lang和footer字段" class="orez-callee-link"># 函数：向文件首部追加 category、lang 和 footer 字段 @</a>
+<a href="#函数：从文件首部删除category、lang和footer字段" class="orez-callee-link"># 函数：从文件首部删除 category、lang 和 footer 字段 @</a>
+<a href="#函数：为文章增加时间戳" class="orez-callee-link"># 函数：为文章增加时间戳 @</a>
+<a href="#函数：向上级文章添加文章链接" class="orez-callee-link"># 函数：向上级文章添加文章链接 @</a>
+<a href="#函数：构建网页" class="orez-callee-link"># 函数：构建网页 @</a>
+<a href="#函数：将文章转化为网页" class="orez-callee-link"># 函数：将文章转化为网页 @</a>
+<a href="#函数：将上级文章转化为网页" class="orez-callee-link"># 函数：将上级文章转化为网页 @</a>
+<a href="#函数：删除文章" class="orez-callee-link"># 函数：删除文章 @</a>
+<a href="#界面" class="orez-callee-link"># 界面 @</a>
+</pre>
+<pre id="界面" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ 界面 #</span>
+<span class="k">case</span><span class="w"> </span><span class="nv">$1</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>
+<span class="w">    </span>init<span class="o">)</span><span class="w"> </span>lmd_init<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">;;</span>
+<span class="w">    </span>new<span class="o">)</span><span class="w"> </span>lmd_new_post<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">;;</span>
+<span class="w">    </span>delete<span class="o">)</span><span class="w"> </span>lmd_delete_post<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">;;</span>
+<span class="w">    </span>add<span class="o">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;timestamp&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">            </span>lmd_add_timestamp
+<span class="w">        </span><span class="k">fi</span>
+<span class="w">        </span><span class="p">;;</span>
+<span class="w">    </span>build<span class="o">)</span><span class="w"> </span>lmd_build_post<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>lmd_build_upper_post<span class="w"> </span><span class="p">;;</span>
+<span class="w">    </span>root<span class="o">)</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="k">$(</span>lmd_path_to_start<span class="k">)</span><span class="w"> </span><span class="p">;;</span>
+<span class="w">    </span>tree<span class="o">)</span>
+<span class="w">        </span><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>lmd_path_to_root<span class="k">)</span><span class="s2">&quot;</span>
+<span class="w">        </span><span class="nv">WORKS</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>basename<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">))</span><span class="s2">&quot;</span>
+<span class="w">        </span><span class="nb">cd</span><span class="w"> </span>../
+<span class="w">        </span>tree<span class="w"> </span><span class="si">${</span><span class="p">@:</span><span class="nv">2</span><span class="si">}</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$WORKS</span><span class="s2">&quot;</span>
+<span class="w">        </span><span class="p">;;</span>
+<span class="w">    </span>*<span class="o">)</span><span class="w"> </span>
+<span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;lmd: I do not understand you!&quot;</span>
+<span class="w">        </span><span class="c1">#exit -1</span>
+<span class="w">        </span><span class="p">;;</span>
+<span class="k">esac</span>
+<span class="orez-symbol">=&gt;</span> <a href="#lmd脚本" class="proc-emissions-name">lmd 脚本</a>
+</pre>
+<h1 id="附录">附录</h1>
+<h2 id="pandoc-模板">pandoc 模板</h2>
+<p>网站首页模板：</p>
+<pre id="homepage.template" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ homepage.template #</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<a href="#pandoc模板首部" class="orez-callee-link"># pandoc 模板首部 @</a>
+$for(author-meta)$
+  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;author&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;$author-meta$&quot;</span> <span class="p">/&gt;</span>
+$endfor$
+$if(date-meta)$
+  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;dcterms.date&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;$date-meta$&quot;</span> <span class="p">/&gt;</span>
+$endif$
+$if(keywords)$
+  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;keywords&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;$for(keywords)$$keywords$$sep$, $endfor$&quot;</span> <span class="p">/&gt;</span>
+$endif$
+$if(description-meta)$
+  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;description&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;$description-meta$&quot;</span> <span class="p">/&gt;</span>
+$endif$
+  <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="o">$</span><span class="nt">styles</span><span class="p">.</span><span class="nc">html</span><span class="o">()$</span>
+<span class="w">  </span><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+$for(css)$
+  <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;$css$&quot;</span> <span class="p">/&gt;</span>
+$endfor$
+$for(header-includes)$
+  $header-includes$
+$endfor$
+$if(math)$
+  $math$
+$endif$
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+$for(include-before)$
+$include-before$
+$endfor$
+$if(title)$
+<span class="p">&lt;</span><span class="nt">header</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;title-block-header&quot;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">h1</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;home-title&quot;</span><span class="p">&gt;</span>$title$<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">header</span><span class="p">&gt;</span>
+$endif$
+$if(subtitle)$
+<span class="p">&lt;</span><span class="nt">p</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;subtitle&quot;</span><span class="p">&gt;</span>$subtitle$<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+$endif$
+<span class="p">&lt;</span><span class="nt">hr</span> <span class="p">/&gt;</span>
+$body$
+$if(footer)$
+<span class="p">&lt;</span><span class="nt">hr</span> <span class="p">/&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;footer&quot;</span><span class="p">&gt;</span>$footer$<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+$endif$
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre>
+<p>网站文章模板：</p>
+<pre id="post.template" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ post.template #</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<a href="#pandoc模板首部" class="orez-callee-link"># pandoc 模板首部 @</a>
+$for(author-meta)$
+  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;author&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;$author-meta$&quot;</span> <span class="p">/&gt;</span>
+$endfor$
+$if(date-meta)$
+  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;dcterms.date&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;$date-meta$&quot;</span> <span class="p">/&gt;</span>
+$endif$
+$if(keywords)$
+  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;keywords&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;$for(keywords)$$keywords$$sep$, $endfor$&quot;</span> <span class="p">/&gt;</span>
+$endif$
+$if(description-meta)$
+  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;description&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;$description-meta$&quot;</span> <span class="p">/&gt;</span>
+$endif$
+  <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="o">$</span><span class="nt">styles</span><span class="p">.</span><span class="nc">html</span><span class="o">()$</span>
+<span class="w">  </span><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+$for(css)$
+  <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;$css$&quot;</span> <span class="p">/&gt;</span>
+$endfor$
+$for(header-includes)$
+  $header-includes$
+$endfor$
+$if(math)$
+  $math$
+$endif$
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+$for(include-before)$
+$include-before$
+$endfor$
+$if(category)$
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;category&quot;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;$category$&quot;</span><span class="p">&gt;</span>回上级页面<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+$endif$
+$if(title)$
+<span class="p">&lt;</span><span class="nt">header</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;title-block-header&quot;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">h1</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;title&quot;</span><span class="p">&gt;</span>$title$<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+$if(subtitle)$
+<span class="p">&lt;</span><span class="nt">p</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;subtitle&quot;</span><span class="p">&gt;</span>$subtitle$<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+$endif$
+$if(date)$
+<span class="p">&lt;</span><span class="nt">p</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;date&quot;</span><span class="p">&gt;</span>$date$<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+$endif$
+<span class="p">&lt;/</span><span class="nt">header</span><span class="p">&gt;</span>
+$endif$
+<span class="p">&lt;</span><span class="nt">hr</span> <span class="p">/&gt;</span>
+$if(toc)$
+<span class="p">&lt;</span><span class="nt">nav</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;$idprefix$TOC&quot;</span> <span class="na">role</span><span class="o">=</span><span class="s">&quot;doc-toc&quot;</span><span class="p">&gt;</span>
+$table-of-contents$
+<span class="p">&lt;/</span><span class="nt">nav</span><span class="p">&gt;</span>
+$endif$
+$body$
+$if(footer)$
+<span class="p">&lt;</span><span class="nt">hr</span> <span class="p">/&gt;</span>
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;footer&quot;</span><span class="p">&gt;</span>$footer$<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+$endif$
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre>
+<p>上述两个模板引用了以下片段：</p>
+<pre id="pandoc模板首部" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ pandoc 模板首部 #</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">xmlns</span><span class="o">=</span><span class="s">&quot;http://www.w3.org/1999/xhtml&quot;</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;$lang$&quot;</span> 
+      <span class="na">xml:lang</span><span class="o">=</span><span class="s">&quot;$lang$&quot;</span><span class="err">$</span><span class="na">if</span><span class="err">(</span><span class="na">dir</span><span class="err">)$</span> <span class="na">dir</span><span class="o">=</span><span class="s">&quot;$dir$&quot;</span><span class="err">$</span><span class="na">endif</span><span class="err">$</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span> <span class="p">/&gt;</span>
+  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;generator&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;pandoc&quot;</span> <span class="p">/&gt;</span>
+  <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;viewport&quot;</span> 
+        <span class="na">content</span><span class="o">=</span><span class="s">&quot;width=device-width, initial-scale=1.0, user-scalable=yes&quot;</span> <span class="p">/&gt;</span>
+<span class="orez-symbol">=&gt;</span> <a href="#homepage.template" class="proc-emissions-name">homepage.template</a>
+<span class="orez-symbol">=&gt;</span> <a href="#post.template" class="proc-emissions-name">post.template</a>
+</pre>
+<p>pandoc 的文档模板，除了 HTML 标记之外，还有一些变量，例如
+<code>$title$</code>——表示文档标题，以及一些条件语句。若对 HTML
+语言有所了解，上述文档模板的内容不难理解。pandoc 可将 Markdown
+里的一些信息提取出来并转化为 HTML
+文本，嵌入文档模板中由变量和条件语句构造的相应位置，从而形成具体的 HTML
+文档。</p>
+<h2 id="样式表">样式表</h2>
+<pre id="lmd.css" class="orez-snippet-with-name">
+<span class="orez-snippet-name">@ lmd.css #</span>
+<span class="p">@</span><span class="k">media</span><span class="w"> </span><span class="nt">screen</span><span class="w"> </span><span class="nt">and</span><span class="w"> </span><span class="o">(</span><span class="nt">max-width</span><span class="p">:</span><span class="nd">1024px</span><span class="o">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">#</span><span class="nn">TOC</span><span class="w"> </span><span class="p">{</span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="kc">none</span><span class="p">;}</span>
+<span class="w">    </span><span class="nt">body</span><span class="w"> </span><span class="p">{</span><span class="k">max-width</span><span class="p">:</span><span class="w"> </span><span class="mi">65</span><span class="kt">%</span><span class="w"> </span><span class="cp">!important</span><span class="p">;}</span>
+<span class="p">}</span>
+<span class="p">@</span><span class="k">media</span><span class="w"> </span><span class="nt">screen</span><span class="w"> </span><span class="nt">and</span><span class="w"> </span><span class="o">(</span><span class="nt">max-width</span><span class="p">:</span><span class="nd">720px</span><span class="o">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">body</span><span class="w"> </span><span class="p">{</span><span class="k">max-width</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="kt">%</span><span class="w"> </span><span class="cp">!important</span><span class="p">;}</span>
+<span class="w">    </span><span class="nt">div</span><span class="p">.</span><span class="nc">category</span><span class="w"> </span><span class="p">{</span><span class="k">right</span><span class="p">:</span><span class="w"> </span><span class="mf">.5</span><span class="kt">em</span><span class="w"> </span><span class="cp">!important</span><span class="p">;}</span>
+<span class="p">}</span>
+<span class="nt">html</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">    </span><span class="k">line-height</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="kt">px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">body</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">max-width</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="kt">%</span><span class="p">;</span>
+<span class="w">    </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
+<span class="w">    </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">    </span><span class="k">hyphens</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
+<span class="w">    </span><span class="k">word-wrap</span><span class="p">:</span><span class="w"> </span><span class="kc">break-word</span><span class="p">;</span>
+<span class="w">    </span><span class="c">/* 对于 firefox，font-kerning 需要设为 auto，中文标点才会正常。*/</span>
+<span class="w">    </span><span class="c">/* font-kerning: normal; */</span>
+<span class="w">    </span><span class="k">font-family</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Arial&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Noto Sans CJK SC&quot;</span><span class="p">,</span><span class="w"> </span><span class="kc">sans-serif</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">header</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">text-align</span><span class="p">:</span><span class="w"> </span><span class="kc">center</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">h1</span><span class="o">,</span><span class="w"> </span><span class="nt">h2</span><span class="o">,</span><span class="w"> </span><span class="nt">h3</span><span class="o">,</span><span class="w"> </span><span class="nt">h4</span><span class="o">,</span><span class="w"> </span><span class="nt">h5</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mf">.5</span><span class="kt">em</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
+<span class="w">    </span><span class="k">line-height</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="kt">em</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">h1</span><span class="p">.</span><span class="nc">home-title</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mf">2.65</span><span class="kt">em</span><span class="p">;</span><span class="w"> </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mf">.5</span><span class="kt">em</span><span class="w"> </span><span class="kc">auto</span><span class="p">;}</span>
+<span class="nt">h1</span><span class="p">.</span><span class="nc">title</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="kt">em</span><span class="p">;</span><span class="w"> </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mf">.5</span><span class="kt">em</span><span class="w"> </span><span class="kc">auto</span><span class="p">;}</span>
+<span class="nt">h1</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mf">1.6</span><span class="kt">em</span><span class="p">;}</span>
+<span class="nt">h2</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mf">1.4</span><span class="kt">em</span><span class="p">;}</span>
+<span class="nt">h3</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mf">1.2</span><span class="kt">em</span><span class="p">;}</span>
+<span class="nt">p</span><span class="p">.</span><span class="nc">subtitle</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">font-size</span><span class="p">:</span><span class="mf">1.2</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">text-align</span><span class="p">:</span><span class="w"> </span><span class="kc">center</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">span</span><span class="p">.</span><span class="nc">post-date</span><span class="w"> </span><span class="p">{</span><span class="k">margin-right</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="kt">em</span><span class="p">;</span><span class="w"> </span><span class="n">text-color</span><span class="p">:</span><span class="w"> </span><span class="kc">darkgray</span><span class="p">}</span>
+<span class="p">#</span><span class="nn">TOC</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="kt">em</span><span class="w"> </span><span class="mf">.5</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">border</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="kt">pt</span><span class="w"> </span><span class="kc">solid</span><span class="w"> </span><span class="kc">darkgray</span><span class="p">;</span>
+<span class="w">    </span><span class="k">line-height</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">position</span><span class="p">:</span><span class="w"> </span><span class="kc">fixed</span><span class="p">;</span>
+<span class="w">    </span><span class="k">right</span><span class="p">:</span><span class="w"> </span><span class="mf">1.75</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">top</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">overflow</span><span class="p">:</span><span class="w"> </span><span class="kc">hidden</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">div</span><span class="p">.</span><span class="nc">category</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">width</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="n">text-color</span><span class="p">:</span><span class="kc">white</span><span class="p">;</span>
+<span class="w">    </span><span class="k">text-align</span><span class="p">:</span><span class="w"> </span><span class="kc">center</span><span class="p">;</span>
+<span class="w">    </span><span class="k">position</span><span class="p">:</span><span class="w"> </span><span class="kc">fixed</span><span class="p">;</span>
+<span class="w">    </span><span class="k">right</span><span class="p">:</span><span class="w"> </span><span class="mf">1.75</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">bottom</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">line-height</span><span class="p">:</span><span class="w"> </span><span class="mf">1.2</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mf">.5</span><span class="kt">em</span><span class="w"> </span><span class="mf">.3</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">background</span><span class="p">:</span><span class="w"> </span><span class="mh">#666666</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">#</span><span class="nn">TOC</span><span class="w"> </span><span class="nt">a</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">font-weight</span><span class="p">:</span><span class="w"> </span><span class="kc">normal</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">hr</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#eeeeee</span><span class="p">;</span>
+<span class="w">    </span><span class="n">size</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">div</span><span class="p">.</span><span class="nc">category</span><span class="w"> </span><span class="nt">a</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">text-decoration</span><span class="p">:</span><span class="w"> </span><span class="kc">none</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">div</span><span class="p">.</span><span class="nc">category</span><span class="w"> </span><span class="nt">a</span><span class="p">:</span><span class="nd">link</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="kc">white</span><span class="p">;</span>
+<span class="w">    </span><span class="k">font-weight</span><span class="p">:</span><span class="w"> </span><span class="kc">bold</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">div</span><span class="p">.</span><span class="nc">category</span><span class="w"> </span><span class="nt">a</span><span class="p">:</span><span class="nd">hover</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="kc">white</span><span class="p">;</span>
+<span class="w">    </span><span class="k">text-decoration</span><span class="p">:</span><span class="w"> </span><span class="kc">none</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">div</span><span class="p">.</span><span class="nc">category</span><span class="w"> </span><span class="nt">a</span><span class="p">:</span><span class="nd">visited</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="kc">white</span><span class="p">;</span>
+<span class="w">    </span><span class="k">text-decoration</span><span class="p">:</span><span class="w"> </span><span class="kc">none</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">p</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mf">1.3</span><span class="kt">em</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">text-align</span><span class="p">:</span><span class="w"> </span><span class="kc">justify</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">figure</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
+<span class="w">    </span><span class="k">text-align</span><span class="p">:</span><span class="w"> </span><span class="kc">center</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">img</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">max-width</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="kt">%</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">figcaption</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">text-align</span><span class="p">:</span><span class="w"> </span><span class="kc">center</span><span class="p">;</span>
+<span class="w">    </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="kc">none</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">pre</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mf">0.9</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">line-height</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">overflow</span><span class="p">:</span><span class="kc">auto</span><span class="w"> </span><span class="cp">!important</span><span class="p">;</span>
+<span class="w">    </span><span class="k">background</span><span class="p">:</span><span class="w"> </span><span class="mh">#f8f8f8</span><span class="p">;</span>
+<span class="w">    </span><span class="k">border</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="kt">px</span><span class="w"> </span><span class="kc">solid</span><span class="w"> </span><span class="mh">#ccc</span><span class="p">;</span>
+<span class="w">    </span><span class="k">border-radius</span><span class="p">:</span><span class="w"> </span><span class="mf">0.25</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">max-height</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="kt">px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">code</span><span class="o">,</span><span class="w"> </span><span class="nt">code</span><span class="w"> </span><span class="nt">span</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#e83e8c</span><span class="p">;</span>
+<span class="w">    </span><span class="k">font-family</span><span class="p">:</span><span class="w"> </span><span class="n">Monaco</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Lucida Console&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">monospace</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">pre</span><span class="w"> </span><span class="nt">code</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">overflow</span><span class="p">:</span><span class="kc">auto</span><span class="w"> </span><span class="cp">!important</span><span class="p">;</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#000000</span><span class="p">;</span>
+<span class="w">    </span><span class="k">font-family</span><span class="p">:</span><span class="w"> </span><span class="n">Monaco</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Lucida Console&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">monospace</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">a</span><span class="p">:</span><span class="nd">link</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#993333</span><span class="p">;</span>
+<span class="w">    </span><span class="k">font-weight</span><span class="p">:</span><span class="w"> </span><span class="kc">bold</span><span class="p">;</span>
+<span class="w">    </span><span class="k">text-decoration</span><span class="p">:</span><span class="w"> </span><span class="kc">underline</span><span class="p">;</span><span class="w"> </span>
+<span class="p">}</span>
+<span class="nt">a</span><span class="p">:</span><span class="nd">hover</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#FF6666</span><span class="p">;</span>
+<span class="w">    </span><span class="k">text-decoration</span><span class="p">:</span><span class="w"> </span><span class="kc">none</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">a</span><span class="p">:</span><span class="nd">visited</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#0066CC</span><span class="p">;</span>
+<span class="w">    </span><span class="k">text-decoration</span><span class="p">:</span><span class="w"> </span><span class="kc">none</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c">/* metadata */</span>
+<span class="nt">p</span><span class="p">.</span><span class="nc">author</span><span class="o">,</span><span class="w"> </span><span class="nt">p</span><span class="p">.</span><span class="nc">date</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">text-align</span><span class="p">:</span><span class="w"> </span><span class="kc">center</span><span class="p">;</span><span class="w"> </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kc">auto</span><span class="p">;}</span>
+<span class="nt">blockquote</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="kt">px</span><span class="w"> </span><span class="cp">!important</span><span class="p">;</span>
+<span class="w">    </span><span class="k">border-left</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="kt">px</span><span class="w"> </span><span class="kc">solid</span><span class="w"> </span><span class="mh">#009A61</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">blockquote</span><span class="w"> </span><span class="nt">p</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="kt">em</span><span class="p">;</span>
+<span class="w">    </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="kt">px</span><span class="w"> </span><span class="cp">!important</span><span class="p">;</span>
+<span class="w">    </span><span class="k">text-align</span><span class="p">:</span><span class="w"> </span><span class="kc">justify</span><span class="p">;</span>
+<span class="w">    </span><span class="k">padding</span><span class="p">:</span><span class="mf">0.5</span><span class="kt">em</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c">/* 列表 */</span>
+<span class="p">#</span><span class="nn">TOC</span><span class="w"> </span><span class="nt">ul</span><span class="o">,</span><span class="w">  </span><span class="p">#</span><span class="nn">TOC</span><span class="w"> </span><span class="nt">ol</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">padding</span><span class="p">:</span><span class="mi">0</span><span class="kt">em</span><span class="w"> </span><span class="mi">1</span><span class="kt">em</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">li</span><span class="w"> </span><span class="p">{</span><span class="k">padding-bottom</span><span class="p">:</span><span class="mf">0.25</span><span class="kt">em</span><span class="p">}</span>
+<span class="c">/* 文章里小节标题的序号与标题名称之间的间距, 针对我写的生成文章目录的 m4 宏 */</span>
+<span class="nt">span</span><span class="p">.</span><span class="nc">section-sep</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">margin-left</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="kt">em</span><span class="p">;</span><span class="w"> </span><span class="k">margin-right</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="kt">em</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="nt">div</span><span class="p">.</span><span class="nc">footer</span><span class="w"> </span><span class="p">{</span><span class="k">text-align</span><span class="p">:</span><span class="kc">center</span><span class="p">;}</span>
+</pre>
+<h1 id="参考">参考</h1>
+<ol type="1">
+<li><a
+href="https://segmentfault.com/a/1190000039423978">获取脚本自身路径</a></li>
+<li><a
+href="https://segmentfault.com/a/1190000039424194">双引号的重要性</a></li>
+<li><a href="https://segmentfault.com/a/1190000016745490">Awk
+小传</a></li>
+</ol>
+
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+</body>
+</html>

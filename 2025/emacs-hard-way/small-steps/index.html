@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>跬步</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">跬步
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2025 年 05 月 31 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#递归" id="toc-递归">递归</a></li>
+  <li><a href="#再谈-let" id="toc-再谈-let">再谈 let</a></li>
+  <li><a href="#逐行遍历" id="toc-逐行遍历">逐行遍历</a></li>
+  <li><a href="#收集" id="toc-收集">收集</a></li>
+  <li><a href="#适可而止" id="toc-适可而止">适可而止</a></li>
+  <li><a href="#条件表达式" id="toc-条件表达式">条件表达式</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
+</nav>
+
+<h1 id="前言">前言</h1>
+<p>现在，Emacs
+的缓冲区，你应该已经能够招之即来，挥之即去了，应该也能在众多缓冲区之间随意穿越，也应该随时能让某个缓冲区呈现在某个窗口里纤毫毕露。不过，若要充分运用缓冲区蕴含的力量，你还需要学会一些简单的
+Elisp 表达式，通过它们可以触摸缓冲区内的一切。</p>
+<h1 id="递归">递归</h1>
+<p>你已经知道了，通过 <code>point-min</code> 和 <code>point-max</code>
+函数可以获得当前缓冲区的首部和尾部位置，也已经知道了可以通过
+<code>forward-char</code> 和 <code>backward-char</code>
+函数可以在缓冲区内移动光标，但是你知道如何从当前缓冲区的起始位置开始，依序触摸每个字符，直至缓冲区尾部吗？</p>
+<p>假设当前缓冲区一共有 5
+个字符，例如「Hello」，我可以写出像下面这样的愚蠢的函数，它刚好能遍历 5
+个字符。</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> stupid-walker </span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;%c&quot;</span> (char-after <span class="dv">1</span>))</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;%c&quot;</span> (char-after <span class="dv">2</span>))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;%c&quot;</span> (char-after <span class="dv">3</span>))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;%c&quot;</span> (char-after <span class="dv">4</span>))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;%c&quot;</span> (char-after <span class="dv">5</span>)))</span></code></pre></div>
+<p>Emacs 函数 <code>char-after</code>
+可以获得位于光标之后的第一个字符。要获得光标之前的第一个字符，可以用
+<code>char-before</code>。<code>message</code> 表达式中的
+<code>%c</code> 用于格式化输出字符。在上述假想的场景里，若对表达式
+<code>(stupid-walker)</code> 求值，<code>*Messages*</code>
+缓冲区则有以下输出：</p>
+<pre><code>H
+e
+l [2 times]
+o</code></pre>
+<p>我们可以让 <code>stupid-walker</code> 变得聪明一些，例如</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> clever-walker </span>(i)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;%c&quot;</span> (char-after i)))</span></code></pre></div>
+<p>若要依序遍历上述假想的缓冲区中每个字符，只需</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(clever-walker <span class="dv">1</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(clever-walker <span class="dv">2</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>(clever-walker <span class="dv">3</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>(clever-walker <span class="dv">4</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>(clever-walker <span class="dv">5</span>)</span></code></pre></div>
+<p><strong>直到有一天，这个聪明的行者忽然开悟了，圣人之道，吾性自足，不假外求！</strong>我何必一直等待外界修改
+<code>i</code>
+的值再传给我呢，我完全可以自己修改，而且我甚至可以自己对自己求值：</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> clever-walker </span>(i)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;%c&quot;</span> (char-after i))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  (clever-walker (<span class="op">+</span> i <span class="dv">1</span>)))</span></code></pre></div>
+<p>之后，<code>clever-walker</code> 发现，它只需要从外界获得
+1，然后就能一直走到地老天荒了，天得一以清，地得一以宁，侯王得一为天下正。</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(clever-walker <span class="dv">1</span>)</span></code></pre></div>
+<p>当 <code>clever-walker</code> 发现自己的确可以从 1
+开始，一直走下去，并触碰到了当前缓冲区里的每个字符，然后他只需明白在何处停止前进，便完成了任务。</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> clever-walker </span>(i)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">when</span> (<span class="op">&lt;</span> i (point-max))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;%c&quot;</span> (char-after i))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    (clever-walker (<span class="op">+</span> i <span class="dv">1</span>))))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>(clever-walker <span class="dv">1</span>)</span></code></pre></div>
+<p>上述代码中的
+<code>(&lt; i (point-max))</code>，想必你能才出它的含义，即比较
+<code>i</code> 是否小于
+<code>(point-max)</code>。<code>clever-walker</code> 是我们用 Elisp
+写的第一个递归函数。</p>
+<p>一个函数，若它对自身求值，便是递归的。也许 Elisp
+的作者担心我们没有王阳明龙场悟道的天赋，故而创造了 <code>while</code>
+表达式，使得不开悟的人也能做到开悟者能做到的事情，例如</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> clever-walker </span>(i)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    (while (<span class="op">&lt;</span> i (point-max))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;%c&quot;</span> (char-after i))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">setq</span> i (<span class="op">+</span> i <span class="dv">1</span>))))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>(clever-walker <span class="dv">1</span>)</span></code></pre></div>
+<p>上述代码中，Emacs 可对 <code>while</code> 之后第一个条件表达式
+<code>(&lt; i (point-max))</code> 求值，若结果为真，即
+<code>t</code>，则对后续表达式依序求值，然后周而复始，直至第一个条件表达式的求值结果为假，即
+<code>nil</code>。也许你依然记得，Elisp
+里的任何表达式，必须要有求值结果。<code>while</code>
+表达式的求值结果总是 <code>nil</code>，亦即它不需要结果。</p>
+<h1 id="再谈-let">再谈 let</h1>
+<p>倘若采用移动光标的方式遍历缓冲区，上述 <code>clever-walker</code>
+的参数 <code>i</code> 便可省去。例如</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> clever-walker </span>()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    (goto-char (point-min)) <span class="co">;; 将光标移到当前缓冲区首部</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    (while (<span class="op">&lt;</span> (point) (point-max))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;%c&quot;</span> (char-after (point)))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>      (forward-char)))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>(clever-walker)</span></code></pre></div>
+<p>上述代码中的 <code>point</code> 函数可以获取光标当前位置。原先由参数
+<code>i</code> 完成的工作，现在由 <code>point</code>
+函数完成，程序的性能会有所降低，不过也不必为此而焦虑，两种方式皆可用。若在意性能，应该将
+<code>clever-walker</code> 定义为</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> clever-walker </span>()</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  (goto-char (point-min))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> (i n)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">setq</span> i (point))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">setq</span> n (point-max))</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    (while (<span class="op">&lt;</span> i n)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;%c&quot;</span> (char-after i))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>      (forward-char)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">setq</span> i (point)))))</span></code></pre></div>
+<p>不知你是否注意到了，在 <code>let</code>
+表达式定义局部变量时，可以不对其赋予初值，直接像函数参数那样，构造出局部变量列表，然后在后续的过程中用
+<code>setq</code> 赋值。未赋初值的局部变量，其值默认是
+<code>nil</code>，亦即</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> (a b c)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  ... ... ...)</span></code></pre></div>
+<p>等效于</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((a <span class="kw">nil</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>      (b <span class="kw">nil</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>      (c <span class="kw">nil</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  ... ... ...)</span></code></pre></div>
+<p>亦等效于</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> (a b c)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> a <span class="kw">nil</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        b <span class="kw">nil</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        c <span class="kw">nil</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  ... ... ...)</span></code></pre></div>
+<h1 id="逐行遍历">逐行遍历</h1>
+<p>Emacs 函数 <code>forward-line</code>
+可将光标移动到下一行的开头。基于该函数，我们能更大跨度遍历当前缓冲区。例如</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> clever-walker </span>()</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  (goto-char (point-min))</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  (while (<span class="op">&lt;</span> (point) (point-max))</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;%s&quot;</span> (buffer-substring (pos-bol) (pos-eol)))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    (forward-line)))</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>(clever-walker)</span></code></pre></div>
+<p><code>buffer-substring</code>
+可以从当前缓冲区提取指定区间的内容。<code>pos-bol</code> 和
+<code>pos-eol</code>
+分别用于获取光标所在的一行文本的首部和尾部位置，这两个位置便可构成
+<code>buffer-substring</code> 所需的区间。</p>
+<p><code>pos-bol</code> 和 <code>pos-eol</code> 这两个函数是在 Emacs 29
+版本引入的，之前它们的名字较长，分别是
+<code>line-beginning-position</code> 和
+<code>line-end-position</code>。</p>
+<p>Emacs 没有提供 <code>backward-line</code> 函数，但是可以用
+<code>(forward-line -1)</code> 将光标移动到上一行的首部。</p>
+<p>由于 Emacs
+功能丰富且强大，缓冲区内的文字有时会带有一些属性，例如字体和颜色等信息。<code>buffer-substring</code>
+提取的内容，也会带有这些属性。倘若只是想提取纯粹的文字，应该用名字更长的
+<code>buffer-substring-no-properties</code> 函数，其用法与
+<code>buffer-substring</code> 同。</p>
+<h1 id="收集">收集</h1>
+<p>有时，可能需要从缓冲区里汲取一部分内容。这一需求，可以在对缓冲区逐字或逐行遍历的过程中，以字符串累加的方式实现。Emacs
+的 <code>concat</code>
+函数，可将两个字符串连接起来，基于该函数可实现字符串累加。例如</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; 求值结果应该为 hello world!</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((acc <span class="st">&quot;&quot;</span>))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> acc (concat acc <span class="st">&quot;hello&quot;</span>))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">setq</span> acc (concat acc <span class="st">&quot; world!&quot;</span>))</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;%s&quot;</span> acc))</span></code></pre></div>
+<p>基于上述代码，便可在遍历当前缓冲区的过程中收集文字，例如</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> walker </span>()</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  (goto-char (point-min))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> ((acc <span class="st">&quot;&quot;</span>))</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    (while (<span class="op">&lt;</span> (point) (point-max))</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">setq</span> acc (concat acc (<span class="kw">string</span> (char-after (point)))))</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>      (forward-char))</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    acc))</span></code></pre></div>
+<p><code>string</code>
+函数可将一个或一系列的字符串联起来变为字符串。注意，上述代码最终以
+<code>acc</code> 作为 <code>let</code> 表达式的求值结果。由于
+<code>let</code> 表达式是函数 <code>walker</code>
+定义中的最后一个表达式，故而其求值结果也是 <code>walker</code>
+的求值结果，即当前缓冲区内的所有字符。倘若缓冲区内所有字符皆无属性，我们所写的
+<code>walker</code> 函数，等效于 Emacs 提供的 <code>buffer-string</code>
+函数，看似我们在白费工夫，实则不然，因为我们可以根据具体情况，随时终止文字收集过程，例如，遇「水」则止……</p>
+<p>基于 <code>while</code> 表达式写出能遇「水」则停止的
+<code>walker</code>，目前尚无法做到，原因是我们不知如何提前跳出
+<code>while</code>
+表达式所表达的周而复始的逻辑。用递归函数，也无法实现，因为需要处理的逻辑超出了
+<code>when</code>
+的表达能力，它只能表达对条件为真或为假的作出单一响应，而无法分别作出响应。此刻，我们触及了所掌握的知识的边界。</p>
+<h1 id="适可而止">适可而止</h1>
+<p>Elisp 可通过 <code>catch</code> 和 <code>throw</code>
+表达式实现一段程序的退出。<code>cache</code>
+表达式用于在一段程序运行前设定退出标记。例如</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">catch</span> <span class="dt">&#39;here</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;step 1&quot;</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;step 2&quot;</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;step 3&quot;</span>))</span></code></pre></div>
+<p>对上述表达式求值，三个 <code>message</code>
+表达式会被陆续求值，最后的 <code>message</code> 表达式的求值结果——字符串
+<code>"step 3"</code> 会被 Emacs 作为 <code>catch</code>
+表达式的求值结果。现在想必你已经对 Emacs 对 Elisp
+程序的这种求值逻辑颇为熟悉了，即 Emacs
+对一组表达式依序求值时，最后一个表达式的求值结果便是这组表达式的求值结果。另外，即使我之前没有说过，何谓
+<code>message</code> 的求值结果，想必你也能猜到，<code>message</code>
+会将自己输出的字符串作为求值结果。</p>
+<p>倘若只是用于对一组表达式求值，那么 <code>catch</code> 并不比
+<code>let</code> 更高明，关键在于 <code>catch</code>
+在这组表达式之前设定的标记，后续的表达式可根据情况随时跳转至该标记所在位置，并在此提供一个求值结果作为
+<code>catch</code> 表达式的求值结果，亦即在此终结 <code>catch</code>
+表达式，该过程可通过 <code>throw</code> 表达式实现。例如</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">catch</span> <span class="dt">&#39;here</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;step 1&quot;</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">throw</span> <span class="dt">&#39;here</span> (message <span class="st">&quot;step 2&quot;</span>))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;step 3&quot;</span>))</span></code></pre></div>
+<p>上述的 <code>catch</code> 表达式，第 3 条 <code>message</code>
+表达式永无机会被求值，因为在其之前，<code>throw</code> 表达式以第二条
+<code>message</code> 表达式终结了 <code>catch</code> 表达式，亦即第二条
+<code>message</code> 表达式的求值结果便是 <code>catch</code>
+表达式的求值结果，故而对上述表达式求值，结果应该是
+<code>"step 2"</code>。</p>
+<p>基于
+<code>catch/throw</code>，便可在遍历当前缓冲区的过程中实现遇「水」则止。例如</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> walker </span>()</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  (goto-char (point-min))</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> ((acc <span class="st">&quot;&quot;</span>) x)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">catch</span> <span class="dt">&#39;break</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>      (while (<span class="op">&lt;</span> (point) (point-max))</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">setq</span> x (char-after (point)))</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">when</span> (<span class="kw">char-equal</span> x ?水)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">throw</span> <span class="dt">&#39;break</span> acc))</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">setq</span> acc (concat acc (<span class="kw">string</span> x)))</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    (forward-char))</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    acc)))</span></code></pre></div>
+<p>上述代码中，<code>(throw 'break acc)</code> 会以 <code>acc</code>
+作为求值结果终结 <code>cache</code>。由于 <code>cache</code>
+表达式是其外围的 <code>let</code> 表达式中最后一个表达式，其求值结果
+<code>acc</code> 自然也是 <code>let</code> 表达式的求值结果。又由于
+<code>let</code> 表达式是函数 <code>walker</code>
+中的最后一个表达式，其求值结果自然也是 <code>walker</code>
+的求值结果，故而 <code>walker</code>
+在遇到「水」字时，求值结果便是当时的
+<code>acc</code>。需要注意的是，倘若在遍历缓冲区的过程中一值未遇到「水」，<code>catch</code>
+表达式最后的求值结果也是 <code>acc</code>，此时的 <code>acc</code>
+保存的是当前缓冲区的全部内容。</p>
+<p>需要注意的是，上述代码中使用了此前未曾用过的函数
+<code>char-equal</code>，它可用于比较两个字符是否相同。<code>?水</code>
+表示「水」字的字面量。在其他编程语言中，表达字符的字面量，通常用单引号，例如
+<code>'a'</code> 表示字符 <code>a</code>
+的字面量，但是这些编程语言却无法对汉字如此表示，原因是单引号表达的字面量，长度通常只有
+1 个字节，而汉字都是多个字节的。相比之下，Elisp
+的问号表示法可用于表达汉字字符，颇为先进的，你也可以用这种形式表达单字节字符，例如所有字母、数字、下划线等字符。</p>
+<p>我知道，上述的 <code>walker</code>
+函数的逻辑已颇为复杂了，理解起来并非易事。阅读 Elisp 代码或者其他 Lisp
+语言的代码时，头脑需要保持清醒，记住程序的最后一个表达式的求值结果便是程序的求值结果，而每一条表达式都可以视为一段程序……还记得
+Lisp 机的灵魂吗？的确存在很多 Lisp 语言，Elisp
+只是其中之一。在计算机科学领域，一种被广为推崇的 Lisp 语言叫作
+Scheme。</p>
+<p>倘若你懂得一些 C 语言，我可以用伪 C 语言重新描述 <code>walker</code>
+的逻辑，如下：</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>String walker<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>        goto_char<span class="op">(</span>point<span class="op">-</span>min<span class="op">());</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        String acc <span class="op">=</span> <span class="st">&quot;&quot;</span><span class="op">;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span>point<span class="op">()</span> <span class="op">&lt;</span> point_max<span class="op">())</span> <span class="op">{</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                Char x <span class="op">=</span> char_after<span class="op">(</span>point<span class="op">());</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>x 为 <span class="ch">&#39;水&#39;</span><span class="op">)</span> <span class="cf">return</span> acc<span class="op">;</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                acc <span class="op">=</span> concat<span class="op">(</span>acc<span class="op">,</span> string<span class="op">(</span>x<span class="op">));</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>                forward_char<span class="op">();</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> acc<span class="op">;</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码只是伪 C 代码，只能用于表意，并不合乎 C
+语法，但是通过它，也许你能彻底明白 Elisp 版本的 <code>walker</code>
+函数所表达的逻辑。</p>
+<h1 id="条件表达式">条件表达式</h1>
+<p>Elisp 的条件表达式不止有
+<code>when</code>，它也提供了很多其他编程语言都有的 <code>if</code>
+表达式，只是形式上有些怪异，例如</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((x ?火))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">char-equal</span> x ?水)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;true&quot;</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;false&quot;</span>)))</span></code></pre></div>
+<p>上述表达式的求值结果是 <code>"false"</code>，且在
+<code>*Messages*</code> 缓冲区输出 <code>false</code>。</p>
+<p><code>if</code> 表达的形式可表述为</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">if</span> 逻辑表达式</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    (程序分支 <span class="dv">1</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  (程序分支 <span class="dv">2</span>))</span></code></pre></div>
+<p>若用伪 C 代码表达与上述逻辑等效的形式，即</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>逻辑表达式</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  程序分支 <span class="dv">1</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  程序分支 <span class="dv">2</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>亦即 Elisp 的 <code>if</code> 表达式里是暗含 <code>else</code>
+分支的，但是 <code>if</code>
+表达式中的两个程序分支表达式，都是单一表达式，亦即无法写为一组表达式，例如</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((x ?火))</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">char-equal</span> x ?水)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;true&quot;</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;x 是水&quot;</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;false&quot;</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;水火不容&quot;</span>)))</span></code></pre></div>
+<p>虽然上述表达式也能求值，但是并非我们所期望的，亦即程序分支 1 并非</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>(message <span class="st">&quot;true&quot;</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>(message <span class="st">&quot;x 是水&quot;</span>)</span></code></pre></div>
+<p>而程序分支 2，也并非</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>(message <span class="st">&quot;false&quot;</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>(message <span class="st">&quot;水火不容&quot;</span>)</span></code></pre></div>
+<p>我们可以再用一次伪 C 代码表达上述的 <code>if</code>
+表达式的逻辑，如下</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>Char x <span class="op">=</span> <span class="ch">&#39;火&#39;</span><span class="op">;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>x 为 <span class="ch">&#39;水&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>        message<span class="op">(</span><span class="st">&quot;true&quot;</span><span class="op">);</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>        message<span class="op">(</span><span class="st">&quot;x 是水&quot;</span><span class="op">);</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>message<span class="op">(</span><span class="st">&quot;false&quot;</span><span class="op">);</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>message<span class="op">(</span><span class="st">&quot;水火不容&quot;</span><span class="op">);</span></span></code></pre></div>
+<p>那么，我们该如何用 Elisp 的 <code>if</code>
+表达我们想要的逻辑的，亦即表达与以下伪 C 代码相同的逻辑。</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>Char x <span class="op">=</span> <span class="ch">&#39;火&#39;</span><span class="op">;</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>x 为 <span class="ch">&#39;水&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>        message<span class="op">(</span><span class="st">&quot;true&quot;</span><span class="op">);</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>        message<span class="op">(</span><span class="st">&quot;x 是水&quot;</span><span class="op">);</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>        message<span class="op">(</span><span class="st">&quot;false&quot;</span><span class="op">);</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>        message<span class="op">(</span><span class="st">&quot;水火不容&quot;</span><span class="op">);</span>  </span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>答案是使用 <code>progn</code> 表达式，该表达式的功用类似上述伪 C
+代码的花括号，可以将一组表达式包裹起来，成为一个表达式。例如</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((x ?火))</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">char-equal</span> x ?水)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">progn</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>        (message <span class="st">&quot;true&quot;</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>        (message <span class="st">&quot;x 是水&quot;</span>))</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">progn</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;false&quot;</span>)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;水火不容&quot;</span>))))</span></code></pre></div>
+<p>之前是因 Elisp 的 <code>if</code>
+表达式有一些令人费解，所以我一直在用 <code>when</code>，但
+<code>if</code> 终究是无法避开的。不过，实际上也不难，只要你掌握了
+<code>if</code> 的逻辑以及 <code>progn</code> 的作用。</p>
+<p>不过，<code>if</code>
+只能对逻辑表达式成立和不成立两种情况作出响应。在很多情况下，我们需要响应条件是超越逻辑表达式的。其他编程语言提供了
+<code>else if</code> 或 <code>elif</code> 作为附加的程序分支。例如，在 C
+语言里可以实现以下逻辑：</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>x 为 <span class="ch">&#39;水&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...;</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>x 为 <span class="ch">&#39;火&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...;</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>x 为 <span class="ch">&#39;木&#39;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...;</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...;</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>对于上述逻辑，Elisp 的 <code>if</code> 无能为力，不过，Elisp 有
+<code>cond</code> 表达式可模拟上述逻辑，例如</p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">cond</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  ((<span class="kw">char-equal</span> x ?水) (... ... ...))</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  ((<span class="kw">char-equal</span> x ?火) (... ... ...))</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  ((<span class="kw">char-equal</span> x ?木) (... ... ...))</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">t</span> (... ... ...)))</span></code></pre></div>
+<p>请注意上述伪 Elisp 代码中的最后一行，我们用真值 <code>t</code>
+模拟上述 C 伪代码里的 <code>else</code>
+实现兜底处理，用于处理之前的条件皆不成立的情况。</p>
+<p>现在，可以通过定义编写遇「水」则止的递归版本的 <code>walker</code>
+函数让自己更加明白，为何 <code>if</code> 以及 <code>cond</code>
+这样的条件表达式不可或缺。</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> walker </span>(acc)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="op">&lt;</span> (point) (point-max))</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">progn</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">let</span> ((x (char-after (point))))</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">if</span> (<span class="kw">char-equal</span> x ?水)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>              acc</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">progn</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>              (<span class="kw">setq</span> acc (concat acc (<span class="kw">string</span> x)))</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>              (forward-char)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>              (walker acc)))))</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    acc))</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="co">;;walker 的用法</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>(<span class="kw">progn</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  (goto-char (point-min))</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;%s&quot;</span> (walker <span class="st">&quot;&quot;</span>)))</span></code></pre></div>
+<p>如同没有 <code>catch/throw</code> 的帮助，遇「水」则止的
+<code>while</code> 表达式写不出来，若没有 <code>if</code>
+的帮助，遇「水」则止的递归函数，也写不出来。也许你又一次看不懂 Elisp
+代码了，不过你总是可以尝试将其翻译成伪 C 代码去明白它。例如</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> walker<span class="op">(</span>String acc<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>point<span class="op">()</span> <span class="op">&lt;</span> point_max<span class="op">())</span> <span class="op">{</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>                Char x <span class="op">=</span> char_after<span class="op">(</span>point<span class="op">());</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>x 为 <span class="ch">&#39;水&#39;</span><span class="op">)</span> <span class="cf">return</span> acc<span class="op">;</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>                        acc <span class="op">=</span> concat<span class="op">(</span>acc<span class="op">,</span> string<span class="op">(</span>x<span class="op">));</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>                        forward_char<span class="op">();</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>                        walker<span class="op">(</span>acc<span class="op">);</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">return</span> acc<span class="op">;</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h1 id="总结">总结</h1>
+<p>也许你会觉得本文有些费脑，实际上我也有同感，我国古代哲学家王阳明应该也有同感，特别当他发现圣人之道即为递归的那个瞬间。主要原因是，我们不经意间触及到了计算机编程的一些本质问题，即一些重要的程序逻辑可以基于有条件约束的递归予以实现，也可基于有条件中断的
+<code>while</code>
+循环予以实现，这两种方式是等效的，前者属于函数式编程，后者属于过程式编程。至于二者孰优孰劣，至今仍争论未休，Elisp
+的看法是，你可以根据自己的偏好选择，亦可两者混用。你看，Emacs
+用着用着，人自然就会一些编程了。</p>
+
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+</body>
+</html>

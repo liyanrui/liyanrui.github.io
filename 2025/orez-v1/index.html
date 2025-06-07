@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Orez 1.0 指南</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">Orez 1.0 指南
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2025 年 01 月 03 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#文学编程" id="toc-文学编程">文学编程</a></li>
+  <li><a href="#安装" id="toc-安装">安装</a></li>
+  <li><a href="#初识" id="toc-初识">初识</a>
+  <ul>
+  <li><a href="#有名片段" id="toc-有名片段">有名片段</a></li>
+  <li><a href="#程序源码抽取tangle"
+  id="toc-程序源码抽取tangle">程序源码抽取（tangle）</a></li>
+  <li><a href="#排版元文档生成weave"
+  id="toc-排版元文档生成weave">排版元文档生成（weave）</a></li>
+  <li><a href="#排版后端" id="toc-排版后端">排版后端</a></li>
+  </ul></li>
+  <li><a href="#片段引用" id="toc-片段引用">片段引用</a></li>
+  <li><a href="#片段追加" id="toc-片段追加">片段追加</a></li>
+  <li><a href="#标签" id="toc-标签">标签</a></li>
+  <li><a href="#语言标记" id="toc-语言标记">语言标记</a></li>
+  <li><a href="#片段名字续行符"
+  id="toc-片段名字续行符">片段名字续行符</a></li>
+  <li><a href="#orez-所有符号" id="toc-orez-所有符号">orez
+  所有符号</a></li>
+  <li><a href="#自定义符号" id="toc-自定义符号">自定义符号</a></li>
+  <li><a href="#编辑器" id="toc-编辑器">编辑器</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
+</nav>
+
+<h1 id="前言">前言</h1>
+<p>2016 年夏天，我用 C 语言写了一个文学编程工具，起名叫
+zero，因为它貌似做了一些事，但实质上它什么也没有做。秀才造反，三年不成，文人行事，大抵如此。之后很快实现了
+zero 的自举，即采用 zero
+所支持的文学编程的方式重新实现了它自身。这个自举版本，我取名为
+orez，并为它写了一份用法指南「<a
+href="https://segmentfault.com/a/1190000008137846">orez
+的故事</a>」——现在读来，发现该文有些自恋。</p>
+<p>之后许多年，我对 orez
+一直都很满意。在此期间继续对文学编程有所践行，基于 orez
+编写了一个用于处理三维点云数据（理论上也支持 N
+维）的几何库。这个几何库的实现过程时断时续，得益于文学编程，每次当我想继续工作时，都能很快地重温项目的结构和代码。去年，当我想继续为这个几何库写代码时，距离上一次为它写代码已间隔
+2 年有余，而且我甚至对 orez 的用法都有些遗忘了。在温习 orez
+的用法时，我顺便回顾了它的源码，心里生出了一些不满，从而引发了重写的念头。</p>
+<p>去年（2024 年）三月，我开始重写
+orez，采用的依然是文学编程的方式。上一次实现 orez
+时，文档部分皆为英文，当时是想为写论文而锻炼英文写作，文档很丑，大概举世只有我能看得懂，故而从未释出。此次对
+orez 的重写，断断续续，跨度长达十个月，最后赶在 2024
+年的最后一日完成，其文学化程序的文档也用中文写成，即 <a
+href="../../old-posts/share/orez-v1.pdf">orez-v1.pdf</a>。本文除了介绍
+Orez
+原有的功能之外，对新的功能也予以说明。行文不工，甚为随意，我希望文学编程也应如此。</p>
+<h1 id="文学编程">文学编程</h1>
+<p>几乎所有程序都需要文档，缺乏文档的程序是因程序员的懒惰，无力或无能所致。文档的缺乏会导致程序难以被他人理解。文学编程强调程序首先应该易于人类理解，其次才是在计算机中正确运行。按照计算机软件领域的习俗——强调什么，即面向什么——，故而可将文学编程理解为面向文档编程。</p>
+<p>下面是文学编程的一个简单示例：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>我是一个文学化的程序“hello world”：</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>@ hello wolrd # <span class="op">[</span>C<span class="op">]</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;Hello world!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>@</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>假设本文档名为 foo<span class="op">.</span>txt，以下命令可提取我的实现代码并将其保存为 hello<span class="op">.</span>c：</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>$ orez <span class="op">-</span>t foo<span class="op">.</span>txt <span class="op">-</span>e <span class="st">&quot;hello world&quot;</span> <span class="op">-</span>o hello<span class="op">.</span>c</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>可用 gcc 编译 hello<span class="op">.</span>c，生成 hello 程序：</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>$ gcc hello<span class="op">.</span>c <span class="op">-</span>o hello</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>这个 hello 程序就是我，我能在屏幕上显示“Hello world<span class="op">!</span>”，这份文档也是我！</span></code></pre></div>
+<p>对于上述简单的示例，使用 C
+语言的注释可以代替文学编程形式，但是对于复杂一些的程序，代码注释很难勾画程序的整体架构以及细枝末节并使之易于理解，而后者却是文学编程所长。</p>
+<p>几乎所有编程语言的注释功能皆是纯文本形式，倘若它们能代替文学编程形式，意味着任何一种排版语言或标记语言（例如
+TeX、HTML、XML、Markdown）皆无存在的必要，这也是文学编程的一个重要前提——面向的文档需需基于某种排版语言或标记语言生成。例如，orez
+的文档基于 ConTeXt 语言（与 LaTeX 类似，皆为 TeX
+格式）生成。上述的文学编程简单示例，虽然没有用到排版语言，但是若将文本文档本身视为最为朴素的排版结果，它依然可归为文学编程。一个反面的例子是，在
+MS Word 或金山 WPS
+之类的字处理软件（大多数人将其视为排版软件）中无法或难以直接进行文学编程。</p>
+<p>上述文学编程的示例虽然简单，但它表现了程序源码和文档的统一性。这种统一性便是文学编程要致力构建和维持的，它甚至在商朝时期负责占卜的贞人时代便已出现了。一旦建立了这种统一性，文学编程工具，例如本文的主角
+orez
+便可将文学化程序源码蕴含的信息分别导向文档排版和源码编译过程，从而完成程序文档的编排和程序本体的生成。</p>
+<h1 id="安装">安装</h1>
+<p>在 Linux 环境中，编译和安装 orez 较为容易。编译 orez 所需的依赖是
+libcyaml 和 glib 库以及 pkg-config 工具。</p>
+<p>通过以下命令可编译 orez 源码，并将所得 orez 程序以及两份后端 Python
+脚本 orez-ctx 和 orez-md 安装至 /usr/local/bin 目录：</p>
+<pre class="console"><code>$ git clone https://github.com/liyanrui/orez.git
+$ cd orez
+$ make
+$ sudo make install</code></pre>
+<p>至于其他操作系统环境，上述过程可作为借鉴，自行尝试。</p>
+<h1 id="初识">初识</h1>
+<p>本节基于一个简单的文学编程示例讲述 orez 的在类 Unix
+环境（Linux、FreeBSD、macOS 以及 Windows 的 Linux
+子系统（WSL））中的基本工作流程。</p>
+<h2 id="有名片段">有名片段</h2>
+<p>在程序源码和文档的统一性的构建方面，orez
+期望程序源码以有名片段的形式嵌入在程序的文档中，基本的嵌入格式如下</p>
+<pre><code>@ 片段名 #
+... 片段内容 ...
+@</code></pre>
+<p>嵌入在文档中的程序源码可通过语言标记予以指明，例如在文档中嵌入一段名为“hello
+world” 的 C 语言代码：</p>
+<pre><code>@ hello world # [C]
+#include &lt;stdio.h&gt;
+int main(void)
+{
+        printf(&quot;Hello world!\n&quot;);
+        return 0;
+}
+@</code></pre>
+<p>语言标记可用于帮助 orez
+输出能够被排版软件进行渲染的源码片段，例如上述代码片段在本文的排版结果中被渲染为</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>@ hello world #</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;Hello world!</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="程序源码抽取tangle">程序源码抽取（tangle）</h2>
+<p>orez 的 <code>-t</code>
+参数用于从文档中提取指定的源码片段，为程序的编译/解释作准备。例如，对于以下以
+ConTeXt 文档为主体，嵌入了一个源码片段的文学化程序源码文档 foo.orz</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode tex"><code class="sourceCode latex"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">\starttext</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>我是一个文学化的程序“hello world”：</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>@ hello wolrd # [C]</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>#include &lt;stdio.h&gt;</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>int main(void)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        printf(&quot;Hello world!<span class="fu">\n</span>&quot;);</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        return 0;</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>@</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">\stoptext</span></span></code></pre></div>
+<p>从 foo.orz 中提取源码片段“hello world”并将其保存为 hello.c 文件的
+orez 命令为</p>
+<pre class="console"><code>$ orez -t foo.orz -e &quot;hello world&quot; -o hello.c</code></pre>
+<p>orez 的参数 <code>-e</code> 向 orez 提供了片段名，<code>-t</code>
+驱役 orez 提取该片段。<code>-o</code> 设定了输出文件，用于保存 orez
+提取的片段内容。倘若不提供 <code>-o</code> 参数，orez
+便将提取到的片段内容发送到标准输出，亦即屏幕。</p>
+<p>对于 c/c++
+之类的语言，为方便程序调试时错误的出现位置定位到文学化程序源码文档，可在命令中添加
+<code>-l</code> 选项，例如</p>
+<pre class="console"><code>$ orez -t foo.orz -l -e &quot;hello world&quot; -o hello.c</code></pre>
+<p><code>-l</code>
+选项可将文学化程序源码文档中源码片段出现的位置以预处理语句的方式添加到提取的源码中。</p>
+<h2 id="排版元文档生成weave">排版元文档生成（weave）</h2>
+<p>orez 的参数 <code>-w</code>
+则是为程序文档的排版作准备，它可将文学化程序源码转换为 YAML
+格式的结构化文档——排版元文档。例如，上一节作为示例的 foo.orz
+文档，以下命令可将其转化为 YAML 文档 foo.yml：</p>
+<pre class="console"><code>$ orez -w foo.orz -o foo.yml</code></pre>
+<p>上述命令中通若未出现 <code>-o</code> 参数，亦即</p>
+<pre class="console"><code>$ orez -w foo.orz</code></pre>
+<p>orez 会将生成的 YAML 文档内容发送到标准输出，亦即屏幕。上述命令生成的
+YAML 文档内容如下：</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> snippet</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">  content</span><span class="kw">: </span><span class="ch">|-</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    &#39;\starttext</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    我是一个文学化的程序“hello world”：&#39;</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> snippet with name</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">  name</span><span class="kw">: </span><span class="ch">|-</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    &#39;hello wolrd&#39;</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hash</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;hellowolrd&#39;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">language</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;C&#39;</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">content</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="kw">    - </span><span class="fu">text</span><span class="kw">:</span><span class="at"> </span><span class="ch">|-</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        &#39;</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        #include &lt;stdio.h&gt;</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>        int main(void)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>                printf(&quot;Hello world!\n&quot;);</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>                return 0;</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>        }&#39;</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">type</span><span class="kw">:</span><span class="at"> snippet</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="fu">  content</span><span class="kw">: </span><span class="ch">|-</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    &#39;\stoptext&#39;</span></code></pre></div>
+<p>若看不懂 orez 生成的排版元文档，可阅读「<a
+href="../../old-posts/output/libyaml-tutorial/yaml-intro.html">YAML
+简介</a>」一文。</p>
+<h2 id="排版后端">排版后端</h2>
+<p>目前，随 orez 一起发布的还有两个脚本程序，一个是 orez-ctx，另一个是
+orez-md，对于 orez 生成的排版元文档，前者可将其转化为 ConTeXt
+源文件，后者可将其转化为 Markdown 源文件，二者用法相似。</p>
+<p>使用 orez-ctx 将上述 foo.yml 文件转化为 foo.tex：</p>
+<pre class="console"><code>$ orez-ctx foo.yml &gt; foo.tex</code></pre>
+<p>在类 Unix 系统中，使用管道，能够让 orez
+及其后端更为紧密的结合。例如以下命令可避免输出 foo.yml
+这个中间文件，直接将 foo.orz 转换为 foo.tex：</p>
+<pre class="console"><code>$ orez -w foo.orz | orez-ctx &gt; foo.tex</code></pre>
+<p>对所得 foo.tex，使用 context 命令进行编译（系统中需要安装 ConTeXt
+环境，其版本 &gt;= MkIV）：</p>
+<pre class="console"><code>$ context foo.tex</code></pre>
+<p>最终可得 foo.pdf，它便是文学化程序源码 foo.orz
+的排版结果，如下图所示：</p>
+<figure>
+<img src="figures/01.png" alt="“hello world”程序的排版结果" />
+<figcaption aria-hidden="true">“hello world”程序的排版结果</figcaption>
+</figure>
+<p>对于其他排版系统，只要它支持纯文本形式的排版文档，可根据 orez
+生成的排版元文档格式，模仿 orez-ctx 和 orez-md
+脚本进行编写相应的后端程序。</p>
+<h1 id="片段引用">片段引用</h1>
+<p>有名字的片段，可被其他有名字的片段引用。例如在有名片段 foo
+中引用另一个有名片段 bar 的内容：</p>
+<pre><code>有名片段 foo：
+
+@ foo #
+我是 foo。
+    # bar @
+@
+
+有名片段 bar：
+
+@ bar #
+我是 bar。
+@</code></pre>
+<p>使用 orez 提取片段 foo 的内容，结果为</p>
+<pre><code>我是 foo。
+    我是 bar。</code></pre>
+<p>对一个有名片段的引用，所用标记在默认情况下与定义有名片段时所用的标记相反，即
+<code>@ foo #</code> 是定义片段 foo，而 <code># foo @</code> 是引用片段
+foo 的内容。</p>
+<p>需要注意，有名片段不能在自身内容中引用自身，否则会导致 orez
+在代码抽取过程中崩溃。</p>
+<h1 id="片段追加">片段追加</h1>
+<p>一个复杂的代码片段通常不需要一次写成，可以采用自上而下，或自下而上的方式在文档的各处分散逐步实现。在文学编程中，这个过程可基于有名片段的追加运算实现。在
+orez 的实现中，大量运用了这种方式。例如</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>以下结构体类型表示记号<span class="op">:</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>@ 记号 #</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        OrezTokenType type<span class="op">;</span> <span class="co">/* 记号类型标识 */</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        gsize line_number<span class="op">;</span><span class="co">/* 记号对应文本在全文中的行号 */</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        GString <span class="op">*</span>content<span class="op">;</span><span class="co">/* 记号对应的文本内容 */</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> OrezToken<span class="op">;</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>其中 OrezTokenType 为记号的类型标识<span class="op">,</span>为文学化源码中的文档片段</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>和源码片段所需要的所有标记定义了数字标识<span class="op">,</span>其定义为</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>@ 记号 # ∧<span class="op">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span> <span class="op">{</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        OREZ_SNIPPET_DELIMITER<span class="op">,</span> <span class="co">/* 文档或源码片段界限符 */</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        OREZ_SNIPPET_NAME_DELIMITER<span class="op">,</span> <span class="co">/* 片段名字界限符 */</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> OrezTokenType<span class="op">;</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>@</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>orez 用户可通过 YAML 格式的配置文件定义符合自己喜好的符号。</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>以下结构体用于存储默认的或用户自定义的符号<span class="op">:</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>@ 记号 # <span class="op">+</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>snippet_delimiter<span class="op">;</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>snippet_name_delimiter<span class="op">;</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> OrezConfig<span class="op">;</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>@</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>对于所获得的全部符号数据<span class="op">,</span>为了后续便于使用<span class="op">,</span>需将其提升为 GString 类型<span class="op">:</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>@ 记号 # <span class="op">+</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        GString <span class="op">*</span>snippet_delimiter<span class="op">;</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        GString <span class="op">*</span>snippet_name_delimiter<span class="op">;</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> OrezSymbols<span class="op">;</span></span></code></pre></div>
+<p>在上述示例中，四个有名片段的名字相同，皆为“<code>记号</code>”。在使用
+orez 抽取“<code>记号</code>”片段中的内容时，orez
+会从文档中出现的第一个“<code>记号</code>”片段开始抽取。遇到第 2
+个“<code>记号</code>”片段时，orez 根据片段名字后面的 <code>^+</code>
+算符，将其内容合并至第一个“<code>记号</code>”的内容之前。遇到第 3
+个“<code>记号</code>”片段时，orez 会根据片段名字后面 <code>+</code>
+算符，将其内容合并至第一个“<code>记号</code>”的内容之后。遇到第 4
+个“<code>记号</code>”片段时，orez 会根据片段名字后面 <code>+</code>
+算符，将其内容合并至第一个“<code>记号</code>”的内容之后。亦即，orez 对这
+4 个片段的内容是按 2、1、3、4 的顺序提取并输出，结果为</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">enum</span> <span class="op">{</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>        OREZ_SNIPPET_DELIMITER<span class="op">,</span> <span class="co">/* 文档或源码片段界限符 */</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        OREZ_SNIPPET_NAME_DELIMITER<span class="op">,</span> <span class="co">/* 片段名字界限符 */</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> OrezTokenType<span class="op">;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        OrezTokenType type<span class="op">;</span> <span class="co">/* 记号类型标识 */</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        gsize line_number<span class="op">;</span><span class="co">/* 记号对应文本在全文中的行号 */</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        GString <span class="op">*</span>content<span class="op">;</span><span class="co">/* 记号对应的文本内容 */</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> OrezToken<span class="op">;</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>snippet_delimiter<span class="op">;</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>snippet_name_delimiter<span class="op">;</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> OrezConfig<span class="op">;</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>        GString <span class="op">*</span>snippet_delimiter<span class="op">;</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>        GString <span class="op">*</span>snippet_name_delimiter<span class="op">;</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> OrezSymbols<span class="op">;</span></span></code></pre></div>
+<p>简而言之，有名片段的名字之后有两种算符，前向追加算符 <code>^+</code>
+和后向追加算符 <code>+</code>。对于同名片段，orez 只支持这两种算符。</p>
+<h1 id="标签">标签</h1>
+<p>有时，对于多个同名片段，会希望向其中某个片段之前或之后追加内容。例如</p>
+<pre><code>@ foo #
+我是 1 号 foo。
+@
+
+@ foo # +
+我是 3 号 foo。
+@
+
+@ foo # +
+我是 4 号 foo。
+@</code></pre>
+<p>我希望向内容为“我是 3 号 foo”的片段之前追加“我是 2 号
+foo”，而该需求无法通过算符 <code>^+</code> 和 <code>+</code>
+实现，因为这两个算符是以同名片段中的第 1
+个片段为基准进行运算。对于该问题，orez
+以标签的形式予以解决。现在，可以给上述第 2 个 <code>foo</code>
+片段添加标签：</p>
+<pre><code>@ foo # +
+&lt;foo 3&gt;
+我是 3 号 foo。
+@</code></pre>
+<p>然后，再定义一个 <code>foo</code>
+片段，通过标签引用形式将其追加到含有相应标签的片段之前：</p>
+<pre><code>@ foo # &lt;foo 3&gt; ^+
+我是 2 号 foo。
+@</code></pre>
+<p>现在使用 orez 提取片段 <code>foo</code> 的内容，可得</p>
+<pre><code>我是 1 号 foo。
+我是 2 号 foo。
+我是 3 号 foo。
+我是 4 号 foo。</code></pre>
+<h1 id="语言标记">语言标记</h1>
+<p>在「<a
+href="#有名片段">有名片段</a>」一节中介绍了有名片段的语言标记的作用。在编写文学化程序时，不需要为每个有名片段都添加语言标记。假设一个带有语言标记的片段
+x，orez 能够将该语言标记自动传播给与 x 同名的片段，被 x
+引用的片段，以及引用 x
+的片段。这一规则意味着，对于一个完整的程序，只需对其中一个有名片段添加语言标记即可。</p>
+<h1 id="片段名字续行符">片段名字续行符</h1>
+<p>有时，片段的名字可能很长，会影响后续文档排版的美观，可使用续行符
+<code>\</code> 予以断行。例如</p>
+<pre><code>@ 我是名字很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的片段 #
+... ... ...
+@</code></pre>
+<p>可写为</p>
+<pre><code>@ 我是名字很长很长很长很长很长很长很长很长 \
+  很长很长很长很长很长很长很长的片段 #
+... ... ...
+@</code></pre>
+<p>引用这种名字很长的片段时，也可以使用续行符进行断行处理，例如</p>
+<pre><code>@ 我很短 #
+  # 名字很长很长很长很长很长很长很长 \
+    很长很长很长很长很长很长很长很长很长的片段 @
+@</code></pre>
+<p>片段引用中使用的续行符在哪个位置出现不会干扰 orez
+查找相应的片段。</p>
+<h1 id="orez-所有符号">orez 所有符号</h1>
+<p>至此，orez 的语法和符号已全部述毕。下面是一个包含了所有 orez
+符号的有名片段格式：</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>@ 片段名字 # <span class="op">[</span>语言标记<span class="op">]</span> <span class="op">&lt;</span>与本片段同名的某个片段标签<span class="op">&gt;</span> <span class="op">+</span> 或 <span class="op">^+</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>本片段标签<span class="op">&gt;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="pp"># </span><span class="er">对其他 \</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="er">  片段的引用 @</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>@</span></code></pre></div>
+<h1 id="自定义符号">自定义符号</h1>
+<p>上述内容所涉及的 orez 符号皆为默认符号，但这些符号可由用户通过 YAML
+格式的配置文件予以修改。例如，若希望像下面这样定义有名片段</p>
+<pre><code>这份文档的文件名为 foobar.orz
+
+&gt;&gt;&gt; foobar |||
+我是 foo。
+    | bar &gt;
+&gt;&gt;&gt;
+
+&gt;&gt;&gt; bar |||
+我是 bar。
+&gt;&gt;&gt;</code></pre>
+<p>只需构造以下配置文件</p>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 这份文档的文件名为 foobar.conf</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_delimiter</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;&gt;&gt;&gt;&quot;</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_name_delimiter</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;|||&quot;</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_reference_beginning_mark</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;|&quot;</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_reference_end_mark</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;&gt;&quot;</span></span></code></pre></div>
+<p>在 orez 的 <code>-c</code>
+参数中提供配置文件的名字，便可令其内容生效，例如：</p>
+<pre class="console"><code>$ orez -c foobar.conf -t foobar.orz -e &quot;foobar&quot; -o foobar.txt</code></pre>
+<p>orez 支持的全部符号的配置键名及其释义如下：</p>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_delimiter</span><span class="kw">:</span><span class="at"> 片段界限符</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_name_delimiter</span><span class="kw">:</span><span class="at"> 片段名字界限符</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_name_continuation</span><span class="kw">:</span><span class="at"> 片段名字续行符</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">language_beginning_mark</span><span class="kw">:</span><span class="at"> 语言标记起始符</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">language_end_mark</span><span class="kw">:</span><span class="at"> 语言标记终止符</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_appending_mark</span><span class="kw">:</span><span class="at"> 前向追加算符</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_prepending_mark</span><span class="kw">:</span><span class="at"> 后向追加算符</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tag_beginning_mark</span><span class="kw">:</span><span class="at"> 标签起始符</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tag_end_mark</span><span class="kw">:</span><span class="at"> 标签终结符</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_reference_beginning_mark</span><span class="kw">:</span><span class="at"> 标签引用起始符</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="fu">snippet_reference_end_mark</span><span class="kw">:</span><span class="at"> 标签引用终结符</span></span></code></pre></div>
+<h1 id="编辑器">编辑器</h1>
+<p>与 orez 相关的文本编辑器，目前尚不存在，我建议用 Emacs 或 Vim
+这类编辑器。对这些编辑器足够熟悉，会有很多办法解决 orez
+不存在编辑器的问题。</p>
+<h1 id="总结">总结</h1>
+<p>无他，仅以此文，缅怀我的 2024 年，用爱发电的一年……</p>
+
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+</body>
+</html>

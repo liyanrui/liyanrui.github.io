@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>门</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">门</h1>
+<p class="date">2023 年 04 月 29 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#名门">名门</a></li>
+<li><a href="#外环路">外环路</a></li>
+<li><a href="#度弯">90 度弯</a></li>
+<li><a href="#郭">郭</a></li>
+<li><a href="#附录">附录</a></li>
+</ul>
+</nav>
+<blockquote>
+<p>上一篇：<a href="shanhai-jing.html">山海经</a></p>
+</blockquote>
+<blockquote>
+<p>下一篇：<a href="config-and-module.html">配置文件和模块</a></p>
+</blockquote>
+<p>每个静物可以有很多门。蜗牛可以从一扇门进去，也可以从另一扇门出来。</p>
+<p>有些门有名字，有些门没名字。</p>
+<p>有名字的门，简称名门，有 12 个，分别叫子、丑、寅、卯、辰、巳、午、未、申、酉、戌、亥。子门在正北，卯门在正东，午门在正南，酉门在正西。</p>
+<p>没有名字的门，可基于有名字的门构建。</p>
+<h1 id="名门">名门</h1>
+<p>假设有一静物 <code>foo</code>：</p>
+<pre class="metapost"><code>picture foo;
+框文配置.框.扩充 := 5mm;
+foo := 框文(&quot;名门&quot;);
+draw foo;</code></pre>
+<p>它的子门在何处？</p>
+<p>在 <code>ulcorner foo</code> 和 <code>urcorner foo</code> 的正中，即 <code>foo</code> 的包围盒的左上角顶点和右上角顶点的中点，用 MetaPost 语言可表示为</p>
+<pre class="metapost"><code>pair foo.子门;
+foo.子门 := .5[ulcorner foo, urcorner foo];</code></pre>
+<p>不妨予以验证：</p>
+<pre class="metapost"><code>draw foo.子门 withpen pencircle scaled 4pt withcolor darkred;</code></pre>
+<figure>
+<img src="../../figures/metafun/gate/01.png" alt="" /><figcaption>子门</figcaption>
+</figure>
+<p><code>foo.午门</code> 在 <code>llcorner foo</code> 和 <code>lrcorner foo</code> 的正中，即 <code>foo</code> 的左下角点和右下角点的中点：</p>
+<pre class="metapost"><code>foo.午门 := .5[llcorner foo, lrcorner foo];</code></pre>
+<p>同理，可写出卯门和酉门：</p>
+<pre class="metapost"><code>foo.卯门 := .5[lrcorner foo, urcorner foo];
+foo.酉门 := .5[llcorner foo, ulcorner foo];</code></pre>
+<p>至此，便有了 4 门：</p>
+<pre class="metapost"><code>pair foo.子门, foo.午门, foo.卯门, foo.酉门;
+foo.子门 := .5[ulcorner foo, urcorner foo];
+foo.午门 := .5[llcorner foo, lrcorner foo];
+foo.卯门 := .5[lrcorner foo, urcorner foo];
+foo.酉门 := .5[llcorner foo, ulcorner foo];
+
+forsuffixes i = 子门, 午门, 卯门, 酉门:
+  draw foo.i withpen pencircle scaled 4pt withcolor darkred;
+endfor;</code></pre>
+<figure>
+<img src="../../figures/metafun/gate/02.png" alt="" /><figcaption>四门</figcaption>
+</figure>
+<p>注意，上述代码用的不是普通的 <code>for</code>，而是 <code>forsuffixes</code>。倘若用普通的 <code>for</code>，MetaPost 编译器会认为上述代码里变量 <code>i</code> 的值不是合法的表达式而报错退出。</p>
+<p>若将上述 <code>forsuffixes</code> 语句改为 <code>for</code>，只能写为</p>
+<pre class="metapost"><code>for i = foo.子门, foo.午门, foo.卯门, foo.酉门:
+  draw i withpen pencircle scaled 4pt withcolor darkred;
+endfor;</code></pre>
+<p>基于子、午、卯、酉门以及四个角点，可以再构造出 8 个门：</p>
+<pre class="metapost"><code>forsuffixes i = 丑门, 寅门, 辰门, 巳门, 未门, 申门, 戌门, 亥门:
+  pair foo.i;
+endfor;
+
+foo.丑门 := .5[foo.子门, urcorner foo];
+foo.寅门 := .5[foo.卯门, urcorner foo];
+foo.辰门 := .5[foo.卯门, lrcorner foo];
+foo.巳门 := .5[foo.午门, lrcorner foo];
+foo.未门 := .5[foo.午门, llcorner foo];
+foo.申门 := .5[foo.酉门, llcorner foo];
+foo.戌门 := .5[foo.酉门, ulcorner foo];
+foo.亥门 := .5[foo.子门, ulcorner foo];
+
+forsuffixes i = 丑门, 寅门, 辰门, 巳门, 未门, 申门, 戌门, 亥门:
+  draw foo.i withpen pencircle scaled 4pt withcolor darkgreen;
+endfor;</code></pre>
+<p>于是，便有了十二名门：</p>
+<figure>
+<img src="../../figures/metafun/gate/03.png" alt="" /><figcaption>十二名门</figcaption>
+</figure>
+<p>由于所有的静物的门皆能仿照上述过程构建，因此，可以定义一个宏，复用上述代码：</p>
+<pre class="metapost"><code>def 名门 suffix foo =
+  forsuffixes i = 子门, 卯门, 午门, 酉门,
+                  丑门, 寅门, 辰门, 巳门, 未门, 申门, 戌门, 亥门:
+      pair foo.i;
+  endfor;
+  foo.子门 := .5[ulcorner foo, urcorner foo];
+  foo.午门 := .5[llcorner foo, lrcorner foo];
+  foo.卯门 := .5[lrcorner foo, urcorner foo];
+  foo.酉门 := .5[llcorner foo, ulcorner foo];
+  foo.丑门 := .5[foo.子门, urcorner foo];
+  foo.寅门 := .5[foo.卯门, urcorner foo];
+  foo.辰门 := .5[foo.卯门, lrcorner foo];
+  foo.巳门 := .5[foo.午门, lrcorner foo];
+  foo.未门 := .5[foo.午门, llcorner foo];
+  foo.申门 := .5[foo.酉门, llcorner foo];
+  foo.戌门 := .5[foo.酉门, ulcorner foo];
+  foo.亥门 := .5[foo.子门, ulcorner foo];
+enddef;</code></pre>
+<h1 id="外环路">外环路</h1>
+<p>新建一个框文：</p>
+<pre class="metapost"><code>picture 城;
+框文配置.框.扩充 := 1cm;
+城 := 框文(&quot;城&quot;);
+draw 城;</code></pre>
+<p>蜗牛从城的卯门出发，绕城 3/4 圈，由午门入城，绘制其路径：</p>
+<pre class="metapost"><code>path 外环路;
+numeric a, b, r;
+a := bbheight 城; b := bbwidth 城; r := 5mm;
+名门 城;
+外环路 := 城.卯门 向 (东 r) 向 (北 .5a + r) 向 (西 b + 2r) 向 (南 a + 2r) 向 (东 .5b + r) -- 城.午门;
+drawarrowpath 外环路;</code></pre>
+<p>结果为</p>
+<figure>
+<img src="../../figures/metafun/gate/04.png" alt="" /><figcaption>外环路-1</figcaption>
+</figure>
+<p>路径太粗了，导致箭头失常，可通过 MetaFun 宏 <code>drawpathoptions</code> 进行调整：</p>
+<pre class="metapost"><code>drawpathoptions(withpen pencircle scaled 2pt withcolor darkred);</code></pre>
+<figure>
+<img src="../../figures/metafun/gate/05.png" alt="" /><figcaption>外环路-2</figcaption>
+</figure>
+<p>由于蜗牛尚不知如何自动拐弯，因此上述路径的走位颇为怪异。</p>
+<h1 id="度弯">90 度弯</h1>
+<p>让蜗牛自动拐 90 度弯，此事并不难，例如</p>
+<pre class="metapost"><code>pair a, b;
+a := (0, 0); b := (4cm, 2cm);
+% 经转
+drawpathoptions(withpen pencircle scaled 2pt withcolor darkgreen);
+drawarrowpath a -- (xpart point (length a) of a, ypart b) -- b
+% 纬转
+drawpathoptions(withpen pencircle scaled 2pt withcolor darkred);
+drawarrowpath a -- (xpart b, ypart point (length a) of a) -- b;</code></pre>
+<figure>
+<img src="../../figures/metafun/gate/06.png" alt="" /><figcaption>左转和右转</figcaption>
+</figure>
+<p><code>xpart</code> 和 <code>ypart</code> 皆为 MetaPost 宏，分别用于获取 <code>pair</code>对象的 x 和 y 坐标分量。</p>
+<p>若分别为经转和纬转定义两个运算符宏，便可实现自动拐弯：</p>
+<pre class="metapost"><code>tertiarydef a 经转 b =
+  a -- (xpart point (length a) of a, ypart b) -- b
+enddef;
+tertiarydef a 纬转 b =
+  a -- (xpart b, ypart point (length a) of a) -- b
+enddef;
+
+pair a, b; a := (0, 0); b := (4cm, 2cm);
+drawarrowpath a 经转 b;
+drawarrowpath a 纬转 b;</code></pre>
+<p>更复杂一些的直角转弯也不在话下：</p>
+<pre class="metapost"><code>pair a, b, c, d;
+a := (0, 0); b := (4cm, 2cm); c := (0, 2cm); d := (-1cm, 1cm);
+drawpathoptions(withpen pencircle scaled 2pt withcolor darkred);
+drawarrowpath a 纬转 b 纬转 c 经转 d;</code></pre>
+<figure>
+<img src="../../figures/metafun/gate/07.png" alt="" /><figcaption>复杂的左转和右转</figcaption>
+</figure>
+<h1 id="郭">郭</h1>
+<p>基于 <code>左转</code> 和 <code>右转</code> 宏，可为蜗牛重新构造一条简洁的外环路：</p>
+<pre class="metapost"><code>picture 城;
+框文配置.框.扩充 := 1cm;
+城 := 框文(&quot;城&quot;);
+draw 城;
+
+numeric r; r := 5mm;
+path 郭;
+郭 := 城 enlarged (r, r);
+名门 城; 名门 郭;
+path 外环路;
+外环路 := 城.卯门 -- 郭.卯门 经转 郭.子门 纬转 郭.酉门 经转 郭.午门 -- 城.午门;
+drawarrowpath 外环路;</code></pre>
+<p>有城就有郭。现在的郭，就是外环路吧……</p>
+<h1 id="附录">附录</h1>
+<p>城郭完整的代码：</p>
+<pre class="metapost"><code>\usemodule[zhfonts]
+\startuseMPgraphic{foo}
+tertiarydef a 经转 b =
+  a -- (xpart point (length a) of a, ypart b) -- b
+enddef;
+
+tertiarydef a 纬转 b =
+  a -- (xpart b, ypart point (length a) of a) -- b
+enddef;
+
+numeric 框文配置.框.扩充, 框文配置.框.线粗, 框文配置.框.玩笑;
+框文配置.框.扩充 := 4pt; 
+框文配置.框.线粗 := 4pt; 
+框文配置.框.玩笑 := 0;
+
+color 框文配置.文字.颜色, 框文配置.框.颜色, 框文配置.框.背景;
+框文配置.文字.颜色 := black; 
+框文配置.框.颜色 := darkgray; 
+框文配置.框.背景 := lightgray;
+
+path 框文配置.框形;
+框文配置.框形 := fullsquare;
+
+vardef 框文 expr a =
+  save 框, 文;
+  path 框; picture 文;
+  文 = textext(a);
+  框 := fullsquare
+        xscaled (bbwidth 文) yscaled (bbheight 文)
+        enlarged (框文配置.框.扩充 * (1, 1));
+  框 := 框文配置.框形 xscaled (bbwidth 框) yscaled (bbheight 框);   % &lt;= 关键之处
+  if 框文配置.框.玩笑 &gt; 0: 框 := 框 randomized 框文配置.框.玩笑; fi;
+  image(fill 框 withcolor 框文配置.框.背景;
+        draw 框 withpen pencircle scaled 框文配置.框.线粗 withcolor 框文配置.框.颜色;
+        draw 文 withcolor 框文配置.文字.颜色;)
+enddef;
+
+def 名门 suffix foo =
+  forsuffixes i = 子门, 卯门, 午门, 酉门,
+                  丑门, 寅门, 辰门, 巳门, 未门, 申门, 戌门, 亥门:
+      pair foo.i;
+  endfor;
+  foo.子门 := .5[ulcorner foo, urcorner foo];
+  foo.午门 := .5[llcorner foo, lrcorner foo];
+  foo.卯门 := .5[lrcorner foo, urcorner foo];
+  foo.酉门 := .5[llcorner foo, ulcorner foo];
+  foo.丑门 := .5[foo.子门, urcorner foo];
+  foo.寅门 := .5[foo.卯门, urcorner foo];
+  foo.辰门 := .5[foo.卯门, lrcorner foo];
+  foo.巳门 := .5[foo.午门, lrcorner foo];
+  foo.未门 := .5[foo.午门, llcorner foo];
+  foo.申门 := .5[foo.酉门, llcorner foo];
+  foo.戌门 := .5[foo.酉门, ulcorner foo];
+  foo.亥门 := .5[foo.子门, ulcorner foo];
+enddef;
+
+drawpathoptions(withpen pencircle scaled 2pt withcolor darkred);
+
+picture 城;
+框文配置.框.扩充 := 1cm;
+城 := 框文(&quot;城&quot;);
+draw 城;
+
+numeric r;
+r := 5mm;
+path 郭;
+郭 := 城 enlarged (r, r);
+名门 城; 名门 郭;
+path 外环路;
+外环路 := 城.卯门 -- 郭.卯门 经转 郭.子门 纬转 郭.酉门 经转 郭.午门 -- 城.午门;
+drawarrowpath 外环路;
+\stopuseMPgraphic
+
+\startTEXpage[offset=4pt]
+\useMPgraphic{foo}
+\stopTEXpage</code></pre>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

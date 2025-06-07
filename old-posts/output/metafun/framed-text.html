@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>框文</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">框文</h1>
+<p class="date">2023 年 04 月 29 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#文字">文字</a></li>
+<li><a href="#带框的文字">带框的文字</a></li>
+<li><a href="#包围盒">包围盒</a></li>
+<li><a href="#框文">框文</a></li>
+<li><a href="#宏内局部变量">宏内局部变量</a></li>
+<li><a href="#背景色">背景色</a></li>
+<li><a href="#外观">外观</a></li>
+<li><a href="#姓甚名谁">姓甚名谁</a></li>
+<li><a href="#框形">框形</a></li>
+<li><a href="#附录">附录</a></li>
+</ul>
+</nav>
+<blockquote>
+<p>上一篇：<a href="snail.html">蜗牛</a></p>
+</blockquote>
+<blockquote>
+<p>下一篇：<a href="shanhai-jing.html">山海经</a></p>
+</blockquote>
+<p>蜗牛生活的世界，有一些静物。</p>
+<h1 id="文字">文字</h1>
+<p>最简单的静物是文字，确切地说，是 TeX 世界里的文字，可使用 <code>textext</code> 宏构建。例如</p>
+<pre class="metapost"><code>vardef text (expr s) =
+  if picture s:
+    s
+  else:
+    fullsquare scaled 1cm withcolor red
+  fi
+enddef;
+
+draw text(textext(&quot;\TEX&quot;));</code></pre>
+<p>结果为</p>
+<figure>
+<img src="../../figures/metafun/framed-text/01.png" alt="" /><figcaption>TeX</figcaption>
+</figure>
+<p>在 MetaPost 语言里，<code>vardef</code> 宏用于定义有返回值的宏。上述代码主要目的是为了展现，<code>textext</code> 构造的对象，其类型是 <code>picture</code>。</p>
+<h1 id="带框的文字">带框的文字</h1>
+<p>为文字加一个外框，只需先绘制一个外框，再绘制文字，例如：</p>
+<pre class="metapost"><code>draw fullsquare xscaled 4.5cm yscaled 1cm 
+     withpen pencircle scaled 4pt withcolor darkgray;
+draw textext(&quot;来自 \TEX\ 世界的文字&quot;) withcolor darkred;</code></pre>
+<p>结果为</p>
+<figure>
+<img src="../../figures/metafun/framed-text/02.png" alt="" /><figcaption>带框的文字</figcaption>
+</figure>
+<p>上面的结果仅仅是巧合—— <code>fullsquare</code> 构造的封闭路径和 <code>textext</code> 构造的 <code>picture</code> 对象，它们的中心在点默认情况下皆为原点，故而文字完美居于框中。貌合神离，不可接受。更好的解决方案是将文字和外框使用 MetaPost 的 <code>image</code> 宏组合为一个 <code>picture</code> 对象：</p>
+<pre class="metapost"><code>picture framed_text;
+framed_text := image(
+  draw fullsquare xscaled 2cm yscaled 1cm 
+       withpen pencircle scaled 4pt withcolor darkgray;
+  draw textext(&quot;来自 \TEX\ 世界的文字&quot;) withcolor darkred;
+);
+draw framed_text;</code></pre>
+<p>将文字和外框组合为一个 <code>picture</code> 对象的好处是，可以对它们进行整体性的旋转和平移变换。例如</p>
+<pre class="metapost"><code>draw framed_text shifted (-2cm, -1cm);
+draw framed_text rotated 30;
+draw framed_text rotated 75 shifted (2cm, 1cm);</code></pre>
+<figure>
+<img src="../../figures/metafun/framed-text/03.png" alt="" /><figcaption>旋转/平移带框的文字</figcaption>
+</figure>
+<h1 id="包围盒">包围盒</h1>
+<p>用上一节的方法，为不同的文字制作外框，需要人为设定外框的尺寸，使得外框能够包含文本。这种事情甚为无趣，有必要实现一个过程：根据文本宽度自动确定外框尺寸。</p>
+<p>MetaFun 提供了两个宏，<code>bbwidth</code> 和 <code>bbheight</code>，可分别用于计算 <code>path</code> 或 <code>picture</code> 对象的包围盒宽度和高度，使用它们便可自动确定文字的外框尺寸，例如</p>
+<pre class="metapost"><code>picture text;
+text := textext(&quot;来自 \TEX\ 世界的文字&quot;);
+path frame;
+frame := fullsquare xscaled (bbwidth text) yscaled (bbheight text);
+
+draw frame withpen pencircle scaled 4pt withcolor darkgray;
+draw text withcolor darkred;</code></pre>
+<figure>
+<img src="../../figures/metafun/framed-text/04.png" alt="" /><figcaption>文字包围盒</figcaption>
+</figure>
+<p>若嫌文字的外框过于紧致，可使用 MetaFun 的 <code>enlarged</code> 宏令其有所扩大：</p>
+<pre class="metapost"><code>path frame;
+frame := fullsquare xscaled (bbwidth text) yscaled (bbheight text);
+frame := frame enlarged (4pt, 4pt);</code></pre>
+<figure>
+<img src="../../figures/metafun/framed-text/05.png" alt="" /><figcaption>文字外框留白</figcaption>
+</figure>
+<h1 id="框文">框文</h1>
+<p>带框的文字，我原本是想表达为 framed text，但是忽然觉得，叫「框文」也不错：</p>
+<pre class="metapost"><code>vardef 框文 expr a =
+  path 框; picture 文;
+  文 = textext(a);
+  框 := fullsquare xscaled (bbwidth 文) yscaled (bbheight 文)
+        enlarged (4pt, 4pt);
+  image(draw 框 withpen pencircle scaled 4pt withcolor darkgray;
+        draw 文 withcolor darkred;)
+enddef;
+
+draw 框文(&quot;来自 \TEX\ 世界的文字&quot;);</code></pre>
+<h1 id="宏内局部变量">宏内局部变量</h1>
+<p><code>框文</code> 宏，很前卫，但是它的定义里的变量，都是全局变量，即使它们在宏内。下面这个实验能够给出证明：</p>
+<pre class="metapost"><code>draw 框文(&quot;来自 \TEX\ 世界的文字&quot;);
+draw 文 rotated 30 shifted (1cm, 1cm);</code></pre>
+<p>结果为</p>
+<figure>
+<img src="../../figures/metafun/framed-text/06.png" alt="" /><figcaption>全局变量的副作用</figcaption>
+</figure>
+<p>上文中宏内定义的所有变量皆为全局变量。过多使用全局变量，程序缺乏发展壮大的可能。MetaPost 支持局部变量，只是需要多写一些代码：</p>
+<pre class="metapost"><code>vardef 框文 expr a =
+  begingroup
+  save 框, 文;
+  path 框; picture 文;
+  文 = textext(a);
+  框 := fullsquare xscaled (bbwidth 文) yscaled (bbheight 文)
+        enlarged (4pt, 4pt);
+  image(draw 框 withpen pencircle scaled 4pt withcolor darkgray;
+        draw 文 withcolor darkred;)
+  endgroup
+enddef;</code></pre>
+<p>重新定义的 <code>框文</code>，其中的变量在外部便无法使用了。</p>
+<p><code>vardef</code> 定义的宏，它内含了 <code>begingroup</code> 和 <code>endgroup</code>，因此上述代码可写为</p>
+<pre class="metapost"><code>vardef 框文 expr a =
+  save 框, 文;
+  path 框; picture 文;
+  文 = textext(a);
+  框 := fullsquare xscaled (bbwidth 文) yscaled (bbheight 文)
+        enlarged (4pt, 4pt);
+  image(draw 框 withpen pencircle scaled 4pt withcolor darkgray;
+        draw 文 withcolor darkred;)
+enddef;</code></pre>
+<h1 id="背景色">背景色</h1>
+<p>现在，对 <code>框文</code> 再增加一个小功能，为框增加背景色：</p>
+<pre class="metapost"><code>vardef 框文 expr a =
+  save 框, 文;
+  path 框; picture 文;
+  文 = textext(a);
+  框 := fullsquare xscaled (bbwidth 文) yscaled (bbheight 文)
+        enlarged (4pt, 4pt);
+  image(fill 框 withcolor lightgray;  % &lt;= 新增代码
+        draw 框 withpen pencircle scaled 4pt withcolor darkgray;
+        draw 文 withcolor darkred;)
+enddef;</code></pre>
+<figure>
+<img src="../../figures/metafun/framed-text/07.png" alt="" /><figcaption>带背景色的框文</figcaption>
+</figure>
+<h1 id="外观">外观</h1>
+<p>有什么理由决定，框文的框是暗灰色的，框的背景是浅灰色的，文字是暗红色的，以及有什么理由决定，框要向四周延伸 4pt 范围，框的边粗细为 2pt？</p>
+<p>没有理由。在定义宏时，有两种办法对付这些不可确定的因素，一种是用宏的参数，一种是用全局变量。如果不确定的因素太多，宏就需要很多参数，其中有些参不确定因素在多数情况下也可以用默认的值。出于这一考虑，我觉得，用全局变量控制 <code>框文</code> 里的不确定因素，更为方便。</p>
+<p>首先，尝试将 <code>enlarged</code> 的参数定义为全局变量：</p>
+<pre><code>numeric 扩充;
+扩充 := 4pt;</code></pre>
+<p>然后在 <code>框文</code> 的定义里使用 <code>扩充</code>：</p>
+<pre class="metapost"><code>vardef 框文 expr a =
+  save 框, 文;
+  path 框; picture 文;
+  文 = textext(a);
+  框 := fullsquare xscaled (bbwidth 文) yscaled (bbheight 文)
+        enlarged (扩充, 扩充);
+  image(fill 框 withcolor lightgray;
+        draw 框 withpen pencircle scaled 4pt withcolor darkgray;
+        draw 文 withcolor darkred;)
+enddef;</code></pre>
+<p>然后在调用 <code>框文</code> 时，可以修改 <code>扩充</code> 的值，从而达到控制框文外观的目的，例如：</p>
+<pre class="metapost"><code>扩充 := 1cm;
+draw 框文(&quot;来自 \TEX\ 世界的文字&quot;);</code></pre>
+<p>结果完美：</p>
+<figure>
+<img src="../../figures/metafun/framed-text/08.png" alt="" /><figcaption>扩充</figcaption>
+</figure>
+<p>既然如此，便可为 <code>框文</code> 定义所有的全局变量：</p>
+<pre class="metapost"><code>numeric 扩充, 线粗, 玩笑;
+扩充 := 4pt; 线粗 := 4pt; 玩笑 := 0;
+color 文色, 框色, 背景;
+文色 := black; 框色 := darkgray; 背景 := lightgray;</code></pre>
+<p>然后将宏 <code>框文</code> 的定义修改为：</p>
+<pre class="metapost"><code>vardef 框文 expr a =
+  save 框, 文;
+  path 框; picture 文;
+  文 = textext(a);
+  框 := fullsquare xscaled (bbwidth 文) yscaled (bbheight 文) enlarged (扩充, 扩充);
+  if 玩笑 &gt; 0: 框 := 框 randomized 玩笑; fi;
+  image(fill 框 withcolor 背景;
+        draw 框 withpen pencircle scaled 线粗 withcolor 框色;
+        draw 文 withcolor 文色;)
+enddef;</code></pre>
+<p>那个叫玩笑的变量，轻易不要用，用了就不严肃了：</p>
+<pre class="metapost"><code>文色 := darkred;
+扩充 := 5mm;
+玩笑 := 扩充;
+draw 框文(&quot;来自 \TEX\ 世界的文字&quot;);</code></pre>
+<figure>
+<img src="../../figures/metafun/framed-text/09.png" alt="" /><figcaption>玩笑</figcaption>
+</figure>
+<h1 id="姓甚名谁">姓甚名谁</h1>
+<p>利用 MetaPost 对变量名称的限定非常之少的特性，可以为全局变量建立命名空间，以防名字这种非常宝贵的资源被很快耗尽。</p>
+<p>可将 <code>框文</code> 宏依赖的所有全局变量定义为</p>
+<pre class="metapost"><code>numeric 框文.框.扩充, 框文.框.线粗, 框文.框.玩笑;
+框文.框.扩充 := 4pt; 
+框文.框.线粗 := 4pt; 
+框文.框.玩笑 := 0;
+
+color 框文.文字.颜色, 框文.框.颜色, 框文.框.背景;
+框文.文字.颜色 := black; 
+框文.框.颜色 := darkgray; 
+框文.框.背景 := lightgray;</code></pre>
+<p>形如 <code>框文.框.扩充</code> 之类的变量名，不妨读作「框文的框的扩充」。虽然上述代码有些繁琐，但是安全。虽然安全，但是却不可行。因为全局变量名称里的 <code>框文</code> 与 <code>框文</code> 这个宏名存在冲突。我言不虚，名字的确是稀有资源。既然如此，就让全局变量的名字再冗长一些：</p>
+<pre class="metapost"><code>numeric 框文配置.框.扩充, 框文配置.框.线粗, 框文配置.框.玩笑;
+框文配置.框.扩充 := 4pt; 
+框文配置.框.线粗 := 4pt; 
+框文配置.框.玩笑 := 0;
+
+color 框文配置.文字.颜色, 框文配置.框.颜色, 框文配置.框.背景;
+框文配置.文字.颜色 := black; 
+框文配置.框.颜色 := darkgray; 
+框文配置.框.背景 := lightgray;</code></pre>
+<p>然后对 <code>框文</code> 宏定义适应性修改：</p>
+<pre class="metapost"><code>vardef 框文 expr a =
+  save 框, 文;
+  path 框; picture 文;
+  文 = textext(a);
+  框 := fullsquare
+        xscaled (bbwidth 文) yscaled (bbheight 文)
+        enlarged (框文配置.框.扩充 * (1, 1));
+  if 框文配置.框.玩笑 &gt; 0: 框 := 框 randomized 框文配置.框.玩笑; fi;
+  image(fill 框 withcolor 框文配置.框.背景;
+        draw 框 withpen pencircle scaled 框文配置.框.线粗 withcolor 框文配置.框.颜色;
+        draw 文 withcolor 框文配置.文字.颜色;)
+enddef;</code></pre>
+<p>上述关于框文的全局变量虽然驳杂繁复，现在不必为此焦虑，因为会有那么一天，它们将像下面这般简洁：</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode lua"><code class="sourceCode lua"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a>框文配置 <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a>    框 <span class="op">=</span> <span class="op">{</span>扩充 <span class="op">=</span> <span class="st">&quot;4pt&quot;</span><span class="op">,</span> 线粗 <span class="op">=</span> <span class="st">&quot;2pt&quot;</span><span class="op">,</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true"></a>          玩笑 <span class="op">=</span> <span class="st">&quot;0&quot;</span><span class="op">,</span> 透明度 <span class="op">=</span> <span class="st">&quot;0&quot;</span><span class="op">,</span> 颜色 <span class="op">=</span> <span class="st">&quot;lightgray&quot;</span><span class="op">},</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true"></a>    背景 <span class="op">=</span> <span class="op">{</span>颜色 <span class="op">=</span> <span class="st">&quot;lightgray&quot;</span><span class="op">,</span> 透明度 <span class="op">=</span> <span class="st">&quot;0&quot;</span><span class="op">},</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true"></a>    文字 <span class="op">=</span> <span class="op">{</span>颜色 <span class="op">=</span> <span class="st">&quot;black&quot;</span><span class="op">,</span> 透明度 <span class="op">=</span> <span class="st">&quot;0&quot;</span><span class="op">}</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true"></a><span class="op">}</span></span></code></pre></div>
+<h1 id="框形">框形</h1>
+<p>有什么理由可以确定，框文的框一定是矩形或正方形呢？</p>
+<p>没有。</p>
+<p>所以，还应该再增加一个全局变量，</p>
+<pre class="metapost"><code>path 框文配置.框形;
+框文配置.框形 := fullsquare;</code></pre>
+<p>但是，现在到了重新理解 <code>enlarged</code> 宏的用法的时候了。<code>enlarged</code> 并非是对一个路径对象进行扩张或缩小，它左边的参数可以是任意路径，右边是扩张或缩小的程度，但是它的返回值是一个矩形。所以，</p>
+<p>即使将框形设为圆：</p>
+<pre class="metapost"><code>框文配置.框形 := fullcircle;
+draw 框文(&quot;来自 \TEX\ 世界的文字&quot;);</code></pre>
+<p>得到的结果依然是矩形的框文。所以，需要继续修改 <code>框文</code> 的定义：</p>
+<pre class="metapost"><code>vardef 框文 expr a =
+  save 框, 文;
+  path 框; picture 文;
+  文 = textext(a);
+  框 := fullsquare
+        xscaled (bbwidth 文) yscaled (bbheight 文)
+        enlarged (框文配置.框.扩充 * (1, 1));
+  框 := 框文配置.框形 xscaled (bbwidth 框) yscaled (bbheight 框);   % &lt;= 关键之处
+  if 框文配置.框.玩笑 &gt; 0: 框 := 框 randomized 框文配置.框.玩笑; fi;
+  image(fill 框 withcolor 框文配置.框.背景;
+        draw 框 withpen pencircle scaled 框文配置.框.线粗 withcolor 框文配置.框.颜色;
+        draw 文 withcolor 框文配置.文字.颜色;)
+enddef;</code></pre>
+<p>下面构造一个椭圆形状的框文：</p>
+<pre class="metapost"><code>框文配置.框形 := fullcircle;
+框文配置.框.扩充 := 5mm;
+框文配置.文字.颜色 := darkred;
+draw 框文(&quot;来自 \TEX\ 世界的文字&quot;);</code></pre>
+<figure>
+<img src="../../figures/metafun/framed-text/10.png" alt="" /><figcaption>椭圆形框文</figcaption>
+</figure>
+<h1 id="附录">附录</h1>
+<p>椭圆形状的框文的全部代码（用了 zhfonts 模块排版汉字）：</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true"></a><span class="fu">\usemodule</span>[zhfonts]</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true"></a><span class="fu">\startuseMPgraphic</span>{foo}</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true"></a>numeric 框文配置.框.扩充, 框文配置.框.线粗, 框文配置.框.玩笑;</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true"></a>框文配置.框.扩充 := 4pt; </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true"></a>框文配置.框.线粗 := 4pt; </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true"></a>框文配置.框.玩笑 := 0;</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true"></a>color 框文配置.文字.颜色, 框文配置.框.颜色, 框文配置.框.背景;</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true"></a>框文配置.文字.颜色 := black; </span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true"></a>框文配置.框.颜色 := darkgray; </span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true"></a>框文配置.框.背景 := lightgray;</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true"></a>path 框文配置.框形;</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true"></a>框文配置.框形 := fullsquare;</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true"></a></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true"></a>vardef 框文 expr a =</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true"></a>  save 框, 文;</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true"></a>  path 框; picture 文;</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true"></a>  文 = textext(a);</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true"></a>  框 := fullsquare</span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true"></a>        xscaled (bbwidth 文) yscaled (bbheight 文)</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true"></a>        enlarged (框文配置.框.扩充 * (1, 1));</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true"></a>  框 := 框文配置.框形 xscaled (bbwidth 框) yscaled (bbheight 框);   <span class="co">% &lt;= 关键之处</span></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true"></a>  if 框文配置.框.玩笑 &gt; 0: 框 := 框 randomized 框文配置.框.玩笑; fi;</span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true"></a>  image(fill 框 withcolor 框文配置.框.背景;</span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true"></a>        draw 框 withpen pencircle scaled 框文配置.框.线粗 withcolor 框文配置.框.颜色;</span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true"></a>        draw 文 withcolor 框文配置.文字.颜色;)</span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true"></a>enddef;</span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true"></a></span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true"></a>框文配置.框形 := fullcircle;</span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true"></a>框文配置.框.扩充 := 5mm;</span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true"></a>框文配置.文字.颜色 := darkred;</span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true"></a>draw 框文(&quot;来自 <span class="fu">\TEX\ </span>世界的文字&quot;);</span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true"></a><span class="fu">\stopuseMPgraphic</span></span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true"></a></span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true"></a><span class="fu">\startTEXpage</span>[offset=4pt]</span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true"></a><span class="fu">\useMPgraphic</span>{foo}</span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true"></a><span class="fu">\stopTEXpage</span></span></code></pre></div>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

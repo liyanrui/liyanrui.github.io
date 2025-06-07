@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="../assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title># rm -rf / (关于文章 排版)</title><link>/</link><description></description><atom:link href="/categories/cat_pai-ban.xml" rel="self" type="application/rss+xml"></atom:link><language>zh_cn</language><copyright>Contents © 2020 &lt;a href="mailto:lyr.m2@live.cn"&gt;Garfileo&lt;/a&gt; </copyright><lastBuildDate>Tue, 22 Sep 2020 00:59:11 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Nikola 琐事</title><link>/posts/nikola-tips.html</link><dc:creator>Garfileo</dc:creator><description>&lt;div&gt;&lt;p&gt;Nikola 是我用了 3 年的静态网页生成工具，这个 Github 主页上的所有页面皆由它生成。它的安装与基本用法可参考《&lt;a href="https://www.getnikola.com/getting-started.html"&gt;Nikola 入门文档&lt;/a&gt;》，对于 Linux 环境，建议在 virtualenv + python 3 环境中安装它。它的更详细的用法，见《&lt;a href="https://www.getnikola.com/handbook.html"&gt;Nikola 手册&lt;/a&gt;》。本文仅记录我在使用 Nikola 过程中遇到的一些小问题以及不甚高明的对策，仅作备忘之用。&lt;/p&gt;
+&lt;h2&gt;自定义首页&lt;/h2&gt;
+&lt;p&gt;Nikola 会自动生成首页，将近期的文章内容收集到一个页面，该页面对应的文件为 index.html。这份文件默认会被放到站点的根目录里，所以，它就成了站点的首页。我觉得 Nikola 这个功能很鸡肋，因为我想自己定义首页，而不是这种自动生成的东西。该怎么办呢？&lt;/p&gt;
+&lt;p&gt;首先，在 conf.py 文件里，将 &lt;code&gt;INDEX_PATH&lt;/code&gt; 设为&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;INDEX_PATH = "blog"
+&lt;/pre&gt;
+
+
+&lt;p&gt;这样，Nikola 就会将这个自动生成的 index.html 文件放到 &lt;code&gt;站点根目录/blog&lt;/code&gt; 目录里，从而令它失去了担当站点首页的资格。理论上，也可以随便取个目录名来用，例如
+·&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;INDEX_PATH = "obsolete"
+&lt;/pre&gt;
+
+
+&lt;p&gt;用这种乾坤大挪移的办法，算是将这个鸡肋的站点首页「消灭」了。接下来，就是建立一个自定义的首页，以后手工来维护它。方法很简单，只需要在 &lt;code&gt;PAGES&lt;/code&gt; 目录，任意建立一份源文件，将其 &lt;code&gt;slug&lt;/code&gt; 设为 &lt;code&gt;index.html&lt;/code&gt; 即可。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;PAGES&lt;/code&gt; 目录，就是在 conf.py 文件中设定的目录。例如，我的设定是：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;PAGES = (
+    ("stories/*.md", "", "story.tmpl"),
+)
+&lt;/pre&gt;
+
+
+&lt;p&gt;这就意味着，我可以在 &lt;code&gt;stories&lt;/code&gt; 目录建立 &lt;code&gt;slug&lt;/code&gt; 设为 &lt;code&gt;index.html&lt;/code&gt; 的源文件（至于它对应的文件名是什么，并不重要）。假设这份源文件是 Markdown 格式，那么所谓 &lt;code&gt;slug&lt;/code&gt; 就是文件头中的 &lt;code&gt;slug&lt;/code&gt; 条目，例如：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;!-- 
+.. title: 
+.. slug: index
+--&amp;gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;剩下的内容可自由定义。&lt;/p&gt;
+&lt;p&gt;当网站内容重新发布时，这份源文件就会被转化为网站根目录中的 index.html 文件。因为 Nikola 就是这样对待 &lt;code&gt;PAGES&lt;/code&gt; 目录中的源文件的，会把它们「平铺」在网站的根目录里。&lt;/p&gt;
+&lt;h2&gt;图片目录冲突&lt;/h2&gt;
+&lt;p&gt;在 conf.py 文件中，我设定了专门用于放图片的目录 images：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;FILES_FOLDERS = {'files': 'files',
+                 'meta-doc': 'meta-doc',
+                 'mycss': 'mycss',
+                 'MathJax': 'MathJax',
+                 'images': 'images'} # &amp;lt;&amp;lt;&amp;lt;----- here ----------
+&lt;/pre&gt;
+
+
+&lt;p&gt;但是 Nikola 有个自动缩放图片的功能，它会将自动缩放的图片也存放在一个名为 images 的目录，这样就与我设定的目录发生了冲突，而且 Nikola 在生成网页文件的时候会罢工。&lt;/p&gt;
+&lt;p&gt;解决这个问题的最简单的办法是禁用自动缩放图片功能，即注释掉 conf.py 文件中的下面几行：&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;# IMAGE_FOLDERS = {'images': 'images'}
+# IMAGE_THUMBNAIL_SIZE = 400
+# IMAGE_THUMBNAIL_FORMAT = '{name}.thumbnail{ext}'
+&lt;/pre&gt;
+
+
+&lt;h2&gt;数学公式支持&lt;/h2&gt;
+&lt;p&gt;在文章的 Markdown 头部，增加&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;.. has_math: true&lt;/span&gt;
+&lt;/pre&gt;
+
+
+&lt;p&gt;若所使用的 Nikola 主题的模板提供了数学公式支持&lt;sup&gt;注 1&lt;/sup&gt;，那么 Nikola 默认会通过 MathJax 的 CDN 实现数学公式的渲染。倘若在 conf.py 文件中，开启 KaTeX，即&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;USE_KATEX = True
+&lt;/pre&gt;
+
+
+&lt;p&gt;那么，Nikola 便会通过 KaTeX 的 CDN 实现数学公式的渲染。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;注 1：lib/python-版本号/site-packages/nikola/data/theme/主题/templates/math_helper.tmpl 文件。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;若想部署本地的 MathJax 或 KaTeX 数学公式渲染支持，只需下载它们的包，放在站点根目录，然后在 conf.py 的 &lt;code&gt;FILES_FOLDERS&lt;/code&gt; 中增加相应的目录名，最后修改 Nikola 主题模板中的数学支持语句，将 CDN 换成本地的 MathJax 或 KaTeX 目录。&lt;/p&gt;
+&lt;h2&gt;发布到 Github&lt;/h2&gt;
+&lt;p&gt;若通过 ssh key 发布，记得将 .git/config 中的 &lt;code&gt;url&lt;/code&gt; 的值设为&lt;/p&gt;
+&lt;pre class="code literal-block"&gt;&lt;span&gt;&lt;/span&gt;git@github.com:liyanrui/liyanrui.github.io.git
+&lt;/pre&gt;&lt;/div&gt;</description><category>Nikola</category><guid>/posts/nikola-tips.html</guid><pubDate>Thu, 26 Apr 2018 02:03:25 GMT</pubDate></item></channel></rss>

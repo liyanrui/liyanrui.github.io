@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>用兵</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">用兵
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2025 年 06 月 02 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#markdown" id="toc-markdown">Markdown</a></li>
+  <li><a href="#字节码文件" id="toc-字节码文件">字节码文件</a></li>
+  <li><a href="#特性" id="toc-特性">特性</a></li>
+  <li><a href="#模式关联" id="toc-模式关联">模式关联</a></li>
+  <li><a href="#软件包管理" id="toc-软件包管理">软件包管理</a></li>
+  <li><a href="#增加软件源" id="toc-增加软件源">增加软件源</a></li>
+  <li><a href="#软件包配置" id="toc-软件包配置">软件包配置</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
+</nav>
+
+<h1 id="前言">前言</h1>
+<p>Emacs 有大量的第三方软件包，这些包大多数是用 Elisp
+语言编写，也有少量用 C 语言编写。Emacs 可以通过 init.el
+载入它们，以增强自身功能。这些软件包犹如一支强大的军队，你可以调动它们去征服一切文档。不过，在试图学习如何调动军队之前，先接受老子泼的一盆冷水：兵者，不祥之器，非君子之器，不得已而用之，恬淡为上。</p>
+<h1 id="markdown">Markdown</h1>
+<p>假如你需要用 Emacs 编辑 Markdown
+格式的文档，如同此刻我之所为，你可以为 Emacs 安装名为 markdown-mode
+的包，它能让 Emacs 对 Markdown
+语法产生高亮效果，也提供了一些便捷命令，让你在编写 Markdown
+文档是更有效率。使用以下命令</p>
+<pre><code>M-x package-install RET markdown-mode RET</code></pre>
+<p>便可安装 markdown-mode
+包，前提是你的机器已联网且可以访问以下网址：</p>
+<ul>
+<li><a
+href="https://elpa.gnu.org/packages/">https://elpa.gnu.org/packages/</a></li>
+<li><a
+href="https://elpa.nongnu.org/nongnu/">https://elpa.nongnu.org/nongnu/</a></li>
+</ul>
+<p>上述网址即 Emacs 内置的软件源，即软件仓库。elpa 即 elisp package
+的简写。</p>
+<p>一旦 Emacs 从软件源安装成功了某个包，它会向 init.el
+的尾部自动写入一些配置。例如 markdown-mode 包安装后，init.el
+的尾部会自动出现以下内容：</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(custom-set-variables</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a> <span class="co">;; custom-set-variables was added by Custom.</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a> <span class="co">;; If you edit it by hand, you could mess it up, so be careful.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a> <span class="co">;; Your init file should contain only one such instance.</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a> <span class="co">;; If there is more than one, they won&#39;t work right.</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a> &#39;(package-selected-packages &#39;(markdown-mode)))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>(custom-set-faces</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a> <span class="co">;; custom-set-faces was added by Custom.</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a> <span class="co">;; If you edit it by hand, you could mess it up, so be careful.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a> <span class="co">;; Your init file should contain only one such instance.</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a> <span class="co">;; If there is more than one, they won&#39;t work right.</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a> )</span></code></pre></div>
+<p>这部分内容 Emacs
+会自己管理，你无需去改动它。去掉注释，上述代码最为关键之处在于</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(custom-set-variables</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a> &#39;(package-selected-packages &#39;(markdown-mode)))</span></code></pre></div>
+<p>这与我们之前所接触的 Elisp 语法有些区别，你只需要知道
+<code>package-selected-packages</code>
+是列表类型的变量，用于记录我们通过 <code>package-install</code> 从 Emacs
+软件源中安装的所有包。</p>
+<p>之后，每次你用 Emacs 编辑 Markdown
+格式的文档时，只要文档对应的文件名以 <code>.md</code> 为后缀，Emacs
+便会自动开启 Markdown 模式。</p>
+<figure>
+<img src="figures/01.png" alt="Markdown 模式" />
+<figcaption aria-hidden="true">Markdown 模式</figcaption>
+</figure>
+<h1 id="字节码文件">字节码文件</h1>
+<p>我们安装的 markdown-mode 包，默认存放于 ~/.emacs.d/elpa
+目录，倘若你对其实现有些好奇，可进入包目录，查看其源码文件，即
+markdown-mode.el，同一目录下还有同名的 .elc 文件，即
+markdown-mode.elc，它是 Emacs 编译 markdown-mode.el
+文件生成的字节码文件。当我们在 Emacs 里启用 markdown 模式时，Emacs
+会自动加载 markdown-mode.elc，而非
+markdown-mode.el，原因是前者的载入和执行速度都比后者更快。</p>
+<p>Emacs 有两种执行 Elisp 程序的方式，一种是对 .el
+文件中的全部表达式逐行读取，并在该过程中，对所得表达式解释和求值，这是我们已经非常熟悉的方式，因为我们也经常用
+<code>C-x C-e</code> 对一些表达式求值。只是之前，我们察觉不到 Emacs
+对表达式解释的过程。</p>
+<p>所谓的，Emacs 对表达式的解释过程，你可以理解为，当你看到
+<code>(+ 1 2)</code> 的时候，若你不懂 Elisp
+语言，你心里想的是，这是一个左括号，一个加号，一个空格，数字
+1，又一个空格，数字 2 以及一个右括号构成的一小段文字，而当你已经懂得
+Elisp 语言时，你心里想的则是，这是一个表达式，在计算 1 +
+2。你心里想的东西，从不懂 Elisp 语言时的状态到你懂了 Elisp
+语言的状态，这便是对 Elisp 表达式解释的过程。</p>
+<p>我们用 Emacs 将一份 .el 文件编译为 .elc 文件时，这个编译过程，便是对
+.el 文件里所有表达式的解释过程，而 .elc 文件存放的便是解释结果。Emacs
+载入 .elc 文件，便是第二种执行 Elisp
+程序的方式，这种方式之所比第一种要快，是因为在开始载入 .elc
+文件的那个瞬间就意味着对 Elisp 的程序的解释已经完成，剩下的只是对 Elisp
+程序里的一个又一个表达式的求值过程。</p>
+<p>还记得吗？我们曾将 init.el 里我们最为熟悉的那部分配置转移到
+~/.my-emacs 目录里的 my-config.el。现在，你可以做一个试验。用 Emacs 打开
+my-config.el 文件，然后执行
+<code>M-x byte-compile-file RET RET</code>，便可在 ~/.my-emacs 目录得到
+my-config.elc 文件。然后，在 init.el 文件里，将原来的</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">load</span> <span class="st">&quot;my-config.el&quot;</span>)</span></code></pre></div>
+<p>修改为</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">load</span> <span class="st">&quot;my-config.elc&quot;</span>)</span></code></pre></div>
+<p>之后每次你在启动 Emacs 的时候，它便会快一点，大概是几纳秒吧……</p>
+<h1 id="特性">特性</h1>
+<p>现在，在 my-config.el 文件的末尾添加以下代码：</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">provide</span> <span class="dt">&#39;my-config</span>)</span></code></pre></div>
+<p>然后将 init.el 文件里的</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">load</span> <span class="st">&quot;my-config.elc&quot;</span>)</span></code></pre></div>
+<p>修改为</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">require</span> <span class="dt">&#39;my-config</span>)</span></code></pre></div>
+<p><code>require</code> 函数的作用与 <code>load</code>
+相似，但是它会优先加载 my-config.elc，倘若没有 my-config.elc，它会加载
+my-cofig.el，亦即 <code>require</code> 是聪明的
+<code>load</code>，只是需要与 <code>provide</code> 函数配合使用。</p>
+<p><code>provide</code> 的作用是向 Emacs
+注册特性，表示该文件的某些功能已就绪。例如上述示例中的
+`<code>'my-config</code> 便是一个特性。一份 .el
+文件里可能含有多个特性。Emacs 在执行 .el 文件中的程序时，遇到
+<code>provide</code>
+表达式，便认为一项特性已加载完成，但仍会执行后续代码，只是后续代码不是特性，或者它们属于另一个特性。</p>
+<p><code>require</code> 可以加载给定特性对应的代码。由于
+<code>'my-config</code> 特性是在 my-config.el 文件尾部提供的，故而
+<code>require</code> 能加载 my-config.el 文件里的一切内容。</p>
+<h1 id="模式关联">模式关联</h1>
+<p>每次编辑 .md 文件时，Emacs 便会自动开启 Markdown
+模式，对此你不觉得诡异吗？安装 markdown-mode 包之后，我们在 init.el
+里并未作任何配置。Emacs 是如何将 .md 文件与 Markdown
+模式关联起来的呢？秘密在于 Emacs 的全局变量
+<code>auto-mode-alist</code>，其类型为关联列表。</p>
+<p>倘若你打开 markdown-mode 包中的 markdown-mode.el 文件，搜索
+<code>auto-mode-alist</code>，应该能找到以下代码：</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">;;;###autoload</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>(add-to-list <span class="dt">&#39;auto-mode-alist</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>             &#39;(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">.</span><span class="sc">\\</span><span class="st">(?:md</span><span class="sc">\\</span><span class="st">|markdown</span><span class="sc">\\</span><span class="st">|mkd</span><span class="sc">\\</span><span class="st">|mdown</span><span class="sc">\\</span><span class="st">|mkdn</span><span class="sc">\\</span><span class="st">|mdwn</span><span class="sc">\\</span><span class="st">)</span><span class="sc">\\</span><span class="st">&#39;&quot;</span> . markdown-mode))</span></code></pre></div>
+<p>上述代码将 <code>.md</code>，<code>.markdown</code> 和
+<code>.mkd</code> 之类的后缀名与 <code>markdown-mode</code>
+命令关联了起来，并将其添加到 <code>auto-mode-alist</code>。函数
+<code>add-to-list</code> 可向列表首部添加元素，它与之前我们用过的
+<code>cons</code> 和 <code>push</code>
+函数的区别是，它在向列表中添加元素之前，会先检测待添加的元素在列表中是否已经存在，若存在，则放弃添加。</p>
+<p>可能有一些包在实现中，并未将其所实现的模式命令与文件扩展名关联起来，或者他们所作的关联并不合乎我们的要求，这时便需要我们在
+init.el 文件里用 <code>add-to-list</code> 向
+<code>auto-mode-alist</code>
+添加我们所定义的模式关联了。注意，文件的后缀名可以是正则表达式。</p>
+<h1 id="软件包管理">软件包管理</h1>
+<p>在 Emacs 里，执行
+<code>M-x package-list-packages</code>，可以打开软件列表。</p>
+<p>在软件列表中，若将光标移动到某一行，执行 <code>i</code>，即单击
+<code>i</code> 键，Emacs 便会将该行对应的软件包标记为待安装状态，在
+Emacs 界面左侧边栏会显示 <code>I</code> 字样。你可以用 <code>i</code>
+键将多个软件包标记为 <code>I</code> 状态。然后执行 <code>x</code>，Emacs
+便会安装所有被标记为 <code>I</code> 的软件包。</p>
+<p>执行 <code>M-x package-refresh-contents</code>，可以从 Emacs
+软件源获取最新的软件信息。该操作完成后，在软件列表中，执行
+<code>r</code>，便可刷新软件列表。</p>
+<p>每次更新完软件信息后，你可以执行 <code>U</code>，即
+<code>Shift + u</code> 或将键盘切换为大写模式，单击
+<code>U</code>，该操作会在软件列表中将你之前安装的包标记为更新，然后执行
+<code>x</code>，Emacs 便会为你更新软件包。</p>
+<p>将光标移动到你之前安装的软件包所在的行，执行 <code>d</code>，Emacs
+便可将该行软件包标记为 <code>D</code> 即待删除状态。然后执行
+<code>x</code>，Emacs 便会删除所有被标记为待删除的包。</p>
+<h1 id="增加软件源">增加软件源</h1>
+<p>除了 Emacs 内置的两个软件源之外，也有一些第三方软件源，其中翘楚是
+melpa 源。与 Emacs 内置的软件源相比，melpa
+源更为激进，软件包的版本通常较新。倘若你觉得，更新的，是更好的，可以在
+init.el 中，将 melpa 源添加到 Emacs 软件源列表里，例如</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">use-package</span> <span class="kw">package</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  :config</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  (add-to-list <span class="dt">&#39;package-archives</span> &#39;(<span class="st">&quot;melpa&quot;</span> . <span class="st">&quot;https://melpa.org/packages/&quot;</span>))</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">unless</span> (bound-and-true-p package--initialized)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    (package-initialize)))</span></code></pre></div>
+<p>上述代码，你应该能看懂第三行，即 <code>add-to-list</code>
+表达式。</p>
+<p><code>unless</code> 表达式，是我们之前没有学过的，它表达的逻辑与
+<code>when</code> 相反。上述代码中的 <code>unless</code>
+表达式实现的逻辑是，若软件源尚未初始化，则进行初始化。</p>
+<p><code>bound-and-true-p</code>
+用于判断一个变量是否绑定到了某个值。如果 Emacs
+的软件源已经初始化了，<code>package--initialized</code>
+便会绑定到一个值，此时 <code>bound-and-true-p</code>
+表达式的求值结果便为真，即 <code>t</code>，于是上述 <code>unless</code>
+表达式即</p>
+<pre><code>(unless t
+  (package-initialize)</code></pre>
+<p>上述表达式里的 <code>(package-initialize)</code>
+是不会被求值的。倘若用 <code>when</code> 替换 <code>unless</code>，则
+<code>(package-initialize)</code> 便会被求值。于是，<code>unless</code>
+表达的逻辑就是，除非条件为真，否则便如何。</p>
+<p>上述表达式，若改为 <code>when</code> 实现，需要写为</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">when</span> (<span class="kw">not</span> (bound-and-true-p package--initialized))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    (package-initialize))</span></code></pre></div>
+<p>实际上，上述代码中的 <code>unless</code> 表达式，除了能帮助你理解
+<code>unless</code> 的用法外，并无意义。我们在使用
+<code>package-install</code> 或 <code>package-list-packages</code>
+等命令时，Emacs 会自动初始化软件源。故而，我们不需要它。在 init.el
+文件里，你只需像下面这样设定，便可将 melpa 源添加到软件源列表：</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">use-package</span> <span class="kw">package</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  :config</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  (add-to-list <span class="dt">&#39;package-archives</span> &#39;(<span class="st">&quot;melpa&quot;</span> . <span class="st">&quot;https://melpa.org/packages/&quot;</span>)))</span></code></pre></div>
+<p>那个 <code>unless</code>
+表达式之所以存在，是因为那段代码是我从别人那里抄来的。</p>
+<p>现在，你唯一不明白的应该是 <code>use-package</code> 了。</p>
+<h1 id="软件包配置">软件包配置</h1>
+<p><code>use-package</code> 是 Emacs 内置的软件包配置命令。实际上，它在
+Emacs 29.1 时才被 Emacs 内置。在此之前，它是第三方软件包 use-packaeg
+包里的命令。Emacs 29.1 将 use-package 包内置，成为了自身的一部分。</p>
+<p>在 <code>use-package</code> 命令诞生之前，在 init.el 里配置 Emacs
+软件包，基本是每个软件包都有有其专属的配置方式。在网上你现在应该随意便能搜到一些
+Emacs 用户共享的 init.el
+文件，从这些文件里应该能看到很多过去的时光。现在，Emacs
+软件源里的大多数（我猜测的）软件包，皆可用 <code>use-package</code>
+命令统一配置。例如，我们可以对 markdown-mode 包做一些配置，如下</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">use-package</span> markdown-mode</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  :ensure <span class="kw">t</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  :mode (<span class="st">&quot;</span><span class="sc">\\</span><span class="st">.md</span><span class="sc">\\</span><span class="st">&#39;&quot;</span> . markdown-mode)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  :init </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;开始载入 Markdown 模式&quot;</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  :config </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  (message <span class="st">&quot;你可以对 Markdown 模式作一些定制&quot;</span>))</span></code></pre></div>
+<p>倘若你将上述代码添加到 init.el 文件里，之后你每次用 Emacs 打开 .md
+文件时，<code>*Messages*</code> 缓冲区便会出现以下信息</p>
+<pre><code>开始载入 Markdown 模式
+你可以对 Markdown 模式作一些定制</code></pre>
+<p><code>use-package</code>
+命令的第一个参数是软件包的名字，之后的参数皆为键值对，键的形式都是
+<code>:key</code>，值则是 Elisp
+表达式。这里，你需要将其与之前我们接触过的关联列表里的键值对有所区分。下面对上述代码中出现的键值对予以说明：</p>
+<ul>
+<li>键 <code>:ensure</code> 对应的值为
+<code>t</code>，表示所配置的软件包尚未安装，则自动从 Emacs
+软件源安装它，然后再予以配置。</li>
+<li>键 <code>:mode</code> 对应的表达式可用于构造模式关联。对于
+markdown-mode 包而言，这个键值对是可以省略的，因为前面我们探索过
+markdown-mode 包的模式关联。</li>
+<li>键 <code>:init</code> 对应的表达式可在 Emacs
+载入软件包前执行一些初始化工作。</li>
+<li>键 <code>:config</code>
+对应的表达式可以对软件包作一些设定，这也是我们使用 use-package
+命令的动机。</li>
+</ul>
+<p><strong>练习</strong>：执行
+<code>C-h f use-package RET</code>，阅你之所见。</p>
+<p>现在，可以将上述的 <code>use-package</code> 代码从 init.el
+里删除，然后添加以下代码：</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">use-package</span> markdown-mode</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  :config </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  (set-face-attribute <span class="dt">&#39;markdown-pre-face</span> <span class="kw">nil</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                      :foreground <span class="st">&quot;darkblue&quot;</span>))</span></code></pre></div>
+<p>上述代码对 Markdown
+模式里源码排版区域的文字颜色由默认的墨绿色修改为深蓝色。上述配置生效前后的效果对比如下图所示：</p>
+<figure>
+<img src="figures/02.png" alt="Markdown 模式配置生效前" />
+<figcaption aria-hidden="true">Markdown 模式配置生效前</figcaption>
+</figure>
+<figure>
+<img src="figures/03.png" alt="Markdown 模式配置生效后" />
+<figcaption aria-hidden="true">Markdown 模式配置生效后</figcaption>
+</figure>
+<h1 id="总结">总结</h1>
+<p>现在，你有了一支强大的军队了，甚至有着对它基本的掌控能力。如何运用这支军队，除了勿忘老子所言，也可以研读一些孙子兵法……现在，我们可以相忘于江湖了。将来惹出祸来，不把我说出来。</p>
+
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+</body>
+</html>

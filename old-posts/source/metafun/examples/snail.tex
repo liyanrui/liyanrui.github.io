@@ -1,0 +1,717 @@
+\startluacode
+local 蜗界 = {}
+蜗界.字号 = "BodyFontSize" -- ConTeXt 正文字体所用字号
+蜗界 = {
+    字号 = 蜗界.字号,
+    文字 = {颜色 = "black"},
+    框形 = "fullsquare",
+    框 = {余地 = 蜗界.字号,
+          线宽 = ".175" .. 蜗界.字号,
+          颜色 = "darkgray",
+          各向同性 = "false",
+          郊 = "2" .. 蜗界.字号},
+    背景 = {颜色 = "lightgray"},
+    路径 = {线宽 = ".2" .. 蜗界.字号,
+            颜色 = "darkgray",
+            有向 = "true",
+            标注偏距 = ".5" .. 蜗界.字号,
+            圆角 = ".2" .. 蜗界.字号},
+    玩笑 = "0pt",
+    调试 = "false"
+}
+table.save("snail.conf", 蜗界)
+\stopluacode
+
+\startMPinclusions
+lua("蜗界 = table.load('snail.conf')");
+def 获 expr a = lua("mp.print(" & a & ")") enddef;
+def 设 expr a = lua(a) enddef;
+def 恢复默认蜗界 =
+  lua("蜗界 = table.load('snail.conf')")
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+def 中央四角十二门 suffix foo = 
+  begingroup
+  save t, 方向, 外框, 线宽, w, h; path 外框, t; pair 方向; numeric 线宽, w, h;
+  forsuffixes i = 中央, 东北角, 东南角, 西南角, 西北角,
+                  子门, 卯门, 午门, 酉门,
+                  丑门, 寅门, 辰门, 巳门, 未门, 申门, 戌门, 亥门:
+    pair foo.i;
+  endfor;
+  foo.中央 := (center foo);
+  foo.西北角 := (ulcorner foo); 
+  foo.东北角 := (urcorner foo);
+  foo.东南角 := (lrcorner foo);
+  foo.西南角 := (llcorner foo);
+  foo.子门 := .5[foo.西北角, foo.东北角];
+  foo.午门 := .5[foo.西南角, foo.东南角];
+  foo.卯门 := .5[foo.东南角, foo.东北角];
+  foo.酉门 := .5[foo.西南角, foo.西北角];
+  foo.丑门 := .5[foo.子门, foo.东北角];
+  foo.寅门 := .5[foo.卯门, foo.东北角];
+  foo.辰门 := .5[foo.卯门, foo.东南角];
+  foo.巳门 := .5[foo.午门, foo.东南角];
+  foo.未门 := .5[foo.午门, foo.西南角];
+  foo.申门 := .5[foo.酉门, foo.西南角];
+  foo.戌门 := .5[foo.酉门, foo.西北角];
+  foo.亥门 := .5[foo.子门, foo.西北角];
+  %%%%%%%% 对于宫而言, 若框为异形，将角点和门投射到框的边界上
+  if known foo.框:
+    线宽 := 获 "蜗界.框.线宽";
+    w := bbwidth foo.框; h := bbheight foo.框;
+    % 线宽补偿，让锚点更精确
+    外框 := foo.框 xysized (w + 线宽, h + 线宽);
+    外框 := 外框 shifted (center foo - center 外框);
+    forsuffixes i = 子门, 卯门, 午门, 酉门,
+                    丑门, 寅门, 辰门, 巳门, 未门, 申门, 戌门, 亥门:
+      foo.i := 5(foo.i shifted -foo.中央) shifted foo.中央;
+      方向 := unitvector(foo.i - foo.中央);
+      t := (foo.中央 -- foo.i) cutafter 外框;
+      foo.i := point (length t) of t;
+    endfor;
+  fi;
+enddef;
+def 郊 suffix foo = 
+  forsuffixes i = 乾位, 坤位, 艮位, 兑位, 巽位, 震位, 坎位, 离位:
+    pair foo.i;
+  endfor;
+  begingroup
+    save outskirts; path outskirts;
+  outskirts := foo enlarged (获 "蜗界.框.郊");
+  foo.艮位 := (ulcorner outskirts); 
+  foo.震位 := (urcorner outskirts);
+  foo.兑位 := (lrcorner outskirts);
+  foo.巽位 := (llcorner outskirts);
+  foo.坤位 := .5[foo.艮位, foo.震位];
+  foo.乾位 := .5[foo.巽位, foo.兑位];
+  foo.离位 := .5[foo.兑位, foo.震位];
+  foo.坎位 := .5[foo.巽位, foo.艮位];
+enddef;
+
+def 关防要塞 = 关塞 enddef;
+def 关塞 text all =
+  forsuffixes foo = all:
+    forsuffixes i = 乾位, 坤位, 艮位, 兑位, 巽位, 震位, 坎位, 离位:
+      draw foo.i withpen pensquare scaled 4pt withcolor darkgreen;
+    endfor;
+    forsuffixes i = 子门, 卯门, 午门, 酉门:
+      draw foo.i withpen pencircle scaled 4pt withcolor darkred;
+    endfor;
+    forsuffixes i = 丑门, 寅门, 辰门, 巳门, 未门, 申门, 戌门, 亥门:
+      draw foo.i withpen pencircle scaled 2pt withcolor magenta;
+    endfor;
+    forsuffixes i = 东北角, 东南角, 西南角, 西北角:
+      draw foo.i withpen pensquare scaled 4pt withcolor darkblue;
+    endfor;
+  endfor;
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+def 原点 = (0, 0) enddef;
+def 偏 = shifted enddef;
+tertiarydef a 位于 b =
+  (if pair b: b else: center b fi - if pair a: a else: center a fi)
+enddef;
+def 定位 (suffix name) (expr 多少呢) =
+  name := name 偏 (多少呢);
+  if known name.框:
+    name.框 := name.框 偏 (多少呢);
+  fi;
+  中央四角十二门(name); 郊(name);
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+def 宫 (suffix name) (expr content) text 变换语句 =
+  begingroup
+    save c, t, w, h, s, delta; 
+    picture c; 
+    path t; 
+    numeric w, h, s; 
+    pair delta;
+    c := textext(content); 
+    w := bbwidth c; 
+    h := bbheight c;
+    if (获 "蜗界.框.各向同性"):
+      if w > h: s := w; else: s := h; fi;
+      t := fullsquare xysized (s, s) enlarged ((获 "蜗界.框.余地") * (1, 1));
+    else:
+      t := fullsquare xysized (w, h) enlarged ((获 "蜗界.框.余地") * (1, 1));
+    fi;
+    宫之体(name, c, bbwidth t, bbheight t);
+    delta := origin 变换语句;
+    name := name 偏 delta;
+    name.框 := name.框 偏 delta;
+    中央四角十二门(name); 郊(name);
+  endgroup
+enddef;
+
+def 仿 suffix a = (bbwidth a.框), (bbheight a.框) enddef;
+def 重修 (suffix name) (expr w, h) text 变换语句 =
+  begingroup
+    save base, delta; pair base, delta; base := center name;
+    宫之体(name, name.文, w, h);
+    delta := origin 变换语句;
+    if delta = origin:
+      name := name 偏 base;
+      name.框 := name.框 偏 base;
+    else:
+      name := name 偏 delta;
+      name.框 := name.框 偏 delta;
+    fi;
+    中央四角十二门(name); 郊(name);
+  endgroup
+enddef;
+
+def 宫之体 (suffix name) (expr content, w, h) =
+  picture name; picture name.文; path name.框;
+  begingroup
+    save 线宽; numeric 线宽; 线宽 := 获 "蜗界.框.线宽";
+    if string content:
+      name.文 := textext(content);
+    elseif picture content:
+      name.文 := content;
+    else:
+      name.文 := textext("");
+    fi;
+    name.框 := (获 "蜗界.框形") xysized (w, h);
+    if (获 "蜗界.玩笑") > 0: name.框 := name.框 randomized (获 "蜗界.玩笑"); fi;
+    name := image (fill name.框 withcolor (获 "蜗界.背景.颜色");
+                   draw name.框 withpen pencircle scaled 线宽
+                                withcolor (获 "蜗界.框.颜色");
+                   draw name.文 withcolor (获 "蜗界.文字.颜色"););
+  endgroup
+enddef;
+\stopMPinclusions
+
+\defineframed[snailframed][offset=.25em,frame=off]
+\startMPinclusions[+]
+def 廷 (suffix name) (expr a) text 变换语句 =
+  picture name;
+  begingroup
+    picture name.文; name.文 := textext("\snailframed{" & a & "}");
+    name := image (draw name.文 withcolor (获 "蜗界.文字.颜色"););
+    name := name 偏 ((0, 0) 变换语句); 
+    中央四角十二门(name); 郊(name);
+  endgroup
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+def 城 (suffix a) text b =
+  begingroup
+    save t;
+    picture a, t; 
+    t := nullpicture;
+    for i = b: addto t also image(draw i); endfor;
+    path a.框; 
+    a.框 := fullsquare xysized (bbwidth t, bbheight t) 
+            enlarged ((获 "蜗界.框.余地") * (1, 1));
+    a.框 := a.框 shifted (center t - center a.框);
+    a := image (fill a.框 withcolor (获 "蜗界.背景.颜色");
+                draw t;);
+    中央四角十二门(a); 郊(a);
+  endgroup
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+def 景 (suffix name) (expr a, w, h) text 变换语句 =
+  picture name;
+  begingroup;
+  save p, s; picture p; numeric s;
+  p := externalfigure a;
+  s := (bbwidth p) / (bbheight p);
+  if numeric w and numeric h:
+    name := image(draw externalfigure a xysized (w, h););
+  else:
+    if numeric w:
+      name := image(draw externalfigure a xysized (w, w / s););
+    fi;
+    if numeric h:
+       name := image(draw externalfigure a xysized (h * s, h););
+    fi;
+  fi;
+  name := name 偏 -(center name); % 图像默认是左下角点位于原点
+  name := name 偏 ((0, 0) 变换语句); 
+  中央四角十二门(name); 郊(name);
+  endgroup
+enddef;
+
+def 呜呼 text all =
+  begingroup
+    save d; numeric d; d := .25(获 "蜗界.框.线宽");
+    for i = all: 
+      draw i; 
+    endfor;
+    if 获 "蜗界.调试":
+      
+      forsuffixes i = all: 
+        draw i.框 dashed (evenly scaled d) withcolor transparent(1, .25, black);
+        关塞 i; 
+      endfor;
+    fi;
+  endgroup
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+pair 竖亥;
+tertiarydef a 经转 b =
+  hide(竖亥 := (xpart (if path a: point (length a) of a else: a fi), ypart (b)))
+  a -- 竖亥 -- b
+enddef;
+tertiarydef a 纬转 b =
+  hide(竖亥 := (xpart (b), ypart (if path a: point (length a) of a else: a fi)))
+  a --  竖亥 -- b
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+vardef 经距 (expr a, b) = (abs(xpart (a) - xpart (b))) enddef;
+vardef 纬距 (expr a, b) = (abs(ypart (a) - ypart (b))) enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+drawpathoptions(withpen pencircle scaled (获 "蜗界.路径.线宽") withcolor (获 "蜗界.路径.颜色"));
+def 流向 text a =
+  drawarrowpath if (获 "蜗界.玩笑") > 0: (a) randomized (获 "蜗界.玩笑") else: a fi;
+enddef;
+def 串联 text a =
+  drawpath if (获 "蜗界.玩笑") > 0: (a) randomized (获 "蜗界.玩笑") else: a fi;  
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+def 用虚线 =
+  drawpathoptions(dashed (evenly scaled .625(获 "蜗界.路径.线宽"))
+                  withpen pencircle scaled (获 "蜗界.路径.线宽")
+                  withcolor (获 "蜗界.路径.颜色"));
+enddef;
+def 用实线 =
+  drawpathoptions(withpen pencircle scaled (获 "蜗界.路径.线宽")
+                  withcolor (获 "蜗界.路径.颜色"));
+enddef;
+% 默认关闭虚线模式
+用实线;
+\stopMPinclusions
+
+\startMPinclusions[+]
+def 北 = up * enddef; 
+def 南 = down * enddef;
+def 西 = left * enddef; 
+def 东 = right * enddef;
+def 向北 = up enddef; 
+def 向南 = down enddef;
+def 向西 = left enddef; 
+def 向东 = right enddef;
+
+tertiarydef a 纬至 b = 
+  if pair a:
+    a -- (a shifted (0, ypart b - ypart a))
+  elseif path a:
+    hide(竖亥 := (point (length a) of a))
+    a -- (竖亥 shifted (0, ypart b - ypart 竖亥))
+  fi
+enddef;
+tertiarydef a 经至 b = 
+  if pair a:
+    a -- (a shifted (xpart b - xpart a, 0))
+  elseif path a:
+    hide(竖亥 := (point (length a) of a))
+    a -- (竖亥 shifted (xpart b - xpart 竖亥, 0))
+  fi
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+vardef 共线 (expr p, a) =
+  save 结果, v; boolean 结果; pair v[];
+  v1 := unitvector((point 0 of p) - (a));
+  v2 := unitvector((point (length p) of p) - (a));
+  if abs((v1 dotprod v2) - 1) < 1e-6:
+     结果 := true;
+  else:
+    结果 := false;
+  fi;
+  结果
+enddef;
+
+vardef 简化 (expr p) =
+  save n, it, new_p, c;
+  numeric n; path it, new_p; pair c;
+  n := length p;
+  it := point 0 of p;
+  new_p := it;
+  for i = 1 upto n:
+    c := point i of p;
+    if (length it) = 0: 
+      it := it -- c;
+    else:
+      if 共线(it, c):
+        it := it -- c;
+      else:
+        new_p := new_p -- (point (length it) of it);
+        it := (point (length it) of it) -- c;
+      fi;
+    fi;
+  endfor;
+  if (length it) > 0:
+    new_p := new_p -- point (length it) of it;
+  fi;
+  new_p
+enddef;
+
+vardef 柔和 (expr p) =
+  save n, nodes, new_p, 圆角; 
+  numeric n, 圆角; pair nodes[]; path new_p;
+  n := length p;
+  for i = 0 upto n:
+    nodes[i] := point i of p;
+  endfor;
+  new_p := nodes[0];
+  圆角 := (获 "蜗界.路径.圆角");
+  for i = 1 upto n - 1:
+    new_p := new_p -- point -圆角 on (nodes[i - 1] -- nodes[i]);
+    new_p := new_p .. point 圆角 on (nodes[i] -- nodes[i + 1]);
+  endfor;
+  new_p := new_p -- nodes[n];
+  new_p
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+vardef 标注(expr tag, 倾角) text p =
+  标注之体 (tag, -1, 倾角) p
+enddef;
+vardef 定位标注(expr tag, 位置, 倾角) text p =
+  标注之体 (tag, 位置, 倾角) p
+enddef;
+def 路标 (suffix p) (expr tag, 位置, 倾角) =
+  begingroup
+    save hack; path hack;
+    hack := 标注之体 (tag, 位置, 倾角) (p);
+    if path hack:
+    else:
+      show "路标出错！";
+    fi;
+enddef;
+vardef 最长一段的中点 expr p =
+  save n, l, l_max, s_max, t;
+  numeric n, l, l_max; path t, s_max;
+  n := length p;
+  l_max := 0;
+  for i = 1 upto n:
+    t := (p cutbefore (point i - 1 of p)) cutafter (point i of p);
+    l := arclength t;
+    if l_max < l:
+      l_max := l; s_max := t;
+    fi;
+  endfor;
+  point .5 along (s_max)
+enddef;
+vardef 标注之体 (expr tag, 位置, 倾角) text p =
+  begingroup
+    save formatted_tag, base, c, s, v, label, a, b;
+    pair base, c, s[], v[]; string formatted_tag; picture label; path a, b; numeric c;
+    formatted_tag := "\tfx" & tag;
+    if 位置 < 0:
+      base := 最长一段的中点 p;
+      c := .5;
+    else:
+      base := point 位置 along p;
+      c := 位置;
+    fi;
+    v0 := point (c - .01) along p;
+    v1 := point (c + .01) along p;
+    label := textext(formatted_tag);
+    s[0] := .5[ulcorner label, urcorner label];
+    s[1] := s[0] rotated (angle (v0 - v1));
+    s[2] := s[0] rotated (angle (v1 - v0));
+    s[3] := dir(倾角 + 90) * 1cm; % 文本默认的上方是 y 方向.
+    a := s[1] -- s[3];
+    b := s[2] -- s[3];
+    if arclength a < arclength b:
+      v3 := v0 - v1;
+    else:
+      v3 := v1 - v0;
+    fi;
+    v4 := v3 rotated 90;
+    v5 := v3 rotated 270;
+    a := v4 -- s[3];
+    b := v5 -- s[3];
+    if arclength a < arclength b:
+      v6 := unitvector(v4);
+    else:
+      v6 := unitvector(v5);
+    fi;
+    draw (label rotated (angle v3)) shifted (base 偏 ((获 "蜗界.路径.标注偏距") * v6));
+    ""
+  endgroup
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+def 老路 (suffix name) (expr p) text label =
+  begingroup
+  path name; name := p;
+  if (获 "蜗界.路径.有向"):
+    流向 name;
+  else:
+    串联 name;
+  fi;
+  quote label name;
+  endgroup
+enddef;
+
+def 路 (suffix name) (expr p) text label =
+  begingroup
+  path name; name := 柔和(简化(p));
+  if (获 "蜗界.路径.有向"):
+    流向 name;
+  else:
+    串联 name;
+  fi;
+  quote label name;
+  if 获 "蜗界.调试": 
+    drawpoints name 
+      withpen pencircle scaled .5(获 "蜗界.路径.线宽"); 
+  fi;
+  endgroup
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+vardef 单段曲线 (expr p) =
+  numeric n; n := length p;
+  if n = 1:
+    new_p := (point 0 of p .. point 1 of p);
+  elseif n = 2:
+    new_p := (point 0 of p .. controls (point 1 of p) .. point 2 of p);
+  elseif n = 3:
+    new_p := (point 0 of p .. 
+        controls (point 1 of p) and (point 2 of p) 
+        .. point 3 of p);
+  else:
+    new_p := p;
+  fi;
+  new_p
+enddef;
+vardef 小曲线 (expr p) =
+  save m, n, k, new_p, segments, nodes;
+  numeric m, n, k; path new_p, segments[]; pair nodes[];
+  new_p := 简化(p);
+  n := length new_p;
+  if n < 4:
+    new_p := 单段曲线(new_p);
+  else:
+    for i = 0 upto n:
+      nodes[i] := point i of new_p;
+    endfor;
+    %%%% 分段
+    % 首
+    new_p := nodes[0] 
+          .. controls nodes[1]
+          .. .5[nodes[1], nodes[2]]
+          .. controls nodes[2]
+          .. .5[nodes[2], nodes[3]];
+    % 体
+    m := n - 4;
+    k := 2;
+    for i = 2 step 2 until m:
+      new_p := new_p
+          .. controls nodes[i + 1]
+          .. .5[nodes[i + 1], nodes[i + 2]]
+          .. controls nodes[i + 2]
+          .. .5[nodes[i + 2], nodes[i + 3]];
+      k := i + 2;
+    endfor;
+    % 尾：只可能有 3 个或 4 个控制点
+    m := n - k + 1;
+    if m = 3:
+      new_p := new_p .. controls nodes[k + 1] .. nodes[n];
+    elseif m = 4:
+      new_p := new_p 
+        .. controls nodes[k + 1]
+        .. .5[nodes[k + 1], nodes[k + 2]]
+        .. controls nodes[k + 2]
+        .. nodes[n];
+    else:
+      show "小曲线出错！";
+    fi;
+  fi;
+  new_p
+enddef;
+vardef 曲线 (expr p) =
+  save m, n, k, new_p, nodes;
+  numeric m, n, k; path new_p; pair nodes[];
+  new_p := 简化(p);
+  n := length p;
+  if n < 4:
+    new_p := 单段曲线(new_p);
+  else:
+    m := length new_p;
+    for i = 0 upto m:
+      nodes[i] := point i of new_p;
+    endfor;
+    %%%% 分段
+    % 首
+    new_p := nodes[0] 
+      .. controls nodes[1] and nodes[2] 
+      .. .5[nodes[2], nodes[3]];
+    % 体
+    m := n - 4;
+    k := 2;
+    for i = 2 step 2 until m:
+      new_p := new_p 
+        .. controls nodes[i + 1] and nodes[i + 2] 
+        .. .5[nodes[i + 2], nodes[i + 3]];
+      k := i + 2;
+    endfor;
+    % 尾
+    m := n - k + 1;
+    show m;
+    if m = 3:
+      new_p := new_p .. controls nodes[k + 1] .. nodes[n];
+    elseif m = 4:
+      new_p := new_p 
+        .. controls nodes[k + 1] and nodes[k + 2]
+        .. nodes[n];
+    else:
+      show "曲线出错！";
+    fi;
+  fi;
+  new_p
+enddef;
+def 弯路之体 (suffix name) (expr p, 方法) text label =
+  begingroup
+  path name; name := scantokens(方法)(简化(p));
+  if (获 "蜗界.路径.有向"):
+    流向 name;
+  else:
+    串联 name;
+  fi;
+  quote label name;
+  if 获 "蜗界.调试": 
+    drawpoints name 
+      withpen pencircle scaled .5(获 "蜗界.路径.线宽"); 
+  fi;
+  endgroup
+enddef;
+def 小弯路 (suffix name) (expr p) text label =
+  弯路之体(name, p, "小曲线") label;
+enddef;
+def 弯路 (suffix name) (expr p) text label =
+  弯路之体(name, p, "曲线") label;
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+def 量 (suffix a) (expr b) =
+  numeric a;
+  a := b;
+enddef;
+
+def 表 (suffix a) (text b) =
+  string a[];
+  begingroup
+    save i; numeric i; i := 0;
+    for j = b:
+      a[i] := j;
+      i := i + 1;
+    endfor
+  endgroup
+enddef;
+
+vardef 表长 suffix a =
+  save i; numeric i; i := 0;
+  forever:
+    exitif unknown a[i + 1];
+    i := i + 1;
+  endfor
+  i
+enddef;
+
+def 名 expr a = scantokens(a) enddef;
+
+vardef 聚 suffix a =
+  save s, n; string s; numeric n;
+  s := "";
+  n := 表长 a;
+  for i = 1 upto n:
+    s := (tostring s) & a[i] & ",";
+  endfor;
+  s := s & a[n];
+  s
+enddef;
+
+def 之乎者也 (suffix a, b) =
+  for i = 0 upto 表长 a: 宫(名 a[i], b[i]); endfor
+enddef;
+
+def 横陈 (suffix a) (expr 间距) =
+  for i = 1 upto 表长 a:
+    定位(名 a[i], 名(a[i]).酉门 位于 名(a[i - 1]).卯门 偏 (东 间距));
+  endfor
+enddef;
+
+def 纵列 (suffix a) (expr 间距) =
+  for i = 1 upto 表长 a:
+    定位(名 a[i], 名(a[i]).子门 位于 名(a[i - 1]).午门 偏 (南 间距));
+  endfor
+enddef;
+
+def 旋 = rotated enddef;
+
+def 令 suffix a = 令之体(a) enddef;
+def 令之体 (suffix a) text b =
+  a := a b;
+  a.框 := a.框 b;
+  forsuffixes i = 中央, 东北角, 东南角, 西南角, 西北角,
+                  子门, 卯门, 午门, 酉门, 
+                  丑门, 寅门, 辰门, 巳门, 未门, 申门, 戌门, 亥门,
+                  乾位, 坤位, 艮位, 兑位, 巽位, 震位, 坎位, 离位:
+    if known a.i: a.i := a.i b; fi;
+  endfor;
+enddef;
+\stopMPinclusions
+
+\startMPinclusions[+]
+path 竖亥.新路;
+tertiarydef a 越过 b =
+  hide(竖亥.新路 := 路径局部跃迁(a, b);)
+  竖亥.新路
+enddef;
+
+vardef 路径局部跃迁 (expr a, b) =
+  save 直径, 圆, 前路, 后路,
+       旁路前段, 旁路后段, 前点, 后点, 
+       跃点, 走向, 偏向;
+  numeric 直径;
+  path 圆, 前路, 后路, 旁路前段, 旁路后段;
+  pair 前点, 后点, 跃点, 走向, 偏向;
+  竖亥 := a intersectionpoint b;
+  直径 := 获 "蜗界.字号";
+  圆 := fullcircle scaled 直径 偏 竖亥;
+  前路 := a cutafter b cutafter 圆;
+  后路 := a cutbefore b cutbefore 圆;
+  前点 := point 1 along 前路;
+  后点 := point 0 along 后路;
+  走向 := unitvector(后点 - 前点);
+  旁路前段 := b cutafter a cutafter 圆;
+  旁路后段 := b cutbefore a cutbefore 圆;
+  偏向 := unitvector((point 0 along 旁路后段) - (point 1 along 旁路前段));
+  if ((走向 rotated 90) dotprod 偏向) < 0:
+    走向 := 走向 rotated -90;
+  else:
+    走向 := 走向 rotated 90;
+  fi;
+  跃点 := .5[前点, 后点] 偏 (.5直径 * 走向);
+  前路 .. 跃点 .. 后路
+enddef;
+def 逆转 = reverse enddef;
+\stopMPinclusions
+

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>感知</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">感知
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2025 年 06 月 01 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#算法" id="toc-算法">算法</a></li>
+  <li><a href="#正则表达式" id="toc-正则表达式">正则表达式</a></li>
+  <li><a href="#rx-记法" id="toc-rx-记法">rx 记法</a></li>
+  <li><a href="#感知" id="toc-感知">感知</a></li>
+  <li><a href="#bobp-和-eobp" id="toc-bobp-和-eobp">bobp 和
+  eobp</a></li>
+  <li><a href="#现场保存" id="toc-现场保存">现场保存</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
+</nav>
+
+<h1 id="前言">前言</h1>
+<p>现在，我们尝试用 Elisp
+编程来解一道应用题。这道应用题对我而言，颇为重要，对你而言，可作学习
+Elisp 编程一例。假设 Emacs
+的当前缓冲区内存在一些形如以下内容的片段：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>@ 这是一段 C 代码 #</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> foo<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">42</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>@</span></code></pre></div>
+<p>同时，当前缓冲区内也有一些其他内容，但我们无需关心。现在，光标是落在上述片段内的，例如落在数字
+<code>42</code> 的 <code>4</code> 上。我们看到的现象是如此，但是能否通过
+Elisp 程序感知光标正处于这样的区域内呢？</p>
+<p>为了让问题更明确一些，可将上述片段抽象为以下形式：</p>
+<pre><code>@ 片段名称 #
+片段内容
+@</code></pre>
+<p>上述形式中，片段名称不会包含 <code>#</code>
+字符，片段内容中也不存在任何一行文字只含有字符 <code>@</code>
+的情况。于是，我们的问题便可以明确为，当光标处于片段内容区域，此时能否通过
+Elisp
+感知光标处于上述形式的片段内呢？为了便于描述，我们将上述抽象的片段形式称为
+<a href="../../orez-v1/index.html">Orez 形式</a>。</p>
+<h1 id="算法">算法</h1>
+<p>我们可以从光标当前位置出发，向后（向缓冲区首部方向）遍历缓冲区，并探测何时遇到以
+<code>@</code> 开头且以 <code>#</code>
+结尾的一行文字，并且也向前（向缓冲区尾部方向）遍历缓冲区，并探测何时遇到只包含
+<code>@</code>
+的一行文字，若这两个方向的探测皆有所得，便可判定光标正处于 Orez
+形式区域。</p>
+<p>上述算法并不困难，关键在于，如何判断一行文字是否含有 <code>@</code>
+开头且以 <code>#</code> 结尾，以及是否只包含
+<code>@</code>。这两个关键问题，我们可基于 Emacs
+提供的字符串匹配函数予以解决。</p>
+<h1 id="正则表达式">正则表达式</h1>
+<p>正则表达式，是一种微型语言，可用于描述文字模式。例如，一段文字，我们知道它是以
+<code>@</code> 开头且以 <code>#</code> 结尾，且除首尾外，其他文字皆非
+<code>#</code>，对于这种形式的文字，用正则表达式可表述为
+<code>^@[^#]+#$</code>。倘若你从未了解过正则表达式，应该会觉得这是蕴含某种神秘力量的咒语。事实上，只要略加解释，你便会明白一切都很简单。</p>
+<ul>
+<li><code>^</code> 表示一段文字的首部。</li>
+<li><code>[^#]</code> 表示一个字符，它不是 <code>#</code>。</li>
+<li><code>[^#]+</code> 表示存在一个或多个非 <code>#</code> 字符。</li>
+<li><code>#</code> 就是字符 <code>#</code>。</li>
+<li><code>$</code> 表示一段文字的尾部。</li>
+</ul>
+<p>我们也可以让上述正则表达式所表达的文字模式更为宽泛一些，例如
+<code>^[ \t]*@[^#]+#[ \t]*$</code>，其中 <code>[ \t]</code>
+表示一个字符，它可以是空格，也可以是制表符（即使用 Tab
+键输入的字符），而 <code>[ \t]*</code> 则表示存在 0 个或 1
+个或更多个字符，它们或为空格，或为制表符。</p>
+<p>可以用 Emacs 提供的 <code>string-match</code> 进行一些试验。例如</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((x <span class="st">&quot;@ i am foo #&quot;</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (string-match <span class="st">&quot;^@[^#]+#$&quot;</span> x)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;hit!&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;failed!&quot;</span>))) <span class="co">;; 会输出 hit!</span></span></code></pre></div>
+<p>再例如</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((x <span class="st">&quot;    @ i am foo #&quot;</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (string-match <span class="st">&quot;^@[^#]+#$&quot;</span> x)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;hit!&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;failed!&quot;</span>))) <span class="co">;; 会输出 failed!</span></span></code></pre></div>
+<p>再例如</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((x <span class="st">&quot;    @ i am foo #&quot;</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (string-match <span class="st">&quot;^[ </span><span class="sc">\t</span><span class="st">]*@[^#]+#$&quot;</span> x)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;hit!&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;failed!&quot;</span>))) <span class="co">;; 会输出 hit!</span></span></code></pre></div>
+<p>凡是能让 <code>string-match</code> 的求值结果为真，即为
+<code>t</code> 的正则表达式和字符串，称二者匹配。Emacs
+所支持的正则表达式，有一个功能是允许我们从它所匹配的字符串中捕获一些文字。例如，捕获上述最后一个示例中
+<code>x</code> 的 <code>i am foo</code>
+部分，只需将与之匹配的正则表达式修改为</p>
+<pre><code>^[ \t]*@[ \t]*\\([^#]+\\)[ \t]*#$</code></pre>
+<p>其中 <code>\\(</code> 和 <code>\\)</code>
+表示可捕获它们所包围的部分，即 <code>[^#]+</code>。捕获结果可通过
+<code>match-string</code> 获取，例如</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((x <span class="st">&quot;    @ i am foo #&quot;</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (string-match <span class="st">&quot;^[ </span><span class="sc">\t</span><span class="st">]*@</span><span class="sc">\\</span><span class="st">([^#]+</span><span class="sc">\\</span><span class="st">)#$&quot;</span> x)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;%s&quot;</span> (match-string <span class="dv">1</span> x))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;failed!&quot;</span>))) <span class="co">;; 会输出 i am foo</span></span></code></pre></div>
+<p><code>match-string</code> 的第 1
+个参数表示获取第几个捕获，由于上述代码中只有一处捕获，故该参数为 1。</p>
+<p>也许你已经感受到了正则表达式的强大，它能对字符串实现模糊匹配，可是你应该也能感受到它的弊端，一旦要匹配的文本较为复杂，为其所写的正则表达式很快你便难解其意了，亦即复杂的正则表达式几乎不具备可维护性。</p>
+<h1 id="rx-记法">rx 记法</h1>
+<p>为了让正则表达式具备可维护性，Emacs 提供了 rx 记法，亦即你可以通过 rx
+表达式构造正则表达式。例如</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(rx line-start (zero-or-more (any <span class="st">&quot; </span><span class="sc">\t</span><span class="st">&quot;</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;@&quot;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    (one-or-more (<span class="kw">not</span> <span class="st">&quot;#&quot;</span>))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;#&quot;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    (zero-or-more (any <span class="st">&quot; </span><span class="sc">\t</span><span class="st">&quot;</span>)) line-end)</span></code></pre></div>
+<p>其求值结果为</p>
+<pre><code>&quot;^[ \t]*@[^#]+#[ \t]*$&quot;</code></pre>
+<p>也可以用 <code>rx-let</code>
+表达式，定义一些局部变量，将其作为一些正则表达式的「简写」，例如以下代码与上文的
+<code>rx</code> 表达式等效。</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(rx-let ((padding (zero-or-more (any <span class="st">&quot; </span><span class="sc">\t</span><span class="st">&quot;</span>)))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>         (name-area (one-or-more (<span class="kw">not</span> <span class="st">&quot;#&quot;</span>))))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  (rx line-start padding <span class="st">&quot;@&quot;</span> name-area <span class="st">&quot;#&quot;</span> padding line-end))</span></code></pre></div>
+<p>注意，在 rx 记法中，使用局部变量作为正则表达式记号，只能用
+<code>rx-let</code>，而不能用 <code>let</code>。</p>
+<p>若需要构造带有捕获的正则表达式，在 rx 记法可使用
+<code>group</code>。例如</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(rx-let ((padding (zero-or-more (any <span class="st">&quot; </span><span class="sc">\t</span><span class="st">&quot;</span>)))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>         (name-area (one-or-more (<span class="kw">not</span> <span class="st">&quot;#&quot;</span>))))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  (rx line-start padding <span class="st">&quot;@&quot;</span> (group name-area) <span class="st">&quot;#&quot;</span> padding line-end))</span></code></pre></div>
+<p>求值结果为</p>
+<pre class="regex"><code>&quot;^[ \t]*@\\([^#]+\\)#[ \t]*$&quot;</code></pre>
+<p>虽然正则表达式要比 rx 记法更简约，但是 rx
+记法更容易让我们理解正则表达式的结构，故而以后我们尽量在 Elisp 中使用 rx
+记法，而非正则表达式。以下是 rx 记法的应用示例：</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((x <span class="st">&quot;    @ i am foo #&quot;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>      (re (rx-let ((padding (zero-or-more (any <span class="st">&quot; </span><span class="sc">\t</span><span class="st">&quot;</span>)))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                   (name-area (one-or-more (<span class="kw">not</span> <span class="st">&quot;#&quot;</span>))))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>            (rx line-start padding <span class="st">&quot;@&quot;</span> (group name-area) <span class="st">&quot;#&quot;</span> line-end))))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (string-match re x)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>      (message <span class="st">&quot;%s&quot;</span> (match-string <span class="dv">1</span> x))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;failed!&quot;</span>))) <span class="co">;; 会输出 i am foo</span></span></code></pre></div>
+<h1 id="感知">感知</h1>
+<p>希望你还没有忘记我们的使命，从当前缓冲区的光标所在位置向后探测，寻找正则表达式
+<code>^@[^#]+#$</code> 可匹配的一行文字，此事现在已无任何难点。</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> orez-search-backward </span>()</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> (re line)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">setq</span> re (rx line-start <span class="st">&quot;@&quot;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                 (one-or-more (<span class="kw">not</span> <span class="st">&quot;#&quot;</span>))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;#&quot;</span> line-end))</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">catch</span> <span class="dt">&#39;break</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>      (while <span class="kw">t</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">setq</span> line (buffer-substring-no-properties (pos-bol) (pos-eol)))</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">if</span> (string-match re line)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">throw</span> <span class="dt">&#39;break</span> (point))</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">progn</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">when</span> (<span class="op">&lt;=</span> (point) (point-min))</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>              (<span class="kw">throw</span> <span class="dt">&#39;break</span> <span class="kw">nil</span>))</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>            (forward-line -1))))</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>      <span class="kw">nil</span>)))</span></code></pre></div>
+<p>为了便于你理解上述代码，我将其翻译成了以下 C 语言伪代码：</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> orez_search_backward<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    Regex re <span class="op">=</span> 由 rx 记法构造的正则表达式<span class="op">;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        String line <span class="op">=</span> 当前的一行文字<span class="op">;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>re 与 line 匹配<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> point<span class="op">();</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>point<span class="op">()</span> <span class="op">&lt;=</span> point_min<span class="op">())</span> <span class="op">{</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span> <span class="co">/* 返回无效位置，表示探测失败 */</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>            forward_line<span class="op">(-</span><span class="dv">1</span><span class="op">);</span> <span class="co">/* 后退一行 */</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span><span class="dv">1</span><span class="op">;</span> <span class="co">/* 返回无效位置，表示探测失败 */</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>向前探测过程，要比向后探测略微简单一些，下面我直接定义它，且不再以 C
+伪代码予以注释。</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> orez-search-forward </span>()</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> (re line)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">setq</span> re (rx line-start <span class="st">&quot;@&quot;</span> line-end))</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">catch</span> <span class="dt">&#39;break</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>      (while <span class="kw">t</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">setq</span> line (buffer-substring-no-properties (pos-bol) (pos-eol)))</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">if</span> (string-match re line)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">throw</span> <span class="dt">&#39;break</span> (point))</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>          (<span class="kw">progn</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">when</span> (<span class="op">&gt;=</span> (point) (point-max))</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>              (<span class="kw">throw</span> <span class="dt">&#39;break</span> <span class="kw">nil</span>))</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>            (forward-line))))</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">nil</span>)))</span></code></pre></div>
+<p>基于 <code>orez-search-backward</code> 和
+<code>orez-search-forward</code> 的结果便可确定光标是否落在 Orez
+形式区域。</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> in-orez-area</span>? ()</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">if</span> (<span class="kw">and</span> (orez-search-backward) (orez-search-forward))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>      <span class="kw">t</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">nil</span>))</span></code></pre></div>
+<p>上述代码使用了布尔运算中的「与」运算 <code>and</code>。Elisp
+的布尔运算还有「或」运算 <code>or</code> 以及前文在构造 rx
+记法时用过的「非」运算
+<code>not</code>。基于这三种运算，可以构造复杂的逻辑表达式。</p>
+<h1 id="bobp-和-eobp">bobp 和 eobp</h1>
+<p><code>orez-search-backward</code> 和 <code>orez-search-forward</code>
+的定义中，皆在 <code>while</code>
+表达式中判断光标是否已抵达缓冲区首部和尾部，即</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(<span class="op">&lt;=</span> (point) (point-min))</span></code></pre></div>
+<p>和</p>
+<pre><code>(&gt;= (point) (point-max))</code></pre>
+<p>实际上，Emacs 为上述这两种情况的判断提供了函数 <code>bobp</code> 和
+<code>eobp</code>，故而可用 <code>(bobp)</code> 和 <code>(eobp)</code>
+分别代替上述表达式。故而将 <code>orez-search-backward</code> 和
+<code>orez-search-forward</code> 重新定义为</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> orez-search-backward </span>()</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> (re line)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">setq</span> re (rx line-start <span class="st">&quot;@&quot;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                 (one-or-more (<span class="kw">not</span> <span class="st">&quot;#&quot;</span>))</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;#&quot;</span> line-end))</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">catch</span> <span class="dt">&#39;break</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>      (while (<span class="kw">not</span> (bobp))</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">setq</span> line (buffer-substring-no-properties (pos-bol) (pos-eol)))</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">if</span> (string-match re line)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">throw</span> <span class="dt">&#39;break</span> (point))</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>          (forward-line -1)))</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>      <span class="kw">nil</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> orez-search-forward </span>()</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> (re line)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">setq</span> re (rx line-start <span class="st">&quot;@&quot;</span> line-end))</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">catch</span> <span class="dt">&#39;break</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>      (while (<span class="kw">not</span> (eobp))</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">setq</span> line (buffer-substring-no-properties (pos-bol) (pos-eol)))</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">if</span> (string-match re line)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>            (<span class="kw">throw</span> <span class="dt">&#39;break</span> (point))</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>          (forward-line)))</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>      <span class="kw">nil</span>)))</span></code></pre></div>
+<h1 id="现场保存">现场保存</h1>
+<p>若光标在 Orez 形式区域，而你也真的试着用过 <code>in-orez-area?</code>
+函数，便会发现，Emacs 对该函数求值后，光标会被移动到 Orez
+形式区域的末尾。原因是 <code>orez-search-backward</code> 和
+<code>orez-search-forward</code> 函数使用了逐行移动光标函数
+<code>forward-line</code>。若想在应用 <code>in-orez-area?</code>
+之后能将光标复原，你可以先用一个局部变量保存光标位置，时候再将光标移至该位置，例如</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> in-orez-area</span>? ()</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">let</span> ((x (point)))</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">if</span> (<span class="kw">and</span> (orez-search-backward) (orez-search-forward))</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        (<span class="kw">progn</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>          (goto-char x)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>          <span class="kw">t</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>      (<span class="kw">progn</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        (goto-char x)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">nil</span>))))</span></code></pre></div>
+<p>Emacs 为了不让你如此费心，它提供了 <code>save-excursion</code>
+表达式，可完成等效工作，其用法如下</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> in-orez-area</span>? ()</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  (save-excursion</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">if</span> (<span class="kw">and</span> (orez-search-backward) (orez-search-forward))</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">t</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>      <span class="kw">nil</span>)))</span></code></pre></div>
+<p><strong>练习</strong>：若 Orez
+形式更为复杂，例如片段名称可能跨越多行，行间以 <code>\</code>
+连接，例如</p>
+<pre><code>@ 这是可跨越 \
+  多行的片段名称 #
+片段内容
+@</code></pre>
+<p>此时，你该如何实现 <code>orez-search-backward</code> 函数呢？</p>
+<h1 id="总结">总结</h1>
+<p>Orez
+是我编写的文学编程工具。所谓文学编程，即程序的文档与代码是混合态，即文档片段和代码片段彼此纠缠。Orez
+可从文学程序里抽取可编译/解释的完整代码，也可将文学程序转化为用于文档排版的源文件，由
+TeX 或类似的排版软件生成程序文档。</p>
+<p>我之所以需要在 Emacs 里识别 Orez
+形式区域，是因为文学程序里可能存在多种编程语言的代码片段，Emacs
+很难以统一的模式编辑它们。倘若能识别 Orez
+区域，将这些代码片段临时提取到另一个窗口中的缓冲区，并开启相应的编程语言模式，则
+Emacs 便可作为文学编程所用的专业编辑器了。</p>
+<p>现在完成这一目的所需的 Elisp 语法和 Emacs
+函数，我已经基本掌握了。你虽然没有我的追求，而你已经具备了驾驭 Emacs
+的能力了。我们相忘于江湖的时间快要到了。</p>
+
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+</body>
+</html>

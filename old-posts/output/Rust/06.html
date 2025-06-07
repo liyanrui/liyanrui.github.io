@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>配置文件</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">配置文件</h1>
+<p class="date">2023 年 07 月 11 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#问题">问题</a></li>
+<li><a href="#读取文件">读取文件</a></li>
+<li><a href="#路径">路径</a></li>
+<li><a href="#引入-serde-库">引入 serde 库</a></li>
+<li><a href="#序列化与反序列化">序列化与反序列化</a></li>
+<li><a href="#分割符">分割符</a></li>
+<li><a href="#c-版本">C 版本</a></li>
+<li><a href="#小结">小结</a></li>
+</ul>
+</nav>
+<h1 id="问题">问题</h1>
+<p>在之前的程序中，文本分割符皆以硬编码的方式出现，导致程序灵活性较差。rzeo
+项目解析的文本，我倾向为下例所示形式：</p>
+<pre><code>以下 Rust 程序
+@ hello world #
+fn main() {
+    println!(&quot;Hello world!&quot;);
+}
+@
+可在终端打印「Hello world!」。</code></pre>
+<p>但是对于其他 rzeo 的用户而言，未必喜欢使用 <code>@</code> 和
+<code>#</code> 之类的符号。为了最大程度兼容所有人的偏好，rzeo
+使用的文本分割符需以配置文件的方式进行定义，在其运行时方知文本分割符的具体形式。</p>
+<p>rzeo 的配置文件采用 YAML 语言撰写，例如：</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">border</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;\n[ \t]*@[ \t\n]*&#39;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">code_snippet_neck</span><span class="kw">:</span><span class="at"> </span><span class="st">&#39;[ \t]*#[ \t]*\n&#39;</span></span></code></pre></div>
+<p>假设 rzeo 配置文件为 rzeo.conf，编写一个程序从该文件获取分割符。</p>
+<h1 id="读取文件">读取文件</h1>
+<p>首先，考虑如何使用 Rust 标准库提供的文件读写功能，读取配置文件
+rzeo.conf，并输出其内容，以熟悉文件读写功能的基本用法。</p>
+<p>以下代码可读取 rzeo.conf 文件并逐行打印其内容：</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::fs::</span>File<span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::io::</span><span class="op">{</span><span class="bu">BufRead</span><span class="op">,</span> BufReader<span class="op">};</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>()<span class="op">,</span> <span class="pp">std::io::</span><span class="bu">Error</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> f <span class="op">=</span> <span class="pp">File::</span>open(<span class="st">&quot;rzeo.conf&quot;</span>)<span class="op">?;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> reader <span class="op">=</span> <span class="pp">BufReader::</span>new(f)<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> line <span class="kw">in</span> reader<span class="op">.</span>lines() <span class="op">{</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> line<span class="op">?</span>)<span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">Ok</span>(())<span class="op">;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>BufRead</code> 是特性。<code>BufReader</code> 是实现了
+<code>BufRead</code>
+特性的结构体类型，用于将硬盘中的文件内容读入到内存缓冲区以降低硬盘读取次数。需要注意的是，<code>File</code>
+的 <code>open</code> 方法和 <code>BufReader</code> 的 <code>lines</code>
+方法皆返回 <code>Result&lt;T, std::io::Error&gt;</code>
+类型，<code>T</code> 为 <code>String</code> 类型——Rust
+的又一种字符串类型，相当于 <code>Vec&lt;char&gt;</code> 类型。在此不对
+<code>String</code> 给予讲解，可在使用中逐渐熟悉其用法。</p>
+<p>以下代码可将 rzeo.conf 文件中的内容写入另一个文件：</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::fs::</span>File<span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::io::</span><span class="op">{</span><span class="bu">BufRead</span><span class="op">,</span> BufReader<span class="op">,</span> <span class="bu">Write</span><span class="op">};</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>()<span class="op">,</span> <span class="pp">std::io::</span><span class="bu">Error</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> f <span class="op">=</span> <span class="pp">File::</span>open(<span class="st">&quot;rzeo.conf&quot;</span>)<span class="op">?;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> <span class="kw">mut</span> g <span class="op">=</span> <span class="pp">File::</span>create(<span class="st">&quot;foo.txt&quot;</span>)<span class="op">?;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> reader <span class="op">=</span> <span class="pp">BufReader::</span>new(f)<span class="op">;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> line <span class="kw">in</span> reader<span class="op">.</span>lines() <span class="op">{</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">let</span> content <span class="op">=</span> line<span class="op">?;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        g<span class="op">.</span>write_all(content<span class="op">.</span>as_bytes())<span class="op">?;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        g<span class="op">.</span>write_all(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">.</span>as_bytes())<span class="op">?;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">Ok</span>(())<span class="op">;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>注意，<code>File</code> 的 <code>write_all</code> 方法，其参数类型为
+<code>&amp;[u8]</code>，即字节数组切片，故而需要使用
+<code>&amp;str</code> 或 <code>String</code> 类型的
+<code>as_bytes</code> 将字符串转化为字节数组切片。<code>write_all</code>
+的返回值是 <code>Result&lt;()&gt;</code> 类型，需使用
+<code>unwrap</code> 解包或使用 <code>?</code> 进行错误传播。</p>
+<h1 id="路径">路径</h1>
+<p>为了保持不同操作系统中文件路径的兼容性，Rust
+标准库提供了一种特殊的字符串类型 <code>std::path::Path</code>
+以及一些用于处理文件路径的方法。为了程序的可移植性，建议使用
+<code>std::path::Path</code> 代替普通的字符串作为文件路径。</p>
+<p>以下代码演示了 <code>std::path::Path</code> 的基本用法：</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::path::</span><span class="dt">Path</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::fs::</span>File<span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::io::</span><span class="op">{</span><span class="bu">BufRead</span><span class="op">,</span> BufReader<span class="op">};</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>()<span class="op">,</span> <span class="pp">std::io::</span><span class="bu">Error</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> path <span class="op">=</span> <span class="dt">Path</span><span class="pp">::</span>new(<span class="st">&quot;/tmp/rzeo.conf&quot;</span>)<span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">&quot;{:?}&quot;</span><span class="op">,</span> path)<span class="op">;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> f <span class="op">=</span> <span class="pp">File::</span>open(path)<span class="op">?;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> reader <span class="op">=</span> <span class="pp">BufReader::</span>new(f)<span class="op">;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> line <span class="kw">in</span> reader<span class="op">.</span>lines() <span class="op">{</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> line<span class="op">?</span>)<span class="op">;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">Ok</span>(())<span class="op">;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h1 id="引入-serde-库">引入 serde 库</h1>
+<p>读取 rzeo.conf 文件并不困难，困难的是对其内容的解析。当前的 rzeo.conf
+文件中的内容，仅仅用到了 YAML
+最为基础的语法——键值对，即便如此，要对其予以解析，免不了要写许多代码。Rust
+第三方库 serde 能够实现 Rust
+语言的值与特定格式的数据文件的交换，即值的序列化（Serialize）和反序列化（Deserialize）。</p>
+<p>serde 只是一个框架，对于特定格式的数据文件，需要引入 serde
+的相应实现。下面使用 cargo 构建一个项目，引入 serde 和 serde_yaml
+库，实现 Rust 结构体的序列化。</p>
+<p>首先，使用 cargo 建立新项目并进入项目目录：</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cargo new foo</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd foo</span></code></pre></div>
+<p>然后使用 <code>cargo add</code> 命令添加 serde（同时开启 serde 的
+derive 特性）和 serde_yaml 库：</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cargo add <span class="at">-F</span> derive serde</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cargo add serde_yaml</span></code></pre></div>
+<p>上述命令可在项目根目录下的 Cargo.toml 文件的
+<code>[dependencies]</code> 部分添加以下内容：</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode toml"><code class="sourceCode toml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">serde</span> <span class="op">=</span> <span class="op">{ </span><span class="dt">version</span><span class="op"> =</span> <span class="st">&quot;1.0.171&quot;</span><span class="op">, </span><span class="dt">features</span><span class="op"> =</span> <span class="op">[</span><span class="st">&quot;derive&quot;</span><span class="op">]</span> <span class="op">}</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="dt">serde_yaml</span> <span class="op">=</span> <span class="st">&quot;0.9.22&quot;</span></span></code></pre></div>
+<p>随着 serde 和 serde_yaml
+库的更新，等你看到这份文档时，也动手搭建这个项目时，库的版本号应该是与上述内容不同。</p>
+<h1 id="序列化与反序列化">序列化与反序列化</h1>
+<p>编辑上一节构建的 foo 项目的 src/main.rs 文件，令其内容为</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::fs::</span>File<span class="op">;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span><span class="pp">serde::</span>Serialize<span class="at">)]</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Foo<span class="op">&lt;</span><span class="ot">&#39;a</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    id<span class="op">:</span> <span class="dt">u32</span><span class="op">,</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    data<span class="op">:</span> <span class="op">&amp;</span><span class="ot">&#39;a</span> <span class="dt">str</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>()<span class="op">,</span> <span class="pp">std::io::</span><span class="bu">Error</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> foo <span class="op">=</span> Foo <span class="op">{</span> id<span class="op">:</span> <span class="dv">1</span><span class="op">,</span> data<span class="op">:</span> <span class="st">&quot;Hello world!&quot;</span> <span class="op">};</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> f <span class="op">=</span> <span class="pp">File::</span>create(<span class="st">&quot;foo.yml&quot;</span>)<span class="op">?;</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="pp">serde_yaml::</span>to_writer(f<span class="op">,</span> <span class="op">&amp;</span>foo)<span class="op">?;</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">Ok</span>(())<span class="op">;</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>执行以下命令，编译并运行程序：</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cargo run</span></code></pre></div>
+<p>但是上述的 main.rs 中存在错误，导致 Rust 编译器报错。错误的原因是
+<code>File::create</code> 和 <code>sert_yaml::to_writer</code> 返回的
+<code>Result&lt;T, E&gt;</code> 类型不一致，导致无法给出
+<code>main</code>
+函数的返回值类型的正确定义。对于上述代码快速而脏的修复是</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="pp">serde_yaml::</span>to_writer(f<span class="op">,</span> <span class="op">&amp;</span>foo)<span class="op">.</span>unwrap()<span class="op">;</span></span></code></pre></div>
+<p>即放弃 <code>serde_yaml::to_write</code> 的错误进行传播。</p>
+<p>上述程序通过编译，运行结果是在当前目录创建 foo.yml 文件，其内容为</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">id</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span><span class="kw">:</span><span class="at"> Hello world!</span></span></code></pre></div>
+<p>以下代码实现了 YAML 文件 foo.yml 的反序列化：</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="pp">std::fs::</span>File<span class="op">;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Debug</span><span class="op">,</span> <span class="pp">serde::</span>Deserialize<span class="at">)]</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Foo <span class="op">{</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    id<span class="op">:</span> <span class="dt">u32</span><span class="op">,</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    data<span class="op">:</span> <span class="dt">String</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>()<span class="op">,</span> <span class="pp">std::io::</span><span class="bu">Error</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> f <span class="op">=</span> <span class="pp">File::</span>open(<span class="st">&quot;foo.yml&quot;</span>)<span class="op">?;</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> foo<span class="op">:</span> Foo <span class="op">=</span> <span class="pp">serde_yaml::</span>from_reader(f)<span class="op">.</span>unwrap()<span class="op">;</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">&quot;{:?}&quot;</span><span class="op">,</span> foo)<span class="op">;</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">Ok</span>(())<span class="op">;</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>foo.yml 中的内容被转换为 Rust 结构体类型 <code>Foo</code> 的实例
+<code>foo</code>。需要注意的是，上述 <code>Foo</code> 的
+<code>data</code> 域，其类型不再是 <code>&amp;str</code>，而是
+<code>String</code>，原因 <code>serde_yaml::from_reader</code>
+方法并不占有数据，导致存储反序列化结果的结构体实例中的引用无效。</p>
+<h1 id="分割符">分割符</h1>
+<p>现在，定义一个结构体类型 Separator，用于存储从 rzeo.conf
+中获取的分割符：</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="at">#[</span>derive<span class="at">(</span><span class="bu">Debug</span><span class="op">,</span> <span class="pp">serde::</span>Deserialize<span class="at">)]</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Separator <span class="op">{</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    border<span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    code_snippet_neck<span class="op">:</span> <span class="dt">String</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>使用以下代码便可解析 rzeo.conf 相应的信息并将解析结果作为
+<code>Separator</code> 类型的值：</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">-&gt;</span> <span class="dt">Result</span><span class="op">&lt;</span>()<span class="op">,</span> <span class="pp">std::io::</span><span class="bu">Error</span><span class="op">&gt;</span>  <span class="op">{</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> f <span class="op">=</span> <span class="pp">std::fs::File::</span>open(<span class="st">&quot;rzeo.conf&quot;</span>)<span class="op">?;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> foo<span class="op">:</span> Separator <span class="op">=</span> <span class="pp">serde_yaml::</span>from_reader(f)<span class="op">.</span>unwrap()<span class="op">;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">&quot;{:?}&quot;</span><span class="op">,</span> foo)<span class="op">;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="cn">Ok</span>(())<span class="op">;</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>至此，本章开头提出的问题便得以解决。</p>
+<h1 id="c-版本">C 版本</h1>
+<p>有一些采用 C 语言编写的库也能够实现对 YAML 文件的解析，例如能够支持 C
+语言结构体的 YAML 序列化和反序列化的库 libcyaml，在 Ubuntu
+系统可使用以下命令安装该库：</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> sudo apt install libyaml-dev libcyaml-dev</span></code></pre></div>
+<p>以下是反序列化 rzeo.conf 文件的 C 程序：</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cyaml/cyaml.h&gt;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>border<span class="op">;</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>code_snippet_neck<span class="op">;</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Foo<span class="op">;</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">/* 构造结构体类型 Foo 与 rzeo.conf 之间的联系 */</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_schema_field_t top_mapping<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        CYAML_FIELD_STRING_PTR<span class="op">(</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;border&quot;</span><span class="op">,</span> CYAML_FLAG_POINTER<span class="op">,</span> Foo<span class="op">,</span> border<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> CYAML_UNLIMITED<span class="op">),</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>        CYAML_FIELD_STRING_PTR<span class="op">(</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;code_snippet_neck&quot;</span><span class="op">,</span> CYAML_FLAG_POINTER<span class="op">,</span> Foo<span class="op">,</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>                code_snippet_neck<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> CYAML_UNLIMITED<span class="op">),</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>        CYAML_FIELD_END</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_schema_value_t top <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>        CYAML_VALUE_MAPPING<span class="op">(</span>CYAML_FLAG_POINTER<span class="op">,</span> Foo<span class="op">,</span> top_mapping<span class="op">)</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="co">/* 解析器设置 */</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_config_t config <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>log_fn <span class="op">=</span> cyaml_log<span class="op">,</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>mem_fn <span class="op">=</span> cyaml_mem<span class="op">,</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>log_level <span class="op">=</span> CYAML_LOG_WARNING</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="co">/* 反序列化 */</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>        Foo <span class="op">*</span>foo<span class="op">;</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>        cyaml_err_t err <span class="op">=</span> cyaml_load_file<span class="op">(</span><span class="st">&quot;rzeo.conf&quot;</span><span class="op">,</span> <span class="op">&amp;</span>config<span class="op">,</span> <span class="op">&amp;</span>top<span class="op">,</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>                                          <span class="op">(</span>cyaml_data_t <span class="op">**)&amp;</span>foo<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>err <span class="op">!=</span> CYAML_OK<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>                fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;ERROR: %s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> cyaml_strerror<span class="op">(</span>err<span class="op">));</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> EXIT_FAILURE<span class="op">;</span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;border: %s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> foo<span class="op">-&gt;</span>border<span class="op">);</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;code_snippet_neck: %s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> foo<span class="op">-&gt;</span>code_snippet_neck<span class="op">);</span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>        cyaml_free<span class="op">(&amp;</span>config<span class="op">,</span> <span class="op">&amp;</span>top<span class="op">,</span> foo<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>使用以下命令编译上述程序：</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> gcc <span class="at">-o</span> foo foo.c <span class="va">$(</span><span class="ex">pkg-config</span> <span class="at">--cflags</span> <span class="at">--libs</span> libcyaml<span class="va">)</span></span></code></pre></div>
+<p>运行程序：</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ./foo</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">border:</span> <span class="dt">\n</span>[ <span class="dt">\t</span>]<span class="pp">*</span>@[ <span class="dt">\t\n</span>]<span class="pp">*</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="ex">code_snippet_neck:</span> [ <span class="dt">\t</span>]<span class="pp">*</span>#[ <span class="dt">\t</span>]<span class="pp">*</span><span class="dt">\n</span></span></code></pre></div>
+<h1 id="小结">小结</h1>
+<p>Rust 第三方库对 YAML 序列化和反序列化的支持优于 C
+的第三方库。必须要承认，C
+语言在文本处理方面，若想变得更为优雅，最好的办法是先基于它实现一门小巧的动态语言（例如
+Lua 语言），由后者负责处理文本。</p>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
+class="email">lyr.m2@live.cn</a> 或在<a
+href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

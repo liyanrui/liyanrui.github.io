@@ -1,0 +1,80 @@
+\environment xxxenv
+\setupfootertexts[便纵有万种风情，更与何人说？]
+\defineoverlay[foo][{\externalfigure[figures/1106826218.jpg][width=.4\textwidth]}]
+\defineframed[bar][frame=off,background={foo}]
+\def\arrowtext#1{\text{\lower.25em\hbox{#1}}}
+\starttext
+\title{\bluebox{\vbox{\hbox{指数与对数函数}\hbox{\ss\small——学好数学，能让你风情万种}}}}
+
+\startitemize[n,inmargin]
+\item 为保证信息安全传输，有一种系统称为秘密密钥密码系统，其加密、解密原理如下：\\
+明文 $x$ \xrightarrow[medium]{\arrowtext{加密密钥系统}} 密文 $t$ \xrightarrow[medium]{\arrowtext{发送}} 密文 $t$ \xrightarrow[medium]{\arrowtext{解密密钥系统}} 明文 $y$。现在加密密钥为 $t = 2a^{x + 1}$ $(a > 0\text{ 且 } a \ne 1)$，解密密钥为 $y = 3t - 5$，过程如下：发送方发送明文“1”，通过加密后得到密文“18”，再发送密文“18”，接收方通过解密密钥解密得明文“49”。若接收方接到明文“4”，则发送方发送的明文为\blankbar
+\startoptions[m]
+* -\log_3 2
+* \log_3\dfrac{3}{2} + 1
+* 162
+* \log_3\dfrac{7}{2} - 1
+\stopoptions
+\vfill
+\item 下列函数中，值域为 $(0, +\infty)$ 的是\blankbar
+\startoptions[m]
+* y = x^2
+* y = \dfrac{2}{x}
+* y = 2^x
+* y = \|\log_2 x\|
+\stopoptions
+\vfill
+\item 函数 $f(x) = \left(\dfrac{1}{3}\right)^{x^2 - 6x + 5}$ 的单调递减区间为\blankbar
+\startoptions[m]
+* \mathcal{R}
+* [-3, 3]
+* (-\infty, 3]
+* [3, +\infty)
+\stopoptions
+\vfill
+\item 方程 $1 + \log_2 x = \log_2 (x^2 - 3)$ 的解为\blankbar
+\vfill
+\stopitemize
+\page
+\startitemize[n, continue, inmargin]
+\item 记 $S_n$ 为等差数列 $\{a_n\}$ 的前 $n$ 项和，已知 $S_4 = 0$ ，$a_5 = 5$，则\blankbar
+\startoptions[m]
+* a_n = 2n - 5
+* a_n = 3n - 10
+* S_n = 2n^2 - 8n
+* S_n = \dfrac{1}{2}n^2 - 2 n
+\stopoptions
+\blank[4*line]
+\item 关于函数 $f(x) = \sin\|x\| + \|\sin x\|$ 有下述四个结论：
+\blank
+\startitemize[foo,horizontal,two][stopper=]
+\startitem $f(x)$ 是偶函数\stopitem
+\startitem $f(x)$ 在区间 $\left(\dfrac{\pi}{2}, \pi\right)$ 单调递增\stopitem
+\startitem $f(x)$ 在 $[-\pi, \pi]$ 有 4 个零点\stopitem
+\startitem $f(x)$ 的最大值为 $2$\stopitem
+\stopitemize
+\blank
+其中所有正确结论的编号是\blankbar
+\startoptions
+* \fooframe{1}\fooframe{2}\fooframe{4}
+* \fooframe{2}\fooframe{4}
+* \fooframe{1}\fooframe{4}
+* \fooframe{1}\fooframe{3}
+\stopoptions
+\item 曲线 $y = 3(x^2 + x)e^x$ 在点 $(0, 0)$ 处的切线方程为\blankbar
+\blank[4*line]
+\item $\triangle ABC$ 的内角 $A$，$B$，$C$ 的对边分别为 $a$，$b$，$c$，设 $(\sin B - \sin C)^2 = \sin^2A - \sin B\sin C$。
+\startitemize[n,packed][left=(, right=), stopper=]
+\item 求 $A$。
+\item 若 $\sqrt{2}a + b = 2c$，求 $\sin C$。
+\stopitemize
+\vfill
+\stopitemize
+
+\definelayer[foo][width=\paperwidth,height=\paperheight]
+\setlayer
+  [foo]
+  [preset=leftbottom]
+  {\externalfigure[figures/2023-05-03.jpg][width=.25\textwidth]}
+\setupbackgrounds[page][background=foo]
+\stoptext

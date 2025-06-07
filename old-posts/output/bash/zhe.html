@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>zhe：有时想写中文宏……</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">zhe：有时想写中文宏……</h1>
+<p class="date">2023 年 05 月 19 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#安装">安装</a></li>
+<li><a href="#用法">用法</a></li>
+<li><a href="#宏的调用">宏的调用</a></li>
+<li><a href="#缘由">缘由</a></li>
+<li><a href="#引号">引号</a></li>
+<li><a href="#示例">示例</a>
+<ul>
+<li><a href="#计数器">计数器</a></li>
+<li><a href="#lua-计算器">Lua 计算器</a></li>
+<li><a href="#嵌套宏调用">嵌套宏调用</a></li>
+<li><a href="#野蛮和优雅">野蛮和优雅</a></li>
+</ul></li>
+</ul>
+</nav>
+<p>zhe 是使用 bash 语言编写的脚本，可用于简化中文 m4 宏的展开。除 bash 和 m4 之外，执行 zhe 还需要 awk。</p>
+<p>使用 zhe 脚本的前提是对 m4 语言有所了解。我曾经写过一份 GNU m4 学习笔记「让这世界再多一份 GNU m4 教程 <a href="https://segmentfault.com/a/1190000004104696">(1)</a> <a href="https://segmentfault.com/a/1190000004108113">(2)</a> <a href="https://segmentfault.com/a/1190000004128102">(3)</a> <a href="https://segmentfault.com/a/1190000004131031">(4)</a> <a href="https://segmentfault.com/a/1190000004137562">(5)</a>」可供参考。</p>
+<figure>
+<img src="../../figures/bash/zhe/01.png" alt="" /><figcaption>zhe</figcaption>
+</figure>
+<h1 id="安装">安装</h1>
+<p>假设在 bash 环境里，将 zhe 脚本安装在 $HOME/opt/zhe 目录，可参考以下步骤：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>$ <span class="fu">mkdir</span> -p <span class="va">$HOME</span>/opt</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>$ <span class="bu">cd</span> <span class="va">$HOME</span>/opt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a>$ <span class="fu">git</span> clone https://github.com/liyanrui/zhe.git</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>$ <span class="bu">echo</span> <span class="st">&#39;export PATH=$HOME/opt/zhe:$PATH&#39;</span> <span class="op">&gt;&gt;</span> <span class="va">$HOME</span>/.bashrc</span></code></pre></div>
+<p>在任意目录下，执行以下命令可确认 zhe 脚本是否可用：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>$ <span class="ex">zhe</span> -h</span></code></pre></div>
+<p>上述命令应当输出：</p>
+<pre><code>Usage: zhe [OPTION] FILE
+Opitons:
+  -i file   include file provides m4 macro definitions used in FILE.
+  -o file   output result to file.</code></pre>
+<h1 id="用法">用法</h1>
+<p>假设文件 macros.m4 中定义了一些以汉字或标点符号命名的 m4 宏，例如</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`将进酒&#39;<span class="ch">,</span> `「君不见，黄河之水天上来……」&#39;<span class="ch">)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`。&#39;<span class="ch">,</span> `.&#39;<span class="ch">)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>假设文件 foo.txt 中使用了 macros.m4 中定义的宏，例如</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>@宏开</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>你听说过将进酒吗？我认为这是一首最优秀的唐诗。</span></code></pre></div>
+<p>使用以下命令可将 foo.txt 中位于 <code>@宏开</code> 之后的内容展开：</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>$ <span class="ex">zhe</span> -i macros.m4 foo.txt</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>你听说过「君不见，黄河之水天上来……」吗？我认为这是一首最优秀的唐诗<span class="ex">.</span></span></code></pre></div>
+<p>上述示例表现了 <code>@宏开</code> 之后的语句中的 <code>将进酒</code> 和中文句号分别被展开为 <code>「君不见，黄河之水天上来……」</code> 和英文句号。</p>
+<p>与 <code>@宏开</code> 相反，<code>@宏闭</code> 可令 zhe 忽略语句中的宏。例如</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>@宏闭</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>你听说过将进酒吗？我认为这是一首最优秀的唐诗。</span></code></pre></div>
+<p>zhe 命令对上述内容的处理结果为</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>你听说过将进酒吗？我认为这是一首最优秀的唐诗。</span></code></pre></div>
+<p>使用 <code>-o</code> 选项可将 zhe 的输出保存到指定的文件。例如</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a>$ <span class="ex">zhe</span> -i macros.m4 -o foo-output.txt foo.txt</span></code></pre></div>
+<p>可将 zhe 的输出结果保存到与 foo.txt 位于同一目录下的文件 foo-output.txt 中。</p>
+<h1 id="宏的调用">宏的调用</h1>
+<p>zhe（基于 Awk 脚本）改变了 m4 宏的调用语法。对于无参数宏，如上一节示例里的两个宏，以普通文字的形式出现即可，亦可以中文括号（全角括号）囊括的形式出现，例如</p>
+<pre><code>你听说过（将进酒）吗？我认为这是一首最优秀的唐诗。</code></pre>
+<p>中文括号形式的宏调用主要是面向有参数的宏，调用语法为</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>（宏名，参数 <span class="dv">1</span>，参数 <span class="dv">2</span>，……）</span></code></pre></div>
+<p>注意，宏名以及参数之间的逗号，皆为中文逗号（全角逗号）。例如，在 macros.m4 文件中定义一个有参数的宏</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`测试&#39;<span class="ch">,</span> `这是测试 <span class="ch">$1</span>。&#39;<span class="ch">)</span></span></code></pre></div>
+<p>在 foo.txt 中可以像下面这样调用 <code>测试</code> 宏：</p>
+<pre><code>有参数的宏：（测试，2）</code></pre>
+<p>上述语句在 <code>@宏开</code> 模式下，可被 zhe 展开为</p>
+<pre><code>有参数的宏：这是测试 2。</code></pre>
+<h1 id="缘由">缘由</h1>
+<p>m4 的宏调用语法是迎合英文习惯，英文单词之间是有空格作为间隔的，在视觉上容易分辨出普通文字和宏调用语句的区别。例如</p>
+<pre><code>when we say test(3), what are we talking about?</code></pre>
+<p>中文字符之间通常没有空格作为间隔，若采用 m4 宏的调用语法，固然可行，但是对于含有宏调用的语句，其可读性将大打折扣。例如，</p>
+<pre><code>当我们说测试（3）的时候，我们在说什么？</code></pre>
+<p>故而，zhe 修改了有参数的中文宏的调用方式（借鉴了 Lisp 函数调用），将宏名移到括号内，且为了避免频繁切换输入法以输入英文括号，逗号和引号，中文宏调用语句使用的标点符号皆为全角标点。</p>
+<h1 id="引号">引号</h1>
+<p>m4 的引号可用于字符转义——将特殊字符转为普通字符。zhe 与之类似，只是使用中文单引号代替了 m4 的 ` 和 ’。例如，以下语句</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a>有参数的宏：‘（测试，<span class="dv">2</span>）’</span></code></pre></div>
+<p>其中宏调用 <code>（测试，2）</code> 会被引号转义为普通文字，zhe 不予展开，故而 zhe 对上述语句的处理结果为</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a>有参数的宏：（测试，<span class="dv">2</span>）</span></code></pre></div>
+<h1 id="示例">示例</h1>
+<p>除了简单的文本替换之外，zhe 目前也能用于解决一些略微复杂的问题。该部分内容可能会持续更新。</p>
+<h2 id="计数器">计数器</h2>
+<p>文件 internal.m4：</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`_N_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`计数器&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_N_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_N_<span class="ch">))</span>_N_&#39;<span class="ch">)</span></span></code></pre></div>
+<p>文件 macros.m4：</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true"></a><span class="kw">include</span><span class="ch">(</span>`internal.m4&#39;<span class="ch">)</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`测试&#39;<span class="ch">,</span> `这是测试 <span class="kw">indir</span><span class="ch">(</span>`计数器&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true"></a>@宏开</span></code></pre></div>
+<p>文件 foo.txt：</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a>测试；（测试）；测试。</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a>@宏闭</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true"></a>测试；（测试）；测试。</span></code></pre></div>
+<p>以下命令</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true"></a>$ <span class="ex">zhe</span> -i macros foo.txt</span></code></pre></div>
+<p>的输出为</p>
+<pre><code>这是测试 1；这是测试 2；这是测试 3。
+测试；测试；测试。</code></pre>
+<h2 id="lua-计算器">Lua 计算器</h2>
+<p>internal.m4：</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`calc&#39;<span class="ch">,</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true"></a>       `syscmd<span class="ch">(</span>`echo &quot;io.write<span class="ch">(</span>string.<span class="kw">format</span><span class="ch">(</span>\&quot;<span class="ch">%</span><span class="dv">0</span>.<span class="dv">3</span>f\&quot;<span class="ch">,</span> <span class="ch">$1))</span>&quot; <span class="ch">|</span> lua&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>macros.m4：</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true"></a><span class="kw">include</span><span class="ch">(</span>`internal.m4&#39;<span class="ch">)</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`计算&#39;<span class="ch">,</span> ` calc<span class="ch">($1)</span> &#39;<span class="ch">)</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true"></a>@宏开</span></code></pre></div>
+<p>foo.txt：</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true"></a>当我们看到（计算，<span class="dv">1</span><span class="ch">/</span><span class="dv">3</span>）时，能意识到它是‘（计算，<span class="dv">1</span><span class="ch">/</span><span class="dv">3</span>）’的产物吗？</span></code></pre></div>
+<p>以下命令</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true"></a>$ <span class="ex">zhe</span> -i macros.m4 foo.txt</span></code></pre></div>
+<p>的输出为</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true"></a>当我们看到 <span class="dv">0</span>.<span class="dv">333</span> 时，能意识到它是（计算，<span class="dv">1</span><span class="ch">/</span><span class="dv">3</span>）的产物吗？</span></code></pre></div>
+<h2 id="嵌套宏调用">嵌套宏调用</h2>
+<p>zhe 支持嵌套形式的中文宏调用，例如 <code>（甲，‘乙’，（丙，‘丁’））</code>。有了嵌套宏调用，便可以做复杂一些的任务了。例如，汉化 ConTeXt。</p>
+<p>macro.m4：</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`<span class="ch">%</span>中文&#39;<span class="ch">,</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true"></a>`\usemodule[zhfonts][size<span class="ch">=$2</span>]</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true"></a>\setupzhfonts[serif][regular<span class="ch">=$1</span>]&#39;</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true"></a><span class="ch">)</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`<span class="ch">%</span>宋体&#39;<span class="ch">,</span> `simsun&#39;<span class="ch">)</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`<span class="ch">%</span>小四&#39;<span class="ch">,</span> `<span class="dv">11</span>pt&#39;<span class="ch">)</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`<span class="ch">%</span>文始&#39;<span class="ch">,</span> `\starttext&#39;<span class="ch">)</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`<span class="ch">%</span>文终&#39;<span class="ch">,</span> `\stoptext&#39;<span class="ch">)</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`<span class="ch">%</span>插图&#39;<span class="ch">,</span> `\placefigure[here][]{<span class="ch">$1</span>}{\externalfigure[<span class="ch">$2</span>][<span class="ch">$3</span>]}&#39;<span class="ch">)</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`<span class="ch">*</span>版宽&#39;<span class="ch">,</span> `\textwidth&#39;<span class="ch">)</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true"></a><span class="kw">define</span><span class="ch">(</span>`<span class="ch">%</span>宽&#39;<span class="ch">,</span> `width<span class="ch">=$1</span>&#39;<span class="ch">)</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true"></a>@宏开</span></code></pre></div>
+<p>foo.txt：</p>
+<pre><code>（%中文，%宋体，%小四）
+%文始
+你好，\CONTEXT！
+（%插图，标题，foo.pdf，（%宽，0.5*版宽））
+%文终</code></pre>
+<p>以下命令</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true"></a>$ <span class="ex">zhe</span> -i macros.m4 foo.txt</span></code></pre></div>
+<p>的输出为</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode tex"><code class="sourceCode latex"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true"></a><span class="fu">\usemodule</span>[zhfonts][size=11pt]</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true"></a><span class="fu">\setupzhfonts</span>[serif][regular=simsun]</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true"></a><span class="fu">\starttext</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true"></a>你好，\CONTEXT！</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true"></a><span class="fu">\placefigure</span>[here][]{标题}{<span class="fu">\externalfigure</span>[foo.pdf][width=0.5<span class="fu">\textwidth</span>]}</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true"></a><span class="fu">\stoptext</span></span></code></pre></div>
+<h2 id="野蛮和优雅">野蛮和优雅</h2>
+<p>见「<a href="../metafun/appendix.html">新蜗牛 · 附录</a>」。</p>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

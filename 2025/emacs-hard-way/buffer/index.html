@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>虚相</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">虚相
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2025 年 05 月 30 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#缓冲区" id="toc-缓冲区">缓冲区</a></li>
+  <li><a href="#创建缓冲区" id="toc-创建缓冲区">创建缓冲区</a></li>
+  <li><a href="#当前缓冲区" id="toc-当前缓冲区">当前缓冲区</a></li>
+  <li><a href="#内容转移" id="toc-内容转移">内容转移</a></li>
+  <li><a href="#赋以窗口" id="toc-赋以窗口">赋以窗口</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
+</nav>
+
+<h1 id="前言">前言</h1>
+<p>我们总是习惯于说，用 Emacs
+编辑某文件。对于其他文本编辑器，我们也是习惯如是说。实际上用文本编辑器编辑文件，只是一种假象。我们总是在内存里编辑着文件的虚相，并在某个时机将虚相写入文件，从而变为实相。这个事实，倘若你从未用
+C/C++
+之类的语言写过程序或者对计算机运作原理近乎一无所知，通常难以体会。一些能够自动保存文件内容的编辑器——Emacs
+也可以如此——，很容易给你造成错觉，以为你正在编辑硬盘里文件的内容。Emacs
+极为擅长营造虚相，可谓文字编辑行当的 PhotoShop。</p>
+<h1 id="缓冲区">缓冲区</h1>
+<p>每次当你运行 Emacs 时，即使你只用 Emacs 打开了一份文件，例如
+foo.txt，Emacs 会在内存空间创建名为 foo.txt 的缓冲区并将 foo.txt
+现有内容复制到该缓冲区，除此之外，Emacs 还有一些缓冲区隐藏在幕后。</p>
+<p>执行 <code>M-x list-buffers</code>，你可以看到 Emacs
+当前的所有缓冲区的名字，其中有些缓冲区关联着硬盘上的文件，例如上述的
+foo.txt 缓冲区，也有一些缓冲区并不关联任何文件，例如
+<code>*scratch*</code>、<code>*Messages*</code>
+以及<code>*Completions</code> 等缓冲区，还有一个缓冲区，甚至不会显示在
+<code>list-buffers</code>
+的结果中，它就是微缓冲区。需要注意的是，<code>*Messages*</code> 就是
+<code>message</code> 函数用于输出信息的缓冲区。</p>
+<figure>
+<img src="figures/01.png" alt="缓冲区列表" />
+<figcaption aria-hidden="true">缓冲区列表</figcaption>
+</figure>
+<p>在当前窗口里，可以使用 <code>C-x b</code>
+切换缓冲区，倘若你不知道要切换的缓冲区的名字，可以
+<code>C-x b TAB</code>，开启 <code>*Completions*</code>
+缓冲区及其窗口，然后从中选择你要切换的缓冲区。<code>TAB</code>
+即制表键，亦即 Tab 键。在 Emacs 里以及 Unix 或 Linux 的 Shell 里，Tab
+键通常用于自动补全命令，故而在 Emacs 里，通过它，能开启
+<code>*Completions*</code> 缓冲区及其窗口。</p>
+<p>倘若你只是想试验一下，并不想切换缓冲区，只需将光标定位到
+<code>*Completions*</code> 缓冲区所在窗口，摁 <code>q</code>
+键退出该窗口，然后使用 <code>C-g</code> 终止 <code>C-x b</code>
+操作。</p>
+<p>使用 <code>C-k 缓冲区名</code> 可以关闭指定的缓冲区，也可以用
+<code>C-k TAB</code> 补全的方式，从打开的 <code>*Completions*</code>
+缓冲区所在窗口选择要关闭的缓冲区。</p>
+<h1 id="创建缓冲区">创建缓冲区</h1>
+<p>在 Elisp 语言中，缓冲区是一种数据类型，通过默认绑定于在
+<code>C-x C-f</code> 的 <code>find-file</code>
+函数便可为该类型创建实例或对象。例如，表达式
+<code>(find-file "/tmp/foo.c")</code> 与 <code>C-x C-f /tmp/foo.c</code>
+等效。再例如</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((foo-c-buf (find-file <span class="st">&quot;/tmp/foo.c&quot;</span>)))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;此刻我在缓冲区 %s 里&quot;</span> (buffer-name foo-c-buf)))</span></code></pre></div>
+<p>上述代码是通过 <code>let</code> 表达式，将 <code>find-file</code>
+创建的缓冲区对象记为 <code>foo-c-buf</code>，然后用函数
+<code>buffer-name</code> 获取 <code>foo-c-buf</code>
+所记缓冲区对象的名字，最后用 <code>message</code> 表达式输出该名字。在
+Emacs 里对上述表达式求值，即在其尾部执行
+<code>C-x C-e</code>，所产生的效应是，Emacs 会创建名为
+<code>foo.c</code>
+的缓冲区，并将其设置为当前缓冲区，然后在微缓冲区中显示了该缓冲区的名字。</p>
+<p>使用更为基础的 <code>generate-new-buffer</code>
+可创建无文件绑定的缓冲区对象。例如</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((foo (generate-new-buffer <span class="st">&quot;Foo&quot;</span>)))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;缓冲区 %s&quot;</span> (buffer-name foo)))</span></code></pre></div>
+<p>上述表达式可以创建名为 <code>Foo</code>
+的缓冲区对象，并将其记为局部变量 <code>foo</code>，然后在微缓冲区（或
+<code>*Message*</code> 缓冲区）输出该缓冲区对象的名字
+<code>Foo</code>。</p>
+<p>将创建的缓冲区对象记为变量，是为了后续通过变量访问该对象，为了便于叙述，我们对二者不作区分，例如一旦将某个缓冲区对象记为某变量，就相当于一个人有了名字，我们可以用此名指代此人。名字不过是符号，用于指代某物。事实上，Elisp
+语言里，变量名的确只是符号，为一个变量赋值的本质是用一个符号绑定一个值。</p>
+<h1 id="当前缓冲区">当前缓冲区</h1>
+<p>Emacs
+运行期间，可以创建多个缓冲区。这些缓冲区可以在某个窗口中呈现，也可以隐藏在幕后，但无论何时，只有一个缓冲区可作为当前缓冲区。可以使用
+<code>set-buffer</code> 函数将某个缓冲区对象设为当前缓冲区，例如</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((foo (generate-new-buffer <span class="st">&quot;Foo&quot;</span>)))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    (set-buffer foo))</span></code></pre></div>
+<p>上述表达式创建了缓冲区对象 <code>foo</code>
+并将其设为当前缓冲区。</p>
+<p>倘若你希望缓冲区的内容能永久保存下来，在将缓冲区对象设为当前缓冲区后，可使用
+<code>set-visited-file-name</code> 将其关联指定的文件，例如</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((foo (generate-new-buffer <span class="st">&quot;Foo&quot;</span>)))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    (set-buffer foo)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    (set-visited-file-name <span class="st">&quot;/tmp/foo.txt&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;缓冲区 %s&quot;</span> (buffer-name foo)))</span></code></pre></div>
+<p>当缓冲区对象 <code>foo</code> 与文件 /tmp/foo.txt
+关联后，缓冲区对象的名字便会由 <code>Foo</code> 变为
+<code>foo.txt</code>。使用 <code>with-current-buffer</code>
+可以将某个缓冲区对象变为当前缓冲区，并关联一组相关的操作。例如，上述代码可等效修改为</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((foo (generate-new-buffer <span class="st">&quot;Foo&quot;</span>)))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    (with-current-buffer foo</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        (set-visited-file-name <span class="st">&quot;/tmp/foo.txt&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        (message <span class="st">&quot;缓冲区 %s&quot;</span> (buffer-name foo))))</span></code></pre></div>
+<p>使用 <code>with-current-buffer</code>
+表达式的好处是，你无需时刻记住当前缓冲区是谁。</p>
+<h1 id="内容转移">内容转移</h1>
+<p>缓冲区，也许是 Elisp
+语言里最为重要的数据类型了，其功用令其他编程语言所提供的字符串类型难以企及。在当前缓冲区内，你可以移动光标，在任意位置插入文字，可以随时将缓冲区内容保存到文件，也可以将一个缓冲区中的内容复制到另一个缓冲区。</p>
+<p><code>insert-buffer</code>
+可将指定的缓冲区的内容插入到当前缓冲区光标所在位置。例如</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((foo (generate-new-buffer <span class="st">&quot;Foo&quot;</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>      (bar (generate-new-buffer <span class="st">&quot;Bar&quot;</span>)))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    (with-current-buffer foo</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        (insert <span class="st">&quot;i am foo!&quot;</span>))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    (with-current-buffer bar</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        (insert-buffer foo)))</span></code></pre></div>
+<p>上述代码创建了两个缓冲区对象 <code>foo</code> 和 <code>bar</code>。在
+<code>foo</code> 中，我们随意插入了文字「i am foo!」。然后，我们将
+<code>foo</code> 中的内容插入到了 <code>bar</code> 中。</p>
+<p><code>erase-buffer</code>
+可以清除当前缓冲区的内容，若在上述示例中使用这个函数，实现的效果便是，<code>foo</code>
+中的内容被转移到了 <code>bar</code>。</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((foo (generate-new-buffer <span class="st">&quot;Foo&quot;</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>      (bar (generate-new-buffer <span class="st">&quot;Bar&quot;</span>)))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    (with-current-buffer foo</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        (insert <span class="st">&quot;i am foo!&quot;</span>))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    (with-current-buffer bar</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        (insert-buffer foo)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        (with-current-buffer foo</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>            (erase-buffer))))</span></code></pre></div>
+<p>函数 <code>point-min</code> 和 <code>point-max</code>
+可分别获取当前缓冲区的开始和末尾的位置。例如，若当前缓冲区一共含有 100
+个字符，则 <code>(point-min)</code> 的求值结果为 1，而
+<code>(point-max)</code> 的结果为
+100，借助前者，我们可以将光标移动到缓冲区首部，借助后者不仅可将光标移动到缓冲区尾部，而且也能获知缓冲区的长度。函数
+<code>point</code>
+可以获取当前缓冲区中，光标的当前位置。当前缓冲区的光标可以通过
+<code>goto-char</code>、<code>forward-char</code> 以及
+<code>backward-char</code> 移动。想必你还记得我们曾经用过它们。</p>
+<p>基于上述的缓冲区内的光标定位功能，可以自由地将一个缓冲区中的内容插入到另一个缓冲区中指定的位置，也许你此刻还不理解有何必要如此。很快，我会向你证明它的意义。</p>
+<h1 id="赋以窗口">赋以窗口</h1>
+<p>当前的缓冲区未必在当前的窗口里呈现。不过，当输入焦点落入某窗口，亦即该窗口被激活，则与该窗口关联的缓冲区会自动成为当前缓冲区。</p>
+<p><code>selected-window</code> 可获得当前被激活的窗口。例如</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((live-window (selected-window)))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">when</span> (windowp live-window)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        (message <span class="st">&quot;这是一个窗口&quot;</span>))</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">when</span> (window-live-p live-window)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        (message <span class="st">&quot;这是一个激活的窗口&quot;</span>)))</span></code></pre></div>
+<p><code>windowp</code> 和 <code>window-live-p</code> 皆为 Elisp
+谓词函数，分别用于判定一个对象是否为窗口以及是否为激活的窗口。<code>when</code>
+表达式，想必你还记得，它表达「若……为真，则……」的逻辑。</p>
+<p>如同总有一个缓冲区对象是当前的，也总有一个窗口是激活的。在激活的窗口里，可以使用
+<code>switch-to-buffer</code>
+将指定的缓冲区对象呈现于窗口中并使之成为当前缓冲区。例如</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((foo (generate-new-buffer <span class="st">&quot;Foo&quot;</span>)))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    (switch-to-buffer foo)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    (set-visited-file-name <span class="st">&quot;/tmp/foo.txt&quot;</span>))</span></code></pre></div>
+<p>上述表达式与 <code>(find-file "/tmp/foo.txt")</code> 等效。</p>
+<p>也许你还记得 <code>C-x 2</code> 和
+<code>C-x 3</code>，它们可以构造新窗口，它们分别绑定函数
+<code>split-window-right</code> 和
+<code>split-window-below</code>。这意味着，在 Elisp
+程序里，可以利用这两个函数创建新窗口，并使用 <code>select-window</code>
+函数（注意，它不是 <code>selected-widow</code> 函数）将其激活。例如</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((new-window (split-window-below)))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    (select-window new-window))</span></code></pre></div>
+<p>对上述表达式求值，产生的效果是，当前窗口从正中间被横向一分为二，上方是原有窗口，下方是新建窗口，且输入焦点落在下方窗口里。</p>
+<p>结合上述缓冲区的函数，我们可以让创建新窗口的示例更为生动。例如，创立缓冲区，将其关联到某个文件，然后为该缓冲区新建窗口。</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((foo (generate-new-buffer <span class="st">&quot;Foo&quot;</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>      (foo-win (split-window-below)))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    (select-window foo-win)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    (switch-to-buffer foo)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    (set-visited-file-name <span class="st">&quot;/tmp/foo.txt&quot;</span>))</span></code></pre></div>
+<figure>
+<img src="figures/foo.gif" alt="缓冲区赋以窗口" />
+<figcaption aria-hidden="true">缓冲区赋以窗口</figcaption>
+</figure>
+<h1 id="总结">总结</h1>
+<p>我们已经步入 Emacs
+世界里我认为最为有趣的地方。在此处，你能直观深切感受到，天地之间，其犹橐龠乎？虚而不屈，动而愈出。你在
+Emacs
+窗口中的一切所见，不过是幕后的缓冲区在各种命令揉捏雕琢的形状在某个时间剖面上的投影。人类对
+Emacs
+可作出的配置，是不可穷尽的，但缓冲区机制是非常容易把握的，故曰多闻数穷，不若守中。</p>
+
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>山海经</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">山海经</h1>
+<p class="date">2023 年 04 月 29 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#出生地">出生地</a></li>
+<li><a href="#山的爬行">山的爬行</a></li>
+<li><a href="#又">又</a></li>
+<li><a href="#曰">曰</a></li>
+<li><a href="#首山">首山</a></li>
+<li><a href="#新山海经语">新山海经语</a></li>
+<li><a href="#附录">附录</a></li>
+</ul>
+</nav>
+<blockquote>
+<p>上一篇：<a href="framed-text.html">框文</a></p>
+</blockquote>
+<blockquote>
+<p>下一篇：<a href="gate.html">门</a></p>
+</blockquote>
+<p>南山经之首曰鹊山。又东三百里，曰堂庭之山。又东三百八十里，曰猨翼之山……山海经的地理，真伪已难以考证，但是蜗牛世界里的静物觉得，这是一本为一些叫做山或海的静物而写的爬行指南。</p>
+<h1 id="出生地">出生地</h1>
+<p>鹊山，堂庭之山，猨翼之山，皆可由原点出生：</p>
+<pre class="metapost"><code>def 山 = picture enddef;
+
+山 鹊山, 堂庭之山, 猨翼之山;
+鹊山 := 框文(&quot;鹊山&quot;);
+堂庭之山 := 框文(&quot;堂庭之山&quot;);
+猨翼之山 := 框文(&quot;猨翼之山&quot;);
+
+for i = 鹊山, 堂庭之山, 猨翼之山:
+  draw i;
+endfor;</code></pre>
+<p>结果只能看到猨翼之山，其他两山皆在它背后：</p>
+<figure>
+<img src="../../figures/metafun/shanhai-jing/01.png" alt="" /><figcaption>猨翼之山</figcaption>
+</figure>
+<h1 id="山的爬行">山的爬行</h1>
+<p>若用 MetaPost 捏造一个长度单位「里」，便可在方寸之间，让山的爬行与山海经的记录相符：</p>
+<pre class="metapost"><code>numeric 里; 里 := .25;
+
+draw 鹊山;
+draw 堂庭之山 shifted (东 300里);
+draw 猨翼之山 shifted (东 680里);</code></pre>
+<figure>
+<img src="../../figures/metafun/shanhai-jing/02.png" alt="" /><figcaption>山的爬行</figcaption>
+</figure>
+<p>问题出现了！根据山海经的记载，猨翼之山在堂庭之山的东边，二者相距 380 里，但是在上述代码里，确定猨翼之山的基准却是鹊山。</p>
+<p>山海经里的「又」字，用得极妙，它隐含了一个相对的起点，但是又不需要特意指出这个起点。使用 MetaPost 语言，能否也定义一个这样的「又」呢？</p>
+<h1 id="又">又</h1>
+<p>要定义又，需要一个全局变量，用它记录相对起点的绝对位置，这个变量的名字姑且叫作竖亥吧……</p>
+<pre class="metapost"><code>pair 竖亥;
+竖亥 := (0, 0);</code></pre>
+<p>然后便可定义 <code>又</code>：</p>
+<pre class="metapost"><code>vardef 又 expr a =
+  竖亥 := 竖亥 shifted a;
+  竖亥
+enddef;</code></pre>
+<p>使用 <code>又</code>：</p>
+<pre class="metapost"><code>draw 鹊山;
+draw 堂庭之山 shifted 又 (东 300里);
+draw 猨翼之山 shifted 又 (东 380里);</code></pre>
+<h1 id="曰">曰</h1>
+<p>还可以定义一个 <code>曰</code>：</p>
+<pre class="metapost"><code>tertiarydef a 曰 b =
+  b shifted a
+enddef;</code></pre>
+<p>于是，</p>
+<pre class="metapost"><code>draw 鹊山;
+draw (又 (东 300里)) 曰 堂庭之山;
+draw (又 (东 380里)) 曰 猨翼之山;</code></pre>
+<h1 id="首山">首山</h1>
+<p>如果鹊山的位置并不在原点，那么竖亥的位置就需要重新定义了。竖亥的初始值应该是首山的位置，确切地说，是首山的中心点。</p>
+<p>定义一个宏，叫 <code>首山</code>，用它帮助竖亥确定初始位置：</p>
+<pre class="metapost"><code>vardef 首山 expr a =
+  竖亥 := center a;
+  a
+enddef;</code></pre>
+<p>MetaPost 提供的 <code>center</code> 宏可以确定 <code>path</code> 或 <code>picture</code> 对象的中心点。</p>
+<p>现在，可以给鹊山一个绝对的位置，</p>
+<pre class="metapost"><code>鹊山 := 鹊山 shifted (-300里, -300里);</code></pre>
+<p>然后，将其作为首山，然后确定其他山：</p>
+<pre class="metapost"><code>draw 框文(&quot;出生地&quot;);
+draw 首山(鹊山);
+draw (又 (东 300里)) 曰 堂庭之山;
+draw (又 (东 380里)) 曰 猨翼之山;</code></pre>
+<figure>
+<img src="../../figures/metafun/shanhai-jing/03.png" alt="" /><figcaption>首山和其他山</figcaption>
+</figure>
+<h1 id="新山海经语">新山海经语</h1>
+<p>虽然可以用 MetaPost 复刻山海经语，用于摆放各种静物，但是不必如此崇古。</p>
+<p>语言不过是一切游戏的出生地，而语言本身就是游戏。我可以发明一套新的山海经语言，它的样子大致如下</p>
+<pre class="metapost"><code>令 鹊山 距 原点 有 (-300里, -300里);
+令 堂庭之山 距 鹊山 有 (300里, 0);
+令 猨翼之山 距 堂庭之山 有 (380里, 0);</code></pre>
+<p><code>令</code>，<code>距</code>，<code>有</code> 皆为宏，其定义如下：</p>
+<pre class="metapost"><code>def 令 suffix a =
+  令之体(a)
+enddef;
+def 令之体 (suffix a) text b =
+  a := a shifted (b)
+enddef;
+
+def 距 expr a =
+  (center a)
+enddef;
+
+def 有 expr b =
+  shifted b
+enddef;</code></pre>
+<p>上述宏定义所用的所有技巧里，之前未用过的仅仅是 <code>suffix</code> 类型的参数，它的作用是，引用一个变量。在 MetaPost 里，只有 <code>suffix</code> 类型的参数，能够让变量真正的出现在宏的定义里，其他类型的参数仅能让变量的副本进入宏定义。</p>
+<p>下面是基于新山海经语定位三山的示例：</p>
+<pre class="metapost"><code>numeric 里; 里 := .25;
+山 鹊山, 堂庭之山, 猨翼之山;
+
+鹊山 := 框文(&quot;鹊山&quot;);
+堂庭之山 := 框文(&quot;堂庭之山&quot;);
+猨翼之山 := 框文(&quot;猨翼之山&quot;);
+
+令 鹊山 距 (0, 0) 有 (-300里, -200里);
+令 堂庭之山 距 鹊山 有 (300里, 0);
+令 猨翼之山 距 堂庭之山 有 (380里, 0);
+
+for i = 鹊山, 堂庭之山, 猨翼之山:
+  draw i;
+endfor;</code></pre>
+<p>结果是竖亥下岗了。</p>
+<p>汉字，英文，笛卡尔坐标……混杂在一起，似乎不难看。</p>
+<h1 id="附录">附录</h1>
+<p>新山海经语示例的完整代码：</p>
+<pre class="metapost"><code>\usemodule[zhfonts]
+\startuseMPgraphic{foo}
+numeric 框文配置.框.扩充, 框文配置.框.线粗, 框文配置.框.玩笑;
+框文配置.框.扩充 := 4pt; 
+框文配置.框.线粗 := 4pt; 
+框文配置.框.玩笑 := 0;
+
+color 框文配置.文字.颜色, 框文配置.框.颜色, 框文配置.框.背景;
+框文配置.文字.颜色 := black; 
+框文配置.框.颜色 := darkgray; 
+框文配置.框.背景 := lightgray;
+
+path 框文配置.框形;
+框文配置.框形 := fullsquare;
+
+vardef 框文 expr a =
+  save 框, 文;
+  path 框; picture 文;
+  文 = textext(a);
+  框 := fullsquare
+        xscaled (bbwidth 文) yscaled (bbheight 文)
+        enlarged (框文配置.框.扩充 * (1, 1));
+  框 := 框文配置.框形 xscaled (bbwidth 框) yscaled (bbheight 框);   % &lt;= 关键之处
+  if 框文配置.框.玩笑 &gt; 0: 框 := 框 randomized 框文配置.框.玩笑; fi;
+  image(draw 框 withpen pencircle scaled 框文配置.框.线粗 withcolor 框文配置.框.颜色;
+        fill 框 withcolor 框文配置.框.背景;
+        draw 文 withcolor 框文配置.文字.颜色;)
+enddef;
+
+def 山 = picture enddef;
+
+def 令 suffix a =
+  令之体(a)
+enddef;
+def 令之体 (suffix a) text b =
+  a := a shifted (b)
+enddef;
+
+def 距 expr a =
+  (center a)
+enddef;
+
+def 有 expr b =
+  shifted b
+enddef;
+
+numeric 里; 里 := .25;
+山 鹊山, 堂庭之山, 猨翼之山;
+
+鹊山 := 框文(&quot;鹊山&quot;);
+堂庭之山 := 框文(&quot;堂庭之山&quot;);
+猨翼之山 := 框文(&quot;猨翼之山&quot;);
+
+令 鹊山 距 (0, 0) 有 (-300里, -200里);
+令 堂庭之山 距 鹊山 有 (300里, 0);
+令 猨翼之山 距 堂庭之山 有 (380里, 0);
+
+for i = 鹊山, 堂庭之山, 猨翼之山:
+  draw i;
+endfor;
+\stopuseMPgraphic
+
+\startTEXpage[offset=4pt]
+\useMPgraphic{foo}
+\stopTEXpage</code></pre>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a> 或在<a href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

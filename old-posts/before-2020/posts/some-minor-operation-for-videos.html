@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html prefix="        og: http://ogp.me/ns# article: http://ogp.me/ns/article#     " vocab="http://ogp.me/ns" lang="zh_cn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>为视频做小手术 | # rm -rf /</title>
+<link href="../assets/css/all-nocdn.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#5670d4">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="zh_cn" href="../rss.xml">
+<link rel="canonical" href="#">
+<!--[if lt IE 9]><script src="../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><link href="../mycss/tweak.css" rel="stylesheet" type="text/css">
+<base target="_parent">
+<meta name="author" content="Garfileo">
+<link rel="prev" href="snail.html" title="蜗牛" type="text/html">
+<link rel="next" href="bash.html" title="写给高年级小学生的《Bash 指南》" type="text/html">
+<meta property="og:site_name" content="# rm -rf /">
+<meta property="og:title" content="为视频做小手术">
+<meta property="og:url" content="/posts/some-minor-operation-for-videos.html">
+<meta property="og:description" content="FFmpeg 命令的一般格式为：
+$ ffmpeg [全局选项] [输入选项] -i input.mp4 [输出选项] output.mp4
+
+
+
+屏幕录制
+在 Linux 中，我的桌面屏幕分辨率是 (1920\times 1080)，使用命令
+$ ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 output.mp4
+
+
+">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2018-11-14T10:34:36+08:00">
+<meta property="article:tag" content="FFmpeg">
+</head>
+<body>
+    <a href="#content" class="sr-only sr-only-focusable">跳到主内容</a>
+    <div id="container">
+        
+    <header id="header"><h1 id="brand"><a href="../" title="# rm -rf /" rel="home">
+
+        <span id="blog-title"># rm -rf /</span>
+    </a></h1>
+
+        
+
+        
+    <nav id="menu"><ul>
+<li><a href="../categories/index.html">标签</a></li>
+                <li><a href="../archive.html">文章存档</a></li>
+
+    
+
+    
+    
+    </ul></nav></header><main id="content"><article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><header><h1 class="p-name entry-title" itemprop="headline name"><a href="#" class="u-url">为视频做小手术</a></h1>
+
+        <div class="metadata">
+            <p class="byline author vcard p-author h-card"><span class="byline-name fn p-name" itemprop="author">
+                    Garfileo
+            </span></p>
+            <p class="dateline">
+            <a href="#" rel="bookmark">
+            <time class="published dt-published" datetime="2018-11-14T10:34:36+08:00" itemprop="datePublished" title="2018-11-14 10:34">2018-11-14 10:34</time></a>
+            </p>
+            
+
+        </div>
+        
+
+    </header><div class="e-content entry-content" itemprop="articleBody text">
+    <div>
+<p>FFmpeg 命令的一般格式为：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg <span class="o">[</span>全局选项<span class="o">]</span> <span class="o">[</span>输入选项<span class="o">]</span> -i input.mp4 <span class="o">[</span>输出选项<span class="o">]</span> output.mp4
+</pre>
+
+
+<h2>屏幕录制</h2>
+<p>在 Linux 中，我的桌面屏幕分辨率是 (1920\times 1080)，使用命令</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -video_size 1920x1080 -framerate <span class="m">25</span> -f x11grab -i :0.0 output.mp4
+</pre>
+
+
+<p>可将录制整个屏幕。<code>-i ：0.0</code> 表示将当前的屏幕作为 ffmpeg 的输入。</p>
+<p>若想录制屏幕中的指定区域，例如录制左上角点坐标为 (300, 100)、宽 500、高 200 的区域，只需</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -video_size 500x200 -framerate <span class="m">25</span> -f x11grab -i :0.0+300,100 output.mp4
+</pre>
+
+
+<p>摁 <code>q</code> 键可退出屏幕录制过程。</p>
+<p>FFmpeg 的 Wiki 页面[1]给出了 Windows、Mac OS X 中的屏幕录制命令。</p>
+<h2>从时间轴上裁剪</h2>
+<p>使用命令</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss <span class="m">00</span>:10:25 -i input.mp4 -frames:v <span class="m">1</span> output.png
+</pre>
+
+
+<p>可从视频的时间轴上截取时间戳为 00:10:25 时的画面。<code>-i</code> 表输入。<code>-ss</code> 位于 <code>-i</code> 之前，意味着跳到所输入的视频文件的给定的时间戳对应的位置。至于 <code>-i</code> 之后的设定，作用于输出。<code>-frames:v 1</code> 的意思是获取视频的 1 帧，亦即图片；若给定的帧数大于 1，那么输出的文件应当是视频，因此可以用这个参数截取一段视频。</p>
+<p>若给定起始时间戳和持续时长，截取输入的视频里的一段，可以用 <code>-t</code> 选项与 <code>-ss</code> 选项相配合而实现。<code>-ss</code> 选项放在 <code>-i</code> 选项之前，用于确定所截取视频的起始帧。<code>-t</code> 选项尾随 <code>-ss</code>。例如，从输入的视频中截取从时间戳 00:10:25 开始，持续 10 分钟的一段，只需</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss <span class="m">00</span>:10:25 -t <span class="m">600</span> -i input.mp4 output.mp4
+</pre>
+
+
+<p>或</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss <span class="m">00</span>:10:25 -t <span class="m">00</span>:10:00 -i input.mp4 output.mp4
+</pre>
+
+
+<p>若想按给定起始和终止时间戳截取视频，需要用 <code>-to</code> 选项，但这个选项只能作用于视频的输出，亦即它必须位于 <code>-i</code> 选项之后。例如，</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -i input.mp4 -ss <span class="m">00</span>:10:25 -to <span class="m">00</span>:20:25 output.mp4
+</pre>
+
+
+<p>也能实现从时间戳 00:10:25 开始并持续 10 分钟的一段视频的截取，但是与上述将 <code>-ss</code> 选项放在 <code>-i</code> 选项之前的命令相比，这个命令通常较为低效。因为 ffmpeg 会逐帧对输入视频进行解码，这个过程结束后，进入输出阶段时，再按照给定的起止时间戳截取视频。<code>-ss</code> 选项放在 <code>-i</code> 之前，ffmpeg 不会对 <code>-ss</code> 给定的时间戳之前的帧进行解码。</p>
+<p>在 <code>-ss</code> 和 <code>-to</code> 配合使用时，将 <code>-ss</code> 放在 <code>-i</code> 选项之前，并非不可以，但是 <code>-to</code> 的含义就变了，它不再表示视频截取的终止点。因为 <code>-to</code> 原本的起点被 <code>-ss</code> 篡改了。例如</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss <span class="m">00</span>:10:25 -i input.mp4 -to <span class="m">00</span>:20:25 output.mp4
+</pre>
+
+
+<p>实际上截取的是输入视频中的从 00:10:25 到 00:30:25 这一段，而非从 00:10:25 到 00:20:25 这一段。</p>
+<p>在上述命令中，输出视频是经过 ffmpeg 重新编码的，因此与输入视频的编码不相同。若希望输入视频的编码格式与输入视频相同，需要用 <code>-c</code> 选项将输出视频的编码格式设为 <code>copy</code>，例如</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -i input.mp4 -ss <span class="m">00</span>:10:25 -to <span class="m">00</span>:20:25 -c copy output.mp4
+</pre>
+
+
+<p>实际上，<code>-c copy</code> 选项可分解为</p>
+<pre class="code literal-block"><span></span>-c:v copy -c:a copy
+</pre>
+
+
+<p>即复制输入视频的视频编码和音频编码。</p>
+<p>不过，在截取视频时，若使用 <code>-c copy</code> 选项，并且截取的视频要与其他视频拼接，那么应当再加上 <code>-avoid_negative_ts 1</code> 选项，例如</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -ss <span class="m">00</span>:10:25 -t <span class="m">600</span> -i input.mp4 -c copy -avoid_negative_ts <span class="m">1</span> output.mp4
+</pre>
+
+
+<p>原因不明，未作深究。推测是，若将截取视频拼接到其他视频的尾部，<code>-avoid_negative_ts 1</code> 可以避免前者的第 1 帧覆盖后者的最后一帧。</p>
+<h2>去除视频水印</h2>
+<p>ffmpeg 具有类似于图像处理软件那样的滤镜（Filter）功能，作用于视频输出阶段。滤镜有很多种。delogo 滤镜可用于消除视频上的水印。</p>
+<p>delogo 滤镜的基本用法是</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -i input.mp4 -vf <span class="s2">"delogo=x=a:y=b:w=c:h=d"</span> -c:a copy output.mp4
+</pre>
+
+
+<p>表示将一个左上角点坐标为 (a, b)、宽为 c、高为 d 的矩形区域置于视频的每一帧上。这个矩形区域内的像素由矩形边缘之外的像素确定。因此，若用 delogo 滤镜覆盖视频中的水印，结果产生的效果类似于模糊的毛玻璃。</p>
+<p>若视频里有多处水印，可以用多个 delogo 去覆盖，各条 delogo 语句之间以「<code>,</code>」隔开。例如</p>
+<pre class="code literal-block"><span></span>-vf "delogo=x=a:y=b:w=c:h=d, delogo=x=e:y=f:w=g:h=h, ..."
+</pre>
+
+
+<p>有些人为了保护视频里的水印不会被他人轻易消除，在添加水印的时候，会让水印在一定时间内出现，例如每隔 5 分钟出现，并停留 1 分钟。对于这样的视频，若是将 delogo 滤镜作用于视频的每一帧画面，就会对视频里没有水印的帧造成一些破坏。应对此类水印，可以使用 delogo 滤镜的 <code>enable</code> 参数，使得 delogo 滤镜与水印保持同时出现和消失的效果。例如，</p>
+<pre class="code literal-block"><span></span>-vf "delogo=x=a:y=b:w=c:h=d:enable='between(t, e, f)'"
+</pre>
+
+
+<p><code>t</code> 表示视频当前的时间戳，<code>e</code> 表示一段时间的起点，<code>f</code> 表示一段时间的终点。这样的 <code>enable</code> 参数，其作用是，当视频当前的时间戳 <code>t</code> 不小于 <code>e</code> 且不大于 <code>f</code> 时，就让 delogo 滤镜生效。亦即，只要让 <code>e</code> 和 <code>f</code> 的值与水印出现和消失的时间吻合，就能够保证 delogo 滤镜与水印保持同时出现和消失。</p>
+<p>滤镜作用于视频的输出过程，这意味着 FFmpeg 会对输入视频重新进行编码，视频画面质量有所损失在所难免。不过，通过调整输出视频的码率，可以使得输出视频的画面质量与输入视频相近。调整输出视频码率的选项为 <code>-b:v</code>，我通常将其值设为 <code>1600k</code>（对于蓝光高清视频，这个值有些小），例如：</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -i input.mp4 -vf <span class="s2">"delogo=x=a:y=b:w=c:h=d"</span> -c:a copy -b:v 1600k output.mp4
+</pre>
+
+
+<h2>为视频增加水印</h2>
+<p>使用 overlay 滤镜可以将图片置于到视频的每一帧画面上。用这种滤镜可以在视频中增加水印，当然也能用于覆盖视频中一些不希望出现的区域。</p>
+<p>overlay 滤镜的基本用法为</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -i input.mp4 -i logo.png -vf <span class="s2">"overlay=a:b"</span> -c:a copy -b:v 1600k output.mp4
+</pre>
+
+
+<p><code>a</code> 和 <code>b</code> 用于设定 <code>logo.png</code> 图片在视频每一帧上的位置，即图片的左上角点在帧画面上的坐标。</p>
+<p>增加多个水印也是可以的，例如</p>
+<pre class="code literal-block"><span></span><span class="gp">$</span> ffmpeg -i input.mp4 -i logo1.png -i logo2.png <span class="se">\</span>
+  -filter_complex <span class="s2">"overlay=a:b, overlay=c:d"</span> -c:a copy -b:v 1600k output.mp4
+</pre>
+
+
+<p>需要注意每个 <code>-i</code> 输入的图片文件与 <code>overlay</code> 的对应关系。<code>-vf</code> 用于设定单输入文件的滤镜，对于多份输入，需要用 <code>-filter_complex</code> 选项。</p>
+<p>overlay 滤镜也支持 <code>enable</code> 参数。</p>
+<h3><strong>引用的文档</strong></h3>
+<p><strong>[1]</strong>　<a href="https://trac.ffmpeg.org/wiki/Capture/Desktop">https://trac.ffmpeg.org/wiki/Capture/Desktop</a></p>
+<p><strong>[2]</strong>　<a href="https://trac.ffmpeg.org/wiki/Seeking">https://trac.ffmpeg.org/wiki/Seeking</a></p>
+</div>
+    </div>
+    <aside class="postpromonav"><nav><ul itemprop="keywords" class="tags">
+<li><a class="tag p-category" href="../categories/ffmpeg.html" rel="tag">FFmpeg</a></li>
+        </ul>
+<ul class="pager hidden-print">
+<li class="previous">
+                <a href="snail.html" rel="prev" title="蜗牛">上一篇文章</a>
+            </li>
+            <li class="next">
+                <a href="bash.html" rel="next" title="写给高年级小学生的《Bash 指南》">下一篇文章</a>
+            </li>
+        </ul></nav></aside></article></main><footer id="footer"><p>我的邮箱：lyr.m2@live.cn</p>
+            
+        </footer>
+</div>
+    
+            <script src="../assets/js/all-nocdn.js"></script><script>
+    baguetteBox.run('div#content', {
+        ignoreClass: 'islink',
+        captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+    </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+\usemodule[zhfonts]
+
+\input snail.tex
+\startuseMPgraphic{foo}
+宫（甲，“甲”）；
+宫（乙，“乙”）位于甲偏(东 3cm)；
+呜呼 甲，乙；
+路（乙甲，乙·午门 经转 乙·巽位 经转 甲·坤位 -- 甲·子门）；
+路（甲乙，乙·酉门 -- 甲·卯门 越过 乙甲）；
+\stopuseMPgraphic
+
+\startTEXpage[offset=4pt]
+章(测试)
+\useMPgraphic{foo}
+\stopTEXpage

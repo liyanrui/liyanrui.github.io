@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>文本分割</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">文本分割</h1>
+<p class="date">2023 年 06 月 15 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#问题">问题</a></li>
+<li><a href="#字符串切片">字符串切片</a></li>
+<li><a href="#向量">向量</a></li>
+<li><a href="#字符串分割">字符串分割</a></li>
+<li><a href="#迭代器">迭代器</a></li>
+<li><a href="#放手一试">放手一试</a></li>
+<li><a href="#c-版本">C 版本</a></li>
+<li><a href="#小结">小结</a></li>
+</ul>
+</nav>
+<h1 id="问题">问题</h1>
+<p>假设存在一个字符串，其内容为</p>
+<pre><code>以下 Rust 程序
+@
+fn main() {
+    println!(&quot;Hello world!&quot;);
+}
+@
+可在终端打印「Hello world!」。</code></pre>
+<p>编写一个 Rust 程序，以 <code>@</code>
+所在行作为分割符，对该字符串进行分割。</p>
+<h1 id="字符串切片">字符串切片</h1>
+<p>Rust 有多种类型可表达字符串，以下示例给出了最直白的一种：</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> text <span class="op">=</span> <span class="st">&quot;潜龙勿用&quot;</span><span class="op">;</span></span></code></pre></div>
+<p>上述代码中的变量 <code>text</code>，其类型是什么呢？可使用 Rust
+标准库中的 <code>std::any::type_name</code> 函数打印其类型，例如：</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> print_type_of<span class="op">&lt;</span>T<span class="op">&gt;</span>(_<span class="op">:</span> <span class="op">&amp;</span>T) <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> <span class="pp">std::any::type_name::</span><span class="op">&lt;</span>T<span class="op">&gt;</span>())<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> x <span class="op">=</span> <span class="st">&quot;潜龙勿用&quot;</span><span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    print_type_of(<span class="op">&amp;</span>x)<span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>假设将上述代码保存至 foo.rs 文件，然后使用 rustc 编译该文件：</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> rustc foo.rs</span></code></pre></div>
+<p>运行编译所得程序 foo：</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ./foo</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">&amp;</span><span class="ex">str</span></span></code></pre></div>
+<p>程序 foo 的输出结果 <code>&amp;str</code> 便是变量 <code>x</code>
+的类型。</p>
+<p>上述代码中定义的函数 <code>print_type_of</code>
+巧妙地利用了泛型以及类型推导功能，将其所接受的参数的类型「转发」给了
+<code>std::any::type_name</code>
+函数。需要注意的是，为了避免参数复制而带来的内存和时间消耗，<code>print_type_of</code>
+的参数采用了变量的引用形式。关于泛型和引用，后文会对其进行更为全面且深入的介绍，在此不必为之惶恐。</p>
+<p>现在已知变量 <code>x</code> 的类型是 <code>&amp;str</code>，即
+<code>str</code> 类型的实例（或数据）的引用。可将 <code>str</code>
+类型的实例想象为一组字符构成的序列，而 <code>&amp;str</code>
+类型的变量仅记录该序列的首地址以及该序列的长度信息，因此所占用的内存长度通常远小于字符序列本身。</p>
+<p>在 Rust 语言中，类型 <code>&amp;str</code>
+通常称为字符串切片，原因是基于该类型可引用一个字符串的片段。例如</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> print_type_of<span class="op">&lt;</span>T<span class="op">&gt;</span>(_<span class="op">:</span> <span class="op">&amp;</span>T) <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> <span class="pp">std::any::type_name::</span><span class="op">&lt;</span>T<span class="op">&gt;</span>())<span class="op">;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> x <span class="op">=</span> <span class="st">&quot;Hello world!&quot;</span><span class="op">;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> y <span class="op">=</span> <span class="op">&amp;</span>x[<span class="dv">0</span><span class="op">..</span><span class="dv">5</span>]<span class="op">;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    print_type_of(<span class="op">&amp;</span>y)<span class="op">;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">{}</span><span class="sc">\&quot;</span><span class="st"> of </span><span class="sc">\&quot;</span><span class="st">{}</span><span class="sc">\&quot;</span><span class="st">.&quot;</span><span class="op">,</span> y<span class="op">,</span> x)<span class="op">;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>输出结果为</p>
+<pre><code>&amp;str
+&quot;Hello&quot; of &quot;Hello world!&quot;.</code></pre>
+<p>亦即 <code>y</code> 是对 <code>x</code>
+所引用的字符序列的一个片段的引用。<code>&amp;x[0..5]</code>
+表达的是左闭右开区间，即 <code>x</code> 所引用的 <code>str</code>
+实例的第 1 个字符（下标为 0）至第 5 个字符（下标为 4）。</p>
+<h1 id="向量">向量</h1>
+<p>Rust 使用泛型容器
+<code>Vec&lt;T&gt;</code>（向量）类型表达动态数组。下面的示例可将三个字符串切片存于
+<code>Vec&lt;T&gt;</code> 的实例：</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> print_type_of<span class="op">&lt;</span>T<span class="op">&gt;</span>(_<span class="op">:</span> <span class="op">&amp;</span>T) <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> <span class="pp">std::any::type_name::</span><span class="op">&lt;</span>T<span class="op">&gt;</span>())<span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> x <span class="op">=</span> <span class="st">&quot;Hello@world@!&quot;</span><span class="op">;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> v <span class="op">=</span> <span class="pp">vec!</span>[<span class="op">&amp;</span>x[<span class="op">..</span><span class="dv">5</span>]<span class="op">,</span> <span class="op">&amp;</span>x[<span class="dv">6</span><span class="op">..</span><span class="dv">11</span>]<span class="op">,</span> <span class="op">&amp;</span>x[<span class="dv">12</span><span class="op">..</span>]]<span class="op">;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    print_type_of(<span class="op">&amp;</span>v)<span class="op">;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">&quot;[{}, {}, {}]&quot;</span><span class="op">,</span> v[<span class="dv">0</span>]<span class="op">,</span> v[<span class="dv">1</span>]<span class="op">,</span> v[<span class="dv">2</span>])<span class="op">;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>输出为</p>
+<pre><code>alloc::vec::Vec&lt;&amp;str&gt;
+[Hello, world, !]</code></pre>
+<p><code>vec!</code> 是 Rust
+语言用于简化向量实例初始化的宏。倘若不使用该宏，则上述向量的构造过程可基于
+<code>Vec</code> 类型的 <code>push</code> 方法实现：</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="kw">mut</span> v <span class="op">=</span> <span class="pp">vec!</span>[]<span class="op">;</span> <span class="co">// 初始化空向量</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>v<span class="op">.</span>push(<span class="op">&amp;</span>x[<span class="op">..</span><span class="dv">5</span>])<span class="op">;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>v<span class="op">.</span>push(<span class="op">&amp;</span>x[<span class="dv">6</span><span class="op">..</span><span class="dv">11</span>])<span class="op">;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>v<span class="op">.</span>push(<span class="op">&amp;</span>x[<span class="dv">12</span><span class="op">..</span>])<span class="op">;</span></span></code></pre></div>
+<p>由于 <code>v</code> 是动态构建的，因此其必须冠以 <code>mut</code>
+表示其值可变。此外，上述代码中字符串切片表达式中的<code>[..5]</code> 是
+<code>[0..5]</code> 的简写，而 <code>[12..]</code> 是
+<code>[12..x.len()]</code> 的简写，<code>x.len()</code> 方法可以获得
+<code>str</code> 实例（即字符序列）的长度。</p>
+<h1 id="字符串分割">字符串分割</h1>
+<p>对于本章要解决的问题，上述两节其实已经解决了待实现的程序的输入和输出问题，即
+<code>&amp;str</code> 作为输入，<code>Vec&lt;&amp;str&gt;</code>
+类型作为输出。</p>
+<p>Rust 标准库为 <code>&amp;str</code> 类型提供了 <code>split</code>
+方法，该方法正是以 <code>&amp;str</code> 作为输入，且其输出能转化为
+<code>Vec&lt;&amp;str&gt;</code> 类型。例如</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> x <span class="op">=</span> <span class="st">&quot;abc@def@ghi&quot;</span><span class="op">;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> v<span class="op">:</span> <span class="dt">Vec</span><span class="op">&lt;&amp;</span><span class="dt">str</span><span class="op">&gt;</span> <span class="op">=</span> x<span class="op">.</span>split(<span class="st">&quot;@&quot;</span>)<span class="op">.</span>collect()<span class="op">;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">&quot;[{}, {}, {}]&quot;</span><span class="op">,</span> v[<span class="dv">0</span>]<span class="op">,</span> v[<span class="dv">1</span>]<span class="op">,</span> v[<span class="dv">2</span>])<span class="op">;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>str</code> 类型的 <code>split</code> 方法的返回值是
+<code>Split</code> 类型，该类型的 <code>collect</code>
+方法可将字符串分割结果转化为 <code>Vec&lt;&amp;str&gt;</code> 类型。</p>
+<h1 id="迭代器">迭代器</h1>
+<p><code>Split</code> 类型实际上是一种迭代器类型——该类型实现了
+<code>Iterator</code> 特性（Trait），若不使用它的 <code>collect</code>
+方法，使用 <code>for...in</code> 语句也能够获得字符串分割结果，例如</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> print_type_of<span class="op">&lt;</span>T<span class="op">&gt;</span>(_<span class="op">:</span> <span class="op">&amp;</span>T) <span class="op">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> <span class="pp">std::any::type_name::</span><span class="op">&lt;</span>T<span class="op">&gt;</span>())<span class="op">;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> x <span class="op">=</span> <span class="st">&quot;abc@def@ghi&quot;</span><span class="op">;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> v <span class="op">=</span> x<span class="op">.</span>split(<span class="st">&quot;@&quot;</span>)<span class="op">;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    print_type_of(<span class="op">&amp;</span>v)<span class="op">;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> v <span class="op">{</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>输出为</p>
+<pre><code>core::str::iter::Split&lt;&amp;str&gt;
+abc
+def
+ghi</code></pre>
+<p>关于迭代器类型的技术细节，目前知之甚浅，先行略过，随着 rzeo
+项目的逐步推进，在合适的时机，再对其深入探究。</p>
+<h1 id="放手一试">放手一试</h1>
+<p>对于本章开始提出的问题，以下程序可作为答案：</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 注意：字符串中出现双引号需要用反斜线予以转义</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> x <span class="op">=</span><span class="st">&quot;以下 Rust 程序</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="st">@</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="st">fn main() {</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="st">    println!(</span><span class="sc">\&quot;</span><span class="st">Hello world!</span><span class="sc">\&quot;</span><span class="st">);</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="st">@</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="st">可在终端打印「Hello world!」。&quot;</span><span class="op">;</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> v <span class="op">=</span> x<span class="op">.</span>split(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">@</span><span class="sc">\n</span><span class="st">&quot;</span>)<span class="op">;</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="pp">println!</span>(<span class="st">&quot;----&quot;</span>)<span class="op">;</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> v <span class="op">{</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        <span class="pp">println!</span>(<span class="st">&quot;----&quot;</span>)<span class="op">;</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>其输出为</p>
+<pre><code>----
+以下 Rust 程序
+----
+fn main() {
+    println!(&quot;Hello world!&quot;);
+}
+----
+可在终端打印「Hello world!」。
+----</code></pre>
+<h1 id="c-版本">C 版本</h1>
+<p>下面采用 C 语言实现与上一节相同功能的程序，并且尝试模拟 Rust
+的迭代器以获得 <code>&amp;str</code> 和 <code>Split</code>
+等类型更为深刻的理解。此外，我也想试图向自己证明 C 语言并非许多 Rust
+爱好者们所宣扬的那样陈旧甚至糟糕。</p>
+<p>C 语言标准库提供了函数
+<code>strtok</code>，可用于字符串分割。例如</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;string.h&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> x<span class="op">[]</span> <span class="op">=</span> <span class="st">&quot;123 @ 456 @ 789&quot;</span><span class="op">;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>d <span class="op">=</span> <span class="st">&quot; @ &quot;</span><span class="op">;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>v <span class="op">=</span> strtok<span class="op">(</span>x<span class="op">,</span> d<span class="op">);</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;%s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> v<span class="op">);</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span>v <span class="op">=</span> strtok<span class="op">(</span>NULL<span class="op">,</span> d<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;%s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> v<span class="op">);</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>或</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;string.h&gt;</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> x<span class="op">[]</span> <span class="op">=</span> <span class="st">&quot;123 @ 456 @ 789&quot;</span><span class="op">;</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">char</span> <span class="op">*</span>s <span class="op">=</span> x<span class="op">;</span> <span class="op">;</span> s <span class="op">=</span> NULL<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                <span class="dt">char</span> <span class="op">*</span>v <span class="op">=</span> strtok<span class="op">(</span>s<span class="op">,</span> <span class="st">&quot; @ &quot;</span><span class="op">);</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(!</span>v<span class="op">)</span> <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;%s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> v<span class="op">);</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>输出为</p>
+<pre><code>123
+456
+789</code></pre>
+<p><code>strtok</code>
+是不可重入的函数，故而不能用于多线程任务。对于上述示例，<code>strtok</code>
+有以下副作用：</p>
+<ul>
+<li><code>x</code> 会被 <code>strtok</code> 修改，即 <code>strtok</code>
+使用 <code>'\0'</code> 代替分割符的首字符；</li>
+<li>每次对字符串进行一次分割，<code>strtok</code>
+通过一个全局变量记录字符串的剩余内容。</li>
+</ul>
+<p>在 Rust 语言爱好者看来，<code>strtok</code>
+不安全，绝不可容忍。不过，用 C
+语言自行实现一个安全的字符串分割函数并不困难。C 标准库提供了
+<code>strstr</code>
+函数，可用于在字符串中查找目标字符串第一次出现的位置，基于该函数便可实现安全的字符串分割功能，下文给出了一种实现。</p>
+<p>首先，需要引入以下 C标准库头文件：</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;string.h&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span></code></pre></div>
+<p>定义一个结构体类型，用于表示字符串切片，并为该类型定义打印函数：</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>head<span class="op">;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>tail<span class="op">;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> StrSlice<span class="op">;</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> str_slice_print<span class="op">(</span>StrSlice <span class="op">*</span>slice<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">char</span> <span class="op">*</span>p <span class="op">=</span> slice<span class="op">-&gt;</span>head<span class="op">;</span> p <span class="op">!=</span> slice<span class="op">-&gt;</span>tail<span class="op">;</span> p<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>                putchar<span class="op">(*</span>p<span class="op">);</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>再定义一个结构体类型，用于记录分割符以及字符串每次分割后剩余内容，并为该类型定义构造函数：</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>remainder<span class="op">;</span> <span class="co">/* 字符串剩余内容 */</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>delimiter<span class="op">;</span> <span class="co">/* 分割符 */</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> delimiter_length<span class="op">;</span> <span class="co">/* 分割符长度 */</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> StrSplitEnv<span class="op">;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>StrSplitEnv <span class="op">*</span>str_split_env<span class="op">(</span><span class="dt">char</span> <span class="op">*</span>str<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>delimiter<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        StrSplitEnv <span class="op">*</span>env <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>StrSplitEnv<span class="op">));</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        env<span class="op">-&gt;</span>remainder <span class="op">=</span> str<span class="op">;</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        env<span class="op">-&gt;</span>delimiter <span class="op">=</span> delimiter<span class="op">;</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        env<span class="op">-&gt;</span>delimiter_length <span class="op">=</span> strlen<span class="op">(</span>delimiter<span class="op">);</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> env<span class="op">;</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>定义字符串分割函数：</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>StrSlice <span class="op">*</span>str_split<span class="op">(</span>StrSplitEnv <span class="op">*</span>env<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>env<span class="op">-&gt;</span>remainder<span class="op">)</span> <span class="cf">return</span> NULL<span class="op">;</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        StrSlice <span class="op">*</span>slice <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>StrSlice<span class="op">));</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        slice<span class="op">-&gt;</span>head <span class="op">=</span> env<span class="op">-&gt;</span>remainder<span class="op">;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        slice<span class="op">-&gt;</span>tail <span class="op">=</span> strstr<span class="op">(</span>env<span class="op">-&gt;</span>remainder<span class="op">,</span> env<span class="op">-&gt;</span>delimiter<span class="op">);</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>slice<span class="op">-&gt;</span>tail<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>                env<span class="op">-&gt;</span>remainder <span class="op">=</span> slice<span class="op">-&gt;</span>tail <span class="op">+</span> env<span class="op">-&gt;</span>delimiter_length<span class="op">;</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>                env<span class="op">-&gt;</span>remainder <span class="op">=</span> NULL<span class="op">;</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>                slice<span class="op">-&gt;</span>tail <span class="op">=</span> slice<span class="op">-&gt;</span>head <span class="op">+</span> strlen<span class="op">(</span>slice<span class="op">-&gt;</span>head<span class="op">);</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> slice<span class="op">;</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>字符串分割函数的测试代码如下：</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>x <span class="op">=</span> <span class="st">&quot;以下 Rust 程序</span><span class="sc">\n</span><span class="st">@</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;fn main() {</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;    println!(</span><span class="sc">\&quot;</span><span class="st">Hello world!</span><span class="sc">\&quot;</span><span class="st">);</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;}</span><span class="sc">\n</span><span class="st">@</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;可在终端打印「Hello world!」。&quot;</span><span class="op">;</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        StrSplitEnv <span class="op">*</span>env <span class="op">=</span> str_split_env<span class="op">(</span>x<span class="op">,</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">@</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        StrSlice <span class="op">*</span>v<span class="op">;</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;----</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="op">(</span>v <span class="op">=</span> str_split<span class="op">(</span>env<span class="op">))</span> <span class="op">{</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>                str_slice_print<span class="op">(</span>v<span class="op">);</span> putchar<span class="op">(</span><span class="ch">&#39;\n&#39;</span><span class="op">);</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>                free<span class="op">(</span>v<span class="op">);</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>                printf<span class="op">(</span><span class="st">&quot;----</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>env<span class="op">);</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Rust 语言以保证内存安全而著称。C 语言可借助带有内存错误检测工具的 C
+编译器或辅以 Valgrind 工具保证内存安全。假设将上述 C 程序保存为 foo.c
+文件，可使用以下命令编译并运行：</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> gcc <span class="at">-std</span><span class="op">=</span>c2x <span class="at">-pedantic</span> <span class="at">-g</span> <span class="at">-fsanitize</span><span class="op">=</span>address <span class="at">-o</span> foo foo.c</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ./foo</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="ex">或</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> gcc <span class="at">-std</span><span class="op">=</span>c2x <span class="at">-pedantic</span> <span class="at">-g</span> <span class="at">-o</span> foo foo.c</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> valgrind <span class="at">--leak-check</span><span class="op">=</span>full ./foo</span></code></pre></div>
+<p>若程序运行结束后，未出现错误信息，则通常可视为该程序是内存安全的，之后可重新编译程序，消除调试信息，并开启优化：</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> gcc <span class="at">-std</span><span class="op">=</span>c2x <span class="at">-pedantic</span> <span class="at">-O2</span> <span class="at">-o</span> foo foo.c</span></code></pre></div>
+<h1 id="小结">小结</h1>
+<p>在对 Rust 语言较为熟悉的情况下，编写的 Rust 代码通常较实现同样功能的
+C 代码更为简洁，一方面是因为 Rust 标准库的功能比 C
+标准库更为丰富，另一方面 Rust
+的语法掩盖了许多细节。对于后者，除了本章语焉不敢甚详的泛型，
+特性以及迭代器等元素外，值得一提的是，一个 Rust
+新手也许难以想象，为何以下 Rust 代码无法通过编译：</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode rust"><code class="sourceCode rust"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> x <span class="op">=</span> <span class="st">&quot;abc@def@ghi&quot;</span><span class="op">;</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> v <span class="op">=</span> x<span class="op">.</span>split(<span class="st">&quot;@&quot;</span>)<span class="op">;</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> v <span class="op">{</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>        <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> v <span class="op">{</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>        <span class="pp">println!</span>(<span class="st">&quot;{}&quot;</span><span class="op">,</span> i)<span class="op">;</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>倘若将 Rust 语言视为比 C 甚至比 C++
+更好的语言，那心态上就不要乐观，更好往往意味着更难驾驭。汽车比摩托车更好，在驾照方面，汽车要比摩托车难得多，至少在国内是这样。</p>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
+class="email">lyr.m2@live.cn</a> 或在<a
+href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

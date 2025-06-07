@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>LibCYAML 库的用法</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+<div class="category">
+<a href="./index.html">回上级页面</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">LibCYAML 库的用法</h1>
+<p class="date">2024 年 03 月 11 日</p>
+</header>
+<hr />
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#c-结构体---yaml" id="toc-c-结构体---yaml">C 结构体 -&gt;
+YAML</a></li>
+<li><a href="#c-数组---yaml" id="toc-c-数组---yaml">C 数组 -&gt;
+YAML</a></li>
+<li><a href="#yaml---c-数据结构" id="toc-yaml---c-数据结构">YAML -&gt; C
+数据结构</a></li>
+<li><a href="#若想知道更多"
+id="toc-若想知道更多">若想知道更多……</a></li>
+</ul>
+</nav>
+<p>虽然使用 LibYAML 能够实现几乎全部的 YAML 文档解析任务，但当 YAML
+文档较为复杂时，解析代码颇为繁冗。LibCYAML 库基于
+LibYAML，基于模式（Schema）驱动的方式将 YAML 文档解析为 C
+数据结构，用法较 LibYAML 更为简易。</p>
+<p>在 Debian 或 Ubuntu 之类的系统中，可使用以下命令安装 LibCYAML
+开发包：</p>
+<pre class="console"><code>$ sudo apt install libcyaml-dev</code></pre>
+<h1 id="c-结构体---yaml">C 结构体 -&gt; YAML</h1>
+<p>假设 C 程序中存在一个字符串常量：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>foo <span class="op">=</span> <span class="st">&quot;Foo&quot;</span><span class="op">;</span></span></code></pre></div>
+<p>如何将其保存为 YAML 文档？这是一个简单的问题，若不借助
+LibCYAML，反而更容易解决：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dt">FILE</span> <span class="op">*</span>fp <span class="op">=</span> fopen<span class="op">(</span><span class="st">&quot;foo.yaml&quot;</span><span class="op">,</span> <span class="st">&quot;r&quot;</span><span class="op">);</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(!</span>fp<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;Failed to open file!&quot;</span><span class="op">);</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span>EXIT_FAILURE<span class="op">);</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>fprintf<span class="op">(</span>fp<span class="op">,</span> <span class="st">&quot;foo: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> foo<span class="op">);</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>fclose<span class="op">(</span>fp<span class="op">);</span></span></code></pre></div>
+<p>但是，若借助 LibCYAML 解决该问题，则有助于初步理解 LibCYAML
+库的工作过程，且该工作过程在使用 LibCYAML 解析 YAML 文档时同样需要。</p>
+<p>上述字符串常量可保存为 YAML
+的一个映射，不过必须将该字符串常量封装至一个结构体内，否则无法为
+LibCYAML 提供 C 数据结构的 YAML
+模式。以下是封装上述字符串常量的结构体：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> root <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>foo<span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>上述结构体只有一个域，对应的 YAML 模式可写为</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_schema_field_t root_mapping_schema<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>        CYAML_FIELD_STRING_PTR<span class="op">(</span><span class="st">&quot;foo&quot;</span><span class="op">,</span> CYAML_FLAG_POINTER<span class="op">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                               <span class="kw">struct</span> root<span class="op">,</span> foo<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> CYAML_UNLIMITED<span class="op">),</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        CYAML_FIELD_END</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>上述代码可以令 LibCYAML 知悉 <code>struct root</code> 类型的
+<code>foo</code> 成员是指针类型，指向一个长度无限制的字符串。</p>
+<p><code>struct root</code> 本身对应的 YAML 模式是映射，可写为</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_schema_value_t root_schema <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>        CYAML_VALUE_MAPPING<span class="op">(</span>CYAML_FLAG_POINTER<span class="op">,</span> <span class="kw">struct</span> root<span class="op">,</span> root_mapping_schema<span class="op">)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>对于 C 结构体：</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a> <span class="kw">struct</span> root foo_wrapper <span class="op">=</span> <span class="op">{.</span>foo <span class="op">=</span> <span class="st">&quot;Foo&quot;</span><span class="op">};</span></span></code></pre></div>
+<p>以下代码可将其转化为符合上述 YAML 模式的结果：</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_config_t config <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>log_fn <span class="op">=</span> cyaml_log<span class="op">,</span>            <span class="co">/* Use the default logging function. */</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>mem_fn <span class="op">=</span> cyaml_mem<span class="op">,</span>            <span class="co">/* Use the default memory allocator. */</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>log_level <span class="op">=</span> CYAML_LOG_WARNING<span class="op">,</span> <span class="co">/* Logging errors and warnings only. */</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>cyaml_err_t err <span class="op">=</span> cyaml_save_file<span class="op">(</span><span class="st">&quot;foo.yaml&quot;</span><span class="op">,</span> <span class="op">&amp;</span>config<span class="op">,</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                                  <span class="op">&amp;</span>root_schema<span class="op">,</span> <span class="op">&amp;</span>foo_wrapper<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>err <span class="op">!=</span> CYAML_OK<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span>EXIT_FAILURE<span class="op">);</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>输出结果为 foo.yaml 文件，其内容应为</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">foo</span><span class="kw">:</span><span class="at"> Foo</span></span></code></pre></div>
+<p>下面是完整的代码：</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cyaml/cyaml.h&gt;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> root <span class="op">{</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>foo<span class="op">;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_schema_field_t root_mapping_schema<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        CYAML_FIELD_STRING_PTR<span class="op">(</span><span class="st">&quot;foo&quot;</span><span class="op">,</span> CYAML_FLAG_POINTER<span class="op">,</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                               <span class="kw">struct</span> root<span class="op">,</span> foo<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> CYAML_UNLIMITED<span class="op">),</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        CYAML_FIELD_END</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_schema_value_t root_schema <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        CYAML_VALUE_MAPPING<span class="op">(</span>CYAML_FLAG_POINTER<span class="op">,</span> <span class="kw">struct</span> root<span class="op">,</span> root_mapping_schema<span class="op">)</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">struct</span> root foo_wrapper <span class="op">=</span> <span class="op">{.</span>foo <span class="op">=</span> <span class="st">&quot;Foo&quot;</span><span class="op">};</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* Create our CYAML configuration. */</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        <span class="dt">static</span> <span class="dt">const</span> cyaml_config_t config <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span>log_fn <span class="op">=</span> cyaml_log<span class="op">,</span>            <span class="co">/* Use the default logging function. */</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span>mem_fn <span class="op">=</span> cyaml_mem<span class="op">,</span>            <span class="co">/* Use the default memory allocator. */</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>                <span class="op">.</span>log_level <span class="op">=</span> CYAML_LOG_WARNING<span class="op">,</span> <span class="co">/* Logging errors and warnings only. */</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        <span class="op">};</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>        cyaml_err_t err <span class="op">=</span> cyaml_save_file<span class="op">(</span><span class="st">&quot;foo.yaml&quot;</span><span class="op">,</span> <span class="op">&amp;</span>config<span class="op">,</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>                                          <span class="op">&amp;</span>root_schema<span class="op">,</span> <span class="op">&amp;</span>foo_wrapper<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>err <span class="op">!=</span> CYAML_OK<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>                exit<span class="op">(</span>EXIT_FAILURE<span class="op">);</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> EXIT_SUCCESS<span class="op">;</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>假设将上述内容保存为 foo.c
+文件，以下命令可完成程序编译、运行以及结果查看：</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>$ gcc foo<span class="op">.</span>c <span class="op">-</span>o foo <span class="op">-</span>lcyaml</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>$ <span class="op">./</span>foo</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>$ cat foo<span class="op">.</span>yaml</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>foo<span class="op">:</span> Foo</span></code></pre></div>
+<p>由上述示例可见，LibCYAML 可将 C 结构体的成员（域）转化为 YAML
+文档中的映射（键值对），但该结构体自身不会出现在 YAML 文档中，亦即从
+YAML 视角看， C 结构体是包含一个或多个映射的容器，像 YAML
+文档的起止符。</p>
+<p>在为 C 数据结构编写 YAML 模式时，要注意区分域模式和值模式，前者类型为
+<code>cyaml_schema_field_t</code>，用于构造结构体各成员的模式，后者类型为
+<code>cyaml_schema_value_t</code>，用于构造结构体、数组以及基本类型的模式。</p>
+<h1 id="c-数组---yaml">C 数组 -&gt; YAML</h1>
+<p>假设有一个 C 数组</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> <span class="dv">4</span><span class="op">};</span></span></code></pre></div>
+<p>该如何将其转化为 YAML 的序列呢？</p>
+<p>首先写出数组 <code>a</code> 的成员对应的 YAML 模式。<code>a</code>
+的成员皆为整形数，因此相应的 YAML 值模式为</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_schema_value_t entry_schema <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>        CYAML_VALUE_INT<span class="op">(</span>CYAML_FLAG_DEFAULT<span class="op">,</span> <span class="dt">int</span><span class="op">)</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>数组 <code>a</code> 本身对应的 YAML 值模式为</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_schema_value_t root_schema <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>        CYAML_VALUE_SEQUENCE<span class="op">(</span>CYAML_FLAG_POINTER<span class="op">,</span> <span class="dt">int</span><span class="op">,</span> <span class="op">&amp;</span>entry_schema<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> CYAML_UNLIMITED<span class="op">)</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span></code></pre></div>
+<p>以下代码实现了 C 数组向 YAML 序列的转换过程：</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> <span class="dv">4</span><span class="op">};</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_config_t config <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>log_fn <span class="op">=</span> cyaml_log<span class="op">,</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>mem_fn <span class="op">=</span> cyaml_mem<span class="op">,</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span>log_level <span class="op">=</span> CYAML_LOG_WARNING<span class="op">,</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>cyaml_err_t err <span class="op">=</span> cyaml_save_file<span class="op">(</span><span class="st">&quot;foo.yaml&quot;</span><span class="op">,</span> <span class="op">&amp;</span>config<span class="op">,</span> <span class="op">&amp;</span>root_schema<span class="op">,</span> a<span class="op">,</span> <span class="dv">4</span><span class="op">);</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span>err <span class="op">!=</span> CYAML_OK<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        exit<span class="op">(</span>EXIT_FAILURE<span class="op">);</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h1 id="yaml---c-数据结构">YAML -&gt; C 数据结构</h1>
+<p>LibCYAML 开发者已为 YAML
+数据的解析提供了一篇简单的入门文档，我无需越俎代庖，详见「<a
+href="https://github.com/tlsa/libcyaml/blob/main/docs/guide.md"
+class="uri">https://github.com/tlsa/libcyaml/blob/main/docs/guide.md</a>」。</p>
+<p>不过，有一个困扰我很久的问题，即如何解析无名的映射序列。LibCYAML
+作者在该项目的 issue 列表中回答了这个问题，他的答案为</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdint.h&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;string.h&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdbool.h&gt;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;cyaml/cyaml.h&gt;</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="kw">enum</span> gender <span class="op">{</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    MALE<span class="op">,</span> FEMALE<span class="op">,</span> UNKNOWN</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> person <span class="op">{</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">char</span> <span class="op">*</span>name<span class="op">;</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unsigned</span> age<span class="op">;</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">enum</span> gender gdr<span class="op">;</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_strval_t gender_strings<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span><span class="st">&quot;male&quot;</span><span class="op">,</span> MALE<span class="op">},</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span><span class="st">&quot;female&quot;</span><span class="op">,</span> FEMALE<span class="op">},</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span><span class="st">&quot;unknown&quot;</span><span class="op">,</span> UNKNOWN<span class="op">},</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_schema_field_t entry_fields_schema<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    CYAML_FIELD_STRING_PTR<span class="op">(</span><span class="st">&quot;name&quot;</span><span class="op">,</span> CYAML_FLAG_POINTER<span class="op">,</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>            <span class="kw">struct</span> person<span class="op">,</span> name<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> CYAML_UNLIMITED<span class="op">),</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>    CYAML_FIELD_UINT<span class="op">(</span><span class="st">&quot;age&quot;</span><span class="op">,</span> CYAML_FLAG_DEFAULT<span class="op">,</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>            <span class="kw">struct</span> person<span class="op">,</span> age<span class="op">),</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>    CYAML_FIELD_ENUM<span class="op">(</span><span class="st">&quot;gender&quot;</span><span class="op">,</span> CYAML_FLAG_DEFAULT<span class="op">,</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>            <span class="kw">struct</span> person<span class="op">,</span> gdr<span class="op">,</span> gender_strings<span class="op">,</span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>            CYAML_ARRAY_LEN<span class="op">(</span>gender_strings<span class="op">)),</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>    CYAML_FIELD_END</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_schema_value_t entry_schema <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>    CYAML_VALUE_MAPPING<span class="op">(</span>CYAML_FLAG_DEFAULT<span class="op">,</span></span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>            <span class="kw">struct</span> person<span class="op">,</span> entry_fields_schema<span class="op">),</span></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> cyaml_schema_value_t people_schema <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>    CYAML_VALUE_SEQUENCE<span class="op">(</span>CYAML_FLAG_POINTER<span class="op">,</span> <span class="kw">struct</span> person<span class="op">,</span></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>            <span class="op">&amp;</span>entry_schema<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> CYAML_UNLIMITED<span class="op">)</span></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a>    cyaml_err_t err<span class="op">;</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>    <span class="kw">struct</span> person <span class="op">*</span>people<span class="op">;</span></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unsigned</span> people_count<span class="op">;</span></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>yaml <span class="op">=</span></span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;- name: </span><span class="sc">\&quot;</span><span class="st">Jason</span><span class="sc">\&quot;\n</span><span class="st">&quot;</span></span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;  age: 23</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;  gender: male</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;- name: </span><span class="sc">\&quot;</span><span class="st">Lisa</span><span class="sc">\&quot;\n</span><span class="st">&quot;</span></span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;  age: 26</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;  gender: female</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;- name: </span><span class="sc">\&quot;</span><span class="st">A</span><span class="sc">\&quot;\n</span><span class="st">&quot;</span></span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;  age: 20</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;  gender: unknown</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">;</span></span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>    <span class="dt">static</span> <span class="dt">const</span> cyaml_config_t config <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span>log_level <span class="op">=</span> CYAML_LOG_NOTICE<span class="op">,</span></span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span>mem_fn <span class="op">=</span> cyaml_mem<span class="op">,</span></span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span>log_fn <span class="op">=</span> cyaml_log<span class="op">,</span></span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a>            <span class="op">.</span>flags <span class="op">=</span> CYAML_CFG_IGNORED_KEY_WARNING<span class="op">,</span></span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>    <span class="op">};</span></span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> cyaml_load_data<span class="op">(</span></span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span><span class="dt">uint8_t</span> <span class="op">*)</span>yaml<span class="op">,</span> strlen<span class="op">(</span>yaml<span class="op">),</span></span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a>            <span class="op">&amp;</span>config<span class="op">,</span> <span class="op">&amp;</span>people_schema<span class="op">,</span></span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>            <span class="op">(</span><span class="dt">void</span> <span class="op">**)&amp;</span>people<span class="op">,</span> <span class="op">&amp;</span>people_count<span class="op">);</span></span>
+<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>err <span class="op">!=</span> CYAML_OK<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a>        fprintf<span class="op">(</span>stderr<span class="op">,</span> <span class="st">&quot;ERROR: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> cyaml_strerror<span class="op">(</span>err<span class="op">));</span></span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> EXIT_FAILURE<span class="op">;</span></span>
+<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;People count: </span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> people_count<span class="op">);</span></span>
+<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">unsigned</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> people_count<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;Person:</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">\t</span><span class="st">name: </span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span> people<span class="op">[</span>i<span class="op">].</span>name<span class="op">);</span></span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">\t</span><span class="st">age: </span><span class="sc">%u\n</span><span class="st">&quot;</span><span class="op">,</span> people<span class="op">[</span>i<span class="op">].</span>age<span class="op">);</span></span>
+<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">\t</span><span class="st">gender: </span><span class="sc">%i\n</span><span class="st">&quot;</span><span class="op">,</span> people<span class="op">[</span>i<span class="op">].</span>gdr<span class="op">);</span></span>
+<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>people<span class="op">[</span>i<span class="op">].</span>name<span class="op">);</span></span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a>    free<span class="op">(</span>people<span class="op">);</span></span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> EXIT_SUCCESS<span class="op">;</span></span>
+<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h1 id="若想知道更多">若想知道更多……</h1>
+<p>请参考 cyaml.h 中的注释。此外， Zrythm 项目也为 LibCYAML
+的用法给出了一些介绍，详见「<a
+href="https://docs.zrythm.org/cyaml_schemas.html"
+class="uri">https://docs.zrythm.org/cyaml_schemas.html</a>」。</p>
+<hr />
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
+class="email">lyr.m2@live.cn</a> 或在<a
+href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

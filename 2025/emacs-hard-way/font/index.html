@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>字体</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">字体
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2025 年 05 月 28 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#等宽字体" id="toc-等宽字体">等宽字体</a></li>
+  <li><a href="#elisp-程序" id="toc-elisp-程序">Elisp 程序</a></li>
+  <li><a href="#设置主字体" id="toc-设置主字体">设置主字体</a></li>
+  <li><a href="#字体替补" id="toc-字体替补">字体替补</a></li>
+  <li><a href="#列表" id="toc-列表">列表</a></li>
+  <li><a href="#条件表达式" id="toc-条件表达式">条件表达式</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
+</nav>
+
+<h1 id="前言">前言</h1>
+<p>在古代……计算机文明的古代——大致从上个世纪 80
+年代算起，无论是操作系统，还是文字处理软件，对汉字的支持，都是极为困难的。无数前辈，不论中西，前仆后继，在大多数软件里，汉字的问题已得以妥善解决，以致今日的你我，在软件里输入汉字，几乎像呼吸与喝水一样自然。</p>
+<p>Emacs 还残存着一些古老的记忆，以致于当你尝试为 Emacs
+配置你喜欢的字体时，依然能触摸到些许苍凉的历史。此外，你应该有些心理准备，为
+Emacs 配置字体，本质上是在编写一个 Elisp 程序。</p>
+<h1 id="等宽字体">等宽字体</h1>
+<p>适合用于文本编辑器的字体，通常是等宽（Mono）字体。所谓等宽，是指每个西文字符的宽度相同。有些场景里也称等宽字体为打字机字体，原因也是打字机产生的字符是等宽的。</p>
+<p>为什么强调是西文字符呢？因为汉字的宽度本来就是相同的。西文的等宽字体，主要是用于排版或显示程序代码。如下图所示，同样一段代码，左侧为非等宽字体排版，右侧为等宽字体排版，程序员群体倾向于右侧，而文本编辑器的主要应用场景通常与编程密切相关，故而适合使用等宽字体。</p>
+<figure>
+<img src="figures/01.png" alt="非等宽字体与等宽字体比较" />
+<figcaption aria-hidden="true">非等宽字体与等宽字体比较</figcaption>
+</figure>
+<p>我喜欢的西文等宽字体是
+Monaco。至于汉字字体，黑体较楷体、宋体更适合文本编辑器，我喜欢微软雅黑（Mircrosoft
+YaHei）字体。不过，这两个字体，前者是苹果公司开发的，后者是微软公司开发的，而我一直以来使用的操作系统是
+Linux，于道德上，不应从 macOS 和 Windows 里获取它们，放在 Linux
+里用。</p>
+<p>倘若你是君子，在 Ubuntu 系统里能够找到 Ubuntu Mono 字体，它与 Monaco
+相似。至于汉字的黑体，在十几年前若不使用国内开源社区的一款众创作品文泉驿黑体，只能不讲武德，从
+Windows 系统里偸取了。现在 Ubuntu 里有 Google 主导开发的一系列 Noto
+字体，其中 Noto Sans CJK
+SC，亦称简体思源黑体，足以显示或排版简体汉字。除了思源黑体外，Google
+也开发了思源宋体。此外，文泉驿黑体现在依然可用。</p>
+<p>不知此刻，你是否还像以往那样，觉得在软件里输入汉字，几乎像呼吸与喝水一样自然的事。虽然我直至现在，依然在
+Linux 里使用 Monaco
+和微软雅黑，一直不曾有过任何良心的谴责，不过我还是应当告诉你，该如何为
+Emacs 配置合乎道德的字体，且以容易获得的 Ubuntu Mono 和 Noto Sans CJK SC
+为例。</p>
+<h1 id="elisp-程序">Elisp 程序</h1>
+<p>用 Elisp 编写可由 Emacs 运行的程序并不困难。例如，倘若你在 init.el
+文件里添加以下代码：</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(insert <span class="st">&quot;Hello world!&quot;</span>)</span></code></pre></div>
+<p>之后每次当你开启 Emacs
+时，都能看到缓冲区的开头是「<code>Hello world!</code>」，此即 Elisp 的
+Hello world 程序。<code>insert</code> 是 Elisp 函数，它可以将字符串写入
+Emacs 缓冲区。</p>
+<p><strong>练习</strong>：在 Emacs
+里编写上述代码，然后将光标移到该行代码的末尾，执行
+<code>C-x C-e</code>，观察发生了什么。</p>
+<p>Elisp
+程序可由一个或一组表达式构成，每个表达式都是一对小括号包围的文本。Emacs
+运行 Elisp 程序的过程便是对表达式求值。<code>C-x C-e</code> 可临时驱使
+Emacs
+对光标之前的表达式求值。对于上述的代码中的表达式，其求值结果为空，Elisp
+用 <code>nil</code> 表示空值。用 <code>C-x C-e</code>
+对表达式求值时，求值结果会显示于微缓冲区里。由于 <code>insert</code>
+函数是将字符串插入到光标所在的位置，故而上述练习在缓冲区里的结果是</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(insert <span class="st">&quot;Hello world!&quot;</span>)Hello world!</span></code></pre></div>
+<p>现在，将上述代码从 init.el 里删除。</p>
+<h1 id="设置主字体">设置主字体</h1>
+<p>为 Emacs
+配置字体原本并不难，难的是，在古代知道一个字体的名字异常困难。例如下面的代码，是
+Ubuntu Mono 字体在 Emacs 里的名字，希望它不会让你做噩梦。</p>
+<pre><code>-DAMA-Ubuntu Mono-regular-normal-normal-*-12-*-*-*-m-0-iso10646-1</code></pre>
+<p>现在，我们可以不必面对这些像噩梦的字体名了，它们是古老的 X11
+时代的怪物。在现代的 Emacs 里，可以用 <code>font-spec</code>
+函数自动生成这些噩梦。例如，</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(font-spec <span class="bu">:name</span> <span class="st">&quot;Ubuntu Mono&quot;</span> :size <span class="dv">12</span>)</span></code></pre></div>
+<p>即使你完全不懂 Elisp 编程，单从字面上也能看出，上述的代码指定了字体
+<code>Ubuntu Mono</code>，字号为 12pt。</p>
+<p><code>font-spec</code>
+中使用的字体名，与现代的桌面操作系统中的字体名是一致的。例如，假设你在微软的
+Word 软件里能找到 <code>Ubuntu Mono</code> 字体，则该字体名便可用于
+<code>font-spec</code>，从而让 Emacs 在操作系统中找到这款字体。在 Linux
+桌面环境里，可以使用 fc-list 命令查看系统里的所有字体。例如，查看
+<code>Ubuntu Mono</code>，只需</p>
+<pre class="console"><code>$ fc-list | grep &quot;Ubuntu Mono&quot;
+/usr/share/fonts/truetype/ubuntu/UbuntuMono[wght].ttf: Ubuntu Mono:style=Regular
+/usr/share/fonts/truetype/ubuntu/UbuntuMono-Italic[wght].ttf: Ubuntu Mono:style=Medium Italic
+... ... ... ... ... ...</code></pre>
+<p>UbuntuMono[wght].ttf 便是 <code>Ubuntu Mono</code>
+的正体（Regular）字体。西文字体，往往不是单一字体。每种字体，通常又分为正体、斜体、粗体、粗斜体等，故而通常以字族（Font
+Family）指代西文字体。上述的 <code>font-spec</code> 函数的应用，将
+<code>:name</code> 换成 <code>:family</code> 便可为 Emacs
+生成一个字族的信息。</p>
+<p><code>font-spec</code> 函数构造的信息，传递于
+<code>set-frame-font</code> 函数，便可完成 Emacs 字体的配置工作，即</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(set-frame-font (font-spec :family <span class="st">&quot;Ubuntu Mono&quot;</span> :size <span class="dv">12</span>))</span></code></pre></div>
+<p>上述代码是嵌套形式的表达式。Emacs 对该表达式求值时，会先对内部的
+<code>font-spec</code> 函数求值，然后将求值结果作为
+<code>set-frame-font</code> 的参数，再对 <code>set-frame-font</code>
+求值。最终的求值结果是，将当前窗口的字体修改为
+<code>Ubuntu Mono</code>。将上述代码复制到 init.el 里，之后每次启动
+Emacs 时，Emacs 缓冲区所用的字体便是 <code>Ubuntu Mono</code> 了。</p>
+<p>倘若不信，可在 Emacs 里当场写下以下代码：</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(insert (frame-parameter <span class="kw">nil</span> <span class="dt">&#39;font</span>))</span></code></pre></div>
+<p>将光标移动上述代码的尾部，然后执行 <code>C-x C-e</code>
+便可得到当前框架所用字体的噩梦之名。<code>frame-parameter</code>
+函数可获得指定框架（Frame）所用字体的名字，若其第 1 个参数为空值，即
+<code>nil</code>，则获取当前框架所用字体的名字。</p>
+<p>需要注意，上文用的术语是「框架」，而非「窗口」。在 Emacs
+的图形界面中，框架是最外层的结构。一个框架，可以包含 1
+个或多个窗口。还记得吗？Emacs 可通过 <code>C-x 2</code> 或
+<code>C-x 3</code> 将当前窗口分割为多个窗口。更严谨说法应该是，Emacs
+可通过 <code>C-x 2</code> 或 <code>C-x 3</code>
+将当前框架分割为多个窗口。</p>
+<h1 id="字体替补">字体替补</h1>
+<p>Ubuntu Mono
+是西文字体，只包含字母、数字和少量符号，并不包含任何汉字。现在的 Emacs
+足够智能，遇到框架字体缺乏的字符时，会从系统中自动搜索一个包含该字符的字体作为替补（Fallback）字体。倘若你不想亲手设定替补字体，那么本文阅读至此便可结束了。</p>
+<p>我们可以在 init.el 中设定我们所期望的替补字体，而非 Emacs
+自作主张胡乱找到的某个字体。设定替补字体的函数是
+<code>set-fontset-font</code>，该函数的用法如下：</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(set-fontset-font 主字体 字符集脚本 替补字体)</span></code></pre></div>
+<p>亦即 <code>set-fontset-font</code>
+可将主字体中的部分字符更改为替补字体。所谓的字符集脚本，要理解它，前提是需要理解
+Unicode 编码范围。不过，在此我可以基于我的理解大致概括一下。</p>
+<p>Unicode 为这个世界上几乎所有的文字赋予了编码。你可以将 Unicode
+理解为一个编码空间，其中任何一个编码都表示着某个文字。在这个空间里，整个汉字集合被规划为多个子集，散布在这个空间里。每个汉字子集，可以通过对应的脚本选取。常用的汉字子集，在
+Emacs 里，可通过 <code>'han</code> 这个脚本选取。故而，若用
+<code>Noto Sans CJK SC</code> 作为常用汉字子集的替补字体，只需在 init.el
+中作以下设定：</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(set-fontset-font (frame-parameter <span class="kw">nil</span> <span class="dt">&#39;font</span>) <span class="dt">&#39;han</span> (font-spec <span class="bu">:name</span> <span class="st">&quot;Noto Sans CJK SC&quot;</span> :size <span class="dv">12</span>))</span></code></pre></div>
+<p>上述代码看似复杂，但实际上所有内容，你应该都有所理解了。<code>frame-parameter</code>
+函数可获取当前框架的主字体。<code>'han</code> 是 Unicode
+脚本，用于指定常用汉字子集。<code>font-spec</code> 用于构造 Emacs
+能理解的字体名，就是那种像噩梦一样的字体名。倘若将上述代码的形式修改为</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(set-fontset-font </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    (frame-parameter <span class="kw">nil</span> <span class="dt">&#39;font</span>) </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&#39;han</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    (font-spec <span class="bu">:name</span> <span class="st">&quot;Noto Sans CJK SC&quot;</span> :size <span class="dv">12</span>))</span></code></pre></div>
+<p>也许会更容易理解，这一切无非是将一些函数的求值结果作为参数传递于某个函数而已。</p>
+<p>用 <code>'han</code> 从 Unicode
+空间里选出常用汉字子集还不够，一些中文标点符号并不在这个子集内，它们需要用
+<code>'cjk-misc</code> 这个脚本获取。故而，在 init.el
+里，需要再添加以下代码：</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(set-fontset-font </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    (frame-parameter <span class="kw">nil</span> <span class="dt">&#39;font</span>) </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&#39;cjk-misc</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    (font-spec <span class="bu">:name</span> <span class="st">&quot;Noto Sans CJK SC&quot;</span> :size <span class="dv">12</span>))</span></code></pre></div>
+<p>实际上，<code>'han</code> 和 <code>'cjk-misc</code>
+还不足以指定全部的中文字符。台湾地区还有一些注音符号，也是中文字符，如「ㄅ、ㄆ、ㆠ、ㆺ」等。为了统一大业，需要用
+<code>'bopomofo</code> 脚本从 Unicode
+空间选出它们，也用替补字体予以支持，故而在 init.el 中需添加</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(set-fontset-font </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    (frame-parameter <span class="kw">nil</span> <span class="dt">&#39;font</span>) </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&#39;bopomofo</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    (font-spec <span class="bu">:name</span> <span class="st">&quot;Noto Sans CJK SC&quot;</span> :size <span class="dv">12</span>))</span></code></pre></div>
+<p>这些重复的代码也许已经让你有所厌烦了，甚至开始担心还需要再引入更多的
+Unicode 脚本……在 Elisp 里，可以用列表简化这些代码。</p>
+<h1 id="列表">列表</h1>
+<p>Elisp 语言是 Lisp 语言的一种方言，亦即它本质上是 Lisp 语言。Lisp
+这个名字，实际上是 List Programming 的简写，即列表编程。顾名思义，Lisp
+是很擅长处理列表的一种编程语言，事实的确如此。</p>
+<p>以下表达式构造了一个数字列表：</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>&#39;(<span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span>)</span></code></pre></div>
+<p>单引号是必须的。倘若去掉它，Emacs 在对表达式求值时，会错以为
+<code>1</code> 是个函数。单引号可以让 Emacs
+明白，括号表达式表示的是列表，而非函数。不过，列表表达式也可以写为函数的形式。例如下面这个表达式，与上述表达式等价。</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">list</span> <span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span>)</span></code></pre></div>
+<p>事实上，带引号的列表构造表达式，只是以下表达式</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">quote</span> (<span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span>))</span></code></pre></div>
+<p>的简写。你可以用 <code>C-x C-e</code>
+对上述表达式求值，在微缓冲区里观察求值结果，应该是同一个结果，即
+<code>(1 2 3 4 5)</code>。</p>
+<p><code>dolist</code>
+函数可以遍历列表中每个元素，并对其作出处理。例如</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">dolist</span> (i &#39;(<span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">princ</span> (<span class="kw">format</span> <span class="st">&quot;%d &quot;</span> i)))</span></code></pre></div>
+<p>执行上述表达式，可在微缓冲区输出
+<code>1 2 3 4 5 nil</code>。<code>princ</code> 函数可将某个 Elisp
+对象的内容输出到微缓冲区。<code>format</code>
+函数能够以格式化的方式构造字符串对象，上述代码是将数字对象转化为字符串对象。倘若你懂一些
+C 语言，可将上述代码理解为</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">,</span> <span class="dv">4</span><span class="op">,</span> <span class="dv">5</span><span class="op">};</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">5</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d</span><span class="st"> &quot;</span><span class="op">,</span> a<span class="op">[</span>i<span class="op">]);</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>需要注意的是，微缓冲区输出内容中，末尾的 <code>nil</code> 并非
+<code>princ</code> 的输出，而是 Emacs 对 <code>dolist</code>
+函数的求值结果。请记住，Elisp
+的每个表达式必须有一个结果，没有结果的结果便是 <code>nil</code>。</p>
+<p>在充分理解列表的构造以及遍历过程的基础上，可以将多个 Unicode
+脚本写为列表的形式，然后在遍历这个列表的过程中完成替补字体的设定：</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">dolist</span> (script &#39;(han cjk-misc bopomofo))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    (set-fontset-font </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        (frame-parameter <span class="kw">nil</span> <span class="dt">&#39;font</span>) </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        script</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        (font-spec <span class="bu">:name</span> <span class="st">&quot;Noto Sans CJK SC&quot;</span> :size <span class="dv">12</span>)))</span></code></pre></div>
+<h1 id="条件表达式">条件表达式</h1>
+<p>Emacs
+有两种工作模式，一种是图形界面模式，一种是终端模式。我们直接以命令
+<code>emacs</code> 开启的
+Emacs，便是图形界面模式，其终端模式对应的命令是</p>
+<pre class="console"><code>$ emacs -nw</code></pre>
+<p>或</p>
+<pre class="console"><code>$ emacs --no-window-system</code></pre>
+<figure>
+<img src="figures/02.png" alt="Emacs 终端模式" />
+<figcaption aria-hidden="true">Emacs 终端模式</figcaption>
+</figure>
+<p>由于终端通常有自己的字体配置方式，无需在 Emacs
+中配置字体，故而上文所述的字体配置程序在 Emacs 的终端模式下无效。</p>
+<p>Emacs 提供了一个变量
+<code>window-system</code>，用于表征当前模式是否为图形界面模式。若
+<code>window-system</code> 的值为空值，即 <code>nil</code>，便表明 Emacs
+正处于终端模式。我们可以用这个变量作为条件，有选择的实现 Emacs
+字体配置。</p>
+<p>Elisp 语言可以用 <code>when</code> 构造条件表达式。例如</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">when</span> window-system</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    (set-frame-font (font-spec :family <span class="st">&quot;Ubuntu Mono&quot;</span> :size <span class="dv">12</span>))</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">dolist</span> (script &#39;(han cjk-misc bopomofo))</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        (set-fontset-font </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>            (frame-parameter <span class="kw">nil</span> <span class="dt">&#39;font</span>) </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>            script</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>            (font-spec <span class="bu">:name</span> <span class="st">&quot;Noto Sans CJK SC&quot;</span> :size <span class="dv">12</span>))))</span></code></pre></div>
+<p>上述的代码，使用 <code>when</code> 探测变量
+<code>window-system</code>
+的值是否为真值，若为真值，则对其后的表达式逐一求值。在 Elisp
+语言中，若一个值非 <code>nil</code>，即为真。上述代码，在 Emacs
+处于图形界面模式时，此时 <code>window-system</code> 的值非
+<code>nil</code>，字体配置代码便会被 Emacs 求值，而 Emacs
+处于终端模式时，<code>window-system</code> 的值为
+<code>nil</code>，<code>when</code>
+表达式的条件无法满足，故而其后的表达式便会被 Emacs 忽略。</p>
+<p>请将上述代码作为最终的 Emacs 字体配置程序，写入 init.el
+吧，或者将字体换成你喜欢的其他字体，只要你知道它们的名字。</p>
+<h1 id="总结">总结</h1>
+<p>为 Emacs 配置字体并不困难，不过是在 init.el 中写入区区 7
+行代码。我们觉得这一切很难，原因是，我们希望 Emacs
+能像其他软件那样，打开一个对话框，从下拉列表里选出一个字体作为西文字体，再选出一个字体作为中文字体，而
+Emacs
+却至今也不肯如此。也许它在等待，在未来能有一款完美的字体，让中文用户不需要使用这种替补字体机制。</p>
+<p>也许你会觉得奇怪，为何舍近求远，为何不直接将
+<code>Noto Sans CJK SC</code> 这样的中文字体作为 Emacs
+主字体，难道中文字体没有包含西文字符吗？你的疑问，实际上就是现实的无奈。迄今为止，的确还没有一款字体，其西文部分和汉字部分都能让我们满意。我们面对的现实很长时间以来，一直是西文字体不支持汉字，中文字体支持西文字符，但是西文字形设计远逊于西文字体。</p>
+<p>无论如何，Emacs
+字体的问题，暂且一劳永逸地解决了。更重要的是，我们已经掌握了 Elisp
+编程的一些基本知识。倘若你觉得 Elisp
+编写程序，似乎是有趣的。这种感受的意义远大于一种完美的中文字体。</p>
+
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+</body>
+</html>

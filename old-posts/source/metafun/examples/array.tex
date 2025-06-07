@@ -1,0 +1,17 @@
+\usemodule[zhfonts]
+\input snail.tex
+\startuseMPgraphic{foo}
+表(a, "空", "甲", "乙", "丙", "丁",
+      "戊", "己", "庚", "辛", "壬", "癸");
+之乎者也 a;
+横陈(a, .5cm); 呜呼 名(聚 a);
+
+表(b, "空", "一", "二", "三", "四", 
+      "五", "六", "七", "八", "九", "十");
+之乎者也 b;
+纵列(b, .5cm); 呜呼 名(聚 b);
+\stopuseMPgraphic
+
+\startTEXpage[offset=4pt]
+\useMPgraphic{foo}
+\stopTEXpage

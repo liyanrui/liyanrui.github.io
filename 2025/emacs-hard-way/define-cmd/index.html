@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>命令</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">命令
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2025 年 05 月 29 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#可交互函数" id="toc-可交互函数">可交互函数</a></li>
+  <li><a href="#参数" id="toc-参数">参数</a></li>
+  <li><a href="#长缨小试" id="toc-长缨小试">长缨小试</a></li>
+  <li><a href="#变量" id="toc-变量">变量</a></li>
+  <li><a href="#let-表达式" id="toc-let-表达式">let 表达式</a></li>
+  <li><a href="#定位光标" id="toc-定位光标">定位光标</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
+</nav>
+
+<h1 id="前言">前言</h1>
+<p>计算机上古时代，大概是上个世纪 70 年代中期，有一种计算机，名曰 Lisp
+机，其 CPU 可作为 Lisp 语言的解释器，亦即在这种计算机里，Lisp
+程序可以直接运行。譬如，你所写的每个 Lisp 表达式，CPU
+可对其求值，于是单个表达式即可为程序，就像地球上最早的生命体——单细胞生物以及后来的多细胞生物。</p>
+<p>时间到了 80 年代初期，Lisp 机在市场上败给了运行着 Unix
+操作系统的计算机。之后年轻的黑客 Richard Stallman 在 Unix 系统里复活了
+Lisp 机。这个重生的 Lisp 机便是 Emacs，是 Richard Stallman
+领导的自由软件革命事业的一部分。Stallman
+的理想是创造一个可供人类自由使用的 Unix
+系统。他和一些志同道合的黑客奋斗数年，创造了可与 Unix
+系统适配的软件生态，万事俱备，唯缺内核，相当于他们创造出来一辆尚不具备引擎的汽车。</p>
+<p>90 年代初，又一位年轻的黑客，Linus Torvalds 创造了 Linux
+内核。在当时的自由软件精神的感召下，他将 Linux
+内核也以自由软件的形式公诸于众，于是 GNU 项目夙愿得偿，一个完整的 Unix
+系统的替代品 GNU/Linux 就此诞生。不过，为 GNU
+伟大胜利欢呼的余音尚在绕梁之时，自由软件阵营发生了严重分裂。以 Eric
+Raymond
+为首的一部分自由软件开发者认为贫穷不是社会主义，必须拥抱市场，于是创建了开源软件理念，与
+GNU 项目分道扬镳。</p>
+<p>无论风云如何变幻，时至今日，Emacs
+依然是一个非常重要的软件，且顽强进化着。它活在 Linux 里，活在 macOS
+里，活在 Windows 里，活在 Android 手机里。Lisp
+机不复存在，而我们可以通过 Elisp 语言感受其灵魂。你依然可以像当初在 Lisp
+机器上的黑客那样，对一个表达式求值，相当于运行了一个程序。</p>
+<h1 id="可交互函数">可交互函数</h1>
+<p>在 Unix 以及后来的 Linux 系统中，一个程序通常意味着是一个可以在 Shell
+中运行的命令。实际上，Emacs 的微缓冲区也可以视为 Shell，只是它运行的并非
+Unix 或 Linux 中的命令，而是一种特殊的 Elisp 函数，即可交互函数。</p>
+<p>你可以在 init.el 添加一个 hello 函数，其定义如下：</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> hello </span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    (interactive)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">princ</span> <span class="st">&quot;Hello world!&quot;</span>))</span></code></pre></div>
+<p>将光标移动到上述函数定义的末尾，执行 <code>C-x C-e</code>，然后执行
+<code>M-x hello RET</code>，便可在微缓冲区里看到「Hello
+world!」字样。或者，保存上述对 init.el 的内容，重新打开 Emacs，执行
+<code>M-x hello RET</code>。</p>
+<p>若一个函数的定义里，第一个表达式是
+<code>(interactive)</code>，便意味着这个函数可以作为命令使用，甚至可以通过
+<code>C-h f</code> 查看其说明。Elisp
+函数定义中，若第一个表达式是字符串，该字符串便是函数的说明。例如，重新定义上述
+<code>hello</code> 函数：</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> hello </span>()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;这是一个没什么用处的函数&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    (interactive)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">princ</span> <span class="st">&quot;Hello world!&quot;</span>))</span></code></pre></div>
+<p>重新使用 <code>C-x C-e</code> 让这个函数的定义生效，然后执行
+<code>C-h f hello RET</code>，便可获得如下图所示的帮助信息：</p>
+<figure>
+<img src="figures/01.png" alt="hello 函数的文档" />
+<figcaption aria-hidden="true">hello 函数的文档</figcaption>
+</figure>
+<h1 id="参数">参数</h1>
+<p><code>(interactive)</code> 并非仅仅是让函数变成可在 <code>M-x</code>
+中执行的命令，它更重要的功能是从微缓冲区接收命令执行者提供的参数并为参数提供提示信息，参数的类型只有两种形式——字符串和数字。</p>
+<p>以下代码定义了可接收两个参数的函数
+<code>foo</code>，令其定义生效后，倘若你执行
+<code>M-x foo RET hello RET 3 RET</code>，结果可在缓冲区看到「hello
+3」字样。当输入 <code>foo</code> 命令并回车后，Emacs
+会在微缓冲区显示「输入文字：」。在输入「hello」并回车后，Emacs
+会在微缓冲区显示「输入数字：」。在输入「3」并回车后，<code>foo</code>
+便获得了参数 <code>a</code> 和 <code>b</code> 的值。</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> foo </span>(a b)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;这是一个没什么用处的函数。&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    (interactive (<span class="kw">list</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                     (read-string <span class="st">&quot;输入文字：&quot;</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                     (read-number <span class="st">&quot;输入数字：&quot;</span>)))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">princ</span> (<span class="kw">format</span> <span class="st">&quot;%s %d&quot;</span> a b)))</span></code></pre></div>
+<p>上述函数定义中的 <code>interactive</code>
+表达式也可写为更为直接的形式：</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(interactive</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;s输入文字：</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="st">n输入数字：&quot;</span>)</span></code></pre></div>
+<p><code>s</code> 表示字符串，<code>n</code>
+表示数字。这种直接获取参数的方式有些丑陋，切不可为了美观将其写为</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(interactive</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;s输入文字：</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">    n输入数字：&quot;</span>)</span></code></pre></div>
+<p>不过，写成以下形式是可行的，其中的 <code>\n</code>
+是换行符，而不是数字示意符，其后的 <code>n</code> 才是数字示意符。</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(interactive <span class="st">&quot;s输入文字：</span><span class="sc">\n</span><span class="st">n输入数字：&quot;</span>)</span></code></pre></div>
+<h1 id="长缨小试">长缨小试</h1>
+<p>倘若你经常编写 C 程序，应该知道 C
+程序的头文件通常要加入三条预处理指令，以保证该文件在 C
+程序编译过程中不会被重复载入。例如，在 foo.h
+文件，其前两行通常要写为</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifndef FOO_H</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define FOO_H</span></span></code></pre></div>
+<p>最后一行要写为</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span></code></pre></div>
+<p>我们可以定义一个 Emacs 命令
+<code>c-header</code>，它接受一个字符串参数，自动生成上述的预处理执行。</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> c-header </span>(name)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;初始化 C 程序头文件。&quot;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    (interactive <span class="st">&quot;s头文件名: &quot;</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    (insert (<span class="kw">format</span> <span class="st">&quot;#ifndef %s_H</span><span class="sc">\n</span><span class="st">&quot;</span> (upcase name)))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    (insert (<span class="kw">format</span> <span class="st">&quot;#define %s_H</span><span class="sc">\n\n</span><span class="st">&quot;</span> (upcase name)))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    (insert <span class="st">&quot;#endif&quot;</span>))</span></code></pre></div>
+<p>上述代码中使用的 <code>upcase</code>
+函数，可将字符串中的小写字符转换为大写。</p>
+<p>当 <code>c-header</code> 定义生效后，执行
+<code>M-x c-header RET foo_bar RET</code>
+便可在缓冲区内自动插入以下内容：</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifndef FOO_BAR_H</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define FOO_BAR_H</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span></code></pre></div>
+<h1 id="变量">变量</h1>
+<p>善于编程的你，想必已经敏锐的觉察到上一节定义的 <code>c-header</code>
+函数是低效的，它对 <code>upcase</code>
+表达式进行了重复求值。我们可以用一个变量保存 <code>upcase</code>
+的结果，然后重复使用该变量，便可提高 <code>c-header</code>
+的性能。想必你还没有忘记 <code>setq</code>。</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> c-header </span>(name)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;初始化 C 程序头文件。&quot;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    (interactive <span class="st">&quot;s头文件名: &quot;</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">setq</span> name (upcase name))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    (insert (<span class="kw">format</span> <span class="st">&quot;#ifndef %s_H</span><span class="sc">\n</span><span class="st">&quot;</span> name))</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    (insert (<span class="kw">format</span> <span class="st">&quot;#define %s_H</span><span class="sc">\n\n</span><span class="st">&quot;</span> name))</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    (insert <span class="st">&quot;#endif&quot;</span>))</span></code></pre></div>
+<h1 id="let-表达式">let 表达式</h1>
+<p>在 Elisp
+语言中，除了函数的参数，其他变量默认是全局变量。这一点也许与你所熟悉的那些编程语言不同，而且想必你也清楚全局变量的危险，它会给程序带来不确定性。例如</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> foo </span>()</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">setq</span> bar <span class="dv">3</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    (message (<span class="kw">format</span> <span class="st">&quot;%d&quot;</span> bar)))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>(foo) <span class="co">;; 显示 “3”</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>(message <span class="st">&quot;%d&quot;</span> bar) <span class="co">;; 显示 &quot;3&quot;</span></span></code></pre></div>
+<p>上述代码定义了函数 <code>foo</code>，然后对 <code>foo</code>
+求值，继而在微缓冲区打印在 <code>foo</code> 内部定义的变量
+<code>bar</code> 的值
+<code>3</code>。你应该发现了诡异之处，即在函数内部定义的变量，竟然可以在函数外部访问，原因在于
+<code>bar</code> 是全局变量。</p>
+<p>另外，需要注意的是，<code>message</code>
+是一个可以在微缓冲区显示内容的函数，它比之前多次用过的
+<code>princ</code> 更适合做这件事，因为用后者在微缓冲区显示信息时，Emacs
+会将 <code>princ</code>
+自身的求值结果也显示在微缓冲区，导致信息重复显示。</p>
+<p>除了将变量作为函数的参数外，有一种办法可以定义局部变量，即
+<code>let</code> 表达式。例如，可将上述函数 <code>foo</code>
+重新定义为</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> foo </span>()</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">let</span> ((n <span class="dv">3</span>))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;%d&quot;</span> n)))</span></code></pre></div>
+<p>若试图在 <code>foo</code> 外部访问变量 <code>n</code> 的值，Emacs
+便会抱怨 <code>n</code> 是无效变量。</p>
+<p><code>let</code>
+表达式可以定义多个局部变量，但是需要注意，访问局部变量的代码必须在
+<code>let</code> 表达式内。例如</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((a <span class="st">&quot;Hello&quot;</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>      (b <span class="fl">3.1415926</span>))</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    (message <span class="st">&quot;%s %f&quot;</span> a b))</span></code></pre></div>
+<h1 id="定位光标">定位光标</h1>
+<p><code>goto-char</code> 函数可将光标定位在指定位置。<code>point</code>
+函数可以获取当前的光标位置。基于这两个函数，我们可以让
+<code>c-header</code> 更好用一些，可以让它在完成第三条预处理指令
+<code>#endif</code>
+的插入之后，将光标定位到该预处理指令之前，即将光标定位在以下代码的
+<code>▌</code> 所示位置。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#ifndef FOO_BAR_H</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define FOO_BAR_H</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>▌</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="pp">#endif</span></span></code></pre></div>
+<p>以下代码重新定义 <code>c-header</code>。</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">defun</span><span class="fu"> c-header </span>(name)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;初始化 C 程序头文件。&quot;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    (interactive <span class="st">&quot;s头文件名: &quot;</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">setq</span> name (upcase name))</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    (insert (<span class="kw">format</span> <span class="st">&quot;#ifndef %s_H</span><span class="sc">\n</span><span class="st">&quot;</span> name))</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    (insert (<span class="kw">format</span> <span class="st">&quot;#define %s_H</span><span class="sc">\n</span><span class="st">&quot;</span> name))</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    (<span class="kw">let</span> ((a <span class="st">&quot;</span><span class="sc">\n</span><span class="st">#endif&quot;</span>))</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        (insert a)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        (goto-char (<span class="op">-</span> (point) (<span class="kw">length</span> a)))))</span></code></pre></div>
+<p>上述代码中所用的 <code>length</code> 函数，用于计算字符串长度。表达式
+<code>(- (point) (length a))</code>，是用 <code>(point)</code> 减去
+<code>(length a)</code>。在 Elisp 里，像 <code>+-*/</code>
+这些数值运算符，它们都是函数，必须像 Elisp 函数那样使用。例如</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(<span class="op">+</span> <span class="dv">1</span> <span class="dv">2</span>) <span class="co">;; 结果为 3</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>(<span class="op">-</span> <span class="dv">1</span> <span class="dv">2</span>) <span class="co">;; 结果为 -1</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>(<span class="op">*</span> <span class="dv">3</span> <span class="dv">4</span>) <span class="co">;; 结果为 12</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>(<span class="op">+</span> <span class="dv">1</span> (<span class="op">/</span> <span class="dv">6</span> <span class="dv">3</span>)) <span class="co">;; 结果为 3</span></span></code></pre></div>
+<p>也许你不习惯上述的前缀形式的数值运算表达式，更习惯传统的中缀表达式，例如
+<code>(1 + 3 * 4)</code>。然而，凡事有弊必有利。我们之所以能够在函数名中使用
+<code>-</code>，例如 <code>foo-bar</code>，正是因为 Emacs
+并不会将这样的函数名理解为 <code>foo</code> 减去
+<code>bar</code>。你可以在函数的名字中使用很多特殊符号，除了
+<code>+-*/</code>，你也可以使用 <code>?^&amp;*$@</code> 等符号。</p>
+<p><code>goto-char</code> 基于绝对位置定位光标，例如若缓冲区共有 100
+个字符，而 <code>goto-char</code> 的参数是 95，则 <code>goto-char</code>
+便将光标定位在第 95 个字符所在的位置。Emacs
+也提供了基于相对位置定位光标的函数，即 <code>forward-char</code> 与
+<code>backward-char</code>，分别用于向前和向后移动光标。这里所谓的向前移动光标，含义是向缓冲区尾部移动光标，而向后移动光标，含义是向缓冲区首部移动光标。我们可以用
+<code>backward-char</code> 将上述的 <code>c-header</code> 函数定义中的
+<code>let</code> 表达式简化为</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode lisp"><code class="sourceCode commonlisp"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">let</span> ((a <span class="st">&quot;</span><span class="sc">\n</span><span class="st">#endif&quot;</span>))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    (insert a)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    (backward-char (<span class="kw">length</span> a)))</span></code></pre></div>
+<h1 id="总结">总结</h1>
+<p>通过亲手编写一个可作为命令使用的 Elisp 函数，你也许已经感受到了，在
+Emacs 朴素的表象背后隐藏着一股神秘且巨大的力量，犹如可缚苍龙的长缨。</p>
+<p>Emacs 的神秘力量由 C 语言实现的文本编辑器核心以及同样以 C 语言实现
+Elisp 语言的解释器构成。Emacs
+的外围部分，是我们最为常用的部分，可称为应用层，主要由 Elisp
+语言实现。Emacs 用户可以继续使用 Elisp 语言在 Emacs
+应用层面编写程序，通过它们完成复杂的文字编辑工作，亦可将这些程序与他人共享，亦即
+Emacs 不仅是一台计算机，也是一个完备的操作系统，如同它的先祖 Lisp
+机，而你可以是它的用户，也可以是它的开发者。</p>
+<p>在 Emacs
+里，我经常能感受到这样一幅画面，一个人出走了半生，归来时仍是少年。</p>
+
+<div class="footer">需要联系我吗？请发邮件至 <a
+href="mailto:lyr.m2@live.cn" class="email">lyr.m2@live.cn</a></div>
+</body>
+</html>

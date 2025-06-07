@@ -1,0 +1,17 @@
+\input snail.tex
+\startuseMPgraphic{foo}
+设 "蜗界.路径.线宽 = '1pt'";
+设 "蜗界.路径.颜色 = 'black'";
+廷(甲, "$M$");
+廷(乙, "$\tilde{M}$") 位于 甲 偏 (东 3cm);
+廷(丙, "$M$") 位于 .5[甲.中央, 乙.中央] 偏 (南 1.5cm);
+呜呼 甲, 乙, 丙;
+
+路(甲乙, 甲.卯门 -- 乙.酉门) 标注 ("$\tilde{}$", 0);
+路(乙丙, (乙.中央 -- 丙.中央) shortened 1mm) 标注 ("$\tilde{}$", 0);
+路(甲丙, 甲.东南角 -- 丙.西北角) 标注 ("id", 0);
+\stopuseMPgraphic
+
+\startTEXpage[offset=4pt]
+\useMPgraphic{foo}
+\stopTEXpage
