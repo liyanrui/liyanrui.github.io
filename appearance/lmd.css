@@ -163,7 +163,7 @@ a:visited {
     text-decoration: none;
 }
 /* metadata */
-p.author, p.date {margin: 1em auto;}
+p.author, p.date {margin: 1em auto; color:#364bae;}
 
 blockquote {
     margin: 0px !important;
@@ -196,5 +196,5 @@ pre {line-height: 1.6em; max-height: 40em;}
 .snippet-name-stop,
 .snippet-name,
 .snippet-reference {
-    color: #733e58;
+    color: #364bae;
 }

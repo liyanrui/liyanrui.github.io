@@ -460,6 +460,7 @@ footer: 联系我...
 经过一番精心准备，驱动 pandoc 的任务就非常简单了，
 
 @ build_post 函数 #
+MATHJAX=https://cdn.bootcdn.net/ajax/libs/mathjax/4.1.3/input/tex.js
 function build_post {
     lmd_append_meta_data
     local lmd_face="$(lmd_path_to_root)"/appearance
@@ -468,14 +469,14 @@ function build_post {
                --css "$lmd_face/lmd.css" \
                --data-dir="$lmd_face/pandoc/data" \
                --template=homepage.template \
-               --mathjax=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js \
+               --mathjax=$MATHJAX \
                -o index.html
     else
         pandoc ._tmp_index.md --standalone --table-of-contents \
                --css "$lmd_face/lmd.css" \
                --data-dir="$lmd_face/pandoc/data" \
                --template=post.template \
-               --mathjax=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js \
+               --mathjax=$MATHJAX \
                -o index.html
     fi
     rm -f ._tmp_index.md
