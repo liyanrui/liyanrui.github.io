@@ -169,9 +169,6 @@ index.md 的内容为
 ---
 title: Foo
 subtitle: 
-category: ../index.html
-lang: zh-CN
-footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
 
 ```
@@ -180,7 +177,7 @@ footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.c
 
 <pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-8"> lmd_init 函数 </span><span class="snippet-name-stop">#</span>
 function lmd_init {
-    lmd_new_post "$1" "$2" "$3"
+    lmd_new_post "$1" "$2"
     cp -r "$LMD_SELF_PATH/data/appearance" ./
     cp $LMD_SELF_PATH/lmd.conf ./
 }
@@ -338,9 +335,6 @@ pandoc 所支持的 markdown 文档格式实际上并不纯粹，它允许文档
 ---
 title: Foo
 subtitle:
-category: ../index.html
-lang: zh-CN
-footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
 ```
 
@@ -383,11 +377,13 @@ awk -v lang="$LMD_LANGUAGE" \
 `LMD_LANGUAGE` 和 `LMD_FOOTER` 皆为 lmd.conf 文件中定义的变量。append-meta-data.awk 是 awk 脚本，位于 lmd 脚本所在目录的 helper 目录，负责向 ._tmp_index.md 文件写入元数据，其内容为
 
 <pre class="AWK-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-16"> append-meta-data.awk </span><span class="snippet-name-stop">#</span>
+BEGIN { first = 1 }
 /^---/, /\.\.\./ {
-    if ($0 == "...") { # 在 YAML 结束符之前插入元数据
+    if (first && $0 == "...") { # 在 YAML 结束符之前插入元数据
         if (category) print "category:", category
         if (lang) print "lang:", lang
         if (footer) print "footer:", footer
+        first = 0;
     }
 }
 { print $0 }
@@ -595,9 +591,9 @@ $ wget https://liyanrui.github.io/appearance/pandoc/data/templates/post.template
 ```
 $ cd /tmp
 $ export PATH=$HOME/opt/lmd/:$PATH
-$ lmd.sh init "测试 lmd 脚本" lmd-test
+$ lmd.sh init "测试 lmd 脚本" lmd-test && cd lmd-test
 $ lmd.sh build
-$ lmd.sh new "测试子文章" foo
+$ lmd.sh new "测试子文章" foo && cd foo
 $ lmd.sh build
 ```
 
@@ -632,9 +628,6 @@ $ lmd.sh build
 ---
 title: 测试 lmd 脚本
 subtitle: 
-category: ../index.html
-lang: zh-CN
-footer: 我的联系方式：<lyr.m2@live.cn> 或在[讨论区](https://github.com/liyanrui/liyanrui.github.io/issues)提问。
 ...
 
 * [测试子文章](foo/index.html)
