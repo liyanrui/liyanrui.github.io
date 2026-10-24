@@ -162,7 +162,8 @@ echo $(cd $(dirname $0) && pwd)
 <pre><code>my-path.sh
 .
 /tmp</code></pre>
-<p>对于本文档要创造的 lmd 脚本，将其所在目录的绝对路径作为全局变量，</p>
+<p>对于本文档要创造的 lmd
+脚本，需要一个全局变量存储其所在目录的绝对路径，</p>
 <pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-4"> 全局变量 LMD_SELF_PATH </span><span class="snippet-name-stop">#</span>
 LMD_SELF_PATH="$(cd "$(dirname "$0")" && pwd)"
 =><span class="caller"><a class="snippet-reference" href="#xi-9"> lmd-init-test.sh </a></span>
@@ -195,7 +196,7 @@ LMD_FOOTER="我的联系方式：<$LMD_EMAIL> 或在[讨论区]($LMD_ISSUES)提�
             └── templates
                 ├── homepage.template
                 └── post.template</code></pre>
-<p>按上述结构创建目录，然后下载</p>
+<p>按上述结构创建目录，然后下载以下文件，</p>
 <ul>
 <li><a href="../../appearance/lmd.css">lmd.css</a></li>
 <li><a
@@ -204,7 +205,7 @@ href="../../appearance/pandoc/data/templates/homepage.template">homepage.templat
 href="../../appearance/pandoc/data/templates/post.template">post.template</a></li>
 </ul>
 <p>将所得文件放置于 <code>$LMD_SELF_PATH/data</code>
-目录内相应的位置，便可创建出 lmd 脚本所需的资源。所下载的文件皆为 pandoc
+目录内相应的位置，便可创建出 lmd 脚本所需的资源。这些文件皆为 pandoc
 工具所需，在它试图将 markdown 文档转化为 html 文档时。lmd
 脚本的使命是驱动 pandoc，并为其提供这些文件的路径。</p>
 <h1 id="文章即目录">文章即目录</h1>
@@ -330,7 +331,7 @@ function path_to_root {
 =><span class="caller"><a class="snippet-reference" href="#xi-12"> lmd_path_to_root 函数 </a></span>
 </pre>
 <p>执行 <code>path_to_root</code>
-函数时，若传给它空文本，则表示从当前节点出发，向文章树的根节点前进。该函数正常结束时，会输出会输出当前节点到根节点的相对路径。在实际场景中，需将
+函数时，若传给它空文本，则表示从当前节点出发，向文章树的根节点前进。该函数正常结束时，会输出当前节点到根节点的相对路径。在实际场景中，需将
 <code>path_to_root</code> 置于命令替换环境，方能获取其结果，</p>
 <pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-12"> lmd_path_to_root 函数 </span><span class="snippet-name-stop">#</span>
 <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-11"> path_to_root 函数 </a><span class="snippet-name-stop">@</span>
@@ -347,7 +348,7 @@ function lmd_path_to_root {
 </pre>
 <p>若想快速验证 <code>lmd_path_to_root</code>
 是否灵验，可为其构造一个模拟运行环境，</p>
-<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-13"> run-lmd-path-to-root-test.sh </span><span class="snippet-name-stop">#</span>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-13"> run-lmd-path-to-root-test.sh </span><span class="snippet-name-stop">#</span>
 #!/bin/bash
 <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-12"> lmd_path_to_root 函数 </a><span class="snippet-name-stop">@</span>
 mkdir -p /tmp/foo/foo-1/foo-1-{1,2}
@@ -412,7 +413,7 @@ footer: 我的联系方式：&lt;lyr.m2@live.cn&gt;</code></pre>
 <p>pandoc 会将 <code>lang</code> 和 <code>footer</code>
 的值传递给文章模板 home.template 和 post.template，从而生成的 html
 文档里含有这些信息。</p>
-<p>这些元数据可以手工写入每篇文章，但我没有这种耐心，想必你也不是一直都有。这个工作应该交友
+<p>这些元数据可以手工写入每篇文章，但我没有这种耐心，想必你也不是一直都有。这个工作应该交由
 lmd 脚本完成。一个简单的策略是，由 lmd 脚本向将每篇文章的 index.md
 文件的复本填充元数据，然后用 pandoc 将该复本转换为 html
 文件，最后将复本删除。如此偷梁换柱，index.md
@@ -432,7 +433,7 @@ awk -v lang="$LMD_LANGUAGE" \
     index.md > ._tmp_index.md
 =><span class="caller"><a class="snippet-reference" href="#xi-18"> lmd_append_meta_data 函数 </a></span>
 </pre>
-<p><code>LMD_LANUAGE</code> 和 <code>LMD_FOOTER</code> 皆为 lmd.conf
+<p><code>LMD_LANGUAGE</code> 和 <code>LMD_FOOTER</code> 皆为 lmd.conf
 文件中定义的变量。append-meta-data.awk 是 awk 脚本，位于 lmd
 脚本所在目录的 helper 目录，负责向 ._tmp_index.md
 文件写入元数据，其内容为</p>
@@ -593,6 +594,7 @@ esac
 <p>lmd 脚本由其核心和命令行界面构成，</p>
 <pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-24"> lmd.sh </span><span class="snippet-name-stop">#</span>
 #!/bin/bash
+set -euo pipefail # 提升脚本健壮性
 <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-22"> lmd 脚本核心 </a><span class="snippet-name-stop">@</span>
 <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-23"> lmd 脚本命令行界面 </a><span class="snippet-name-stop">@</span>
 </pre>

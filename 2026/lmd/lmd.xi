@@ -75,7 +75,7 @@ my-path.sh
 /tmp
 ```
 
-对于本文档要创造的 lmd 脚本，将其所在目录的绝对路径作为全局变量，
+对于本文档要创造的 lmd 脚本，需要一个全局变量存储其所在目录的绝对路径，
 
 @ 全局变量 LMD_SELF_PATH #
 LMD_SELF_PATH="$(cd "$(dirname "$0")" && pwd)"
@@ -111,13 +111,13 @@ data
                 └── post.template
 ```
 
-按上述结构创建目录，然后下载
+按上述结构创建目录，然后下载以下文件，
 
 * [lmd.css](../../appearance/lmd.css)
 * [homepage.template](../../appearance/pandoc/data/templates/homepage.template)
 * [post.template](../../appearance/pandoc/data/templates/post.template)
 
-将所得文件放置于 `$LMD_SELF_PATH/data` 目录内相应的位置，便可创建出 lmd 脚本所需的资源。所下载的文件皆为 pandoc 工具所需，在它试图将 markdown 文档转化为 html 文档时。lmd 脚本的使命是驱动 pandoc，并为其提供这些文件的路径。
+将所得文件放置于 `$LMD_SELF_PATH/data` 目录内相应的位置，便可创建出 lmd 脚本所需的资源。这些文件皆为 pandoc 工具所需，在它试图将 markdown 文档转化为 html 文档时。lmd 脚本的使命是驱动 pandoc，并为其提供这些文件的路径。
 
 # 文章即目录
 
@@ -255,7 +255,7 @@ function path_to_root {
 }
 @
 
-执行 `path_to_root` 函数时，若传给它空文本，则表示从当前节点出发，向文章树的根节点前进。该函数正常结束时，会输出会输出当前节点到根节点的相对路径。在实际场景中，需将 `path_to_root` 置于命令替换环境，方能获取其结果，
+执行 `path_to_root` 函数时，若传给它空文本，则表示从当前节点出发，向文章树的根节点前进。该函数正常结束时，会输出当前节点到根节点的相对路径。在实际场景中，需将 `path_to_root` 置于命令替换环境，方能获取其结果，
 
 @ lmd_path_to_root 函数 #
 # path_to_root 函数 @
@@ -270,7 +270,7 @@ function lmd_path_to_root {
 
 若想快速验证 `lmd_path_to_root` 是否灵验，可为其构造一个模拟运行环境，
 
-@ run-lmd-path-to-root-test.sh #
+@ run-lmd-path-to-root-test.sh # [bash]
 #!/bin/bash
 # lmd_path_to_root 函数 @
 mkdir -p /tmp/foo/foo-1/foo-1-{1,2}
@@ -343,7 +343,7 @@ footer: 我的联系方式：<lyr.m2@live.cn>
 
 pandoc 会将 `lang` 和 `footer` 的值传递给文章模板 home.template 和 post.template，从而生成的 html 文档里含有这些信息。
 
-这些元数据可以手工写入每篇文章，但我没有这种耐心，想必你也不是一直都有。这个工作应该交友 lmd 脚本完成。一个简单的策略是，由 lmd 脚本向将每篇文章的 index.md 文件的复本填充元数据，然后用 pandoc 将该复本转换为 html 文件，最后将复本删除。如此偷梁换柱，index.md 文件能保持其头部原本的清爽状态，而你就像从未关心过这些元数据。
+这些元数据可以手工写入每篇文章，但我没有这种耐心，想必你也不是一直都有。这个工作应该交由 lmd 脚本完成。一个简单的策略是，由 lmd 脚本向将每篇文章的 index.md 文件的复本填充元数据，然后用 pandoc 将该复本转换为 html 文件，最后将复本删除。如此偷梁换柱，index.md 文件能保持其头部原本的清爽状态，而你就像从未关心过这些元数据。
 
 根文章只需要增加 `lang` 和 `footer`，因为它没有父节点文章。这两个元数据，在根文章的 lmd.conf 文件里定义，载入该文件便可获得，
 
@@ -360,7 +360,7 @@ awk -v lang="$LMD_LANGUAGE" \
     index.md > ._tmp_index.md
 @
 
-`LMD_LANUAGE` 和 `LMD_FOOTER` 皆为 lmd.conf 文件中定义的变量。append-meta-data.awk 是 awk 脚本，位于 lmd 脚本所在目录的 helper 目录，负责向 ._tmp_index.md 文件写入元数据，其内容为
+`LMD_LANGUAGE` 和 `LMD_FOOTER` 皆为 lmd.conf 文件中定义的变量。append-meta-data.awk 是 awk 脚本，位于 lmd 脚本所在目录的 helper 目录，负责向 ._tmp_index.md 文件写入元数据，其内容为
 
 @ append-meta-data.awk # [AWK]
 /^---/, /\.\.\./ {
@@ -525,6 +525,7 @@ lmd 脚本由其核心和命令行界面构成，
 
 @ lmd.sh # [bash]
 #!/bin/bash
+set -euo pipefail # 提升脚本健壮性
 # lmd 脚本核心 @
 # lmd 脚本命令行界面 @
 @
