@@ -207,7 +207,7 @@ function lmd_path_to_root {
 }
 @
 
-> 由于 `path_to_root` 是以命令替换的方式使用的，故而其定义中虽然使用 `cd` 命令切换了当前目录，但不会对命令替换之外的环境产生影响。
+> `path_to_root` 在 `lmd_path_to_root` 函数里以 `$(path_to_root "")` 调用，`$(...)` 开了一个子 shell。`path_to_root` 递归过程中的每一次执行的 `cd` 命令，都只在这个子 shell 里生效。递归结束时子 shell 退出，而 `lmd_path_to_root` 的当前目录不变。
 
 为什么如此执着获取当前节点到文章树根节点的相对路径呢？因为 lmd 脚本要驱动 pandoc 工作，需要基于该路径访问位于根节点的 appearance 目录中的文件。
 
