@@ -22,70 +22,6 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-    /* CSS for syntax highlighting */
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { color: #008000; } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { color: #008000; font-weight: bold; } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../../appearance/lmd.css" />
 </head>
@@ -97,7 +33,7 @@
       <button id="back-to-top" aria-label="返回目录">▲</button>
     </a></span></h1>
 </header>
-<p class="date">2026 年 10 月 23 日</p>
+<p class="date">2026 年 10 月 25 日</p>
 
 <nav id="TOC" role="doc-toc">
   <ul>
@@ -106,9 +42,9 @@
   <li><a href="#文章即目录" id="toc-文章即目录">文章即目录</a></li>
   <li><a href="#文章树溯源" id="toc-文章树溯源">文章树溯源</a></li>
   <li><a href="#元数据" id="toc-元数据">元数据</a></li>
+  <li><a href="#时间戳" id="toc-时间戳">时间戳</a></li>
   <li><a href="#驱动-pandoc" id="toc-驱动-pandoc">驱动 pandoc</a></li>
-  <li><a href="#真正的试验环境"
-  id="toc-真正的试验环境">真正的试验环境</a></li>
+  <li><a href="#试验" id="toc-试验">试验</a></li>
   <li><a href="#归档" id="toc-归档">归档</a></li>
   </ul>
 </nav>
@@ -166,8 +102,7 @@ echo $(cd $(dirname $0) && pwd)
 脚本，需要一个全局变量存储其所在目录的绝对路径，</p>
 <pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-4"> 全局变量 LMD_SELF_PATH </span><span class="snippet-name-stop">#</span>
 LMD_SELF_PATH="$(cd "$(dirname "$0")" && pwd)"
-=><span class="caller"><a class="snippet-reference" href="#xi-9"> lmd-init-test.sh </a></span>
-=><span class="caller"><a class="snippet-reference" href="#xi-22"> lmd 脚本核心 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-20"> lmd 脚本核心 </a></span>
 </pre>
 <p>注意，上述代码里的三层引号，是为了防止 <code>$0</code>
 中含有空格而导致命令失效。</p>
@@ -179,9 +114,9 @@ LMD_SELF_PATH="$(cd "$(dirname "$0")" && pwd)"
 脚本，定义了一组变量，</p>
 <pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-5"> lmd.conf </span><span class="snippet-name-stop">#</span>
 LMD_LANGUAGE="zh-CN"   # 网站语言为简体中文
-LMD_DATE="$(date +'%Y 年 %m 月 %d 日')"  # 文章时间戳
 LMD_EMAIL='lyr.m2@live.cn'  # 站长邮箱
-LMD_ISSUES='https://github.com/liyanrui/liyanrui.github.io/issues' # 讨论区
+ # 讨论区
+LMD_ISSUES='https://github.com/liyanrui/liyanrui.github.io/issues'
 # 页脚内容
 LMD_FOOTER="我的联系方式：<$LMD_EMAIL> 或在[讨论区]($LMD_ISSUES)提问。"
 </pre>
@@ -223,9 +158,7 @@ function lmd_new_post {
     mkdir figures
 }
 =><span class="caller"><a class="snippet-reference" href="#xi-7"> lmd-new-post-test.sh  </a></span>
-=><span class="caller"><a class="snippet-reference" href="#xi-9"> lmd-init-test.sh </a></span>
-=><span class="caller"><a class="snippet-reference" href="#xi-19"> lmd-append-meta-data-test.sh </a></span>
-=><span class="caller"><a class="snippet-reference" href="#xi-22"> lmd 脚本核心 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-20"> lmd 脚本核心 </a></span>
 </pre>
 <p><code>lmd_new_post</code> 的第 1 个参数是文章的名字，第 2
 个参数是文章目录。例如</p>
@@ -234,20 +167,6 @@ function lmd_new_post {
 <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-6"> lmd_new_post 函数 </a><span class="snippet-name-stop">@</span>
 lmd_new_post "Foo" foo
 </pre>
-<p>使用 xi 从本文档的文学程序源文件 <a href="lmd.xi">lmd.xi</a> 中提取
-lmd-new-post-test.sh 脚本并执行它，</p>
-<pre><code>$ xi -t -e &quot;lmd-new-post-test.sh&quot; -o lmd-new-post-test.sh lmd.xi
-$ bash lmd-new-post-test.sh</code></pre>
-<p>该脚本在自身所在目录创建目录 foo，该目录结构为</p>
-<pre><code>foo
-├── figures 目录
-└── index.md 文件</code></pre>
-<p>index.md 的内容为</p>
-<div class="sourceCode" id="cb10"><pre
-class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> Foo</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">subtitle</span><span class="kw">:</span><span class="at"> </span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">...</span></span></code></pre></div>
 <p>有一种特殊的文章，该文章结构除了拥有 figures 目录和 index.md
 文件之外，还有 appearance 目录以及 lmd.conf
 文件。这种文章称为根文章。函数 <code>lmd_init</code>
@@ -258,37 +177,8 @@ function lmd_init {
     cp -r "$LMD_SELF_PATH/data/appearance" ./
     cp $LMD_SELF_PATH/lmd.conf ./
 }
-=><span class="caller"><a class="snippet-reference" href="#xi-9"> lmd-init-test.sh </a></span>
-=><span class="caller"><a class="snippet-reference" href="#xi-22"> lmd 脚本核心 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-20"> lmd 脚本核心 </a></span>
 </pre>
-<p>例如，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-9"> lmd-init-test.sh </span><span class="snippet-name-stop">#</span>
-#!/bin/bash
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-4"> 全局变量 LMD_SELF_PATH </a><span class="snippet-name-stop">@</span>
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-6"> lmd_new_post 函数 </a><span class="snippet-name-stop">@</span>
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-8"> lmd_init 函数 </a><span class="snippet-name-stop">@</span>
-lmd_init "Foo" foo
-</pre>
-<p>使用 xi 提取 lmd-init-test.sh 脚本并将其置于 lmd
-脚本的环境里，假设该环境有 lmd.conf 和 data/appearance 目录，然后执行
-lmd-init-test.sh，便可创造出根文章 foo。方便起见，可模拟执行该过程，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-10"> run-lmd-init-test.sh </span><span class="snippet-name-stop">#</span>
-#!/bin/bash
-mkdir -p /tmp/lmd-init-test 
-xi -t -e "lmd-init-test.sh" -o /tmp/lmd-init-test/lmd-init-test.sh $1
-cd /tmp/lmd-init-test
-mkdir -p data/appearance && touch lmd.conf
-bash lmd-init-test.sh
-</pre>
-<p>使用 xi 提取 run-lmd-init-test.sh 脚本并执行，</p>
-<pre><code>$ xi -t -e &quot;run-lmd-init-test.sh&quot; -o run-lmd-init-test.sh lmd.xi
-$ bash run-lmd-init-test.sh lmd.xi</code></pre>
-<p>可在 /tmp/lmd-init-test 目录创造出根文章 foo，其结构为</p>
-<pre><code>foo
-├── appearance 目录
-├── figures 目录
-├── index.md 文件
-└── lmd.conf 文件</code></pre>
 <h1 id="文章树溯源">文章树溯源</h1>
 <p>无论是 <code>lmd_init</code> 创造的根文章，还是
 <code>lmd_new_post</code>
@@ -311,7 +201,7 @@ lmd_new_post &quot;Foo 1-2&quot; foo-1-2</code></pre>
 <p>从当前节点向根节点逐级走去，将走过的路径记录下来，便可获得当前节点到根节点的相对路径。在此行走过程中，如何获知所达节点是根节点呢？观其目录是否含有
 lmd.conf 文件。若是走到文件系统的根目录 <code>/</code>
 也未能发现文章树的根节点，则报错。这个过程可以写成递归函数，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-11"> path_to_root 函数 </span><span class="snippet-name-stop">#</span>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-9"> path_to_root 函数 </span><span class="snippet-name-stop">#</span>
 function path_to_root {
     local relative_path="$1"
     if [ "$(pwd)" = "/" ]; then
@@ -325,13 +215,13 @@ function path_to_root {
         path_to_root "$relative_path"
     fi
 }
-=><span class="caller"><a class="snippet-reference" href="#xi-12"> lmd_path_to_root 函数 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-10"> lmd_path_to_root 函数 </a></span>
 </pre>
 <p>执行 <code>path_to_root</code>
 函数时，若传给它空文本，则表示从当前节点出发，向文章树的根节点前进。该函数正常结束时，会输出当前节点到根节点的相对路径。在实际场景中，需将
 <code>path_to_root</code> 置于命令替换环境，方能获取其结果，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-12"> lmd_path_to_root 函数 </span><span class="snippet-name-stop">#</span>
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-11"> path_to_root 函数 </a><span class="snippet-name-stop">@</span>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-10"> lmd_path_to_root 函数 </span><span class="snippet-name-stop">#</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-9"> path_to_root 函数 </a><span class="snippet-name-stop">@</span>
 function lmd_path_to_root {
     local relative_path="$(path_to_root "")"
     if [ "$relative_path" = "" ]; then
@@ -339,26 +229,10 @@ function lmd_path_to_root {
     fi
     echo "$relative_path"
 }
-=><span class="caller"><a class="snippet-reference" href="#xi-13"> run-lmd-path-to-root-test.sh </a></span>
-=><span class="caller"><a class="snippet-reference" href="#xi-19"> lmd-append-meta-data-test.sh </a></span>
-=><span class="caller"><a class="snippet-reference" href="#xi-22"> lmd 脚本核心 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-20"> lmd 脚本核心 </a></span>
 </pre>
-<p>若想快速验证 <code>lmd_path_to_root</code>
-是否灵验，可为其构造一个模拟运行环境，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-13"> run-lmd-path-to-root-test.sh </span><span class="snippet-name-stop">#</span>
-#!/bin/bash
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-12"> lmd_path_to_root 函数 </a><span class="snippet-name-stop">@</span>
-mkdir -p /tmp/foo/foo-1/foo-1-{1,2}
-mkdir -p /tmp/foo/foo-2
-touch /tmp/foo/lmd.conf
-cd /tmp/foo/foo-1/foo-1-2
-lmd_path_to_root
-</pre>
-<p>执行 run-lmd-path-to-root-test.sh，可得</p>
-<pre><code>../..</code></pre>
-<p>如果你熟悉 bash
-的相对路径语法，应该能确定该结果是正确的。为什么如此执着获取当前节点到文章树根节点的相对路径呢？因为
-lmd 脚本要驱动 pandoc 工作，需要基于该路径访问位于根节点的 appearance
+<p>为什么如此执着获取当前节点到文章树根节点的相对路径呢？因为 lmd
+脚本要驱动 pandoc 工作，需要基于该路径访问位于根节点的 appearance
 目录中的文件。</p>
 <h1 id="元数据">元数据</h1>
 <p>在文章树的任一节点里，能够获得位于根节点的 appearance
@@ -415,23 +289,22 @@ lmd 脚本完成。一个简单的策略是，由 lmd 脚本向将每篇文章�
 <p>根文章只需要增加 <code>lang</code> 和
 <code>footer</code>，因为它没有父节点文章。这两个元数据，在根文章的
 lmd.conf 文件里定义，载入该文件便可获得，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-14"> 载入 lmd.conf </span><span class="snippet-name-stop">#</span>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-11"> 载入 lmd.conf </span><span class="snippet-name-stop">#</span>
 source "$(lmd_path_to_root)/lmd.conf"
-=><span class="caller"><a class="snippet-reference" href="#xi-18"> lmd_append_meta_data 函数 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-15"> lmd_add_meta_data 函数 </a></span>
 </pre>
 <p>向根文章复本写入元数据，此任务使用 awk 语言所写的脚本更为容易，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-15"> 向根文章写入元数据 </span><span class="snippet-name-stop">#</span>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-12"> 向根文章写入元数据 </span><span class="snippet-name-stop">#</span>
 awk -v lang="$LMD_LANGUAGE" \
     -v footer="$LMD_FOOTER" \
-    -f "$LMD_SELF_PATH/helper/append-meta-data.awk" \
+    -f "$LMD_SELF_PATH/helper/add-meta-data.awk" \
     index.md > ._tmp_index.md
-=><span class="caller"><a class="snippet-reference" href="#xi-18"> lmd_append_meta_data 函数 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-15"> lmd_add_meta_data 函数 </a></span>
 </pre>
 <p><code>LMD_LANGUAGE</code> 和 <code>LMD_FOOTER</code> 皆为 lmd.conf
-文件中定义的变量。append-meta-data.awk 是 awk 脚本，位于 lmd
-脚本所在目录的 helper 目录，负责向 ._tmp_index.md
-文件写入元数据，其内容为</p>
-<pre class="AWK-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-16"> append-meta-data.awk </span><span class="snippet-name-stop">#</span>
+文件中定义的变量。add-meta-data.awk 是 awk 脚本，位于 lmd 脚本所在目录的
+helper 目录，负责向 ._tmp_index.md 文件写入元数据，其内容为</p>
+<pre class="AWK-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-13"> add-meta-data.awk </span><span class="snippet-name-stop">#</span>
 BEGIN { first = 1 }
 /^---/, /\.\.\./ {
     if (first && $0 == "...") { # 在 YAML 结束符之前插入元数据
@@ -443,91 +316,70 @@ BEGIN { first = 1 }
 }
 { print $0 }
 </pre>
-<p>在 append-meta-data.awk 脚本里，元数据以 awk
+<p>在 add-meta-data.awk 脚本里，元数据以 awk
 命令选项参数的形式传入，元数据的左值便自动成为脚本里的变量，元数据的右值则是变量的值。处理根文章时，awk
 命令未提供 <code>category</code> 选项，意味着该脚本中，变量
 <code>category</code> 无值，作为条件表达式时，为假，故而不会输出
 <code>category</code> 的值。</p>
 <p>向普通文章写入元数据时，可以给出 <code>category</code> 的值，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-17"> 向普通文章写入元数据 </span><span class="snippet-name-stop">#</span>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-14"> 向普通文章写入元数据 </span><span class="snippet-name-stop">#</span>
 awk -v lang="$LMD_LANGUAGE" \
     -v footer="$LMD_FOOTER" \
     -v category="../index.html" \
-    -f "$LMD_SELF_PATH/helper/append-meta-data.awk" \
+    -f "$LMD_SELF_PATH/helper/add-meta-data.awk" \
     index.md > ._tmp_index.md
-=><span class="caller"><a class="snippet-reference" href="#xi-18"> lmd_append_meta_data 函数 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-15"> lmd_add_meta_data 函数 </a></span>
 </pre>
-<p><code>lmd_append_meta_data</code> 函数可根据当前目录是否存在 lmd.conf
+<p><code>lmd_add_meta_data</code> 函数可根据当前目录是否存在 lmd.conf
 文件，对文章酌情处理，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-18"> lmd_append_meta_data 函数 </span><span class="snippet-name-stop">#</span>
-function lmd_append_meta_data {
-    <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-14"> 载入 lmd.conf </a><span class="snippet-name-stop">@</span>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-15"> lmd_add_meta_data 函数 </span><span class="snippet-name-stop">#</span>
+function lmd_add_meta_data {
+    <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-11"> 载入 lmd.conf </a><span class="snippet-name-stop">@</span>
     if [ -e lmd.conf ]; then
-        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-15"> 向根文章写入元数据 </a><span class="snippet-name-stop">@</span>
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-12"> 向根文章写入元数据 </a><span class="snippet-name-stop">@</span>
     else
-        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-17"> 向普通文章写入元数据 </a><span class="snippet-name-stop">@</span>
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-14"> 向普通文章写入元数据 </a><span class="snippet-name-stop">@</span>
     fi
 }
-=><span class="caller"><a class="snippet-reference" href="#xi-19"> lmd-append-meta-data-test.sh </a></span>
-=><span class="caller"><a class="snippet-reference" href="#xi-22"> lmd 脚本核心 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-20"> lmd 脚本核心 </a></span>
 </pre>
-<p>构造一个简单的试验环境，验证 <code>lmd_append_meta_data</code>
-函数是否可用，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-19"> lmd-append-meta-data-test.sh </span><span class="snippet-name-stop">#</span>
-#!/bin/bash
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-6"> lmd_new_post 函数 </a><span class="snippet-name-stop">@</span>
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-12"> lmd_path_to_root 函数 </a><span class="snippet-name-stop">@</span>
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-18"> lmd_append_meta_data 函数 </a><span class="snippet-name-stop">@</span>
-# 准备 $LMD_SELF_PATH/helper
-LMD_SELF_PATH=/tmp
-mkdir -p /tmp/helper
-xi -t -e "append-meta-data.awk" "$1"
-# 试验目录
-mkdir -p /tmp/lmd-append-meta-data-test
-cd /tmp/lmd-append-meta-data-test
-# 根文章
-lmd_new_post "根文章" foo
-echo "LMD_LANGUAGE=zh-CN" > lmd.conf
-echo "LMD_FOOTER=\"联系我...\"" >> lmd.conf
-lmd_append_meta_data
-cat ._tmp_index.md
-# 子文章
-lmd_new_post "子文章" foo-1
-lmd_append_meta_data
-cat ._tmp_index.md
+<h1 id="时间戳">时间戳</h1>
+<p>若文章需要写上时间，则时间也应当作为元数据。并非所有文章都需要写上时间，例如根文章并不需要，故而为文章增加时间元数据，需要定义为一个单独的函数，按需调用。</p>
+<p>add-timestamp.awk 脚本可以在文章头部增加 <code>data</code> 数据，</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-16"> add-timestamp.awk </span><span class="snippet-name-stop">#</span>
+BEGIN { first = 1 }
+/^---/, /\.\.\./ {
+    if (first && $0 == "...") {
+        # 若文章已有时间戳，将其清除
+        gsub(/\n[ \t]*date:[^\n]*/, "", $0)
+        # 设置时间戳
+        if (date) print "date: " date
+    }
+}
+{ print }
 </pre>
-<p>lmd-append-meta-data-test.sh 脚本所接受的参数是 <a
-href="lmd.xi">lmd.xi</a> 文件。执行该脚本，</p>
-<pre><code>$ xi -t -e &quot;lmd-append-meta-data-test.sh&quot; lmd.xi
-$ bash &quot;lmd-append-meta-data-test.sh&quot; lmd.xi</code></pre>
-<p>所得结果应该为</p>
-<pre><code>---
-title: 根文章
-subtitle: 
-lang: zh-CN
-footer: 联系我...
-...
-
-
----
-title: 子文章
-subtitle: 
-category: ../index.html
-lang: zh-CN
-footer: 联系我...
-...
-
-</code></pre>
-<p>注意，在使用 xi 提取文学程序片段时，若片段名是文件名，可省略
-<code>-o</code> 选项。xi 默认会以片段名作为输出文件名。</p>
+<p><code>date</code> 变量的值，由 awk
+命令参数传入。<code>lmd_add_timestamp</code> 函数用于驱动
+add-timestamp.awk 脚本，</p>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-17"> lmd_add_timestamp 函数 </span><span class="snippet-name-stop">#</span>
+function lmd_add_timestamp {
+    local date="$(date +'%Y 年 %m 月 %d 日')"
+    awk -v date="$date" \
+        -f "$LMD_SELF_PATH/helper/add-timestamp.awk" \
+        index.md > ._tmp_index.md
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-20"> lmd 脚本核心 </a></span>
+</pre>
 <h1 id="驱动-pandoc">驱动 pandoc</h1>
-<p>经过一番精心准备，驱动 pandoc 的任务就非常简单了，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-20"> build_post 函数 </span><span class="snippet-name-stop">#</span>
+<p><code>build_post</code> 函数驱动 pandoc，将当前文章的 index.md
+含有元数据的复本转化为 index.html 文档，</p>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-18"> build_post 函数 </span><span class="snippet-name-stop">#</span>
 MATHJAX=https://cdn.bootcdn.net/ajax/libs/mathjax/4.1.3/input/tex.js
 function build_post {
-    lmd_append_meta_data
+    lmd_add_meta_data
     local lmd_face="$(lmd_path_to_root)"/appearance
-    if [ "$lmd_face" = "./appearance" ]; then
+    if [ "$lmd_face" = "./appearance" ]
+    then
         pandoc ._tmp_index.md --standalone \
                --css "$lmd_face/lmd.css" \
                --data-dir="$lmd_face/pandoc/data" \
@@ -544,42 +396,41 @@ function build_post {
     fi
     rm -f ._tmp_index.md
 }
-=><span class="caller"><a class="snippet-reference" href="#xi-21"> lmd_build 函数 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-19"> lmd_build 函数 </a></span>
 </pre>
 <p>但是，<code>build_post</code>
 并不安全，在执行它之前，需要判断当前目录是否存在 index.md 文件，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-21"> lmd_build 函数 </span><span class="snippet-name-stop">#</span>
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-20"> build_post 函数 </a><span class="snippet-name-stop">@</span>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-19"> lmd_build 函数 </span><span class="snippet-name-stop">#</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-18"> build_post 函数 </a><span class="snippet-name-stop">@</span>
 function lmd_build {
     if [ -e index.md ]
     then
         build_post
     fi
 }
-=><span class="caller"><a class="snippet-reference" href="#xi-22"> lmd 脚本核心 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-20"> lmd 脚本核心 </a></span>
 </pre>
-<p>至此，lmd 脚本最为核心的功能便完成了，但是若要验证
-<code>lmd_build</code>
-函数是否可用，必须手工构造出一个真正的试验环境。</p>
-<h1 id="真正的试验环境">真正的试验环境</h1>
+<h1 id="试验">试验</h1>
 <p>汇集上文实现的一些代码片段，形成 lmd 脚本核心，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-22"> lmd 脚本核心 </span><span class="snippet-name-stop">#</span>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-20"> lmd 脚本核心 </span><span class="snippet-name-stop">#</span>
 <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-4"> 全局变量 LMD_SELF_PATH </a><span class="snippet-name-stop">@</span>
 <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-6"> lmd_new_post 函数 </a><span class="snippet-name-stop">@</span>
 <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-8"> lmd_init 函数 </a><span class="snippet-name-stop">@</span>
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-12"> lmd_path_to_root 函数 </a><span class="snippet-name-stop">@</span>
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-18"> lmd_append_meta_data 函数 </a><span class="snippet-name-stop">@</span>
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-21"> lmd_build 函数 </a><span class="snippet-name-stop">@</span>
-=><span class="caller"><a class="snippet-reference" href="#xi-24"> lmd.sh </a></span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-10"> lmd_path_to_root 函数 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-15"> lmd_add_meta_data 函数 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-17"> lmd_add_timestamp 函数 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-19"> lmd_build 函数 </a><span class="snippet-name-stop">@</span>
+=><span class="caller"><a class="snippet-reference" href="#xi-22"> lmd.sh </a></span>
 </pre>
 <p>然后分别构造一个简单的命令行界面，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-23"> lmd 脚本命令行界面 </span><span class="snippet-name-stop">#</span>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-21"> lmd 脚本命令行界面 </span><span class="snippet-name-stop">#</span>
 case $1 in
     init)  lmd_init "${@:2}" ;;
     new)   lmd_new_post "${@:2}" ;;
+    timestamp) lmd_add_timestamp ;;
     build) lmd_build ;;
 esac
-=><span class="caller"><a class="snippet-reference" href="#xi-24"> lmd.sh </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-22"> lmd.sh </a></span>
 </pre>
 <blockquote>
 <p><code>$@</code> 或 <code>${@}</code>
@@ -589,24 +440,29 @@ esac
 <code>${@:2:3}</code>，即从 <code>$2</code> 开始，长度为 3 的切片。</p>
 </blockquote>
 <p>lmd 脚本由其核心和命令行界面构成，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-24"> lmd.sh </span><span class="snippet-name-stop">#</span>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-22"> lmd.sh </span><span class="snippet-name-stop">#</span>
 #!/bin/bash
 set -euo pipefail # 提升脚本健壮性
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-22"> lmd 脚本核心 </a><span class="snippet-name-stop">@</span>
-<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-23"> lmd 脚本命令行界面 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-20"> lmd 脚本核心 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-21"> lmd 脚本命令行界面 </a><span class="snippet-name-stop">@</span>
 </pre>
 <p>在 Linux 环境里，可以用 <code>wget</code> 命令获得 <a
 href="lmd.xi">lmd.xi</a> 文件，然后用 xi 命令提取 lmd 脚本和
-append-meta-data.awk 脚本，</p>
+add-meta-data.awk 脚本，</p>
 <pre><code>$ wget https://liyanrui.github.io/2026/lmd/lmd.xi
-$ xi -t -e &quot;lmd.sh, lmd.conf, append-meta-data.awk&quot; lmd.xi
+$ xi -t -e &quot;lmd.sh, lmd.conf, add-meta-data.awk&quot; lmd.xi
 $ chmod +x lmd.sh</code></pre>
+<blockquote>
+<p>在使用 xi
+提取文学程序片段时可以一次提取多个片段，若片段名是文件名，可省略
+<code>-o</code> 选项。xi 默认会以片段名作为输出文件名。</p>
+</blockquote>
 <p>假设将所得 lmd.sh 和 lmd.conf 放在 $HOME/opt/lmd 目录内，将
-append-meta-data.awk 放在该目录的 helper 子目录内，</p>
+add-meta-data.awk 放在该目录的 helper 子目录内，</p>
 <pre><code>$ mkdir -p $HOME/opt/lmd/{data/appearance,helper}
 $ mv lmd.sh $HOME/opt/lmd
 $ mv lmd.conf $HOME/opt/lmd
-$ mv append-meta-data.awk $HOME/opt/lmd/helper </code></pre>
+$ mv add-meta-data.awk $HOME/opt/lmd/helper </code></pre>
 <p>在 data/appearance 目录内，放置 lmd.css 文件和 pandoc 模板</p>
 <pre><code>$ cd $HOME/opt/lmd/data/appearance
 $ wget https://liyanrui.github.io/appearance/lmd.css
@@ -619,9 +475,12 @@ $ wget https://liyanrui.github.io/appearance/pandoc/data/templates/post.template
 <p>在 /tmp 目录里执行 $HOME/opt/lmd/lmd.sh 脚本，</p>
 <pre><code>$ cd /tmp
 $ export PATH=$HOME/opt/lmd/:$PATH
+# 创建根文章，进入其目录
 $ lmd.sh init &quot;测试 lmd 脚本&quot; lmd-test &amp;&amp; cd lmd-test
 $ lmd.sh build
+# 创建子文章，进入其目录
 $ lmd.sh new &quot;测试子文章&quot; foo &amp;&amp; cd foo
+$ lmd.sh timestamp # 为子文章增加时间戳
 $ lmd.sh build</code></pre>
 <p>使用网页浏览器打开 /tmp/lmd-test/foo/index.html
 文件，结果如下图所示，</p>
@@ -651,7 +510,7 @@ subtitle:
 <pre><code>$ lmd.sh build</code></pre>
 <p>重新生成的根文章便含有下级文章的链接了。</p>
 <p><img src="figures/05.png" /></p>
-<p>这个过程能否自动化呢？可以，但没有太大必要。手工归档所耗费的时间，与写一篇文章所用的时间相比，几乎可以忽略不计。此外，手工完成文章归档，也具备最大的灵活性，你甚至可以像一名期刊编辑那样完成这类工作。</p>
+<p>这个过程能否自动化呢？可以，但没有太大必要。手工归档所耗费的时间，与写一篇文章所用的时间相比，几乎可以忽略不计。此外，手工完成文章归档，也具备最大的灵活性，通常你需要像一名期刊编辑那样完成这类工作。</p>
 
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a

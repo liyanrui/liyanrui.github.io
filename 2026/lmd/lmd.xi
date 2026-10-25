@@ -1,7 +1,7 @@
 ---
 title: lmd 脚本
 subtitle: 
-date: 2026 年 10 月 23 日
+date: 2026 年 10 月 25 日
 ...
 
 本文档是文学程序 [lmd.xi](lmd.xi) 的文档编织结果，要看懂它，前提是需要对文学编程工具 xi 有所了解。以下文档
@@ -91,9 +91,9 @@ lmd 脚本所在目录，有一个 lmd.conf 文件，它是一个 bash 脚本，
 
 @ lmd.conf # [bash]
 LMD_LANGUAGE="zh-CN"   # 网站语言为简体中文
-LMD_DATE="$(date +'%Y 年 %m 月 %d 日')"  # 文章时间戳
 LMD_EMAIL='lyr.m2@live.cn'  # 站长邮箱
-LMD_ISSUES='https://github.com/liyanrui/liyanrui.github.io/issues' # 讨论区
+ # 讨论区
+LMD_ISSUES='https://github.com/liyanrui/liyanrui.github.io/issues'
 # 页脚内容
 LMD_FOOTER="我的联系方式：<$LMD_EMAIL> 或在[讨论区]($LMD_ISSUES)提问。"
 @
@@ -142,31 +142,6 @@ function lmd_new_post {
 lmd_new_post "Foo" foo
 @
 
-使用 xi 从本文档的文学程序源文件 [lmd.xi](lmd.xi) 中提取 lmd-new-post-test.sh 脚本并执行它，
-
-```
-$ xi -t -e "lmd-new-post-test.sh" -o lmd-new-post-test.sh lmd.xi
-$ bash lmd-new-post-test.sh
-```
-
-该脚本在自身所在目录创建目录 foo，该目录结构为
-
-```
-foo
-├── figures 目录
-└── index.md 文件
-```
-
-index.md 的内容为
-
-```yaml
----
-title: Foo
-subtitle: 
-...
-
-```
-
 有一种特殊的文章，该文章结构除了拥有 figures 目录和 index.md 文件之外，还有 appearance 目录以及 lmd.conf 文件。这种文章称为根文章。函数 `lmd_init` 专用于创建根文章，
 
 @ lmd_init 函数 #
@@ -176,44 +151,6 @@ function lmd_init {
     cp $LMD_SELF_PATH/lmd.conf ./
 }
 @
-
-例如，
-
-@ lmd-init-test.sh # [bash]
-#!/bin/bash
-# 全局变量 LMD_SELF_PATH @
-# lmd_new_post 函数 @
-# lmd_init 函数 @
-lmd_init "Foo" foo
-@
-
-使用 xi 提取 lmd-init-test.sh 脚本并将其置于 lmd 脚本的环境里，假设该环境有 lmd.conf 和 data/appearance 目录，然后执行 lmd-init-test.sh，便可创造出根文章 foo。方便起见，可模拟执行该过程，
-
-@ run-lmd-init-test.sh # [bash]
-#!/bin/bash
-mkdir -p /tmp/lmd-init-test 
-xi -t -e "lmd-init-test.sh" -o /tmp/lmd-init-test/lmd-init-test.sh $1
-cd /tmp/lmd-init-test
-mkdir -p data/appearance && touch lmd.conf
-bash lmd-init-test.sh
-@
-
-使用 xi 提取 run-lmd-init-test.sh 脚本并执行，
-
-```
-$ xi -t -e "run-lmd-init-test.sh" -o run-lmd-init-test.sh lmd.xi
-$ bash run-lmd-init-test.sh lmd.xi
-```
-
-可在 /tmp/lmd-init-test 目录创造出根文章 foo，其结构为
-
-```
-foo
-├── appearance 目录
-├── figures 目录
-├── index.md 文件
-└── lmd.conf 文件
-```
 
 # 文章树溯源
 
@@ -268,25 +205,7 @@ function lmd_path_to_root {
 }
 @
 
-若想快速验证 `lmd_path_to_root` 是否灵验，可为其构造一个模拟运行环境，
-
-@ run-lmd-path-to-root-test.sh # [bash]
-#!/bin/bash
-# lmd_path_to_root 函数 @
-mkdir -p /tmp/foo/foo-1/foo-1-{1,2}
-mkdir -p /tmp/foo/foo-2
-touch /tmp/foo/lmd.conf
-cd /tmp/foo/foo-1/foo-1-2
-lmd_path_to_root
-@
-
-执行 run-lmd-path-to-root-test.sh，可得
-
-```
-../..
-```
-
-如果你熟悉 bash 的相对路径语法，应该能确定该结果是正确的。为什么如此执着获取当前节点到文章树根节点的相对路径呢？因为 lmd 脚本要驱动 pandoc 工作，需要基于该路径访问位于根节点的 appearance 目录中的文件。
+为什么如此执着获取当前节点到文章树根节点的相对路径呢？因为 lmd 脚本要驱动 pandoc 工作，需要基于该路径访问位于根节点的 appearance 目录中的文件。
 
 # 元数据
 
@@ -356,13 +275,13 @@ source "$(lmd_path_to_root)/lmd.conf"
 @ 向根文章写入元数据 #
 awk -v lang="$LMD_LANGUAGE" \
     -v footer="$LMD_FOOTER" \
-    -f "$LMD_SELF_PATH/helper/append-meta-data.awk" \
+    -f "$LMD_SELF_PATH/helper/add-meta-data.awk" \
     index.md > ._tmp_index.md
 @
 
-`LMD_LANGUAGE` 和 `LMD_FOOTER` 皆为 lmd.conf 文件中定义的变量。append-meta-data.awk 是 awk 脚本，位于 lmd 脚本所在目录的 helper 目录，负责向 ._tmp_index.md 文件写入元数据，其内容为
+`LMD_LANGUAGE` 和 `LMD_FOOTER` 皆为 lmd.conf 文件中定义的变量。add-meta-data.awk 是 awk 脚本，位于 lmd 脚本所在目录的 helper 目录，负责向 ._tmp_index.md 文件写入元数据，其内容为
 
-@ append-meta-data.awk # [AWK]
+@ add-meta-data.awk # [AWK]
 BEGIN { first = 1 }
 /^---/, /\.\.\./ {
     if (first && $0 == "...") { # 在 YAML 结束符之前插入元数据
@@ -375,7 +294,7 @@ BEGIN { first = 1 }
 { print $0 }
 @
 
-在 append-meta-data.awk 脚本里，元数据以 awk 命令选项参数的形式传入，元数据的左值便自动成为脚本里的变量，元数据的右值则是变量的值。处理根文章时，awk 命令未提供 `category` 选项，意味着该脚本中，变量 `category` 无值，作为条件表达式时，为假，故而不会输出 `category` 的值。
+在 add-meta-data.awk 脚本里，元数据以 awk 命令选项参数的形式传入，元数据的左值便自动成为脚本里的变量，元数据的右值则是变量的值。处理根文章时，awk 命令未提供 `category` 选项，意味着该脚本中，变量 `category` 无值，作为条件表达式时，为假，故而不会输出 `category` 的值。
 
 向普通文章写入元数据时，可以给出 `category` 的值，
 
@@ -383,14 +302,14 @@ BEGIN { first = 1 }
 awk -v lang="$LMD_LANGUAGE" \
     -v footer="$LMD_FOOTER" \
     -v category="../index.html" \
-    -f "$LMD_SELF_PATH/helper/append-meta-data.awk" \
+    -f "$LMD_SELF_PATH/helper/add-meta-data.awk" \
     index.md > ._tmp_index.md
 @
 
-`lmd_append_meta_data` 函数可根据当前目录是否存在 lmd.conf 文件，对文章酌情处理，
+`lmd_add_meta_data` 函数可根据当前目录是否存在 lmd.conf 文件，对文章酌情处理，
 
-@ lmd_append_meta_data 函数 # [bash]
-function lmd_append_meta_data {
+@ lmd_add_meta_data 函数 # [bash]
+function lmd_add_meta_data {
     # 载入 lmd.conf @
     if [ -e lmd.conf ]; then
         # 向根文章写入元数据 @
@@ -400,73 +319,47 @@ function lmd_append_meta_data {
 }
 @
 
-构造一个简单的试验环境，验证 `lmd_append_meta_data` 函数是否可用，
+# 时间戳
 
-@ lmd-append-meta-data-test.sh # [bash]
-#!/bin/bash
-# lmd_new_post 函数 @
-# lmd_path_to_root 函数 @
-# lmd_append_meta_data 函数 @
-# 准备 $LMD_SELF_PATH/helper
-LMD_SELF_PATH=/tmp
-mkdir -p /tmp/helper
-xi -t -e "append-meta-data.awk" "$1"
-# 试验目录
-mkdir -p /tmp/lmd-append-meta-data-test
-cd /tmp/lmd-append-meta-data-test
-# 根文章
-lmd_new_post "根文章" foo
-echo "LMD_LANGUAGE=zh-CN" > lmd.conf
-echo "LMD_FOOTER=\"联系我...\"" >> lmd.conf
-lmd_append_meta_data
-cat ._tmp_index.md
-# 子文章
-lmd_new_post "子文章" foo-1
-lmd_append_meta_data
-cat ._tmp_index.md
+若文章需要写上时间，则时间也应当作为元数据。并非所有文章都需要写上时间，例如根文章并不需要，故而为文章增加时间元数据，需要定义为一个单独的函数，按需调用。
+
+add-timestamp.awk 脚本可以在文章头部增加 `data` 数据，
+
+@ add-timestamp.awk #
+BEGIN { first = 1 }
+/^---/, /\.\.\./ {
+    if (first && $0 == "...") {
+        # 若文章已有时间戳，将其清除
+        gsub(/\n[ \t]*date:[^\n]*/, "", $0)
+        # 设置时间戳
+        if (date) print "date: " date
+    }
+}
+{ print }
 @
 
-lmd-append-meta-data-test.sh 脚本所接受的参数是 [lmd.xi](lmd.xi) 文件。执行该脚本，
+`date` 变量的值，由 awk 命令参数传入。`lmd_add_timestamp` 函数用于驱动 add-timestamp.awk 脚本，
 
-```
-$ xi -t -e "lmd-append-meta-data-test.sh" lmd.xi
-$ bash "lmd-append-meta-data-test.sh" lmd.xi
-```
-
-所得结果应该为
-
-```
----
-title: 根文章
-subtitle: 
-lang: zh-CN
-footer: 联系我...
-...
-
-
----
-title: 子文章
-subtitle: 
-category: ../index.html
-lang: zh-CN
-footer: 联系我...
-...
-
-
-```
-
-注意，在使用 xi 提取文学程序片段时，若片段名是文件名，可省略 `-o` 选项。xi 默认会以片段名作为输出文件名。
+@ lmd_add_timestamp 函数 #
+function lmd_add_timestamp {
+    local date="$(date +'%Y 年 %m 月 %d 日')"
+    awk -v date="$date" \
+        -f "$LMD_SELF_PATH/helper/add-timestamp.awk" \
+        index.md > ._tmp_index.md
+}
+@
 
 # 驱动 pandoc
 
-经过一番精心准备，驱动 pandoc 的任务就非常简单了，
+`build_post` 函数驱动 pandoc，将当前文章的 index.md 含有元数据的复本转化为 index.html 文档，
 
 @ build_post 函数 #
 MATHJAX=https://cdn.bootcdn.net/ajax/libs/mathjax/4.1.3/input/tex.js
 function build_post {
-    lmd_append_meta_data
+    lmd_add_meta_data
     local lmd_face="$(lmd_path_to_root)"/appearance
-    if [ "$lmd_face" = "./appearance" ]; then
+    if [ "$lmd_face" = "./appearance" ]
+    then
         pandoc ._tmp_index.md --standalone \
                --css "$lmd_face/lmd.css" \
                --data-dir="$lmd_face/pandoc/data" \
@@ -497,9 +390,7 @@ function lmd_build {
 }
 @
 
-至此，lmd 脚本最为核心的功能便完成了，但是若要验证 `lmd_build` 函数是否可用，必须手工构造出一个真正的试验环境。
-
-# 真正的试验环境
+# 试验
 
 汇集上文实现的一些代码片段，形成 lmd 脚本核心，
 
@@ -508,7 +399,8 @@ function lmd_build {
 # lmd_new_post 函数 @
 # lmd_init 函数 @
 # lmd_path_to_root 函数 @
-# lmd_append_meta_data 函数 @
+# lmd_add_meta_data 函数 @
+# lmd_add_timestamp 函数 @
 # lmd_build 函数 @
 @
 
@@ -518,6 +410,7 @@ function lmd_build {
 case $1 in
     init)  lmd_init "${@:2}" ;;
     new)   lmd_new_post "${@:2}" ;;
+    timestamp) lmd_add_timestamp ;;
     build) lmd_build ;;
 esac
 @
@@ -533,21 +426,23 @@ set -euo pipefail # 提升脚本健壮性
 # lmd 脚本命令行界面 @
 @
 
-在 Linux 环境里，可以用 `wget` 命令获得 [lmd.xi](lmd.xi) 文件，然后用 xi 命令提取 lmd 脚本和 append-meta-data.awk 脚本，
+在 Linux 环境里，可以用 `wget` 命令获得 [lmd.xi](lmd.xi) 文件，然后用 xi 命令提取 lmd 脚本和 add-meta-data.awk 脚本，
 
 ```
 $ wget https://liyanrui.github.io/2026/lmd/lmd.xi
-$ xi -t -e "lmd.sh, lmd.conf, append-meta-data.awk" lmd.xi
+$ xi -t -e "lmd.sh, lmd.conf, add-meta-data.awk" lmd.xi
 $ chmod +x lmd.sh
 ```
 
-假设将所得 lmd.sh 和 lmd.conf 放在 $HOME/opt/lmd 目录内，将 append-meta-data.awk 放在该目录的 helper 子目录内，
+> 在使用 xi 提取文学程序片段时可以一次提取多个片段，若片段名是文件名，可省略 `-o` 选项。xi 默认会以片段名作为输出文件名。
+
+假设将所得 lmd.sh 和 lmd.conf 放在 $HOME/opt/lmd 目录内，将 add-meta-data.awk 放在该目录的 helper 子目录内，
 
 ```
 $ mkdir -p $HOME/opt/lmd/{data/appearance,helper}
 $ mv lmd.sh $HOME/opt/lmd
 $ mv lmd.conf $HOME/opt/lmd
-$ mv append-meta-data.awk $HOME/opt/lmd/helper 
+$ mv add-meta-data.awk $HOME/opt/lmd/helper 
 ```
 
 在 data/appearance 目录内，放置 lmd.css 文件和 pandoc 模板
@@ -570,9 +465,12 @@ $ wget https://liyanrui.github.io/appearance/pandoc/data/templates/post.template
 ```
 $ cd /tmp
 $ export PATH=$HOME/opt/lmd/:$PATH
+# 创建根文章，进入其目录
 $ lmd.sh init "测试 lmd 脚本" lmd-test && cd lmd-test
 $ lmd.sh build
+# 创建子文章，进入其目录
 $ lmd.sh new "测试子文章" foo && cd foo
+$ lmd.sh timestamp # 为子文章增加时间戳
 $ lmd.sh build
 ```
 
@@ -595,7 +493,6 @@ $ lmd.sh build
 ```
 
 上述代码中的 `$category$`，即 pandoc 从文章头部提取的 `category` 元数据。
-
 
 # 归档
 
@@ -622,4 +519,4 @@ $ lmd.sh build
 
 ![](figures/05.png)
 
-这个过程能否自动化呢？可以，但没有太大必要。手工归档所耗费的时间，与写一篇文章所用的时间相比，几乎可以忽略不计。此外，手工完成文章归档，也具备最大的灵活性，你甚至可以像一名期刊编辑那样完成这类工作。
+这个过程能否自动化呢？可以，但没有太大必要。手工归档所耗费的时间，与写一篇文章所用的时间相比，几乎可以忽略不计。此外，手工完成文章归档，也具备最大的灵活性，通常你需要像一名期刊编辑那样完成这类工作。
