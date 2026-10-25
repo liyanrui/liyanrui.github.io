@@ -358,6 +358,7 @@ function lmd_add_timestamp {
     awk -v date="$date" \
         -f "$LMD_SELF_PATH/helper/add-timestamp.awk" \
         index.md > ._tmp_index.md
+    mv ._tmp_index.md index.md
 }
 =><span class="caller"><a class="snippet-reference" href="#xi-20"> lmd 脚本核心 </a></span>
 </pre>
@@ -453,7 +454,7 @@ $ chmod +x lmd.sh
 
 > 在使用 xi 提取文学程序片段时可以一次提取多个片段，若片段名是文件名，可省略 `-o` 选项。xi 默认会以片段名作为输出文件名。
 
-假设将所得 lmd.sh 和 lmd.conf 放在 $HOME/opt/lmd 目录内，将 add-meta-data.awk 放在该目录的 helper 子目录内，
+假设将所得 lmd.sh 和 lmd.conf 放在 `$HOME/opt/lmd` 目录内，将 add-meta-data.awk 放在该目录的 helper 子目录内，
 
 ```
 $ mkdir -p $HOME/opt/lmd/{data/appearance,helper}
@@ -477,7 +478,7 @@ $ wget https://liyanrui.github.io/appearance/pandoc/data/templates/post.template
 
 ![](figures/02.png)
 
-在 /tmp 目录里执行 $HOME/opt/lmd/lmd.sh 脚本，
+在 /tmp 目录里执行 `$HOME/opt/lmd/lmd.sh` 脚本，
 
 ```
 $ cd /tmp
