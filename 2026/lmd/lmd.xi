@@ -347,8 +347,8 @@ BEGIN { first = 1 }
 
 @ lmd_add_timestamp 函数 #
 function lmd_add_timestamp {
-    local date="$(date +'%Y 年 %m 月 %d 日')"
-    awk -v date="$date" \
+    local post_date="$(date +'%Y 年 %m 月 %d 日')"
+    awk -v date="$pos_date" \
         -f "$LMD_SELF_PATH/helper/add-timestamp.awk" \
         index.md > ._tmp_index.md
     mv ._tmp_index.md index.md

@@ -213,6 +213,8 @@ function lmd_path_to_root {
 =><span class="caller"><a class="snippet-reference" href="#xi-20"> lmd 脚本核心 </a></span>
 </pre>
 
+> `path_to_root` 在 `lmd_path_to_root` 函数里以 `$(path_to_root "")` 调用，`$(...)` 开了一个子 shell。`path_to_root` 递归过程中的每一次执行的 `cd` 命令，都只在这个子 shell 里生效。递归结束时子 shell 退出，而 `lmd_path_to_root` 的当前目录不变。
+
 为什么如此执着获取当前节点到文章树根节点的相对路径呢？因为 lmd 脚本要驱动 pandoc 工作，需要基于该路径访问位于根节点的 appearance 目录中的文件。
 
 # 元数据
@@ -293,7 +295,7 @@ awk -v lang="$LMD_LANGUAGE" \
 
 <pre class="AWK-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-13"> add-meta-data.awk </span><span class="snippet-name-stop">#</span>
 BEGIN { first = 1 }
-/^---/, /\.\.\./ {
+/^---/, /^\.\.\./ {
     if (first && $0 == "...") { # 在 YAML 结束符之前插入元数据
         if (category) print "category:", category
         if (lang) print "lang:", lang
@@ -339,12 +341,13 @@ add-timestamp.awk 脚本可以在文章头部增加 `data` 数据，
 
 <pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-16"> add-timestamp.awk </span><span class="snippet-name-stop">#</span>
 BEGIN { first = 1 }
-/^---/, /\.\.\./ {
-    if (first && $0 == "...") {
-        # 若文章已有时间戳，将其清除
-        gsub(/\n[ \t]*date:[^\n]*/, "", $0)
-        # 设置时间戳
-        if (date) print "date: " date
+/^---/, /^\.\.\./ {
+    if (first) {
+        if ($0 ~ /^[ \t]*date:/) next # 若文章已有时间戳，将其舍弃
+        if ($0 ~ /^\.\.\./) { # 在 YAML 结束标记之前增加时间戳
+            if (date) print "date: " date
+            first = 0
+        }
     }
 }
 { print }
@@ -354,8 +357,8 @@ BEGIN { first = 1 }
 
 <pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-17"> lmd_add_timestamp 函数 </span><span class="snippet-name-stop">#</span>
 function lmd_add_timestamp {
-    local date="$(date +'%Y 年 %m 月 %d 日')"
-    awk -v date="$date" \
+    local post_date="$(date +'%Y 年 %m 月 %d 日')"
+    awk -v date="$pos_date" \
         -f "$LMD_SELF_PATH/helper/add-timestamp.awk" \
         index.md > ._tmp_index.md
     mv ._tmp_index.md index.md
