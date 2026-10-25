@@ -537,3 +537,7 @@ $ lmd.sh build
 ![](figures/05.png)
 
 这个过程能否自动化呢？可以，但没有太大必要。手工归档所耗费的时间，与写一篇文章所用的时间相比，几乎可以忽略不计。此外，手工完成文章归档，也具备最大的灵活性，通常你需要像一名期刊编辑那样完成这类工作。
+
+# 部署为 github 主页
+
+在 github 网站上创建名为 `yourname.github.io` 的新项目，将其 clone 至本地。将 lmd 脚本创建的根文章目录内的一切，复制到 yourname.github.io 目录，并在该目录内，创建名为 `.nojekyll` 的空文件，最后将这一切推送至 github。之后便可以使用 `https://yourname.github.io` 访问你的主页了。

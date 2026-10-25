@@ -46,6 +46,8 @@
   <li><a href="#驱动-pandoc" id="toc-驱动-pandoc">驱动 pandoc</a></li>
   <li><a href="#试验" id="toc-试验">试验</a></li>
   <li><a href="#归档" id="toc-归档">归档</a></li>
+  <li><a href="#部署为-github-主页" id="toc-部署为-github-主页">部署为
+  github 主页</a></li>
   </ul>
 </nav>
 
@@ -513,6 +515,12 @@ subtitle:
 <p>重新生成的根文章便含有下级文章的链接了。</p>
 <p><img src="figures/05.png" /></p>
 <p>这个过程能否自动化呢？可以，但没有太大必要。手工归档所耗费的时间，与写一篇文章所用的时间相比，几乎可以忽略不计。此外，手工完成文章归档，也具备最大的灵活性，通常你需要像一名期刊编辑那样完成这类工作。</p>
+<h1 id="部署为-github-主页">部署为 github 主页</h1>
+<p>在 github 网站上创建名为 <code>yourname.github.io</code>
+的新项目，将其 clone 至本地。将 lmd 脚本创建的根文章目录内的一切，复制到
+yourname.github.io 目录，并在该目录内，创建名为 <code>.nojekyll</code>
+的空文件，最后将这一切推送至 github。之后便可以使用
+<code>https://yourname.github.io</code> 访问你的主页了。</p>
 
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
