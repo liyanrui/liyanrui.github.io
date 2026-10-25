@@ -285,7 +285,7 @@ awk -v lang="$LMD_LANGUAGE" \
 
 @ add-meta-data.awk # [AWK]
 BEGIN { first = 1 }
-/^---/, /\.\.\./ {
+/^---/, /^\.\.\./ {
     if (first && $0 == "...") { # 在 YAML 结束符之前插入元数据
         if (category) print "category:", category
         if (lang) print "lang:", lang
