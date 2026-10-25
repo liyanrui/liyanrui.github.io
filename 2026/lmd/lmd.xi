@@ -330,11 +330,12 @@ add-timestamp.awk 脚本可以在文章头部增加 `data` 数据，
 @ add-timestamp.awk #
 BEGIN { first = 1 }
 /^---/, /\.\.\./ {
-    if (first && $0 == "...") {
-        # 若文章已有时间戳，将其清除
-        gsub(/\n[ \t]*date:[^\n]*/, "", $0)
-        # 设置时间戳
-        if (date) print "date: " date
+    if (first) {
+        if ($0 ~ /^[ \t]*date:/) next # 若文章已有时间戳，将其舍弃
+        if ($0 ~ /^\.\.\./) { # 在 YAML 结束标记之前增加时间戳
+            if (date) print "date: " date
+            first = 0
+        }
     }
 }
 { print }
