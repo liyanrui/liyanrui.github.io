@@ -363,6 +363,8 @@ function lmd_add_timestamp {
 =><span class="caller"><a class="snippet-reference" href="#xi-20"> lmd 脚本核心 </a></span>
 </pre>
 
+注意，时间戳是添加到文章的 index.md 文件中的。
+
 # 驱动 pandoc
 
 `build_post` 函数驱动 pandoc，将当前文章的 index.md 含有元数据的复本转化为 index.html 文档，

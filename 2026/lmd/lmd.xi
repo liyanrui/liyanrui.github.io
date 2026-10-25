@@ -352,6 +352,8 @@ function lmd_add_timestamp {
 }
 @
 
+注意，时间戳是添加到文章的 index.md 文件中的。
+
 # 驱动 pandoc
 
 `build_post` 函数驱动 pandoc，将当前文章的 index.md 含有元数据的复本转化为 index.html 文档，
