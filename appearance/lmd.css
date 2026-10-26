@@ -62,9 +62,9 @@ h1.title { font-size: 1.8em; margin: 0 auto; color: #c27698;}
 h1, h2, h3, h4, h5 {
     color: #c27698;
 }
-h1 { font-size: 1.5em; }
-h2 { font-size: 1.3em; }
-h3 { font-size: 1.1em; }
+h1 { font-size: 1.3em; }
+h2 { font-size: 1.15em; }
+h3 { font-size: 1em; }
 p.subtitle {
     color: #af655a;
 }

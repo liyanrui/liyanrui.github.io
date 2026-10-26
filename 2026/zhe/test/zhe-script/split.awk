@@ -1,9 +1,17 @@
-BEGIN { names = "zhm-names.txt"; defs = "zhm-defs.m4"; print "divert(-1)" > defs }
+BEGIN {
+    names = "zhm-names.txt"
+    defs = "zhm-defs.m4"
+    printf "" > names
+    print "divert(-1)" > defs
+}
 /^@zh-macro:/ {
     name = $0
     sub(/^@zh-macro:[[:space:]]*/, "", name)
     sub(/[[:space:]]+$/, "", name)
-    if (name != "" && !(name in seen)) { seen[name] = 1; print name > names }
+    if (name != "" && !(name in seen)) {
+        seen[name] = 1
+        print name > names
+    }
     next
 }
 { print > defs }
