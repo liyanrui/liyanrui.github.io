@@ -148,9 +148,12 @@ define(`正文结束', \stoptext)
 使用 awk 语言可将 zhdefine-test.m4 展开结果分割为两个文件，一个文件存储中文宏名，一个文件存储中文宏定义，
 
 <pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-8"> split.awk </span><span class="snippet-name-stop">#</span>
-BEGIN { names = "zhm-names.txt"; defs = "zhm-def.m4" }
-/^@zh-macro: / {
-    if (!($2 in seen)) { seen[$2] = 1; print $2 > names }
+BEGIN { names = "zhm-names.txt"; defs = "zhm-defines.m4" }
+/^@zh-macro:/ {
+    name = $0
+    sub(/^@zh-macro:[[:space:]]*/, "", name)
+    sub(/[[:space:]]+$/, "", name)
+    if (name != "" && !(name in seen)) { seen[name] = 1; print name > names }
     next
 }
 { print > defs }
@@ -163,3 +166,128 @@ $ awk -f split.awk zhdefine-test.out
 ```
 
 可产生文件 zhm-names.txt 和 zhm-defs.m4，前者只含有中文宏名，后者含有中文宏的定义。
+
+# 中文宏调用语法
+
+m4 宏调用语法贴合英文，无参数宏是一个单词，有参数宏是一个单词后面紧跟带括号的参数表，在视觉上很容易分辨普通文字和宏语句，但是对于中文而言，没有单词，无论是无参数宏还是有参数宏，都不容易分辨出中文宏调用，必须为其构造新的语法。
+
+中文宏，其调用语法是宏名前后出现全角 `~` 或半角 `~` 符号，参数以全角或半角逗号间隔，例如
+
+```m4
+zhdefine(`中文宏 1', `无参数的中文宏')
+zhdefine(`中文宏 2', `参数为「$1」和「$2」的中文宏')dnl
+这是～中文宏 1～的调用
+这是～（中文宏 2，啊，嗷）～的调用
+```
+
+应被展开为
+
+```
+这是无参数的中文宏调用
+这是参数为「啊」和「嗷」的中文宏调用
+```
+
+需要编写一个 awk 脚本，扫描文本，将符合上述语法的中文宏调用语句转化为 `indir` 形式，例如
+
+```m4
+这是`'indir(`中文宏 1')`'的调用
+这是`'indir(`中文宏 2', 啊, 嗷)`'的调用
+```
+
+若文本中需要对一些宏调用语句作逃逸处理，可沿用 m4 默认的引号 <code>`</code> 和 <code>'</code>。
+
+现在，需要问 AI，能否写出符合上述需求的 awk 脚本呢？结果 DeepSeek 很给力，
+
+<pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-9"> zhe.awk </span><span class="snippet-name-stop">#</span>
+# zhe.awk
+# 用法: gawk -v namesfile=zhm-names.txt -f zhe.awk input.txt > output.m4
+
+BEGIN {
+    if (namesfile == "") {
+        print "用法: gawk -v namesfile=zhm-names.txt -f zhe.awk input.txt" > "/dev/stderr"
+        exit 1
+    }
+    while ((getline name < namesfile) > 0) {
+        gsub(/^[ \t]+|[ \t]+$/, "", name)
+        if (name != "") defined[name] = 1
+    }
+    close(namesfile)
+    depth = 0
+    FULL = "\001"
+    HALF = "\002"
+}
+
+function trim(s) {
+    gsub(/^[ \t]+|[ \t]+$/, "", s)
+    return s
+}
+
+# 扫描一行，跟踪 m4 引号深度；引号内的 ～/~ 换成占位符
+function protect_quotes(line,    chars, k, c, out, d) {
+    out = ""
+    d = depth
+    split(line, chars, "")
+    for (k = 1; k <= length(chars); k++) {
+        c = chars[k]
+        if (c == "`") {
+            d++
+            out = out c
+        } else if (c == "'") {
+            if (d > 0) d--
+            out = out c
+        } else if (d > 0 && c == "～") {
+            out = out FULL
+        } else if (d > 0 && c == "~") {
+            out = out HALF
+        } else {
+            out = out c
+        }
+    }
+    depth = d
+    return out
+}
+
+function restore(line) {
+    gsub(FULL, "～", line)
+    gsub(HALF, "~", line)
+    return line
+}
+
+function process_seg(seg, tilde,    s, inner, parts, n, i, a, name, args) {
+    s = trim(seg)
+    if (s == "") return tilde tilde
+
+    if (s ~ /^[（(].*[）)]$/) {
+        inner = substr(s, 2, length(s) - 2)
+        n = split(inner, parts, /[，,]/)
+        name = trim(parts[1])
+        if (!(name in defined)) return tilde seg tilde
+        args = ""
+        for (i = 2; i <= n; i++) {
+            a = trim(parts[i])
+            if (a != "") args = args ", " a
+        }
+        return "`'indir(`" name "'" args ")`'"
+    }
+
+    if (!(s in defined)) return tilde seg tilde
+    return "`'indir(`" s "')`'"
+}
+
+{
+    line = protect_quotes($0)
+    out = ""
+    while (match(line, /[～~][^～~]*[～~]/)) {
+        pre  = substr(line, 1, RSTART - 1)
+        seg  = substr(line, RSTART + 1, RLENGTH - 2)
+        til  = substr(line, RSTART, 1)
+        post = substr(line, RSTART + RLENGTH)
+        out = out pre process_seg(seg, til)
+        line = post
+    }
+    out = out line
+    print restore(out)
+}
+</pre>
+
+
