@@ -147,7 +147,7 @@ define(`正文结束', \stoptext)
 使用 awk 语言可将 zhdefine-test.m4 展开结果分割为两个文件，一个文件存储中文宏名，一个文件存储中文宏定义，
 
 @ split.awk # [awk]
-BEGIN { names = "zhm-names.txt"; defs = "zhm-defines.m4" }
+BEGIN { names = "zhm-names.txt"; defs = "zhm-defs.m4"; print "divert(-1)" > defs }
 /^@zh-macro:/ {
     name = $0
     sub(/^@zh-macro:[[:space:]]*/, "", name)
@@ -156,6 +156,7 @@ BEGIN { names = "zhm-names.txt"; defs = "zhm-defines.m4" }
     next
 }
 { print > defs }
+END { print "divert(0)dnl" > defs }
 @
 
 假设，zhdefine-test.m4 展开结果为 zhdefine-test.out 文件，则
@@ -170,7 +171,7 @@ $ awk -f split.awk zhdefine-test.out
 
 m4 宏调用语法贴合英文，无参数宏是一个单词，有参数宏是一个单词后面紧跟带括号的参数表，在视觉上很容易分辨普通文字和宏语句，但是对于中文而言，没有单词，无论是无参数宏还是有参数宏，都不容易分辨出中文宏调用，必须为其构造新的语法。
 
-中文宏，其调用语法是宏名前后出现全角 `~` 或半角 `~` 符号，参数以全角或半角逗号间隔，例如
+中文宏，其调用语法是宏名前后出现全角或半角 `~` 符号，参数以全角或半角逗号间隔，例如
 
 ```m4
 zhdefine(`中文宏 1', `无参数的中文宏')
@@ -195,12 +196,12 @@ zhdefine(`中文宏 2', `参数为「$1」和「$2」的中文宏')dnl
 
 若文本中需要对一些宏调用语句作逃逸处理，可沿用 m4 默认的引号 <code>`</code> 和 <code>'</code>。
 
-现在，需要问 AI，能否写出符合上述需求的 awk 脚本呢？结果 DeepSeek 很给力，
+# zhe 脚本
+
+我将上述内容发给 DeepSeek，它很给力，一蹴而就，写出了中文宏调用语句的转换脚本，
 
 @ zhe.awk # [awk]
-# zhe.awk
 # 用法: gawk -v namesfile=zhm-names.txt -f zhe.awk input.txt > output.m4
-
 BEGIN {
     if (namesfile == "") {
         print "用法: gawk -v namesfile=zhm-names.txt -f zhe.awk input.txt" > "/dev/stderr"
@@ -215,12 +216,10 @@ BEGIN {
     FULL = "\001"
     HALF = "\002"
 }
-
 function trim(s) {
     gsub(/^[ \t]+|[ \t]+$/, "", s)
     return s
 }
-
 # 扫描一行，跟踪 m4 引号深度；引号内的 ～/~ 换成占位符
 function protect_quotes(line,    chars, k, c, out, d) {
     out = ""
@@ -245,13 +244,11 @@ function protect_quotes(line,    chars, k, c, out, d) {
     depth = d
     return out
 }
-
 function restore(line) {
     gsub(FULL, "～", line)
     gsub(HALF, "~", line)
     return line
 }
-
 function process_seg(seg, tilde,    s, inner, parts, n, i, a, name, args) {
     s = trim(seg)
     if (s == "") return tilde tilde
@@ -272,7 +269,6 @@ function process_seg(seg, tilde,    s, inner, parts, n, i, a, name, args) {
     if (!(s in defined)) return tilde seg tilde
     return "`'indir(`" s "')`'"
 }
-
 {
     line = protect_quotes($0)
     out = ""
@@ -290,3 +286,20 @@ function process_seg(seg, tilde,    s, inner, parts, n, i, a, name, args) {
 @
 
 
+# 封装
+
+将 split.awk 和 zhe.awk 脚本封装在 bash 脚本里，
+
+@ zhe.sh # [bash]
+#!/bin/bash
+set -euo pipefail # 提升脚本健壮性
+ZHE_SELF_PATH="$(cd "$(dirname "$0")" && pwd)"
+cat "$ZHE_SELF_PATH"/zhdefine.m4 > zhe-meta.m4
+cat $1 >> zhe-meta.m4
+echo "divert(0)dnl" >> zhe-meta.m4
+m4 zhe-meta.m4 > zhmdefs.out
+gawk -f "$ZHE_SELF_PATH/split.awk" zhmdefs.out
+gawk -v namesfile=zhm-names.txt -f "$ZHE_SELF_PATH"/zhe.awk "$2" > zhe-output.m4
+m4 zhm-defs.m4 zhe-output.m4
+rm -f zhe-meta.m4 zhmdefs.out zhm-names.txt zhm-defs.m4 zhe-output.m4
+@

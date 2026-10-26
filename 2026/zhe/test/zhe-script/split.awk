@@ -1,4 +1,4 @@
-BEGIN { names = "zhm-names.txt"; defs = "zhm-defines.m4" }
+BEGIN { names = "zhm-names.txt"; defs = "zhm-defs.m4"; print "divert(-1)" > defs }
 /^@zh-macro:/ {
     name = $0
     sub(/^@zh-macro:[[:space:]]*/, "", name)
@@ -7,3 +7,4 @@ BEGIN { names = "zhm-names.txt"; defs = "zhm-defines.m4" }
     next
 }
 { print > defs }
+END { print "divert(0)dnl" > defs }
