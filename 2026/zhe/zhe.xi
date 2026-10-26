@@ -114,7 +114,7 @@ $ m4 zh-macro-demo.m4
 
 定义 `zhdefine` 宏，
 
-@ zhdefine 宏 # [m4]
+@ zhdefine.m4 # [m4]
 define(`zhdefine', `divert(0)@zh-macro: $1
 divert(1)`define(`$1', `$2')'')dnl
 @
@@ -122,7 +122,7 @@ divert(1)`define(`$1', `$2')'')dnl
 `zhdefine` 专用于定义中文宏，宏名会发送到 0 号流作为输出，例如
 
 @ zhdefine-test.m4 #
-# zhdefine 宏 @
+# zhdefine.m4 @
 zhdefine(`正文开始', `\starttext')
 zhdefine(`正文结束', `\stoptext')
 @
@@ -303,3 +303,34 @@ gawk -v namesfile=zhm-names.txt -f "$ZHE_SELF_PATH"/zhe.awk "$2" > zhe-output.m4
 m4 zhm-defs.m4 zhe-output.m4
 rm -f zhe-meta.m4 zhmdefs.out zhm-names.txt zhm-defs.m4 zhe-output.m4
 @
+
+# 试验
+
+在 demo.m4 文件里定义中文宏，
+
+@ demo.m4 #
+zhdefine(`中文宏 1', `无参数的中文宏')
+zhdefine(`中文宏 2', `参数为「$1」和「$2」的中文宏')
+@
+
+调用中文宏，
+
+@ input.txt #
+这是～中文宏 1～的调用
+这是～(中文宏 2，啊，嗷)～的调用
+这是逃逸`～(中文宏 2，啊，嗷)～'的调用
+@
+
+假设 zhe.sh、split.awk、zhe.awk 以及 zhdefine.m4 文件位于 `$HOME/opt/zhe` 目录，执行
+
+```console
+$ bash $HOME/opt/zhe/zhe.sh demo.m4 input.txt
+```
+
+便可将 demo.m4 中定义的中文宏作用于 input.txt，结果为
+
+```
+这是无参数的中文宏的调用
+这是参数为「啊」和「嗷」的中文宏的调用
+这是逃逸～(中文宏 2，啊，嗷)～的调用
+```
