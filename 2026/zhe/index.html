@@ -108,7 +108,8 @@
   id="toc-中文宏调用语法">中文宏调用语法</a></li>
   <li><a href="#zhe-脚本" id="toc-zhe-脚本">zhe 脚本</a></li>
   <li><a href="#封装" id="toc-封装">封装</a></li>
-  <li><a href="#试验" id="toc-试验">试验</a></li>
+  <li><a href="#试验-1" id="toc-试验-1">试验 1</a></li>
+  <li><a href="#试验-2" id="toc-试验-2">试验 2</a></li>
   </ul>
 </nav>
 
@@ -398,7 +399,7 @@ m4 "$TMPDIR/zhe-meta.m4" > "$TMPDIR/zhmdefs.out"
     m4 zhm-defs.m4 zhe-output.m4
 )
 </pre>
-<h1 id="试验">试验</h1>
+<h1 id="试验-1">试验 1</h1>
 <p>在 demo.m4 文件里定义中文宏，</p>
 <pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-11"> demo.m4 </span><span class="snippet-name-stop">#</span>
 zhdefine(`中文宏 1', `无参数的中文宏')
@@ -417,6 +418,30 @@ zhdefine(`中文宏 2', `参数为「$1」和「$2」的中文宏')
 <pre><code>这是无参数的中文宏的调用
 这是参数为「啊」和「嗷」的中文宏的调用
 这是逃逸～(中文宏 2，啊，嗷)～的调用</code></pre>
+<h1 id="试验-2">试验 2</h1>
+<p>本试验用于验证 zhe.awk
+能否处理中文宏的参数嵌套情况，即中文宏参数是中文宏调用。先定义三个中文宏，</p>
+<pre class="m4-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-13"> demo-2.m4 </span><span class="snippet-name-stop">#</span>
+zhdefine(`内层', `【内层】')
+zhdefine(`外层', `外层收到($1)')
+zhdefine(`三层', `三层[$1|$2|$3]')
+</pre>
+<p>将其作用于</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-14"> input-2.txt </span><span class="snippet-name-stop">#</span>
+A: ～内层～
+B: ～(外层，～内层～)～
+C: ～(外层，～(外层，～(外层，～内层～)～)～)～
+D: ～(三层，a，，b)～
+E: ～(外层，普通文本)～
+F: ～(未定义，～内层～)～
+</pre>
+<p>所得结果为</p>
+<pre><code>A: 【内层】
+B: 外层收到(【内层】)
+C: 外层收到(外层收到(外层收到(【内层】)))
+D: 三层[a||b]
+E: 外层收到(普通文本)
+F: ～(未定义，～内层～)～</code></pre>
 
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
