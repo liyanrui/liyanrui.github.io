@@ -4,6 +4,17 @@ subtitle:
 date: 2026 年 10 月 26 日
 ...
 
+本文档是文学程序 [lmd.xi](lmd.xi) 的文档编织结果，要看懂它，前提是需要对文学编程工具 xi 有所了解。以下文档
+
+* [概览](https://zhuanlan.zhihu.com/p/2096395349250269589)
+* [片段抽取（tangle）](https://zhuanlan.zhihu.com/p/2096539422770648315)
+* [文档编织（weave）](https://zhuanlan.zhihu.com/p/2096703312229840628)
+* [杂项](https://zhuanlan.zhihu.com/p/2096738038923773483)
+
+是 xi 用户指南。若只是为了看懂本文档，并从中提取脚本代码用作试验，则上述文档只需阅读前两篇。
+
+本文档实现的程序是一个中文宏展开器，它可将特定形式的中文文本转化为 m4 宏，由 m4 解释器展开。
+
 # m4 语言
 
 写文档或者写程序代码时，难免会有所修改。若内容中存在多处相同的修改，可利用所有文本编辑器都会提供的查找/替换功能批量完成修改，例如将所有的 `foo_1` 修改为 `foo-1`。
@@ -201,7 +212,7 @@ zhdefine(`中文宏 2', `参数为「$1」和「$2」的中文宏')dnl
 
 # zhe.awk 脚本
 
-> 我将本文档上述内容发给 DeepSeek，它很给力，近乎一蹴而就，写出了中文宏调用语句的转换脚本，事后还能从工程视角对其修缮和增强，最终所得结果见附录。不过，诸如徒步 318 这类事情，路上搭车，终究是自欺欺人。
+> 我将本文档上述内容发给 DeepSeek，它很给力，近乎一蹴而就，写出了中文宏调用语句的转换脚本，事后还能从工程视角对其修缮和增强。不过，诸如徒步 318 这类事情，路上搭车，终究是自欺欺人。有时候，我走路，是为了熟悉路如何走，而不是必须快速去往某个地方。
 
 在 zhe.awk 脚本的准备阶段，需要读取中文宏的元文件，建立中文宏表，
 
@@ -519,107 +530,3 @@ D: 三层[a||b]
 E: 外层收到(普通文本)
 F: ～(未定义，～内层～)～
 ```
-
-# 附录
-
-DeepSeek 写的 zhe.awk，
-
-<pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-25"> zhe.awk 的 DeepSeek 版本 </span><span class="snippet-name-stop">#</span>
-# 用法: gawk -v namesfile=zhm-names.txt -f zhe.awk input.txt > output.m4
-BEGIN {
-    if (namesfile == "") {
-        print "用法: awk -v namesfile=zhm-names.txt -f zhe.awk input.txt" > "/dev/stderr"
-        exit 1
-    }
-    while ((getline name < namesfile) > 0) {
-        gsub(/^[ \t]+|[ \t]+$/, "", name)
-        if (name != "") defined[name] = 1
-    }
-    close(namesfile)
-    depth = 0
-}
-function trim(s) {
-    gsub(/^[ \t]+|[ \t]+$/, "", s)
-    return s
-}
-function contains_quote(s) {
-    return index(s, "`") || index(s, "'")
-}
-# 按逗号分割参数，跳过括号内的逗号
-function split_args(s, parts,    n, i, c, d, cur) {
-    n = 0; d = 0; cur = ""
-    for (i = 1; i <= length(s); i++) {
-        c = substr(s, i, 1)
-        if (c == "（" || c == "(") { d++; cur = cur c }
-        else if (c == "）" || c == ")") { if (d > 0) d--; cur = cur c }
-        else if ((c == "，" || c == ",") && d == 0) { parts[++n] = cur; cur = "" }
-        else cur = cur c
-    }
-    parts[++n] = cur
-    return n
-}
-function process_line(line,    out, k, c, n, seg, tilde, paren, nc) {
-    out = ""
-    n = length(line)
-    k = 1
-    while (k <= n) {
-        c = substr(line, k, 1)
-        if (c == "`") {
-            depth++
-            out = out c
-            k++
-        } else if (c == "'") {
-            if (depth > 0) depth--
-            out = out c
-            k++
-        } else if (depth == 0 && (c == "～" || c == "~")) {
-            tilde = c
-            k++
-            seg = ""
-            paren = 0
-            while (k <= n) {
-                nc = substr(line, k, 1)
-                if (paren == 0 && (nc == "～" || nc == "~")) break
-                if (nc == "（" || nc == "(") paren++
-                else if (nc == "）" || nc == ")") { if (paren > 0) paren-- }
-                seg = seg nc
-                k++
-            }
-            if (k <= n) {
-                out = out process_seg(seg, tilde)
-                k++
-            } else {
-                out = out tilde seg
-            }
-        } else {
-            out = out c
-            k++
-        }
-    }
-    return out
-}
-function process_seg(seg, tilde,    s, inner, parts, n, i, a, name, args) {
-    s = trim(seg)
-    if (s == "") return tilde tilde
-    if (contains_quote(s)) return tilde seg tilde
-
-    if (s ~ /^[（(].*[）)]$/) {
-        inner = substr(s, 2, length(s) - 2)
-        n = split_args(inner, parts)
-        name = trim(parts[1])
-        if (!(name in defined)) return tilde seg tilde
-        args = ""
-        for (i = 2; i <= n; i++) {
-            a = process_line(trim(parts[i]))
-            args = args ", `" a "'"
-        }
-        return "`'indir(`" name "'" args ")`'"
-    }
-
-    if (!(s in defined)) return tilde seg tilde
-    return "`'indir(`" s "')`'"
-}
-{
-    print process_line($0)
-}
-</pre>

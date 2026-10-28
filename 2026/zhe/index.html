@@ -111,10 +111,26 @@
   <li><a href="#zhe.sh-脚本" id="toc-zhe.sh-脚本">zhe.sh 脚本</a></li>
   <li><a href="#试验-1" id="toc-试验-1">试验 1</a></li>
   <li><a href="#试验-2" id="toc-试验-2">试验 2</a></li>
-  <li><a href="#附录" id="toc-附录">附录</a></li>
   </ul>
 </nav>
 
+<p>本文档是文学程序 <a href="lmd.xi">lmd.xi</a>
+的文档编织结果，要看懂它，前提是需要对文学编程工具 xi
+有所了解。以下文档</p>
+<ul>
+<li><a
+href="https://zhuanlan.zhihu.com/p/2096395349250269589">概览</a></li>
+<li><a
+href="https://zhuanlan.zhihu.com/p/2096539422770648315">片段抽取（tangle）</a></li>
+<li><a
+href="https://zhuanlan.zhihu.com/p/2096703312229840628">文档编织（weave）</a></li>
+<li><a
+href="https://zhuanlan.zhihu.com/p/2096738038923773483">杂项</a></li>
+</ul>
+<p>是 xi
+用户指南。若只是为了看懂本文档，并从中提取脚本代码用作试验，则上述文档只需阅读前两篇。</p>
+<p>本文档实现的程序是一个中文宏展开器，它可将特定形式的中文文本转化为 m4
+宏，由 m4 解释器展开。</p>
 <h1 id="m4-语言">m4 语言</h1>
 <p>写文档或者写程序代码时，难免会有所修改。若内容中存在多处相同的修改，可利用所有文本编辑器都会提供的查找/替换功能批量完成修改，例如将所有的
 <code>foo_1</code> 修改为 <code>foo-1</code>。</p>
@@ -272,8 +288,9 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb10-1"><a href="#cb
 <h1 id="zhe.awk-脚本">zhe.awk 脚本</h1>
 <blockquote>
 <p>我将本文档上述内容发给
-DeepSeek，它很给力，近乎一蹴而就，写出了中文宏调用语句的转换脚本，事后还能从工程视角对其修缮和增强，最终所得结果见附录。不过，诸如徒步
-318 这类事情，路上搭车，终究是自欺欺人。</p>
+DeepSeek，它很给力，近乎一蹴而就，写出了中文宏调用语句的转换脚本，事后还能从工程视角对其修缮和增强。不过，诸如徒步
+318
+这类事情，路上搭车，终究是自欺欺人。有时候，我走路，是为了熟悉路如何走，而不是必须快速去往某个地方。</p>
 </blockquote>
 <p>在 zhe.awk 脚本的准备阶段，需要读取中文宏的元文件，建立中文宏表，</p>
 <pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-9"> zhe.awk </span><span class="snippet-name-stop">#</span>
@@ -556,107 +573,6 @@ C: 外层收到(外层收到(外层收到(【内层】)))
 D: 三层[a||b]
 E: 外层收到(普通文本)
 F: ～(未定义，～内层～)～</code></pre>
-<h1 id="附录">附录</h1>
-<p>DeepSeek 写的 zhe.awk，</p>
-<pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-25"> zhe.awk 的 DeepSeek 版本 </span><span class="snippet-name-stop">#</span>
-# 用法: gawk -v namesfile=zhm-names.txt -f zhe.awk input.txt > output.m4
-BEGIN {
-    if (namesfile == "") {
-        print "用法: awk -v namesfile=zhm-names.txt -f zhe.awk input.txt" > "/dev/stderr"
-        exit 1
-    }
-    while ((getline name < namesfile) > 0) {
-        gsub(/^[ \t]+|[ \t]+$/, "", name)
-        if (name != "") defined[name] = 1
-    }
-    close(namesfile)
-    depth = 0
-}
-function trim(s) {
-    gsub(/^[ \t]+|[ \t]+$/, "", s)
-    return s
-}
-function contains_quote(s) {
-    return index(s, "`") || index(s, "'")
-}
-# 按逗号分割参数，跳过括号内的逗号
-function split_args(s, parts,    n, i, c, d, cur) {
-    n = 0; d = 0; cur = ""
-    for (i = 1; i <= length(s); i++) {
-        c = substr(s, i, 1)
-        if (c == "（" || c == "(") { d++; cur = cur c }
-        else if (c == "）" || c == ")") { if (d > 0) d--; cur = cur c }
-        else if ((c == "，" || c == ",") && d == 0) { parts[++n] = cur; cur = "" }
-        else cur = cur c
-    }
-    parts[++n] = cur
-    return n
-}
-function process_line(line,    out, k, c, n, seg, tilde, paren, nc) {
-    out = ""
-    n = length(line)
-    k = 1
-    while (k <= n) {
-        c = substr(line, k, 1)
-        if (c == "`") {
-            depth++
-            out = out c
-            k++
-        } else if (c == "'") {
-            if (depth > 0) depth--
-            out = out c
-            k++
-        } else if (depth == 0 && (c == "～" || c == "~")) {
-            tilde = c
-            k++
-            seg = ""
-            paren = 0
-            while (k <= n) {
-                nc = substr(line, k, 1)
-                if (paren == 0 && (nc == "～" || nc == "~")) break
-                if (nc == "（" || nc == "(") paren++
-                else if (nc == "）" || nc == ")") { if (paren > 0) paren-- }
-                seg = seg nc
-                k++
-            }
-            if (k <= n) {
-                out = out process_seg(seg, tilde)
-                k++
-            } else {
-                out = out tilde seg
-            }
-        } else {
-            out = out c
-            k++
-        }
-    }
-    return out
-}
-function process_seg(seg, tilde,    s, inner, parts, n, i, a, name, args) {
-    s = trim(seg)
-    if (s == "") return tilde tilde
-    if (contains_quote(s)) return tilde seg tilde
-
-    if (s ~ /^[（(].*[）)]$/) {
-        inner = substr(s, 2, length(s) - 2)
-        n = split_args(inner, parts)
-        name = trim(parts[1])
-        if (!(name in defined)) return tilde seg tilde
-        args = ""
-        for (i = 2; i <= n; i++) {
-            a = process_line(trim(parts[i]))
-            args = args ", `" a "'"
-        }
-        return "`'indir(`" name "'" args ")`'"
-    }
-
-    if (!(s in defined)) return tilde seg tilde
-    return "`'indir(`" s "')`'"
-}
-{
-    print process_line($0)
-}
-</pre>
 
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
