@@ -1,0 +1,5 @@
+zhdefine(`开始', `pushdef(`block_name', $1)\`start'$1')
+zhdefine(`结束', `\`stop'`'block_name`'popdef(`block_name')')
+zhdefine(`正文', `text')
+zhdefine(`列表', `itemize')
+zhdefine(`项', `\item')

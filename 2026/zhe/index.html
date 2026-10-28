@@ -103,13 +103,15 @@
   <ul>
   <li><a href="#m4-语言" id="toc-m4-语言">m4 语言</a></li>
   <li><a href="#中文-m4-宏" id="toc-中文-m4-宏">中文 m4 宏</a></li>
-  <li><a href="#m4-元文件" id="toc-m4-元文件">m4 元文件</a></li>
+  <li><a href="#元信息" id="toc-元信息">元信息</a></li>
   <li><a href="#中文宏调用语法"
   id="toc-中文宏调用语法">中文宏调用语法</a></li>
-  <li><a href="#zhe-脚本" id="toc-zhe-脚本">zhe 脚本</a></li>
-  <li><a href="#封装" id="toc-封装">封装</a></li>
+  <li><a href="#zhe.awk-脚本" id="toc-zhe.awk-脚本">zhe.awk
+  脚本</a></li>
+  <li><a href="#zhe.sh-脚本" id="toc-zhe.sh-脚本">zhe.sh 脚本</a></li>
   <li><a href="#试验-1" id="toc-试验-1">试验 1</a></li>
   <li><a href="#试验-2" id="toc-试验-2">试验 2</a></li>
+  <li><a href="#附录" id="toc-附录">附录</a></li>
   </ul>
 </nav>
 
@@ -198,21 +200,22 @@ indir(`正文结束')
 宏名，只是 sed 难以胜任此事，我考虑使用 GNU awk 语言为 m4
 文件编写一个预处理脚本，将中文宏调用语句转化为合法的 <code>indir</code>
 形式，该脚本名为 zhe。</p>
-<h1 id="m4-元文件">m4 元文件</h1>
+<h1 id="元信息">元信息</h1>
 <p>定义 <code>zhdefine</code> 宏，</p>
 <pre class="m4-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-6"> zhdefine.m4 </span><span class="snippet-name-stop">#</span>
 define(`zhdefine', `divert(0)@zh-macro: $1
-divert(1)`define(`$1', `$2')'')dnl
+`'`'divert(1)`define(`$1', `$2')'')dnl
 =><span class="caller"><a class="snippet-reference" href="#xi-7"> zhdefine-test.m4 </a></span>
 </pre>
-<p><code>zhdefine</code> 专用于定义中文宏，宏名会发送到 0
-号流作为输出，例如</p>
+<p>在 m4
+宏定义中，若宏有多行定义，可以用引号形成的空文本完成缩进，从而让宏定义在视觉上好看一些。<code>zhdefine</code>
+专用于定义中文宏，宏名会发送到 0 号流作为输出，例如</p>
 <pre class="m4-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-7"> zhdefine-test.m4 </span><span class="snippet-name-stop">#</span>
 <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-6"> zhdefine.m4 </a><span class="snippet-name-stop">@</span>
 zhdefine(`正文开始', `\starttext')
 zhdefine(`正文结束', `\stoptext')
 </pre>
-<p>我将像 zhdefine-test.m4 的 m4 文件称为 zhe 脚本的元文件，对其执行</p>
+<p>执行</p>
 <pre class="console"><code>$ m4 zhdefine-test.m4</code></pre>
 <p>可得</p>
 <pre><code>zh-macro: 正文开始
@@ -244,10 +247,13 @@ BEGIN {
 { print > defs }
 END { print "divert(0)dnl" > defs }
 </pre>
-<p>假设，zhdefine-test.m4 展开结果为 zhdefine-test.out 文件，则</p>
-<pre class="console"><code>$ awk -f split.awk zhdefine-test.out</code></pre>
+<p>假设，将 zhdefine-test.m4 文件展开为 zhdefine-test.out 文件，然后执行
+split.awk 脚本，</p>
+<pre class="console"><code>$ m4 zhdefine-test.m4 &gt; zhdefine-test.out 
+$ awk -f split.awk zhdefine-test.out</code></pre>
 <p>可产生文件 zhm-names.txt 和
-zhm-defs.m4，前者只含有中文宏名，后者含有中文宏的定义。</p>
+zhm-defs.m4，前者只含有中文宏名，后者含有中文宏的定义。像 zhm-names.txt
+这样的文件，称为中文宏的元文件。</p>
 <h1 id="中文宏调用语法">中文宏调用语法</h1>
 <p>m4
 宏调用语法贴合英文，无参数宏是一个单词，有参数宏是一个单词后面紧跟带括号的参数表，在视觉上很容易分辨普通文字和宏语句，但是对于中文而言，没有单词，无论是无参数宏还是有参数宏，都不容易分辨出中文宏调用，必须为其构造新的语法。</p>
@@ -261,17 +267,298 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb10-1"><a href="#cb
 <p>应被展开为</p>
 <pre><code>这是无参数的中文宏调用
 这是参数为「啊」和「嗷」的中文宏调用</code></pre>
-<p>需要编写一个 awk 脚本，扫描文本，将符合上述语法的中文宏调用语句转化为
-<code>indir</code> 形式，例如</p>
-<div class="sourceCode" id="cb12"><pre
-class="sourceCode m4"><code class="sourceCode m4"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>这是`&#39;indir<span class="ch">(</span>`中文宏 <span class="dv">1</span>&#39;<span class="ch">)</span>`&#39;的调用</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>这是`&#39;indir<span class="ch">(</span>`中文宏 <span class="dv">2</span>&#39;<span class="ch">,</span> 啊<span class="ch">,</span> 嗷<span class="ch">)</span>`&#39;的调用</span></code></pre></div>
 <p>若文本中需要对一些宏调用语句作逃逸处理，可沿用 m4 默认的引号
 <code>`</code> 和 <code>’</code>。</p>
-<h1 id="zhe-脚本">zhe 脚本</h1>
-<p>我将上述内容发给
-DeepSeek，它很给力，一蹴而就，写出了中文宏调用语句的转换脚本，</p>
+<h1 id="zhe.awk-脚本">zhe.awk 脚本</h1>
+<blockquote>
+<p>我将本文档上述内容发给
+DeepSeek，它很给力，近乎一蹴而就，写出了中文宏调用语句的转换脚本，事后还能从工程视角对其修缮和增强，最终所得结果见附录。不过，诸如徒步
+318 这类事情，路上搭车，终究是自欺欺人。</p>
+</blockquote>
+<p>在 zhe.awk 脚本的准备阶段，需要读取中文宏的元文件，建立中文宏表，</p>
 <pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-9"> zhe.awk </span><span class="snippet-name-stop">#</span>
+BEGIN {
+    while ((getline name < names) > 0) {
+        # 去除首尾空白字符
+        gsub(/^[ \t]+|[ \t]+$/, "", name)
+        # 将宏名加入中文宏表
+        # 需要查表时，用 name in zh_macros 表达式判断中文宏是否有定义
+        if (name != "") zh_macros[name] = 1
+    }
+    # 逃逸深度，值为 0 表示非逃逸状态
+    esc = 0
+    # 宏调用语句嵌套深度，0 表示无嵌套
+    depth = 0
+}
+</pre>
+<p>awk 语言默认以行为单元处理输入文件，zhe.awk
+自然也是如此。假设一行文本 <code>a</code>，函数
+<code>translate_macros</code> 将其转化为文本 <code>b</code>，使得
+<code>a</code> 中所有中文宏调用语句在 <code>b</code> 中皆为
+<code>indir</code> 调用形式。<code>process_macros</code> 大致结构为</p>
+<pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-10"> zhe.awk </span><span class="snippet-name-stop">#</span> +
+function process_macros(a,
+                        # 局部变量
+                        b, n, i, x, c) {
+    b = ""; n = length(a); i = 1
+    while (i <= n) {
+        x = substr(a, i, 1)
+        if (x == "`") {
+            esc++; b = b x; i++
+        } else if (x == "'") {
+            if (esc > 0) esc--
+            b = b x; i++
+        } else {
+            if (esc > 0) {
+                b = b x; i++
+            } else {
+                if (x == "~" || x == "～") {
+                    <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-11"> 进入中文宏调用语句处理状态 </a><span class="snippet-name-stop">@</span>
+                } else {
+                    b = b x; i++
+                }
+            }
+        }
+    }
+    return b
+}
+</pre>
+<p>当 <code>a</code> 中当前字符 <code>x</code> 为全角或半角的
+<code>~</code>
+符号时，便意味着需要探索前方内容可能是一个有参数的中文宏调用，也可能是一个无参数的中文宏调用，也可能并非中文宏调用，这三种可能皆需要处理，这三种情况的处理结果皆存储于
+<code>c</code> 中，</p>
+<pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-11"> 进入中文宏调用语句处理状态 </span><span class="snippet-name-stop">#</span>
+c = x
+if (i == n) break
+i++; x = substr(a, i, 1); c = c x
+if (x == "(" || x == "（") {
+    <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-12"> 进入有参数中文宏调用语句处理状态 </a><span class="snippet-name-stop">@</span>
+} else {
+    <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-13"> 进入无参数中文宏调用语句处理状态 </a><span class="snippet-name-stop">@</span>
+}
+b = b c
+i++
+=><span class="caller"><a class="snippet-reference" href="#xi-10"> zhe.awk </a></span>
+</pre>
+<p>有参数宏调用语句由于存在嵌套的可能，亦即存在宏参数也是宏调用语句的情况，故而在探索
+<code>x</code>
+前方是够能构成中文宏调用语句的过程中，需要跟踪宏调用的嵌套深度，在遇到宏调用结束标记时，只有深度为
+0 时，方能构成完整的宏调用语句，</p>
+<pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-12"> 进入有参数中文宏调用语句处理状态 </span><span class="snippet-name-stop">#</span>
+depth = 0
+while (i < n) {
+    i++; x = substr(a, i, 1); c = c x
+    if (x == "~" || x == "～") {
+        if (i == n) break
+        x = substr(a, i + 1, 1)
+        # 试探之后的内容是否为嵌套的有参数宏
+        if (x == "(" || x == "（") {
+            depth++
+            c = c x
+            i++
+        }
+        continue
+    }
+    if (x == ")" || x == "）") {
+        if (i == n) break
+        i++; x = substr(a, i, 1); c = c x
+        if (x == "~" || x == "～") {
+            if (depth == 0) {
+                c = expand_zh_macro(c)
+                break
+            }
+            if (depth > 0) depth--
+        }
+    }
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-11"> 进入中文宏调用语句处理状态 </a></span>
+</pre>
+<p>无参数中文宏调用语句不存在宏嵌套调用情况，故而只需要遇到下一个全角或半角
+<code>~</code> 符号，便可捕捉到一条宏调用语句，</p>
+<pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-13"> 进入无参数中文宏调用语句处理状态 </span><span class="snippet-name-stop">#</span>
+while (i < n) {
+    i++; x = substr(a, i, 1); c = c x
+    if (x == "~" || x == "～") {
+        c = expand_zh_macro(c)
+        break
+    }
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-11"> 进入中文宏调用语句处理状态 </a></span>
+</pre>
+<p>无论所捕捉的是有参数的还是无参数的中文宏，都要发送给
+<code>expand_zh_macro</code> 将其处理为 <code>indir</code> 形式，</p>
+<pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-14"> zhe.awk </span><span class="snippet-name-stop">#</span> +
+function expand_zh_macro(c,
+                         # 局部变量
+                         macro, m, n, i, j, x, parts, depth, args) {
+    m = length(c)
+    # 去掉宏调用语句两侧的 ~ 符号
+    macro = substr(c, 2, m - 2); m -= 2
+    if (macro) {
+        x = substr(macro, 1, 1)
+        if (x == "(" || x == "（") {
+            <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-15"> 展开有参数中文宏调用语句 </a><span class="snippet-name-stop">@</span>
+        } else {
+            <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-16"> 展开无参数中文宏调用语句 </a><span class="snippet-name-stop">@</span>
+        }
+    }
+    return macro
+}
+</pre>
+<p>有参数的中文宏调用语句，展开过程中需要分割宏名与参数，若参数中含有中文宏调用语句，则递归执行
+<code>process_macros</code> 函数将其展开，</p>
+<pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-15"> 展开有参数中文宏调用语句 </span><span class="snippet-name-stop">#</span>
+# 去除两侧括号
+macro = substr(macro, 2, m - 2); m -= 2
+if (macro) {
+    # 分割宏名与参数
+    n = 1; depth = 0
+    for (i = 1; i <= m; i++) {
+        x = substr(macro, i, 1)
+        if (x == "(" || x == "（") {
+            depth++
+            parts[n] = parts[n] x
+        } else if (x == ")" || x == "）") {
+            if (depth > 0) depth--
+            parts[n] = parts[n] x
+        } else if (x == "," || x == "，") {
+            if (depth == 0) n++
+            else parts[n] = parts[n] x
+        } else parts[n] = parts[n] x
+    }
+    # 去掉宏名与参数两侧的空白字符
+    for (i = 2; i <= n; i++) {
+        gsub(/^[ \t]+|[ \t]+$/, "", parts[i])
+    }
+    # 展开有参数中文宏
+    if (parts[1] in zh_macros) {
+        args = ""
+        for (i = 2; i <= n; i++) {
+            # 处理嵌套的中文宏调用语句
+            args = args ", `" process_macros(parts[i]) "'"
+        }
+        macro = "`'indir(`" parts[1] "'" args ")`'"
+    } else macro = c
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-14"> zhe.awk </a></span>
+</pre>
+<p>已经去除了两侧全角或半角 <code>~</code>
+符号的无参数的中文宏调用语句，只需去除两侧空白字符，然后以
+<code>indir</code> 调用即可，</p>
+<pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-16"> 展开无参数中文宏调用语句 </span><span class="snippet-name-stop">#</span>
+gsub(/^[ \t]+|[ \t]+$/, "", macro)
+macro = "`'indir(`" macro "')`'"
+=><span class="caller"><a class="snippet-reference" href="#xi-14"> zhe.awk </a></span>
+</pre>
+<p>只需将 <code>process_macros</code>
+函数作用于输入文本的每一行，便可完成中文宏调用语句的处理，</p>
+<pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-17"> zhe.awk </span><span class="snippet-name-stop">#</span> +
+{ print process_macros($0) }
+</pre>
+<h1 id="zhe.sh-脚本">zhe.sh 脚本</h1>
+<p>zhe.sh 脚本为 zhe.awk 脚本提供了简单的封装，由 DeepSeek 写就，</p>
+<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-18"> zhe.sh </span><span class="snippet-name-stop">#</span>
+#!/bin/bash
+set -euo pipefail
+if [ $# -ne 2 ]; then
+    echo "用法: $0 <宏定义.m4> <输入文本>" >&2
+    exit 1
+fi
+for cmd in m4 awk; do
+    command -v "$cmd" >/dev/null 2>&1 || { echo "缺少命令: $cmd" >&2; exit 1; }
+done
+
+ZHE_SELF_PATH="$(cd "$(dirname "$0")" && pwd)"
+INPUT="$(cd "$(dirname "$2")" && pwd)/$(basename "$2")"
+
+TMPDIR="$(mktemp -d)"
+trap 'rm -rf "$TMPDIR"' EXIT
+cat "$ZHE_SELF_PATH/zhdefine.m4" > "$TMPDIR/zhe-meta.m4"
+cat "$1" >> "$TMPDIR/zhe-meta.m4"
+echo "divert(0)dnl" >> "$TMPDIR/zhe-meta.m4"
+m4 "$TMPDIR/zhe-meta.m4" > "$TMPDIR/zhmdefs.out"
+(
+    cd "$TMPDIR"
+    awk -f "$ZHE_SELF_PATH/split.awk" zhmdefs.out
+    awk -v names=zhm-names.txt -f "$ZHE_SELF_PATH/zhe.awk" "$INPUT" > zhe-output.m4
+    m4 zhm-defs.m4 zhe-output.m4
+)
+</pre>
+<p>假设 split.awk、zhdefine.m4、zhe.awk 以及 zhe.sh 文件位于
+<code>$HOME/opt/zhe</code> 目录，为 zhe.sh 设置可执行权限，</p>
+<pre class="console"><code>$ chmod +x $HOME/opt/zhe/zhe.sh</code></pre>
+<p>假设中文宏定义文件 demo.m4 为</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-19"> demo.m4 </span><span class="snippet-name-stop">#</span>
+zhdefine(`中文宏 1', `无参数的中文宏')
+zhdefine(`中文宏 2', `参数为「$1」和「$2」的中文宏')
+</pre>
+<p>在文本文件 input.txt 调用了 demo.m4 中定义的中文宏，</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-20"> input.txt </span><span class="snippet-name-stop">#</span>
+这是～中文宏 1～的调用
+这是～(中文宏 2，啊，嗷)～的调用
+这是逃逸`～(中文宏 2，啊，嗷)～'的调用
+</pre>
+<p>执行</p>
+<pre class="console"><code>$ $HOME/opt/zhe/zhe.sh demo.m4 input.txt</code></pre>
+<p>结果为</p>
+<pre><code>这是无参数的中文宏的调用
+这是参数为「啊」和「嗷」的中文宏的调用
+这是逃逸～(中文宏 2，啊，嗷)～的调用</code></pre>
+<h1 id="试验-1">试验 1</h1>
+<p>验证 zhe.awk 能否处理有参数中文宏与无参数中文宏嵌套调用情况，将</p>
+<pre class="m4-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-21"> demo-1.m4 </span><span class="snippet-name-stop">#</span>
+zhdefine(`开始', `pushdef(`block_name', $1)\`start'$1')
+zhdefine(`结束', `\`stop'`'block_name`'popdef(`block_name')')
+zhdefine(`正文', `text')
+zhdefine(`列表', `itemize')
+zhdefine(`项', `\item')
+</pre>
+<p>作用于</p>
+<pre class="tex-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-22"> demo-1.tex </span><span class="snippet-name-stop">#</span>
+～（开始，～正文～）～
+... ... ...
+～（开始，～列表～）～
+～项～ ... ... ...
+～项～ ... ... ...
+～结束～
+～结束～
+</pre>
+<p>结果为</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode tex"><code class="sourceCode latex"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">\starttext</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>... ... ...</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">\startitemize</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">\item</span> ... ... ...</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">\item</span> ... ... ...</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">\stopitemize</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">\stoptext</span></span></code></pre></div>
+<h1 id="试验-2">试验 2</h1>
+<p>验证 zhe.awk
+能否处理中文宏具有一般性的嵌套情况，即中文宏参数是中文宏调用。先定义三个中文宏，</p>
+<pre class="m4-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-23"> demo-2.m4 </span><span class="snippet-name-stop">#</span>
+zhdefine(`内层', `【内层】')
+zhdefine(`外层', `外层收到($1)')
+zhdefine(`三层', `三层[$1|$2|$3]')
+</pre>
+<p>将其作用于</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-24"> input-2.txt </span><span class="snippet-name-stop">#</span>
+A: ～内层～
+B: ～(外层，～内层～)～
+C: ～(外层，～(外层，～(外层，～内层～)～)～)～
+D: ～(三层，a，，b)～
+E: ～(外层，普通文本)～
+F: ～(未定义，～内层～)～
+</pre>
+<p>所得结果为</p>
+<pre><code>A: 【内层】
+B: 外层收到(【内层】)
+C: 外层收到(外层收到(外层收到(【内层】)))
+D: 三层[a||b]
+E: 外层收到(普通文本)
+F: ～(未定义，～内层～)～</code></pre>
+<h1 id="附录">附录</h1>
+<p>DeepSeek 写的 zhe.awk，</p>
+<pre class="awk-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-25"> zhe.awk 的 DeepSeek 版本 </span><span class="snippet-name-stop">#</span>
 # 用法: gawk -v namesfile=zhm-names.txt -f zhe.awk input.txt > output.m4
 BEGIN {
     if (namesfile == "") {
@@ -370,78 +657,6 @@ function process_seg(seg, tilde,    s, inner, parts, n, i, a, name, args) {
     print process_line($0)
 }
 </pre>
-<h1 id="封装">封装</h1>
-<p>将 split.awk 和 zhe.awk 脚本封装在 bash 脚本里，</p>
-<pre class="bash-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-10"> zhe.sh </span><span class="snippet-name-stop">#</span>
-#!/bin/bash
-set -euo pipefail
-if [ $# -ne 2 ]; then
-    echo "用法: $0 <宏定义.m4> <输入文本>" >&2
-    exit 1
-fi
-for cmd in m4 awk; do
-    command -v "$cmd" >/dev/null 2>&1 || { echo "缺少命令: $cmd" >&2; exit 1; }
-done
-
-ZHE_SELF_PATH="$(cd "$(dirname "$0")" && pwd)"
-INPUT="$(cd "$(dirname "$2")" && pwd)/$(basename "$2")"
-
-TMPDIR="$(mktemp -d)"
-trap 'rm -rf "$TMPDIR"' EXIT
-cat "$ZHE_SELF_PATH/zhdefine.m4" > "$TMPDIR/zhe-meta.m4"
-cat "$1" >> "$TMPDIR/zhe-meta.m4"
-echo "divert(0)dnl" >> "$TMPDIR/zhe-meta.m4"
-m4 "$TMPDIR/zhe-meta.m4" > "$TMPDIR/zhmdefs.out"
-(
-    cd "$TMPDIR"
-    awk -f "$ZHE_SELF_PATH/split.awk" zhmdefs.out
-    awk -v namesfile=zhm-names.txt -f "$ZHE_SELF_PATH/zhe.awk" "$INPUT" > zhe-output.m4
-    m4 zhm-defs.m4 zhe-output.m4
-)
-</pre>
-<h1 id="试验-1">试验 1</h1>
-<p>在 demo.m4 文件里定义中文宏，</p>
-<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-11"> demo.m4 </span><span class="snippet-name-stop">#</span>
-zhdefine(`中文宏 1', `无参数的中文宏')
-zhdefine(`中文宏 2', `参数为「$1」和「$2」的中文宏')
-</pre>
-<p>调用中文宏，</p>
-<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-12"> input.txt </span><span class="snippet-name-stop">#</span>
-这是～中文宏 1～的调用
-这是～(中文宏 2，啊，嗷)～的调用
-这是逃逸`～(中文宏 2，啊，嗷)～'的调用
-</pre>
-<p>假设 zhe.sh、split.awk、zhe.awk 以及 zhdefine.m4 文件位于
-<code>$HOME/opt/zhe</code> 目录，执行</p>
-<pre class="console"><code>$ bash $HOME/opt/zhe/zhe.sh demo.m4 input.txt</code></pre>
-<p>便可将 demo.m4 中定义的中文宏作用于 input.txt，结果为</p>
-<pre><code>这是无参数的中文宏的调用
-这是参数为「啊」和「嗷」的中文宏的调用
-这是逃逸～(中文宏 2，啊，嗷)～的调用</code></pre>
-<h1 id="试验-2">试验 2</h1>
-<p>本试验用于验证 zhe.awk
-能否处理中文宏的参数嵌套情况，即中文宏参数是中文宏调用。先定义三个中文宏，</p>
-<pre class="m4-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-13"> demo-2.m4 </span><span class="snippet-name-stop">#</span>
-zhdefine(`内层', `【内层】')
-zhdefine(`外层', `外层收到($1)')
-zhdefine(`三层', `三层[$1|$2|$3]')
-</pre>
-<p>将其作用于</p>
-<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-14"> input-2.txt </span><span class="snippet-name-stop">#</span>
-A: ～内层～
-B: ～(外层，～内层～)～
-C: ～(外层，～(外层，～(外层，～内层～)～)～)～
-D: ～(三层，a，，b)～
-E: ～(外层，普通文本)～
-F: ～(未定义，～内层～)～
-</pre>
-<p>所得结果为</p>
-<pre><code>A: 【内层】
-B: 外层收到(【内层】)
-C: 外层收到(外层收到(外层收到(【内层】)))
-D: 三层[a||b]
-E: 外层收到(普通文本)
-F: ～(未定义，～内层～)～</code></pre>
 
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a

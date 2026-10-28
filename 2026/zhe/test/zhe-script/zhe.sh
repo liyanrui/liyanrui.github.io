@@ -20,6 +20,6 @@ m4 "$TMPDIR/zhe-meta.m4" > "$TMPDIR/zhmdefs.out"
 (
     cd "$TMPDIR"
     awk -f "$ZHE_SELF_PATH/split.awk" zhmdefs.out
-    awk -v namesfile=zhm-names.txt -f "$ZHE_SELF_PATH/zhe.awk" "$INPUT" > zhe-output.m4
+    awk -v names=zhm-names.txt -f "$ZHE_SELF_PATH/zhe.awk" "$INPUT" > zhe-output.m4
     m4 zhm-defs.m4 zhe-output.m4
 )
