@@ -207,7 +207,7 @@ zhdefine(`中文宏 2', `参数为「$1」和「$2」的中文宏')dnl
 这是参数为「啊」和「嗷」的中文宏调用
 ```
 
-若文本中需要对一些宏调用语句作逃逸处理，可沿用 m4 默认的引号 <code>`</code> 和 <code>'</code>。
+若文本中需要对一些宏调用语句作逃逸处理，可沿用 m4 默认的引号 <code>`</code> 和 `'`。
 
 # zhe.awk 脚本
 
@@ -381,7 +381,9 @@ if (macro) {
 
 @ 展开无参数中文宏调用语句 #
 gsub(/^[ \t]+|[ \t]+$/, "", macro)
-macro = "`'indir(`" macro "')`'"
+if (macro in zh_macros) {
+    macro = "`'indir(`" macro "')`'"
+} else macro = c
 @
 
 只需将 `process_macros` 函数作用于输入文本的每一行，便可完成中文宏调用语句的处理，
@@ -410,19 +412,19 @@ INPUT="$(cd "$(dirname "$2")" && pwd)/$(basename "$2")"
 
 TMPDIR="$(mktemp -d)"
 trap 'rm -rf "$TMPDIR"' EXIT
-cat "$ZHE_SELF_PATH/zhdefine.m4" > "$TMPDIR/zhe-meta.m4"
+cat "$ZHE_SELF_PATH/helper/zhdefine.m4" > "$TMPDIR/zhe-meta.m4"
 cat "$1" >> "$TMPDIR/zhe-meta.m4"
 echo "divert(0)dnl" >> "$TMPDIR/zhe-meta.m4"
 m4 "$TMPDIR/zhe-meta.m4" > "$TMPDIR/zhmdefs.out"
 (
     cd "$TMPDIR"
-    awk -f "$ZHE_SELF_PATH/split.awk" zhmdefs.out
-    awk -v names=zhm-names.txt -f "$ZHE_SELF_PATH/zhe.awk" "$INPUT" > zhe-output.m4
+    awk -f "$ZHE_SELF_PATH/helper/split.awk" zhmdefs.out
+    awk -v names=zhm-names.txt -f "$ZHE_SELF_PATH/helper/zhe.awk" "$INPUT" > zhe-output.m4
     m4 zhm-defs.m4 zhe-output.m4
 )
 @
 
-假设 split.awk、zhdefine.m4、zhe.awk 以及 zhe.sh 文件位于 `$HOME/opt/zhe` 目录，为 zhe.sh 设置可执行权限，
+假设 he.sh 文件位于 `$HOME/opt/zhe` 目录，而 split.awk、zhdefine.m4 和 zhe.awk 皆位于 `$HOME/opt/zhe/helper` 目录。为 zhe.sh 设置可执行权限，
 
 ```console
 $ chmod +x $HOME/opt/zhe/zhe.sh

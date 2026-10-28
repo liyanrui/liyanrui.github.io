@@ -13,13 +13,13 @@ INPUT="$(cd "$(dirname "$2")" && pwd)/$(basename "$2")"
 
 TMPDIR="$(mktemp -d)"
 trap 'rm -rf "$TMPDIR"' EXIT
-cat "$ZHE_SELF_PATH/zhdefine.m4" > "$TMPDIR/zhe-meta.m4"
+cat "$ZHE_SELF_PATH/helper/zhdefine.m4" > "$TMPDIR/zhe-meta.m4"
 cat "$1" >> "$TMPDIR/zhe-meta.m4"
 echo "divert(0)dnl" >> "$TMPDIR/zhe-meta.m4"
 m4 "$TMPDIR/zhe-meta.m4" > "$TMPDIR/zhmdefs.out"
 (
     cd "$TMPDIR"
-    awk -f "$ZHE_SELF_PATH/split.awk" zhmdefs.out
-    awk -v names=zhm-names.txt -f "$ZHE_SELF_PATH/zhe.awk" "$INPUT" > zhe-output.m4
+    awk -f "$ZHE_SELF_PATH/helper/split.awk" zhmdefs.out
+    awk -v names=zhm-names.txt -f "$ZHE_SELF_PATH/helper/zhe.awk" "$INPUT" > zhe-output.m4
     m4 zhm-defs.m4 zhe-output.m4
 )
