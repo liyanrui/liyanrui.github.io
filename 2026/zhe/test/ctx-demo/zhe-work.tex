@@ -7,14 +7,14 @@ makegrid(E, m, n);
 %showgrid(E, m, n);
 
 snailfam_t a;
-avatar(a[1], "m4.png", "auto", 2cm) at E[1][3];
-avatar(a[2], "input.png", 3cm, "auto") at E[3][3];
-snail(a[3], "\type{zhe.sh}") at E[3][6].坎位;
-avatar(a[4], "result.png", 3cm, "auto") at E[3][8];
+avatar(a[1], "m4.png", "auto", 2cm) at E[1][6].坎位;
+avatar(a[2], "input.png", 3cm, "auto") at E[2][3].兑位;
+snail(a[3], "\type{zhe.sh}") at E[3][5].震位;
+avatar(a[4], "result.png", 3cm, "auto") at E[2][8].巽位;
 showsnails a[1], a[2], a[3], a[4];
 
 path p[];
-p[1] := road(a[1].卯门 xyto a[3].子门);
+p[1] := road(a[1].午门 xyto a[3].子门);
 p[2] := road(a[2].卯门 xto a[3].酉门);
 p[3] := road(a[3].卯门 xto a[4].酉门);
 showroads p[1], p[2], p[3];

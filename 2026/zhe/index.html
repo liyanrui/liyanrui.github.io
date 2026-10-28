@@ -158,8 +158,8 @@ divert(0)dnl
 皆以 foo.m4 中 <code>foo</code> 宏的定义展开，从而形成</p>
 <pre><code>佛曰 foo-1，即非 foo-2，是名 foo-3。</code></pre>
 <p>m4 宏可以有参数，这意味着 m4
-语言能够完成更为复杂的文本替换任务。例如，定义宏 <code>start</code> 和
-<code>stop</code>，</p>
+语言能够完成更为复杂的文本替换任务。例如，定义宏 <code>_start_</code> 和
+<code>_stop_</code>，</p>
 <pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-3"> start-stop.m4 </span><span class="snippet-name-stop">#</span>
 divert(-1)
 define(`_start_', `pushdef(`block_name', $1)\`start'$1')
@@ -531,7 +531,7 @@ zhdefine(`列表', `itemize')
 zhdefine(`项', `\item')
 </pre>
 <p>作用于</p>
-<pre class="tex-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-22"> demo-1.tex </span><span class="snippet-name-stop">#</span>
+<pre class="tex-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-22"> input-1.tex </span><span class="snippet-name-stop">#</span>
 ～（开始，～正文～）～
 ... ... ...
 ～（开始，～列表～）～

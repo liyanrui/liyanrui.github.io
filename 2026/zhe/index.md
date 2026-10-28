@@ -50,7 +50,7 @@ $ m4 foo.m4 foo.txt
 佛曰 foo-1，即非 foo-2，是名 foo-3。
 ```
 
-m4 宏可以有参数，这意味着 m4 语言能够完成更为复杂的文本替换任务。例如，定义宏 `start` 和 `stop`，
+m4 宏可以有参数，这意味着 m4 语言能够完成更为复杂的文本替换任务。例如，定义宏 `_start_` 和 `_stop_`，
 
 <pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-3"> start-stop.m4 </span><span class="snippet-name-stop">#</span>
 divert(-1)
@@ -477,7 +477,7 @@ zhdefine(`项', `\item')
 
 作用于
 
-<pre class="tex-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-22"> demo-1.tex </span><span class="snippet-name-stop">#</span>
+<pre class="tex-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-22"> input-1.tex </span><span class="snippet-name-stop">#</span>
 ～（开始，～正文～）～
 ... ... ...
 ～（开始，～列表～）～
