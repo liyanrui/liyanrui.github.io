@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>m4 的咒语</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">m4 的咒语
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2026 年 10 月 29 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#初入法门" id="toc-初入法门">初入法门</a></li>
+  <li><a href="#野马也尘埃也"
+  id="toc-野马也尘埃也">野马也，尘埃也</a></li>
+  </ul>
+</nav>
+
+<p>m4 语言及其处理器诞生于约半个世纪之前，那时是上古 Unix
+的洪荒年代，后来在 GNU/Linux 系统中传续和发展。当你写出第一个能被 GNU m4
+展开的宏时，也许它只能替换最为简单不过的文本，可是兴许你应该能感受到一些遥远的苍凉。我不知道，这种微型的宏编程语言在现代对于你而言是否还有学习的意义，我只知道，陶埙这种原始的乐器，在今天依然能吹奏动人的音乐。</p>
+<h1 id="初入法门">初入法门</h1>
+<p>这世上有成百上千种编程语言，每种语言都可以从编写一个能在计算机屏幕上输出
+<code>Hello world!</code> 文字的简单程序开始学起。用 m4
+语言写这个程序，大概在所有语言中最为简单，只需新建一份文件，假设其名为
+hello.m4，令其内容为</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Hello world<span class="ch">!</span></span></code></pre></div>
+<p>然后，在终端（命令行环境）里且在 hello.m4 文件所在目录执行 GNU m4
+命令，</p>
+<pre class="console"><code>$ m4 hello.m4</code></pre>
+<p>便可在屏幕上输出 <code>Hello world!</code>。</p>
+<p>在上述示例中，hello.m4 是 m4 处理器的输入文件。该文件的内容流入 m4
+处理器，再流出，其内容不变，而 m4
+处理器默认会将内容流出至计算机屏幕——确切而言，是计算机标准输出设备——，故而能在屏幕上显现
+<code>Hello world!</code>。</p>
+<p>若想让文本在流入和流出 m4
+后发生变化，需要定义一些宏，并调用它们。例如，将 hello.m4
+的内容修改为</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>Hello<span class="ch">,</span> 你好<span class="ch">)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>world<span class="ch">,</span> 世界<span class="ch">)</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Hello world<span class="ch">!</span></span></code></pre></div>
+<p>再次像上述那样执行 m4 命令，得到的输出为</p>
+<pre><code>
+
+你好 世界!</code></pre>
+<p>在上述示例里，<code>Hello</code> 和 <code>world</code>
+皆被定义为宏，而 <code>Hello world!</code> 语句调用它们。在文本流入 m4
+处理器的过程中，遇到普通文本，m4
+处理器会将其直接发送至输出流，遇到宏调用语句，m4
+处理器会将其展开为宏的定义，然后将结果发送至输出流，于是便得到了上述中文输出。</p>
+<p>需要注意，上述输出的中文文本之前存在两个空行，它们是
+<code>define</code> 语句末尾的换行符形成的。<code>define</code>
+语句本身也是宏调用语句，只是其展开结果为空文本，而其后的换行符是输入流中的普通文本，会被
+m4 处理器发送到输出流，从而形成了两个空行。</p>
+<p>使用 <code>dnl</code> 宏可以删除 <code>define</code>
+语句之后的换行符，例如</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>Hello<span class="ch">,</span> 你好<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>world<span class="ch">,</span> 世界<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>Hello world<span class="ch">!</span></span></code></pre></div>
+<p>流过 m4 处理器后，可得</p>
+<pre><code>你好 世界!</code></pre>
+<p><code>define</code> 和 <code>dnl</code> 皆为 m4
+语言的内建宏，前者用于定义宏，后者用于删除同一行中位于其后的所有文本，包括换行符。由于
+<code>dnl</code> 具备删除文本的能力，故而在使用 m4
+语言编写代码时，可以用它作为注释符使用，例如</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>Hello<span class="ch">,</span> 你好<span class="ch">)</span><span class="kw">dnl</span> 定义 Hello 宏</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>world<span class="ch">,</span> 世界<span class="ch">)</span><span class="kw">dnl</span> 定义 world 宏</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 调用 Hello 和 world 宏</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>Hello world<span class="ch">!</span></span></code></pre></div>
+<p>上述文本流过 m4 处理器，所得结果依然是</p>
+<pre><code>你好 世界!</code></pre>
+<p>不过，没办法定义中文宏，例如</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>你好<span class="ch">,</span> Hello<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>世界<span class="ch">,</span> world<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>你好 世界<span class="ch">!</span></span></code></pre></div>
+<p>流过 m4 处理器，得到的依然是</p>
+<pre><code>你好 世界!</code></pre>
+<p>原因很简单，m4
+语言只允许使用英文字母、下划线和数字构造宏名，用其他字符构造的宏名是无效的。此事怨不得
+m4
+语言，在它诞生之后的很多年里，其处理器赖以生存的计算机世界一直没有出现汉字这种事物。</p>
+<blockquote>
+<p>确切而言，m4
+的宏名以字母或下划线开头，后跟字母、数字或下划线，亦即宏名不能以数字开头。这种命名规则与
+C 语言一致，大概并非出于巧合，而是因为 m4 的发明者皆与 C
+语言渊源颇深，其一是 Unix 名宿 Brian Kernighan，其代表著作是《C
+程序设计语言》，另一位干脆是 C 语言之父 Dennis Ritchie。</p>
+</blockquote>
+<h1 id="野马也尘埃也">野马也，尘埃也</h1>
+<p>从现在开始，我将 m4 处理器简称为 m4。有时，我也会将 m4 语言简称为
+m4。有上下文的存在，二者应该不会出现混淆。</p>
+<p>对于新手而言，m4 的宏，状如野马，不小心就会摔得七荤八素，兴许还能让
+m4 处理器失去意识。例如，当</p>
+<pre><code>define(hello, hello world!)dnl
+hello</code></pre>
+<p>流过 m4 时，会致其僵死，需要以 <code>Ctrl + c</code> 键终止。</p>
+<p>发生了什么呢？m4 在展开 <code>hello</code> 宏调用语句时，得到
+<code>hello world!</code>，然后 <strong>m4
+会对宏调用语句的展开结果再次扫描，若遇到宏调用语句则继续予以展开</strong>，于是
+<code>hello world!</code> 中的 <code>hello</code> 会被展开，又得到
+<code>hello world!</code>……这个过程无有穷尽，m4 陷入其中。</p>
+<p>要避免 m4
+对宏调用语句的展开结果再次展开，需要用引号对文本加以保护。m4
+的引号，状若尘埃……左引号是 <code>`</code>，右引号是
+<code>’</code>，不小心很容易看不到它们，或者很小心去看它们，又容易看不清有多少……将上述文本修改为</p>
+<pre><code>define(hello, `hello world!&#39;)dnl
+hello</code></pre>
+<p>将其再度流过 m4，得到</p>
+<pre><code>hello world!</code></pre>
+<p>……那是不可能的！m4 依然会进入僵死状态，原因是，<strong>m4
+处理器遇到带引号的一段文本，会将其最外层的引号脱去，将剩余文本发送至输出流。</strong>这意味着，在上述示例中，m4
+在处理 <code>define</code> 语句时，便已经将 <code>hello world!</code>
+外围的引号脱去了，所以 <code>hello</code> 的展开结果依然是</p>
+<pre><code>hello world!</code></pre>
+<p>然后，m4 又陷入到无有穷尽的 <code>hello</code> 展开过程里了。</p>
+<p>既然最外层的引号会被 m4 处理器脱除，若在 <code>hello</code>
+的定义里再加一层引号，</p>
+<pre><code>define(hello, ``hello world!&#39;&#39;)dnl
+hello</code></pre>
+<p>第一层引号会在 m4 处理 <code>define</code> 语句是脱去，于是
+<code>hello</code> 的展开结果是</p>
+<pre><code>`hello world!&#39;</code></pre>
+<p>这个结果对于 m4
+而言，是再次遇到带引号的文本，将引号脱去，将剩余结果发送至输出流，于是最终结果便是</p>
+<pre><code>hello world!</code></pre>
+<p>一旦你领悟了引号的用法……大概就能明白庄子所说的，野马也，尘埃也，生物之以息相吹也。</p>
+
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
+class="email">lyr.m2@live.cn</a> 或在<a
+href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>
