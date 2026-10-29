@@ -6,7 +6,7 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" 
         content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>用 m4 增强 xi</title>
+  <title>用 m4 武装 xi</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -28,7 +28,7 @@
 <body>
 
 <header id="title-block-header">
-  <h1 class="title">用 m4 增强 xi
+  <h1 class="title">用 m4 武装 xi
     <span class="back-to-top-span">    <a href="../index.html">
       <button id="back-to-top" aria-label="返回目录">▲</button>
     </a></span></h1>
@@ -37,15 +37,16 @@
 
 
 <p>xi 是一个功能非常简单的文学编程工具，不过，它是命令行程序，支持 shell
-标准输入，这意味着只需将其与其他命令组合，便可完成一些复杂的任务。例如，在代码片段的定义中，xi
-不支持从文件导入内容，可有时会有这种需要，因为一些很长的代码直接嵌入在文学程序里，会导致编织出来的文档难以阅读。xi
-可在 m4 的援助下解决该问题。</p>
+标准输入，这意味着只需将其与其他命令组合，便可完成一些复杂的任务。</p>
 <blockquote>
 <p>xi 项目地址：<a href="https://github.com/liyanrui/xi"
 class="uri">https://github.com/liyanrui/xi</a> 或 <a
 href="https://gitee.com/garfileo/xi"
 class="uri">https://gitee.com/garfileo/xi</a></p>
 </blockquote>
+<p>在代码片段的定义中，xi
+不支持从文件导入内容，可有时会有这种需要，因为一些很长的代码直接嵌入在文学程序里，会导致编织出来的文档难以阅读。xi
+可在 m4 的援助下解决该问题。</p>
 <p>m4 是一种很古老的宏编程语言，其发明者是 C 语言之父 Dennis Ritchie
 和《C 程序设计语言》的作者 Brian
 Kernighan。谈及宏编程，多数人大概会不屑一顾，甚至有些人为之反胃。不过，若从文本编辑的视角去看宏编程语言，其图像其实非常清晰，它像一个离线的文本编辑器，而我们平时所用的文本编辑器，可称为在线的文本编辑器。</p>
@@ -65,9 +66,8 @@ int main(void) {
         printf(&quot;hello world!\n&quot;);
         return 0;
 }</code></pre>
-<p>xi 不具备从 bar.c
-中导入内容的功能，但是若将这个文学程序是为待编辑的文本，将 m4
-视为离线编辑器，则定义 m4
+<p>xi 不具备从 bar.c 中导入内容的功能，但是若将 foo.xi
+文件的内容视为待编辑的文本，将 m4 视为离线编辑器，则定义 m4
 宏的过程相当于在定义一些文本编辑操作，只是这些操作需要放在 m4
 文件中，例如 foo.m4,</p>
 <pre><code>divert(-1)
@@ -75,8 +75,8 @@ define(`_include_&#39;, `syscmd(`cat &quot;$1&quot;&#39;)dnl&#39;)
 divert(0)dnl</code></pre>
 <p>若 foo.xi 与 foo.m4 在同一目录下，只需执行</p>
 <pre><code>$ m4 foo.m4 foo.xi &gt; foo-1.xi</code></pre>
-<p>便可完成 foo.xi 文件的编辑，亦即 bar.c 的内容会被导入
-foo.xi，结果保存为 foo-1.xi。于是，foo-1.xi 中 foo 片段是</p>
+<p>便可完成 foo.xi 文件的编辑，bar.c 的内容会被导入
+foo.xi，编辑结果保存在 foo-1.xi 文件里。foo 片段会被编辑为</p>
 <pre><code>@ foo #
 #include &lt;stdio.h&gt;
 int main(void) {
@@ -101,7 +101,9 @@ divert(0)dnl</code></pre>
 @</code></pre>
 <p>这世上的事物，其好与坏，应是取决于打开它的方式。若能会一些
 m4，不妨尝试用它去编辑一些文本，也许就能发现它的一些优美之处了。至少对于
-xi 而言，此时的 m4 已是妙不可言。</p>
+xi 而言，此时的 m4
+虽然满脸遍布着层层引号，但也是妙不可言。其实，也可以将 xi
+视为一种离线的文本编辑工具。</p>
 
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
