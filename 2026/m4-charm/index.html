@@ -169,7 +169,7 @@ m4 处理器发送到输出流，从而形成了两个空行。</p>
 <p>原因很简单，m4
 语言只允许使用英文字母、下划线和数字构造宏名，用其他字符构造的宏名是无效的。此事怨不得
 m4
-语言，在它诞生之后的很多年里，其处理器赖以生存的计算机世界一直没有出现汉字这种事物。</p>
+语言，在它诞生之后的很多年里，其处理器赖以生存的计算机世界一直没有出现汉字。</p>
 <blockquote>
 <p>确切而言，m4
 的宏名以字母或下划线开头，后跟字母、数字或下划线，亦即宏名不能以数字开头。这种命名规则与
@@ -201,14 +201,13 @@ hello</code></pre>
 <p>……那是不可能的！m4 依然会进入僵死状态，原因是，<strong>m4
 处理器遇到带引号的一段文本，会将其最外层的引号脱去，将剩余文本发送至输出流。</strong>这意味着，在上述示例中，m4
 在处理 <code>define</code> 语句时，便已经将 <code>hello world!</code>
-外围的引号脱去了，所以 <code>hello</code> 的展开结果依然是</p>
-<pre><code>hello world!</code></pre>
-<p>然后，m4 又陷入到无有穷尽的 <code>hello</code> 展开过程里了。</p>
+外围的引号脱去了，所以 <code>hello</code> 的展开结果依然会导致 m4
+陷入到无有穷尽的 <code>hello</code> 展开过程。</p>
 <p>既然最外层的引号会被 m4 处理器脱除，若在 <code>hello</code>
 的定义里再加一层引号，</p>
 <pre><code>define(hello, ``hello world!&#39;&#39;)dnl
 hello</code></pre>
-<p>第一层引号会在 m4 处理 <code>define</code> 语句是脱去，于是
+<p>第一层引号会在 m4 处理 <code>define</code> 语句时脱去，于是
 <code>hello</code> 的展开结果是</p>
 <pre><code>`hello world!&#39;</code></pre>
 <p>这个结果对于 m4
