@@ -181,7 +181,7 @@ C 语言一致，大概并非出于巧合，而是因为 m4 的发明者皆与 C
 <p>从现在开始，我将 m4 处理器简称为 m4。有时，我也会将 m4 语言简称为
 m4。有上下文的存在，二者应该不会出现混淆。</p>
 <p>对于新手而言，m4 的宏，状如野马，不小心就会摔得七荤八素，兴许还能让
-m4 处理器失去意识。例如，当</p>
+m4 失去意识。例如，当</p>
 <pre><code>define(hello, hello world!)dnl
 hello</code></pre>
 <p>流过 m4 时，会致其僵死，需要以 <code>Ctrl + c</code> 键终止。</p>
@@ -193,7 +193,7 @@ hello</code></pre>
 <p>要避免 m4
 对宏调用语句的展开结果再次展开，需要用引号对文本加以保护。m4
 的引号，状若尘埃……左引号是 <code>`</code>，右引号是
-<code>’</code>，不小心很容易看不到它们，或者很小心去看它们，又容易看不清有多少……将上述文本修改为</p>
+<code>'</code>，不小心很容易看不到它们，或者很小心去看它们，又容易看不清有多少……将上述文本修改为</p>
 <pre><code>define(hello, `hello world!&#39;)dnl
 hello</code></pre>
 <p>将其再度流过 m4，得到</p>
@@ -213,7 +213,39 @@ hello</code></pre>
 <p>这个结果对于 m4
 而言，是再次遇到带引号的文本，将引号脱去，将剩余结果发送至输出流，于是最终结果便是</p>
 <pre><code>hello world!</code></pre>
-<p>一旦你领悟了引号的用法……大概就能明白庄子所说的，野马也，尘埃也，生物之以息相吹也。</p>
+<p>在定义宏时，宏的名字有时未必如你所见。例如</p>
+<pre><code>define(foo, `Foo&#39;)dnl
+define(foo, `-Foo-&#39;)dnl
+foo Foo</code></pre>
+<p>请问上述文本的展开结果是什么？<code>foo</code>
+宏被定义了多次，以最后一次定义为准，于是 <code>foo</code> 的展开结果为
+<code>-Foo-</code>。<code>Foo</code> 不是宏，会被 m4
+原样发送至输出流。上述文本的展开结果为</p>
+<pre><code>-Foo- Foo</code></pre>
+<p>……倘若你也觉得应当是这个结果，需要恭喜你有机会更深入地理解 m4
+宏了。这个答案是错的，正确的答案是无数个 <code>-</code>
+形成的文本，无有穷尽，原因是，第 2 个 <code>foo</code>
+的定义语句里，宏名 <code>foo</code> 未加引号抑制，m4
+会将其视为宏调用语句，于是该定义语句在 m4 看来，实际上是</p>
+<pre><code>define(Foo, `-Foo-&#39;)</code></pre>
+<p>亦即第 2 个 <code>foo</code> 定义语句所定义的宏实际上
+<code>Foo</code>。然后，m4 处理文本 <code>foo Foo</code>，其中
+<code>foo</code> 被展开为 <code>Foo</code>。m4 发现 <code>Foo</code>
+是宏调用语句，继续展开，结果得到 <code>-Foo-</code>，而该结果里又有
+<code>Foo</code>，于是 m4 继续将其展开，结果便是
+<code>--Foo--</code>……这个过程也是无有穷尽的，所以 m4 会陷入不断展开
+<code>Foo</code> 的过程里，我们能看到的是 m4 疯狂输出 <code>-</code>
+字符，但是永远都看不到 <code>Foo</code>，因为它一直在被展开着。</p>
+<p>倘若将上述文本修改为</p>
+<pre><code>define(`foo&#39;, `Foo&#39;)dnl
+define(`foo&#39;, `-Foo-&#39;)dnl
+foo Foo</code></pre>
+<p>令其流过 m4，便如上文所想，第 1 个 <code>foo</code> 定义会被第 2 个
+<code>foo</code> 定义取代，结果为</p>
+<pre><code>-Foo- Foo</code></pre>
+<p>在定义 m4 宏时，要有意识地使用引号抑制文本，使其不会被 m4
+在不经意间展开了。一旦你领悟了 m4
+宏的定义和引号的用法……大概就能明白庄子所说的，野马也，尘埃也，生物之以息相吹也。</p>
 
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
