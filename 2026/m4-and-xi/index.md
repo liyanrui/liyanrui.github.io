@@ -40,6 +40,8 @@ define(`_include_', `syscmd(`cat "$1"')dnl')
 divert(0)dnl
 ```
 
+> `syscmd` 是 GNU m4 处理器的内建宏，其他 m4 处理器是否支持，我并不清楚。
+
 若 foo.xi 与 foo.m4 在同一目录下，只需执行
 
 ```

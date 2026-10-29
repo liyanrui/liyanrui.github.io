@@ -73,6 +73,10 @@ int main(void) {
 <pre><code>divert(-1)
 define(`_include_&#39;, `syscmd(`cat &quot;$1&quot;&#39;)dnl&#39;)
 divert(0)dnl</code></pre>
+<blockquote>
+<p><code>syscmd</code> 是 GNU m4 处理器的内建宏，其他 m4
+处理器是否支持，我并不清楚。</p>
+</blockquote>
 <p>若 foo.xi 与 foo.m4 在同一目录下，只需执行</p>
 <pre><code>$ m4 foo.m4 foo.xi &gt; foo-1.xi</code></pre>
 <p>便可完成 foo.xi 文件的编辑，bar.c 的内容会被导入
