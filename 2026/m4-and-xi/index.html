@@ -75,7 +75,12 @@ define(`_include_&#39;, `syscmd(`cat &quot;$1&quot;&#39;)dnl&#39;)
 divert(0)dnl</code></pre>
 <blockquote>
 <p><code>syscmd</code> 是 GNU m4 处理器的内建宏，其他 m4
-处理器是否支持，我并不清楚。</p>
+处理器是否支持，我并不清楚。<code>syscmd</code> 可以调用 shell
+命令并将命令的输出注入 m4 处理器的输出流中。<code>dnl</code>
+可以删除其后的同一行内容，包括换行符。若 <code>cat</code>
+命令的输出尾部含有换行符，<code>dnl</code> 可将其删除。至于引号
+<code>`…’</code>，在 m4 语言里用于起到抑制作用，用于阻止 m4
+处理器将引号包含的文本当作宏调用语句展开。</p>
 </blockquote>
 <p>若 foo.xi 与 foo.m4 在同一目录下，只需执行</p>
 <pre><code>$ m4 foo.m4 foo.xi &gt; foo-1.xi</code></pre>
