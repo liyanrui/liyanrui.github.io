@@ -182,8 +182,9 @@ C 语言一致，大概并非出于巧合，而是因为 m4 的发明者皆与 C
 m4。有上下文的存在，二者应该不会出现混淆。</p>
 <p>对于新手而言，m4 的宏，状如野马，不小心就会摔得七荤八素，兴许还能让
 m4 失去意识。例如，当</p>
-<pre><code>define(hello, hello world!)dnl
-hello</code></pre>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>hello<span class="ch">,</span> hello world<span class="ch">!)</span><span class="kw">dnl</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>hello</span></code></pre></div>
 <p>流过 m4 时，会致其僵死，需要以 <code>Ctrl + c</code> 键终止。</p>
 <p>发生了什么呢？m4 在展开 <code>hello</code> 宏调用语句时，得到
 <code>hello world!</code>，然后 <strong>m4
@@ -194,8 +195,9 @@ hello</code></pre>
 对宏调用语句的展开结果再次展开，需要用引号对文本加以保护。m4
 的引号，状若尘埃……左引号是 <code>`</code>，右引号是
 <code>'</code>，不小心很容易看不到它们，或者很小心去看它们，又容易看不清有多少……将上述文本修改为</p>
-<pre><code>define(hello, `hello world!&#39;)dnl
-hello</code></pre>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>hello<span class="ch">,</span> `hello world<span class="ch">!</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>hello</span></code></pre></div>
 <p>将其再度流过 m4，得到</p>
 <pre><code>hello world!</code></pre>
 <p>……那是不可能的！m4 依然会进入僵死状态，原因是，<strong>m4
@@ -205,8 +207,9 @@ hello</code></pre>
 陷入到无有穷尽的 <code>hello</code> 展开过程。</p>
 <p>既然最外层的引号会被 m4 处理器脱除，若在 <code>hello</code>
 的定义里再加一层引号，</p>
-<pre><code>define(hello, ``hello world!&#39;&#39;)dnl
-hello</code></pre>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>hello<span class="ch">,</span> ``hello world<span class="ch">!</span>&#39;&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>hello</span></code></pre></div>
 <p>第一层引号会在 m4 处理 <code>define</code> 语句时脱去，于是
 <code>hello</code> 的展开结果是</p>
 <pre><code>`hello world!&#39;</code></pre>
@@ -214,9 +217,10 @@ hello</code></pre>
 而言，是再次遇到带引号的文本，将引号脱去，将剩余结果发送至输出流，于是最终结果便是</p>
 <pre><code>hello world!</code></pre>
 <p>在定义宏时，宏的名字有时未必如你所见。例如</p>
-<pre><code>define(foo, `Foo&#39;)dnl
-define(foo, `-Foo-&#39;)dnl
-foo Foo</code></pre>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>foo<span class="ch">,</span> `Foo&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>foo<span class="ch">,</span> `<span class="ch">-</span>Foo<span class="ch">-</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>foo Foo</span></code></pre></div>
 <p>请问上述文本的展开结果是什么？<code>foo</code>
 宏被定义了多次，以最后一次定义为准，于是 <code>foo</code> 的展开结果为
 <code>-Foo-</code>。<code>Foo</code> 不是宏，会被 m4
@@ -227,7 +231,8 @@ foo Foo</code></pre>
 形成的文本，无有穷尽，原因是，第 2 个 <code>foo</code>
 的定义语句里，宏名 <code>foo</code> 未加引号抑制，m4
 会将其视为宏调用语句，于是该定义语句在 m4 看来，实际上是</p>
-<pre><code>define(Foo, `-Foo-&#39;)</code></pre>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>Foo<span class="ch">,</span> `<span class="ch">-</span>Foo<span class="ch">-</span>&#39;<span class="ch">)</span></span></code></pre></div>
 <p>亦即第 2 个 <code>foo</code> 定义语句所定义的宏实际上
 <code>Foo</code>。然后，m4 处理文本 <code>foo Foo</code>，其中
 <code>foo</code> 被展开为 <code>Foo</code>。m4 发现 <code>Foo</code>
@@ -237,15 +242,25 @@ foo Foo</code></pre>
 <code>Foo</code> 的过程里，我们能看到的是 m4 疯狂输出 <code>-</code>
 字符，但是永远都看不到 <code>Foo</code>，因为它一直在被展开着。</p>
 <p>倘若将上述文本修改为</p>
-<pre><code>define(`foo&#39;, `Foo&#39;)dnl
-define(`foo&#39;, `-Foo-&#39;)dnl
-foo Foo</code></pre>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`foo&#39;<span class="ch">,</span> `Foo&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`foo&#39;<span class="ch">,</span> `<span class="ch">-</span>Foo<span class="ch">-</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>foo Foo</span></code></pre></div>
 <p>令其流过 m4，便如上文所想，第 1 个 <code>foo</code> 定义会被第 2 个
 <code>foo</code> 定义取代，结果为</p>
 <pre><code>-Foo- Foo</code></pre>
 <p>在定义 m4 宏时，要有意识地使用引号抑制文本，使其不会被 m4
 在不经意间展开了。一旦你领悟了 m4
 宏的定义和引号的用法……大概就能明白庄子所说的，野马也，尘埃也，生物之以息相吹也。</p>
+<p>上述示例定义的宏皆无参数，m4 宏可以有参数。在宏定义中，参数以
+<code>$1</code>，<code>$2</code>，... 表示，例如</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`foo&#39;<span class="ch">,</span> `<span class="ch">!</span>[<span class="ch">$1</span>]<span class="ch">($2)</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>foo<span class="ch">(</span>`插图 <span class="dv">1</span>&#39;<span class="ch">,</span> `a.png&#39;<span class="ch">)</span></span></code></pre></div>
+<p>展开结果为markdown 的插图标记，</p>
+<pre><code>![插图 1](a.png)</code></pre>
+<p>现在，想必你已经很习惯在宏的定义和调用语句中使用引号了。<strong>m4
+引号的使用有一个基本原则，括号每多一层，引号便可多加一层。若是存在宏的递归调用，引号还需要再额外增加一层。</strong></p>
 
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
