@@ -104,6 +104,15 @@
   <li><a href="#初入法门" id="toc-初入法门">初入法门</a></li>
   <li><a href="#野马也尘埃也"
   id="toc-野马也尘埃也">野马也，尘埃也</a></li>
+  <li><a href="#相吹之息" id="toc-相吹之息">相吹之息</a></li>
+  <li><a href="#子在川上曰" id="toc-子在川上曰">子在川上曰</a></li>
+  <li><a href="#山外青山楼外楼"
+  id="toc-山外青山楼外楼">山外青山楼外楼</a></li>
+  <li><a href="#或跃在渊" id="toc-或跃在渊">或跃在渊</a></li>
+  <li><a href="#反者道之动" id="toc-反者道之动">反者道之动</a></li>
+  <li><a href="#知其雄守其雌"
+  id="toc-知其雄守其雌">知其雄，守其雌</a></li>
+  <li><a href="#复归其根" id="toc-复归其根">复归其根</a></li>
   </ul>
 </nav>
 
@@ -130,7 +139,11 @@ hello.m4，令其内容为</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>Hello<span class="ch">,</span> 你好<span class="ch">)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>world<span class="ch">,</span> 世界<span class="ch">)</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Hello world<span class="ch">!</span></span></code></pre></div>
-<p>再次像上述那样执行 m4 命令，得到的输出为</p>
+<blockquote>
+<p><code>define</code> 是 m4 语言的内建宏，其调用语句的第 1
+个参数是宏名，第 2 个参数是宏体。</p>
+</blockquote>
+<p>对上述修改后的 hello.m4，再次像上述那样执行 m4 命令，得到的输出为</p>
 <pre><code>
 
 你好 世界!</code></pre>
@@ -138,7 +151,7 @@ hello.m4，令其内容为</p>
 皆被定义为宏，而 <code>Hello world!</code> 语句调用它们。在文本流入 m4
 处理器的过程中，遇到普通文本，m4
 处理器会将其直接发送至输出流，遇到宏调用语句，m4
-处理器会将其展开为宏的定义，然后将结果发送至输出流，于是便得到了上述中文输出。</p>
+处理器会将其展开为宏体，然后将结果发送至输出流，于是便得到了上述中文输出。</p>
 <p>需要注意，上述输出的中文文本之前存在两个空行，它们是
 <code>define</code> 语句末尾的换行符形成的。<code>define</code>
 语句本身也是宏调用语句，只是其展开结果为空文本，而其后的换行符是输入流中的普通文本，会被
@@ -150,8 +163,8 @@ m4 处理器发送到输出流，从而形成了两个空行。</p>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>Hello world<span class="ch">!</span></span></code></pre></div>
 <p>流过 m4 处理器后，可得</p>
 <pre><code>你好 世界!</code></pre>
-<p><code>define</code> 和 <code>dnl</code> 皆为 m4
-语言的内建宏，前者用于定义宏，后者用于删除同一行中位于其后的所有文本，包括换行符。由于
+<p><code>dnl</code> 也是 m4
+语言的内建宏，用于删除同一行中位于其后的所有文本，包括换行符。由于
 <code>dnl</code> 具备删除文本的能力，故而在使用 m4
 语言编写代码时，可以用它作为注释符使用，例如</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>Hello<span class="ch">,</span> 你好<span class="ch">)</span><span class="kw">dnl</span> 定义 Hello 宏</span>
@@ -249,18 +262,846 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb20-1"><a href="#cb
 <p>令其流过 m4，便如上文所想，第 1 个 <code>foo</code> 定义会被第 2 个
 <code>foo</code> 定义取代，结果为</p>
 <pre><code>-Foo- Foo</code></pre>
-<p>在定义 m4 宏时，要有意识地使用引号抑制文本，使其不会被 m4
-在不经意间展开了。一旦你领悟了 m4
-宏的定义和引号的用法……大概就能明白庄子所说的，野马也，尘埃也，生物之以息相吹也。</p>
-<p>上述示例定义的宏皆无参数，m4 宏可以有参数。在宏定义中，参数以
-<code>$1</code>，<code>$2</code>，... 表示，例如</p>
+<p>上述示例定义的宏，皆无参数。m4 宏可以有参数，<code>define</code>
+便是有参数的宏。在宏定义中，参数以 <code>$1</code>，<code>$2</code>，...
+表示，例如</p>
 <div class="sourceCode" id="cb22"><pre
 class="sourceCode m4"><code class="sourceCode m4"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`foo&#39;<span class="ch">,</span> `<span class="ch">!</span>[<span class="ch">$1</span>]<span class="ch">($2)</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>foo<span class="ch">(</span>`插图 <span class="dv">1</span>&#39;<span class="ch">,</span> `a.png&#39;<span class="ch">)</span></span></code></pre></div>
-<p>展开结果为markdown 的插图标记，</p>
+<blockquote>
+<p>在 m4 语言的标准中，一个宏最多可以有 9 个参数，但 GNU m4
+对此不作限制。</p>
+</blockquote>
+<p>上述文本的展开结果是 markdown 的插图标记，</p>
 <pre><code>![插图 1](a.png)</code></pre>
-<p>现在，想必你已经很习惯在宏的定义和调用语句中使用引号了。<strong>m4
-引号的使用有一个基本原则，括号每多一层，引号便可多加一层。若是存在宏的递归调用，引号还需要再额外增加一层。</strong></p>
+<p>在定义 m4 宏时，要有意识地用引号加以约束，使其不会被 m4
+在不经意间展开了。一旦领悟了 m4
+宏的定义和引号的用法，便可明白庄子所说的，野马也，尘埃也，生物之以息相吹也，而且野马就是野马，并非游气。</p>
+<h1 id="相吹之息">相吹之息</h1>
+<p>有时，你未必知道如何从自己所用的输入法打出直角引号<code>「</code> 和
+<code>」</code>，可是在写一篇文章时，你需要使用这种引号。如果你不想为此事耗费心神研究自己的输入法如何使用，可以为直角引号作简单的编码，例如用
+<code>_lq_</code> 和 <code>_rq_</code>
+分别表示直角左引号和右引号，便可写出含有这种引号的文本，</p>
+<pre><code>这是含有_lq_直角引号_rq_的文本。</code></pre>
+<p>假设上述内容保存在文件 foo.txt 里，然后，创建含有 m4 宏定义的文件
+foo.m4，其内容为</p>
+<pre><code>define(`_lq_&#39;, `「&#39;)dnl
+define(`_rq_&#39;, `」&#39;)dnl</code></pre>
+<p>foo.m4
+文件中出现的直角引号，可以从网络上的一些文档里复制过来。现在，使用 m4
+命令，处理 foo.m4 和 foo.txt，</p>
+<pre class="console"><code>$ m4 foo.m4 foo.txt</code></pre>
+<p>m4 的输入流可以由多个文件构成。m4
+会依序读取所有输入文件，将其拼接成一个输入流。基于该特性，上述命令营造的效果是，将
+foo.m4 作用于 foo.txt，所得结果为</p>
+<pre><code>这是含有「直角引号」的文本。</code></pre>
+<p>由于 foo.m4 可以重复使用，这意味着你今后可以一直使用
+<code>_lq_</code> 和 <code>_rq_</code> 代替直角引号。此时，m4
+其实已经化身为一个简单的文本编辑器或者输入法了，所有你觉得输入起来颇为麻烦的内容，只要它们是重复的，便可将其定义为简单的宏，然后在文本里调用。</p>
+<p>m4 语言提供的内建宏 <code>incr</code> 和 <code>decr</code>
+可以对数字作增减运算。例如</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">decr</span><span class="ch">(</span><span class="dv">0</span><span class="ch">),</span> <span class="kw">incr</span><span class="ch">(</span>`<span class="dv">0</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>展开结果为</p>
+<pre><code>-1, 1</code></pre>
+<p>利用 <code>incr</code> 宏，可以实现计数器宏，</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_N_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`counter&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_N_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_N_<span class="ch">))</span>_N_&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>counter<span class="ch">,</span> counter</span></code></pre></div>
+<p>上述文本的展开结果为</p>
+<pre><code>1, 2</code></pre>
+<p>原因在于，含有 2 个 <code>counter</code>连续的文本会被展开为</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_N_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_N_<span class="ch">))</span>_N_<span class="ch">,</span> <span class="kw">define</span><span class="ch">(</span>`_N_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_N_<span class="ch">))</span>_N_</span></code></pre></div>
+<p>亦即，<code>_N_</code>
+会被两次重定义，而且每次重定义后会立即被调用。现在，你应该认识到了 m4
+对宏的展开结果再度展开的能力了。只要宏的展开结果里依然存在宏，m4
+会继续将其展开，除非遇到引号文本。</p>
+<p>在定义宏的时候，你很有可能会陷入引号取舍的困境。例如，你很有可能会将
+<code>counter</code> 定义为</p>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`counter&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_N_&#39;<span class="ch">,</span> `incr<span class="ch">(</span>_N_<span class="ch">)</span>&#39;<span class="ch">)</span>_N_&#39;<span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>该定义会导致 m4 在处理第 1 个 <code>counter</code>
+时，就会陷入递归展开困境，因为 <code>counter</code> 的展开结果是</p>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_N_&#39;<span class="ch">,</span> `incr<span class="ch">(</span>_N_<span class="ch">)</span>&#39;<span class="ch">)</span>_N_</span></code></pre></div>
+<p>m4 对该结果再度展开，得到</p>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">incr</span><span class="ch">(</span>_N_<span class="ch">)</span></span></code></pre></div>
+<p>可是 <code>_N_</code> 是宏，于是 m4 继续展开，则上述文本应当变为</p>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">incr</span><span class="ch">(</span><span class="kw">incr</span><span class="ch">(</span>_N_<span class="ch">))</span></span></code></pre></div>
+<p>但是结果里又出现了 <code>_N_</code>……</p>
+<p>避免引号取舍困境之道在于，你要先想清楚自己想要的结果是什么，然后在此结果上加一层引号即可作为宏体。例如，我想要的结果是</p>
+<pre><code>define(`_N_&#39;, incr(_N_))_N_</code></pre>
+<p>那么，只需将 <code>counter</code> 定义为</p>
+<pre><code>define(`counter&#39;, `define(`_N_&#39;, incr(_N_))_N_&#39;)</code></pre>
+<p><strong>不要去设计宏，要从想要的结果倒推出宏的定义。</strong>这是宏编程与常规编程最明显的区别。如果你用常规编程的思维使用宏语言，肯定会很累。常规编程，你所写的代码像是在构造一个命题，你需要用各种手段（编译器层面的形式论证和单元测试等）去证明这个命题一定能推导出你期望的结果。可是对于宏编程而言，结果已经是存在的，我们只需要为其设定一个简单的原因。</p>
+<p>有了计数器，就能构造出一些能自动排版编号的宏了，例如，如果你想得到<code>第 1 节 xxxx</code>，<code>第 2 节 yyyy</code>
+之类的内容，亦即</p>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>第 counter 节 <span class="ch">$1</span></span></code></pre></div>
+<p>只需将上述内容加上引号，作为宏体，定义</p>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`sec&#39;<span class="ch">,</span> `第 counter 节 <span class="ch">$1</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>然后使用 <code>sec</code> 宏便可构造带序号的小节标题了，例如</p>
+<pre><code>sec(`你好，世界！&#39;)
+... ... ...
+sec(`野马也，尘埃也&#39;)
+... ... ...</code></pre>
+<blockquote>
+<p>注意，<code>sec</code> 中的参数若皆为中文字符（包括标点），由于 m4
+不会将英文字母、下划线和数字之外的字符视为宏名，即使不用引号，通常也是安全的。</p>
+</blockquote>
+<p>展开结果为</p>
+<pre><code>第 1 节 你好，世界！
+... ... ...
+第 2 节 野马也，尘埃也
+... ... ...</code></pre>
+<p>基于这种思路，甚至能为自己定义一种标记语言，其功能不会输给 markdown
+之类的文本标记语言，只是这种标记语言在风格上会有些像 C 语言。</p>
+<p>前文说，m4
+语言的宏名只能由字母、下划线以及数字构成，且不能以数字作为开头，但是 GNU
+m4 作出了扩展，允许使用任意字符构造宏名，但是所定义的宏只能以内建宏
+<code>indir</code> 的形式间接调用。例如</p>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`你好，世界！&#39;<span class="ch">,</span> `第 <span class="dv">1</span> 节&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="kw">indir</span><span class="ch">(</span>`你好，世界！&#39;<span class="ch">)</span></span></code></pre></div>
+<p>倘若名字为非法的宏带有参数，例如</p>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`你好，世界！&#39;<span class="ch">,</span> `第 <span class="ch">$1</span> 节&#39;<span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>其间接调用可写为</p>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="kw">indir</span><span class="ch">(</span>`你好，世界！&#39;<span class="ch">,</span> <span class="dv">1</span><span class="ch">)</span></span></code></pre></div>
+<p><code>indir</code> 宏的第 2
+个及其之后的参数，皆会作为参数转发给其调用的宏，故而上述文本的展开结果为</p>
+<pre><code>第 1 节</code></pre>
+<p>基于 <code>indir</code>，可以令 <code>sec</code>
+宏具有引用功能。由于宏的定义可由结果倒推而成，先写出期望得到的结果，即先以宏
+<code>_M_</code> 保存当前 <code>_N_</code>
+的值，然后排版小节标题，继而以小节的名字定义宏，</p>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_M_&#39;<span class="ch">,</span> counter<span class="ch">)</span>第 _M_ 节 <span class="ch">$1</span>`&#39;define<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> 第 _M_ 节<span class="ch">)</span></span></code></pre></div>
+<blockquote>
+<p>若引号内不包含文本，m4
+会将其视为空文本，这种引号作为间隔符号使用，阻止与宏名相邻的字符污染宏名。上述示例中
+<code>$1</code> 和 <code>define</code>
+之间虽然无需间隔，但是加了间隔，有助于在视觉上区分二者。</p>
+</blockquote>
+<p>先以宏 <code>_M_</code> 保存当前 <code>_N_</code>
+的值，然后排版小节标题，继而以小节的名字定义宏，将小节序号作为其体。将上述文本加上一层引号，便可作为
+<code>sec</code> 宏体，</p>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`sec&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_M_&#39;<span class="ch">,</span> counter<span class="ch">)</span>第 _M_ 节 <span class="ch">$1</span>`&#39;define<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> 第 _M_ 节<span class="ch">)</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>则以下文本</p>
+<pre><code>sec(`你好，世界！&#39;)
+... ... ...
+sec(`野马也，尘埃也&#39;)
+... ... ...
+如`&#39;indir(`你好，世界！&#39;)所述，……
+... ... ...</code></pre>
+<p>的展开结果为</p>
+<pre><code>第 1 节 你好，世界！
+... ... ...
+第 2 节 野马也，尘埃也
+... ... ...
+如第 1 节所述，……
+... ... ...</code></pre>
+<p>这个结果意味着，重新定义的 <code>sec</code>
+宏，除了依然能排版小节标题之外，还具备纯文字形式的交叉引用机制。</p>
+<h1 id="子在川上曰">子在川上曰</h1>
+<p>m4
+有一个很有趣而且在某些场景里颇为有用的功能，其输出流可以岔开为若干带有数字编号的支流，使用内建宏
+<code>divert</code>
+可将当前输出流切换至指定支流。编号为负值的支流，其中内容会被 m4
+直接丢弃。0 号流是 m4 默认的输出流，其他支流会被 m4
+以编号升序顺序依次合并至 0 号流。例如</p>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>... <span class="dv">0</span> 号流 ...</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">1</span><span class="ch">)</span><span class="kw">dnl</span> 将后续内容导入 <span class="dv">1</span> 号流</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>... <span class="dv">1</span> 号流 ...</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">3</span><span class="ch">)</span><span class="kw">dnl</span> 将后续内容导入 <span class="dv">3</span> 号流</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>... <span class="dv">3</span> 号流 ...</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">2</span><span class="ch">)</span><span class="kw">dnl</span> 将后续内容导入 <span class="dv">2</span> 号流</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>... <span class="dv">2</span> 号流 ...</span></code></pre></div>
+<p>展开结果为</p>
+<pre><code>... 0 号流 ...
+... 1 号流 ...
+... 2 号流 ...
+... 3 号流 ...</code></pre>
+<p>注意，在 m4 的输入流中，3 号流的内容虽然在 2 号流之前，可是在 m4
+的输出里，却出现在 2 号流之后。这意味着，在 m4
+的输入流中，可以让一些内容提前出现，但是在 m4
+的输出流中，可以令其延迟出现。</p>
+<p>另一个内建宏 <code>undivert</code>
+可将指定的支流内容输出至当前输出流。例如，</p>
+<div class="sourceCode" id="cb53"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>... <span class="dv">0</span> 号流 ...</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">1</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>... <span class="dv">1</span> 号流 ...</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">3</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="kw">undivert</span><span class="ch">(</span><span class="dv">1</span><span class="ch">)</span><span class="kw">dnl</span> 将 <span class="dv">1</span> 号流内容输出至当前流，即 <span class="dv">3</span> 号流</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>... <span class="dv">3</span> 号流 ...</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">2</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>... <span class="dv">2</span> 号流 ...</span></code></pre></div>
+<p>展开结果为</p>
+<pre><code>... 0 号流 ...
+... 2 号流 ...
+... 1 号流 ...
+... 3 号流 ...</code></pre>
+<p>上述示例意味着，使用 <code>undivert</code>
+可将某些支流内容提前输出至指定流中，亦即通过 <code>undivert</code>
+可以扰乱 m4 的支流合并顺序。</p>
+<p>充分利用 <code>divert</code> 和
+<code>undivert</code>，便可以像魔术师一样随意操纵文本输入和输出顺序。例如，</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span>a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span>divert<span class="op">(</span><span class="dv">1</span><span class="op">)</span>free<span class="op">(</span>a<span class="op">);</span>divert<span class="op">(</span><span class="dv">0</span><span class="op">)</span></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>a <span class="op">=</span> <span class="dv">42</span><span class="op">;</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">double</span> <span class="op">*</span>b <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span>divert<span class="op">(</span><span class="dv">1</span><span class="op">)</span>free<span class="op">(</span>b<span class="op">);</span>divert<span class="op">(</span><span class="dv">0</span><span class="op">)</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>b <span class="op">=</span> <span class="fl">3.14</span><span class="op">;</span></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;a is </span><span class="sc">%d</span><span class="st">, b is </span><span class="sc">%lf\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">*</span>a<span class="op">,</span> <span class="op">*</span>b<span class="op">);</span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>    undivert<span class="op">(</span><span class="dv">1</span><span class="op">)</span></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>展开结果为</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span>a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>a <span class="op">=</span> <span class="dv">42</span><span class="op">;</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">double</span> <span class="op">*</span>b <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>b <span class="op">=</span> <span class="fl">3.14</span><span class="op">;</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;a is </span><span class="sc">%d</span><span class="st">, b is </span><span class="sc">%lf\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">*</span>a<span class="op">,</span> <span class="op">*</span>b<span class="op">);</span></span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>    free<span class="op">(</span>a<span class="op">);</span>free<span class="op">(</span>b<span class="op">);</span></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>倘若你对 C 编程语言有所了解，大概能理解上述示例发生了什么。在 m4
+的输入中，<code>free(a);</code> 和
+<code>free(b);</code>提前出现，但它们会被输出至 1 号流，但是在
+<code>return</code> 语句之前用 <code>undivert</code> 提前将 1
+号流内容合并至 0 号流，亦即此时 1
+号流被临时清空。这个示例意味着什么呢？意味着能够定义两个 m4 宏，让 C
+语言具备一些自动释放内存的能力，例如</p>
+<div class="sourceCode" id="cb57"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_malloc_&#39;<span class="ch">,</span> `<span class="ch">$2</span> <span class="ch">*$1</span> <span class="ch">=</span> malloc<span class="ch">(</span>sizeof<span class="ch">($2))</span><span class="kw">divert</span><span class="ch">(</span><span class="dv">1</span><span class="ch">)</span>free<span class="ch">($1)</span>;<span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_return_&#39;<span class="ch">,</span> `undivert<span class="ch">(</span><span class="dv">1</span><span class="ch">)</span>return <span class="ch">$1</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>上述示例 C 代码可简化为</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>    _malloc_<span class="op">(</span>a<span class="op">,</span> <span class="dt">int</span><span class="op">);</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>a <span class="op">=</span> <span class="dv">42</span><span class="op">;</span></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>    _malloc_<span class="op">(</span>b<span class="op">,</span> <span class="dt">double</span><span class="op">);</span></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>b <span class="op">=</span> <span class="fl">3.14</span><span class="op">;</span></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;a is </span><span class="sc">%d</span><span class="st">, b is </span><span class="sc">%lf\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">*</span>a<span class="op">,</span> <span class="op">*</span>b<span class="op">);</span></span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>    _return_<span class="op">(</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>展开结果为</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> <span class="op">*</span>a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>a <span class="op">=</span> <span class="dv">42</span><span class="op">;</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">double</span> <span class="op">*</span>b <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">*</span>b <span class="op">=</span> <span class="fl">3.14</span><span class="op">;</span></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>    printf<span class="op">(</span><span class="st">&quot;a is </span><span class="sc">%d</span><span class="st">, b is </span><span class="sc">%lf\n</span><span class="st">&quot;</span><span class="op">,</span> <span class="op">*</span>a<span class="op">,</span> <span class="op">*</span>b<span class="op">);</span></span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>    free<span class="op">(</span>a<span class="op">);</span>free<span class="op">(</span>b<span class="op">);</span><span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>由于编号为负数的支流会被 m4 抛弃，亦即其内容不会被合并至 0
+号流中。利用该特性，可以将宏的定义导入到这类支流中，从而无需再在每个宏定义之后添加用于消除多余换行符的
+<code>dnl</code>。例如</p>
+<div class="sourceCode" id="cb60"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`hello&#39;<span class="ch">,</span> `HELLO&#39;<span class="ch">)</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`world&#39;<span class="ch">,</span> `WORLD&#39;<span class="ch">)</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>hello world<span class="ch">!</span></span></code></pre></div>
+<blockquote>
+<p>注意，<code>divert(0)</code> 之后的 dnl 还是需要的，不然 0
+号流的第一个字符是换行符。</p>
+</blockquote>
+<p>展开结果为</p>
+<pre><code>HELLO WORLD!</code></pre>
+<h1 id="山外青山楼外楼">山外青山楼外楼</h1>
+<p>有时，会遇到一些结构化文本。例如以下 ConTeXt 排版代码</p>
+<pre><code>\starttext
+... ... ...
+\startitemize
+\item ... ... ...
+\item ... ... ...
+\stopitemize
+... ... ...
+\stoptext</code></pre>
+<p>如果你懒得在 <code>\stop</code> 语句再输入一次 <code>text</code> 和
+<code>itemize</code>，也许会期望将上述内容简写为</p>
+<pre><code>_start(text)
+... ... ...
+_start(itemize)
+\item ... ... ...
+\item ... ... ...
+_stop_
+... ... ...
+_stop_</code></pre>
+<p>若要达成该期望，只需将 <code>_start</code> 和 <code>_stop_</code>
+定义为 m4 宏，由 m4 将上述文本展开为 ConTeXt 排版代码。</p>
+<blockquote>
+<p>注意，<code>_start</code>
+宏需要有参数，为了与无参数的宏有所区分，我故意令其右侧不出现下划线。</p>
+</blockquote>
+<p><code>_start</code> 宏很好定义，</p>
+<div class="sourceCode" id="cb64"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_start&#39;<span class="ch">,</span> `\start<span class="ch">$1</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>可是 <code>_stop_</code> 就很难了，因为它没有参数，<code>\stop</code>
+该与什么衔接呢？</p>
+<p>若在 <code>_start</code> 的定义中再定义一个宏，将 <code>_start</code>
+的参数保存下来，然后在 <code>_stop_</code> 的定义中使用，</p>
+<div class="sourceCode" id="cb65"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_start&#39;<span class="ch">,</span> `\start<span class="ch">$1</span>`&#39;define<span class="ch">(</span>`_cmd_&#39;<span class="ch">,</span> `<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_stop_&#39;<span class="ch">,</span> `\stop`&#39;_cmd_&#39;<span class="ch">)</span></span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>的确能将</p>
+<pre><code>_start(text)
+... ... ...
+_stop_</code></pre>
+<p>展开为</p>
+<pre><code>\starttext
+... ... ...
+\stoptext</code></pre>
+<p>可是，若遇到以下文本，</p>
+<pre><code>_start(text)
+_start(itemize)
+_stop_
+_stop_</code></pre>
+<p>结果则是</p>
+<pre><code>\starttext
+\startitemize
+\stopitemize
+\stopitemize</code></pre>
+<p>原因是，<code>_start(text)</code> 定义的 <code>_cmd_</code>，在调用
+<code>_start(itemize)</code> 时被覆盖了，导致 <code>_cmd_</code>
+的展开结果是 <code>itemize</code>，而不再是 <code>text</code>。</p>
+<p>由于你已经掌握了计数器宏的写法，也许你会想出下面这个巧妙的方案，</p>
+<div class="sourceCode" id="cb70"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_N_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_N_incr_&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_N_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_N_<span class="ch">))</span>&#39;<span class="ch">)</span></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_N_decr_&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_N_&#39;<span class="ch">,</span> <span class="kw">decr</span><span class="ch">(</span>_N_<span class="ch">))</span>&#39;<span class="ch">)</span></span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_start&#39;<span class="ch">,</span> `\start<span class="ch">$1</span>`&#39;_N_incr_`&#39;define<span class="ch">(</span>`_cmd&#39;_N_<span class="ch">,</span> `<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_stop_&#39;<span class="ch">,</span> `\stop`&#39;indir<span class="ch">(</span>_cmd`&#39;_N_<span class="ch">)</span>`&#39;_N_decr_&#39;<span class="ch">)</span></span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>这个巧妙的方案是可用的，不过也许你需要经过多次失败后，方能将其写得正确，而且一旦写出来，你就会发现它已经像天书了，过些时日也许你自己都看不懂了。</p>
+<p>前文曾说过，宏不是设计出来的，而是基于结果倒推出来的。以上述最为复杂的
+<code>_start</code>
+宏为例，先不要去想如何去定义它，而是先写出自己想要什么。例如，我想要的是</p>
+<pre><code>\starttext`&#39;计数器递增`&#39;define(`_cmd&#39;计数器当前的值, `text&#39;)</code></pre>
+<p>或</p>
+<pre><code>\startitemize`&#39;计数器递增`&#39;define(`_cmd&#39;计数器当前的值, `itemize&#39;)</code></pre>
+<p>将可变部分表示为宏的参数，将计数器递增表示为
+<code>_N_incr_</code>，将计数器的值表示为 <code>_N_</code>，于是可得</p>
+<pre><code>\start$1`&#39;_N_incr_`&#39;define(`_cmd&#39;_N_, `$1&#39;)</code></pre>
+<p>将上述内容添加一层引号，便可作为 <code>_start</code> 宏体，</p>
+<pre><code>define(`_start&#39;, `\start$1`&#39;_N_incr_`&#39;define(`_cmd&#39;_N_, `$1&#39;)&#39;)</code></pre>
+<p>这种倒推过程很容易理解，只是倒推的结果容易令人晕眩，而且甚至会产生误解，认为需要有一些超乎寻常的能力方能写出如此晦涩的代码。实际上，你需要掌握的只是这种倒推过程，无论何时都没有必要去理解倒推结果！即使以后你需要修改宏的定义，实际上你要修改的是上述倒推过程。</p>
+<p>理解不了上述过程，也无妨，它不过是以一种简单粗暴的方式实现了一种脆弱的栈结构罢了。m4
+为宏定义提供了栈空间，可以临时用 <code>pushdef</code>
+将宏定义压入栈中以备调用，用毕之后，可使用 <code>popdef</code>
+将其从栈中弹出。例如</p>
+<div class="sourceCode" id="cb75"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>\starttext`&#39;pushdef<span class="ch">(</span>`_block_name_&#39;<span class="ch">,</span> `text&#39;<span class="ch">)</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>\startitemize`&#39;pushdef<span class="ch">(</span>`_block_name_&#39;<span class="ch">,</span> `itemize&#39;<span class="ch">)</span></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>\stop`&#39;_block_name_`&#39;popdef<span class="ch">(</span>`_block_name_&#39;<span class="ch">)</span></span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>\stop`&#39;_block_name_`&#39;popdef<span class="ch">(</span>`_block_name_&#39;<span class="ch">)</span></span></code></pre></div>
+<p>展开结果为</p>
+<pre><code>\starttext
+\startitemize
+\stopitemize
+\stoptext</code></pre>
+<p>用上述倒推的方式很容易写出更好的 <code>_start</code> 和
+<code>_stop_</code> 宏，</p>
+<div class="sourceCode" id="cb77"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_start&#39;<span class="ch">,</span> `\start<span class="ch">$1</span>`&#39;pushdef<span class="ch">(</span>`_block_name_&#39;<span class="ch">,</span> `<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_stop_&#39;<span class="ch">,</span> `\stop`&#39;_block_name_`&#39;popdef<span class="ch">(</span>`_block_name_&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>若你能正确写出 <code>_start</code> 和 <code>_stop_</code>
+这样的宏，意味着在 m4
+语言的世界里，你已经可与写出本节内容时的我比肩而立了。</p>
+<h1 id="或跃在渊">或跃在渊</h1>
+<p>上一节定义的 <code>_N_incr_</code> 和 <code>_N_decr_</code> 宏虽然被
+m4 内建宏 <code>pushdef</code> 和 <code>popdef</code>
+降维打击了，但它们是由启发性的，我们有能力定义更为通用的操作计数器的宏。m4
+的 <code>incr</code> 和 <code>decr</code>
+只能操作数字，它无法将运算结果保存起来备用。如果，定义
+<code>_incr_</code> 宏，其调用语句形如</p>
+<div class="sourceCode" id="cb78"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>_incr<span class="ch">(</span>`n&#39;<span class="ch">)</span></span></code></pre></div>
+<p>其展开结果形如</p>
+<pre><code>如果 _counter_n_ 未定义，则 define(`_counter_n_&#39;, 1)，
+否则 define(`_counter_n_&#39;, incr(_counter_n_))</code></pre>
+<p>m4 语言提供了条件表达式。内建宏 <code>ifdef</code>
+可用于检测一个宏是否有定义，例如</p>
+<div class="sourceCode" id="cb80"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ifdef</span><span class="ch">(</span>`_counter_n_&#39;<span class="ch">,</span> `a&#39;<span class="ch">,</span> `b&#39;<span class="ch">)</span></span></code></pre></div>
+<p>其意为，若 <code>_counter_n_</code> 宏有定义，则结果为
+<code>a</code>，否则为 <code>b</code>，由于我们并未定义
+<code>_counter_n_</code> 宏，故而该表达式的展开结果为
+<code>b</code>。若在条件表达式之前给出定义
+<code>_counter_n_</code>，</p>
+<div class="sourceCode" id="cb81"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_counter_n_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="kw">ifdef</span><span class="ch">(</span>`_counter_n_&#39;<span class="ch">,</span> `a&#39;<span class="ch">,</span> `b&#39;<span class="ch">)</span></span></code></pre></div>
+<p>则展开结果为 <code>a</code>。</p>
+<p>基于 <code>ifdef</code> 宏，上述我们假想的 <code>_incr_</code>
+宏的展开结果可表示为</p>
+<div class="sourceCode" id="cb82"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ifdef</span><span class="ch">(</span>`_counter_n_&#39;<span class="ch">,</span> </span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>      `define<span class="ch">(</span>`_counter_n_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_counter_n_<span class="ch">))</span>&#39;<span class="ch">,</span></span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>      `define<span class="ch">(</span>`_counter_n_&#39;<span class="ch">,</span> <span class="dv">1</span><span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>由于 <code>n</code> 是 <code>_incr_</code>
+宏的参数，故而上述代码可改写为</p>
+<div class="sourceCode" id="cb83"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ifdef</span><span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> </span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>      `define<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_counter_<span class="ch">$1</span>_<span class="ch">))</span>&#39;<span class="ch">,</span></span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>      `define<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> <span class="dv">1</span><span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>用一层引号包含上述代码，便可作为 <code>_incr</code> 的宏体了，</p>
+<div class="sourceCode" id="cb84"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_incr&#39;<span class="ch">,</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>       `ifdef<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> </span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>             `define<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_counter_<span class="ch">$1</span>_<span class="ch">))</span>&#39;<span class="ch">,</span></span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>             `define<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> <span class="dv">1</span><span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>以下代码</p>
+<pre><code>_incr(`n&#39;) _counter_n_
+_incr(`n&#39;) _counter_n_
+_incr(`n&#39;) _counter_n_</code></pre>
+<p>展开结果为</p>
+<pre><code> 1
+ 2
+ 3</code></pre>
+<p>方便起见，再定义一个专用于取计数器值的宏，</p>
+<div class="sourceCode" id="cb87"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_get&#39;<span class="ch">,</span> _counter_<span class="ch">$1</span>_<span class="ch">)</span></span></code></pre></div>
+<p>则上述示例可修改为</p>
+<pre><code>_incr(`n&#39;) _get(`n&#39;)
+_incr(`n&#39;) _get(`n&#39;)
+_incr(`n&#39;) _get(`n&#39;)</code></pre>
+<p>展开结果不变。同理，可以定义 <code>_decr</code> 宏，</p>
+<div class="sourceCode" id="cb89"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_decr&#39;<span class="ch">,</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>       `ifdef<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> </span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>             `define<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> <span class="kw">decr</span><span class="ch">(</span>_counter_<span class="ch">$1</span>_<span class="ch">))</span>&#39;<span class="ch">,</span></span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>             `define<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>综合应用 <code>_incr</code>，<code>_get</code> 以及
+<code>_decr</code>，</p>
+<pre><code>_incr(`n&#39;) _get(`n&#39;)
+_incr(`n&#39;) _get(`n&#39;)
+_decr(`n&#39;) _get(`n&#39;)
+_incr(`n&#39;) _get(`n&#39;)</code></pre>
+<p>展开结果为</p>
+<pre><code> 1
+ 2
+ 1
+ 2</code></pre>
+<p>现在，我们可以尝试定义一个更通用的计数器操作宏 <code>_op</code>，期望
+<code>_op(</code>n', <code>++')</code> 的展开结果为</p>
+<div class="sourceCode" id="cb92"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>若 <span class="ch">$2</span> 是 `<span class="ch">++</span>&#39; 则 _incr<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>; 若 <span class="ch">$2</span> 是 `<span class="ch">--</span>&#39; 则 _decr<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>m4 提供了内建宏 <code>ifelse</code>，基于它可以表示上述结果，</p>
+<div class="sourceCode" id="cb93"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ifelse</span><span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `<span class="ch">++</span>&#39;<span class="ch">,</span> `_incr<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span> `ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `<span class="ch">--</span>&#39;<span class="ch">,</span> `_decr<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>上述语句单从逻辑上，可略写为</p>
+<div class="sourceCode" id="cb94"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ifelse</span><span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `<span class="ch">++</span>`<span class="ch">,</span> `a&#39;<span class="ch">,</span> `b&#39;<span class="ch">)</span></span></code></pre></div>
+<p>意思是，若 <code>$2</code> 是 <code>++</code>，则结果为
+<code>a</code>，亦即 <code>$1</code> 增 1，否则结果为
+<code>b</code>，亦即再度判断 <code>$2</code> 是否为 <code>--</code>
+并做相应处理。</p>
+<p>若将 <code>ifelse</code> 语句写成</p>
+<div class="sourceCode" id="cb95"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ifelse</span><span class="ch">(</span>a<span class="ch">,</span> b<span class="ch">,</span> c<span class="ch">)</span></span></code></pre></div>
+<p>意思是，若 <code>a</code> 和 <code>b</code> 相同，则结果为
+<code>c</code>，否则结果为空。</p>
+<p>若用引号包含上述最为复杂的那条 <code>ifelse</code> 语句，便可将其作为
+<code>_op</code> 的宏体，</p>
+<div class="sourceCode" id="cb96"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_op&#39;<span class="ch">,</span> `ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `<span class="ch">++</span>&#39;<span class="ch">,</span> </span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>                      `_incr<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span> </span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a>                      `ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `<span class="ch">--</span>&#39;<span class="ch">,</span> </span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a>                              `_decr<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>验证 <code>_op</code> 是否可用，</p>
+<pre><code>_op(`n&#39;, `++&#39;) _get(`n&#39;)
+_op(`n&#39;, `++&#39;) _get(`n&#39;)
+_op(`n&#39;, `--&#39;) _get(`n&#39;)
+_op(`n&#39;, `--&#39;) _get(`n&#39;)</code></pre>
+<p>结果应当为</p>
+<pre><code> 1
+ 2
+ 1
+ 0</code></pre>
+<p>将上述宏定义汇总起来，</p>
+<div class="sourceCode" id="cb99"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_incr&#39;<span class="ch">,</span></span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>       `ifdef<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> </span>
+<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a>             `define<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_counter_<span class="ch">$1</span>_<span class="ch">))</span>&#39;<span class="ch">,</span></span>
+<span id="cb99-5"><a href="#cb99-5" aria-hidden="true" tabindex="-1"></a>             `define<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> <span class="dv">1</span><span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb99-6"><a href="#cb99-6" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_decr&#39;<span class="ch">,</span></span>
+<span id="cb99-7"><a href="#cb99-7" aria-hidden="true" tabindex="-1"></a>       `ifdef<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> </span>
+<span id="cb99-8"><a href="#cb99-8" aria-hidden="true" tabindex="-1"></a>             `define<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> <span class="kw">decr</span><span class="ch">(</span>_counter_<span class="ch">$1</span>_<span class="ch">))</span>&#39;<span class="ch">,</span></span>
+<span id="cb99-9"><a href="#cb99-9" aria-hidden="true" tabindex="-1"></a>             `define<span class="ch">(</span>`_counter_<span class="ch">$1</span>_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb99-10"><a href="#cb99-10" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_op&#39;<span class="ch">,</span> `ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `<span class="ch">++</span>&#39;<span class="ch">,</span> </span>
+<span id="cb99-11"><a href="#cb99-11" aria-hidden="true" tabindex="-1"></a>                      `_incr<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span> </span>
+<span id="cb99-12"><a href="#cb99-12" aria-hidden="true" tabindex="-1"></a>                      `ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `<span class="ch">--</span>&#39;<span class="ch">,</span> </span>
+<span id="cb99-13"><a href="#cb99-13" aria-hidden="true" tabindex="-1"></a>                              `_decr<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb99-14"><a href="#cb99-14" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_get&#39;<span class="ch">,</span> _counter_<span class="ch">$1</span>_<span class="ch">)</span></span>
+<span id="cb99-15"><a href="#cb99-15" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>你对 m4 语言的理解和应用，已是小有气象了。</p>
+<h1 id="反者道之动">反者道之动</h1>
+<p>利用 m4
+会对宏的展开结果再度扫描和展开这一特性，可以构造出一些递归计算过程，虽然我并不推荐此道，也认为计算并非
+m4
+所长，但是对此有所了解，如同在玩一些简单的心智游戏，而最好的心智游戏，应该是递归的。</p>
+<p>m4 的内建宏 <code>eval</code> 可以对整数运算表达式求值，例如</p>
+<div class="sourceCode" id="cb100"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="kw">eval</span><span class="ch">(</span>`<span class="dv">1</span> <span class="ch">+</span> <span class="dv">2</span>&#39;<span class="ch">)</span></span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a><span class="kw">eval</span><span class="ch">(</span>`<span class="dv">1</span> <span class="ch">-</span> <span class="dv">2</span>&#39;<span class="ch">)</span></span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a><span class="kw">eval</span><span class="ch">(</span>`<span class="dv">1</span> <span class="ch">&lt;</span> <span class="dv">2</span>&#39;<span class="ch">)</span></span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a><span class="kw">eval</span><span class="ch">(</span>`<span class="dv">2</span> <span class="ch">&gt;=</span> <span class="dv">3</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>结果为</p>
+<pre><code>3
+-1
+1
+0</code></pre>
+<p>斐波那契数列的递推公式为</p>
+<pre><code>F(n) = F(n - 1) + F(n - 2), n &gt;= 2
+F(1) = 1
+F(0) = 0</code></pre>
+<p>若以 <code>Fib</code> 宏表示函数
+<code>F</code>，基于上述递推公式可以算出 <code>F(n)</code> 的值，</p>
+<div class="sourceCode" id="cb103"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ifelse</span><span class="ch">(</span>`n&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">,</span></span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a>       <span class="dv">0</span><span class="ch">,</span></span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> <span class="dv">1</span><span class="ch">,</span></span>
+<span id="cb103-4"><a href="#cb103-4" aria-hidden="true" tabindex="-1"></a>               <span class="dv">1</span><span class="ch">,</span></span>
+<span id="cb103-5"><a href="#cb103-5" aria-hidden="true" tabindex="-1"></a>               `eval<span class="ch">(</span>Fib<span class="ch">(</span><span class="kw">eval</span><span class="ch">(</span>`n <span class="ch">-</span> <span class="dv">1</span>&#39;<span class="ch">))</span> <span class="ch">+</span> Fib<span class="ch">(</span><span class="kw">eval</span><span class="ch">(</span>`n <span class="ch">-</span> <span class="dv">2</span>&#39;<span class="ch">)))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>在数学中是用 <code>n</code> 表示参数，但是 m4 宏是以 <code>$1</code>
+表示参数，故而将上述代码中的 <code>n</code> 皆替换为
+<code>$1</code>，然后在代码外围添加一层引号，便可得到 <code>Fib</code>
+的定义，</p>
+<div class="sourceCode" id="cb104"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`Fib&#39;<span class="ch">,</span> `ifelse<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">,</span> </span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>               <span class="dv">0</span><span class="ch">,</span> </span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a>               `ifelse<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> <span class="dv">1</span><span class="ch">,</span> </span>
+<span id="cb104-4"><a href="#cb104-4" aria-hidden="true" tabindex="-1"></a>                       <span class="dv">1</span><span class="ch">,</span></span>
+<span id="cb104-5"><a href="#cb104-5" aria-hidden="true" tabindex="-1"></a>                       `eval<span class="ch">(</span>Fib<span class="ch">(</span><span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$1</span> <span class="ch">-</span> <span class="dv">1</span>&#39;<span class="ch">))</span> <span class="ch">+</span> Fib<span class="ch">(</span><span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$1</span> <span class="ch">-</span> <span class="dv">2</span>&#39;<span class="ch">)))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p><code>Fib</code> 宏的展开结果便是斐波那契数，例如</p>
+<pre><code>[Fib(0), Fib(1), Fib(2), Fib(3), Fib(4), ..., Fib(30)]</code></pre>
+<p>展开结果应当是</p>
+<pre><code>[0, 1, 1, 2, 3, ..., 832040]</code></pre>
+<p>当 <code>$1</code> 较大时，<code>Fib</code>
+的展开过程很慢。在我这台颇为年长的机器里，展开上述文本大概要 12
+秒。若试图展开
+<code>Fib(42)</code>，等待的时间足够让我屡次疑心代码写错了……之所以展开很慢，是因为
+<code>Fib</code> 的递归过程中充满了大量的重复计算，例如，要计算
+<code>Fib(3)</code>，需要先算出 <code>Fib(2)</code> 和
+<code>Fib(1)</code>，而要计算 <code>Fib(4)</code>，需要先算出
+<code>Fib(3)</code> 和 <code>Fib(2)</code>，导致 <code>Fib(2)</code>
+被计算了两次。随着 <code>$1</code>
+的增大，重复的计算次数会急剧飚升。</p>
+<p>若想改善 <code>Fib</code>
+宏的计算性能，需要设法构造计算历史，亦即将一些计算结果保存起来，以备后续计算过程使用。假设用
+<code>_A_</code> 表示 <code>F(1)</code>，用 <code>_B_</code> 表示
+<code>F(0)</code>，</p>
+<div class="sourceCode" id="cb107"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_A_&#39;<span class="ch">,</span> <span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_B_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span></span></code></pre></div>
+<p>现在，若计算 <code>F(2)</code>，只需</p>
+<div class="sourceCode" id="cb108"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="kw">eval</span><span class="ch">(</span>_A_ <span class="ch">+</span> _B_<span class="ch">)</span></span></code></pre></div>
+<p>不过，我希望这个计算结果能存储在 <code>_A_</code> 里，而
+<code>_A</code> 原有的值则转移给 <code>_B_</code>，</p>
+<div class="sourceCode" id="cb109"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_A_&#39;<span class="ch">,</span> <span class="kw">eval</span><span class="ch">(</span>_A_ <span class="ch">+</span> _B_<span class="ch">))</span></span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_B_&#39;<span class="ch">,</span> _A_<span class="ch">)</span></span></code></pre></div>
+<p>在 m4 语言里，这自然是不可能的，因为重新定义 <code>_B_</code>
+时，<code>_A_</code>
+原有的值被新值覆盖了。不过，我们可以再定义一个宏，保存 <code>_A_</code>
+的旧值，然后再更新 <code>_A_</code> 和 <code>_B_</code>，</p>
+<div class="sourceCode" id="cb110"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_C_&#39;<span class="ch">,</span> _A_<span class="ch">)</span></span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_A_&#39;<span class="ch">,</span> <span class="kw">eval</span><span class="ch">(</span>_A_ <span class="ch">+</span> _B_<span class="ch">))</span></span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_B_&#39;<span class="ch">,</span> _C_<span class="ch">)</span></span></code></pre></div>
+<p>如果反复执行上述过程，例如执行 3 次，则 <code>_A_</code> 的值就是
+<code>F(4)</code>，而 <code>_B_</code> 的值是
+<code>F(3)</code>。这意味着，要计算 <code>F(n)</code>，当
+<code>n &gt; 1</code> 时，只需将上述过程执行 <code>n - 1</code> 次，则
+<code>_A_</code> 值便是
+<code>F(n)</code>。可是，如何将一个计算过程重复执行指定的次数呢？m4
+语言没有像主流编程语言那样提供了 <code>for</code> 循环语法，不过，利用
+m4 的宏递归展开特性，可以模拟出 <code>for</code>，例如</p>
+<div class="sourceCode" id="cb111"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_for&#39;<span class="ch">,</span> `ifelse<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">,</span></span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a>                        `... end ...&#39;<span class="ch">,</span></span>
+<span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a>                        `... 第 <span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$1</span> <span class="ch">+</span> <span class="dv">1</span>&#39;<span class="ch">)</span> 次执行任务 ...</span>
+<span id="cb111-5"><a href="#cb111-5" aria-hidden="true" tabindex="-1"></a>                        _for<span class="ch">(</span><span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$1</span> <span class="ch">+</span> <span class="dv">1</span>&#39;<span class="ch">),</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb111-6"><a href="#cb111-6" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb111-7"><a href="#cb111-7" aria-hidden="true" tabindex="-1"></a>_for<span class="ch">(</span><span class="dv">0</span><span class="ch">,</span> <span class="dv">3</span><span class="ch">)</span></span></code></pre></div>
+<p>上述文本的展开结果为</p>
+<pre><code>... 第 1 次执行任务 ...
+                        ... 第 2 次执行任务 ...
+                        ... 第 3 次执行任务 ...
+                        ... end ...</code></pre>
+<p>上述结果从第 2 行开始，每一行出现的缩进，都是 <code>_for</code>
+定义中引入的，即 <code>_for</code>
+递归调用语句之前的那段空白字符。若想消除这些缩进，则 <code>_for</code>
+的定义会变得丑陋起来，</p>
+<div class="sourceCode" id="cb113"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_for&#39;<span class="ch">,</span> `ifelse<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">,</span></span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>                        `... end ...&#39;<span class="ch">,</span></span>
+<span id="cb113-3"><a href="#cb113-3" aria-hidden="true" tabindex="-1"></a>                        `... 第 <span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$1</span> <span class="ch">+</span> <span class="dv">1</span>&#39;<span class="ch">)</span> 次执行任务 ...</span>
+<span id="cb113-4"><a href="#cb113-4" aria-hidden="true" tabindex="-1"></a>_for<span class="ch">(</span><span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$1</span> <span class="ch">+</span> <span class="dv">1</span>&#39;<span class="ch">),</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<blockquote>
+<p>m4 宏定义中，参数间隔符之后的空白字符（包括换行符）会被 m4
+忽略，但是参数内部的空白字符，会被保留下来。</p>
+</blockquote>
+<p>使用修改后的 <code>_for</code> 宏，则上述示例的展开结果为</p>
+<pre><code>... 第 1 次执行任务 ...
+... 第 2 次执行任务 ...
+... 第 3 次执行任务 ...
+... end ...</code></pre>
+<p>如果将 <code>_for</code> 定义中的</p>
+<pre><code>... 第 eval(`$1 + 1&#39;) 次执行任务 ...</code></pre>
+<p>替换为第 3
+个参数，将循环结束时的输出为空文本，便有了一个能执行基本循环运算的
+<code>_for</code> 宏了，</p>
+<div class="sourceCode" id="cb116"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_for&#39;<span class="ch">,</span> `ifelse<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">,</span></span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>                        `&#39;<span class="ch">,</span></span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>                        `<span class="ch">$3</span>`&#39;_for<span class="ch">(</span><span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$1</span> <span class="ch">+</span> <span class="dv">1</span>&#39;<span class="ch">),</span> `<span class="ch">$2</span>&#39;<span class="ch">,</span> `<span class="ch">$3</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>例如</p>
+<pre><code>define(`_N_&#39;, 1)
+_for(0, 3, `define(`_N_&#39;, incr(_N_))&#39;)
+_N_</code></pre>
+<p><code>incr(_N_)</code> 会被 <code>_for</code> 执行了 3 次，故而
+<code>_N_</code> 的展开结果是 4。</p>
+<p>将计算斐波那契数字的过程带入 <code>_for</code> 宏，结果如何呢？</p>
+<div class="sourceCode" id="cb118"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_A_&#39;<span class="ch">,</span> <span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_B_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span></span>
+<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a>_for<span class="ch">(</span><span class="dv">0</span><span class="ch">,</span> <span class="dv">3</span><span class="ch">,</span> `define<span class="ch">(</span>`_C_&#39;<span class="ch">,</span> _A_<span class="ch">)</span></span>
+<span id="cb118-5"><a href="#cb118-5" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_A_&#39;<span class="ch">,</span> <span class="kw">eval</span><span class="ch">(</span>_A_ <span class="ch">+</span> _B_<span class="ch">))</span></span>
+<span id="cb118-6"><a href="#cb118-6" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_B_&#39;<span class="ch">,</span> _C_<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb118-7"><a href="#cb118-7" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb118-8"><a href="#cb118-8" aria-hidden="true" tabindex="-1"></a>_A_</span></code></pre></div>
+<p>上述代码……的确丑陋，可是 <code>_A_</code> 的展开结果会是 3，而这正是
+<code>F(4)</code> 的值。若将 <code>_for</code> 语句中的 <code>3</code>
+换成 <code>29</code>，则 <code>_A_</code> 的展开结果是 832040，这正是
+<code>F(30)</code>
+的值。于是，将上述计算过程封装为宏，专用于计算斐波那契数字，</p>
+<div class="sourceCode" id="cb119"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_for&#39;<span class="ch">,</span> `ifelse<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">,</span></span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a>                        `&#39;<span class="ch">,</span></span>
+<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a>                        `<span class="ch">$3</span>`&#39;_for<span class="ch">(</span><span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$1</span> <span class="ch">+</span> <span class="dv">1</span>&#39;<span class="ch">),</span> `<span class="ch">$2</span>&#39;<span class="ch">,</span> `<span class="ch">$3</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb119-5"><a href="#cb119-5" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_fib_init_&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_A_&#39;<span class="ch">,</span> <span class="dv">1</span><span class="ch">)</span><span class="kw">define</span><span class="ch">(</span>`_B_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb119-6"><a href="#cb119-6" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_do_fib_&#39;<span class="ch">,</span> `dnl</span>
+<span id="cb119-7"><a href="#cb119-7" aria-hidden="true" tabindex="-1"></a>`&#39;`&#39;define<span class="ch">(</span>`_C_&#39;<span class="ch">,</span> _A_<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb119-8"><a href="#cb119-8" aria-hidden="true" tabindex="-1"></a>`&#39;`&#39;define<span class="ch">(</span>`_A_&#39;<span class="ch">,</span> <span class="kw">eval</span><span class="ch">(</span>_A_ <span class="ch">+</span> _B_<span class="ch">))</span><span class="kw">dnl</span></span>
+<span id="cb119-9"><a href="#cb119-9" aria-hidden="true" tabindex="-1"></a>`&#39;`&#39;define<span class="ch">(</span>`_B_&#39;<span class="ch">,</span> _C_<span class="ch">)</span>&#39;dnl</span>
+<span id="cb119-10"><a href="#cb119-10" aria-hidden="true" tabindex="-1"></a><span class="ch">)</span></span>
+<span id="cb119-11"><a href="#cb119-11" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`Fib&#39;<span class="ch">,</span> `dnl</span>
+<span id="cb119-12"><a href="#cb119-12" aria-hidden="true" tabindex="-1"></a>`&#39;`&#39;_fib_init_`&#39;dnl</span>
+<span id="cb119-13"><a href="#cb119-13" aria-hidden="true" tabindex="-1"></a>`&#39;`&#39;ifelse<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">,</span></span>
+<span id="cb119-14"><a href="#cb119-14" aria-hidden="true" tabindex="-1"></a>           <span class="dv">0</span><span class="ch">,</span></span>
+<span id="cb119-15"><a href="#cb119-15" aria-hidden="true" tabindex="-1"></a>           `_for<span class="ch">(</span><span class="dv">0</span><span class="ch">,</span> <span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$1</span> <span class="ch">-</span> <span class="dv">1</span>&#39;<span class="ch">),</span> `_do_fib_&#39;<span class="ch">)</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb119-16"><a href="#cb119-16" aria-hidden="true" tabindex="-1"></a>`&#39;`&#39;_A_&#39;dnl</span>
+<span id="cb119-17"><a href="#cb119-17" aria-hidden="true" tabindex="-1"></a><span class="ch">)</span></span>
+<span id="cb119-18"><a href="#cb119-18" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<blockquote>
+<p>在宏定义里，可以用含有空文本的引号构造缩进，从而让代码的可读性略好一些。</p>
+</blockquote>
+<p>我已经尽力不让代码变得像天书了，我将 <code>_A_</code> 和
+<code>_B_</code> 的初始定义封装在 <code>_fib_init_</code>
+宏里，将计算斐波那契数字的过程封装在 <code>_do_fib_</code> 宏里，则
+<code>Fib</code> 宏的定义理解起来便容易许多。现在，若调用
+<code>Fib(30)</code>，瞬间便可算出结果，不会再像递归版本的
+<code>Fib</code>
+宏那样，需要经过十多秒。倘若上述代码你理解不了，也不必为此焦虑。在前文中我已强调多次，不要试图从宏代码中理解其设计意图，否则你很容易迷失在一团又一团的
+m4 引号里……</p>
+<p>其实，没有必要用 <code>_A_</code>，<code>_B_</code> 和
+<code>_C_</code> 三个宏去保存 <code>Fib</code>
+的中间计算结果。认真回想一下，前文之所以引入 <code>_C_</code>
+宏，本质上是因为无法在修改修改 <code>_A_</code>
+值的同时，将其原有的值转移给
+<code>_B_</code>。然而，事实上有一种途径可以同时改变它们，那就是递归宏的参数，例如</p>
+<div class="sourceCode" id="cb120"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`foo&#39;<span class="ch">,</span> `foo<span class="ch">(</span><span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$1</span> <span class="ch">+</span> <span class="ch">$2</span>&#39;<span class="ch">),</span> `<span class="ch">$1</span>&#39;<span class="ch">))</span>&#39;</span></code></pre></div>
+<p>调用 <code>foo</code> 宏，</p>
+<div class="sourceCode" id="cb121"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>foo<span class="ch">(</span><span class="dv">1</span><span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span></span></code></pre></div>
+<p>则 <code>foo</code>
+会陷入递归过程，无法结束，但是每一次递归，其参数都是在完成斐波那契数字计算，亦即上述
+<code>foo</code> 调用语句的展开轨迹是</p>
+<pre><code>foo(1, 1)
+foo(2, 1)
+foo(3, 2)
+foo(5, 3)
+foo(8, 5)
+foo(13, 8)
+... ... ...</code></pre>
+<p>若 <code>foo</code> 被第 5 次展开，则展开结果中 <code>foo</code> 的第
+1 个参数便是 <code>F(6)</code>，第 2 个参数是
+<code>F(5)</code>。这意味着，其实并没有必要创造 <code>_for</code>
+循环宏，我们只要设法让 <code>foo</code> 在合适的时机停下来，它便可构成
+<code>Fib</code> 的简洁且高效的计算过程，</p>
+<div class="sourceCode" id="cb123"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_do_fib&#39;<span class="ch">,</span></span>
+<span id="cb123-2"><a href="#cb123-2" aria-hidden="true" tabindex="-1"></a>        `ifelse<span class="ch">(</span>`<span class="ch">$3</span>&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">,</span></span>
+<span id="cb123-3"><a href="#cb123-3" aria-hidden="true" tabindex="-1"></a>        `<span class="ch">$2</span>&#39;<span class="ch">,</span></span>
+<span id="cb123-4"><a href="#cb123-4" aria-hidden="true" tabindex="-1"></a>        `_do_fib<span class="ch">(</span><span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$2</span> <span class="ch">+</span> <span class="ch">$1</span>&#39;<span class="ch">),</span> <span class="ch">$1,</span> <span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$3</span> <span class="ch">-</span> <span class="dv">1</span>&#39;<span class="ch">))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb123-5"><a href="#cb123-5" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`Fib&#39;<span class="ch">,</span> `_do_fib<span class="ch">(</span><span class="dv">1</span><span class="ch">,</span> <span class="dv">0</span><span class="ch">,</span> `<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<h1 id="知其雄守其雌">知其雄，守其雌</h1>
+<p>m4 只能处理文本，即便 <code>eval</code>
+能完成简单的整数运算，但其所用的数字，于本质上依然是文本。m4
+有一些内建宏，可用于更为精细的文本处理任务，例如计算文本长度，</p>
+<div class="sourceCode" id="cb124"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="kw">len</span><span class="ch">(</span>`hello world<span class="ch">!</span>&#39;<span class="ch">)</span><span class="kw">dnl</span> 结果为 <span class="dv">12</span></span></code></pre></div>
+<p>将字母从小写变为大写，从大写变为小写</p>
+<div class="sourceCode" id="cb125"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="kw">translit</span><span class="ch">(</span>`GNUs not Unix&#39;<span class="ch">,</span> `a<span class="ch">-</span>z&#39;<span class="ch">,</span> `A<span class="ch">-</span>Z&#39;<span class="ch">)</span></span>
+<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 结果为 GNUS NOT UNIX</span>
+<span id="cb125-3"><a href="#cb125-3" aria-hidden="true" tabindex="-1"></a><span class="kw">translit</span><span class="ch">(</span>`GNUs not Unix&#39;<span class="ch">,</span> `A<span class="ch">-</span>Z&#39;<span class="ch">,</span> `a<span class="ch">-</span>z&#39;<span class="ch">)</span></span>
+<span id="cb125-4"><a href="#cb125-4" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 结果为 gnus not <span class="kw">unix</span></span></code></pre></div>
+<p>也能从文本中按指定范围截取一段，</p>
+<div class="sourceCode" id="cb126"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="kw">substr</span><span class="ch">(</span>`<span class="dv">0123456789</span>&#39;<span class="ch">,</span> <span class="dv">5</span><span class="ch">)</span></span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 结果为 <span class="dv">56789</span></span>
+<span id="cb126-3"><a href="#cb126-3" aria-hidden="true" tabindex="-1"></a><span class="kw">substr</span><span class="ch">(</span>`<span class="dv">0123456789</span>&#39;<span class="ch">,</span> <span class="dv">5</span><span class="ch">,</span> <span class="dv">3</span><span class="ch">)</span></span>
+<span id="cb126-4"><a href="#cb126-4" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 结果为 <span class="dv">567</span></span></code></pre></div>
+<p>也能基于正则表达式作文本替换，例如去除文本首尾空白字符，</p>
+<pre><code>|patsubst(patsubst(`   abc   &#39;, `^[[:space:]]+&#39;, `&#39;), `[[:space:]]+$&#39;, `&#39;)|
+dnl 结果为 |abc|</code></pre>
+<p>这些可精细操控文本的内建宏，若配合宏递归展开机制，m4
+可以像一叶轻舟，起伏穿梭在一团混沌的文字之间，完成更为复杂的文本处理任务。然而在前文中构造的一些示例里，如你所见，当宏的定义略显复杂时，便已难以阅读和理解了，故而我多次强调，要注重如何从你想要的结果中逐步倒推出宏的定义，而不要从宏定义本身去理解它是否能得到你想要的结果。</p>
+<p>你从
+C，C++，Java，C#，Go，Rust，Python……等主流编程语言中培养的思维模式，在宏编程的世界里，需要颠倒过来。你习惯的因果关系，需要倒果为因，亦即你习惯的调试和维护的对象不再是代码本身，而是一些隐性的推导过程。倘若你不能适应如此颠倒的宏世界，也不必担心，在理解其最为根本的运行原理后，复杂的计算逻辑依然可以用你熟悉的编程语言完成，只需将其结果传于
+m4。</p>
+<p>GNU m4 提供了内建宏 <code>syscmd</code> 和
+<code>esyscmd</code>，前者是 m4 标准的一部分，后者则是 GNU m4
+所作的扩展。这两个宏皆能获得外部程序的输出。例如，创建文本文件
+foo.txt，其内容为</p>
+<pre><code>Hello world!</code></pre>
+<p>然后在 foo.txt 所在目录下创建 foo.m4 文件，其内容为</p>
+<div class="sourceCode" id="cb129"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="kw">syscmd</span><span class="ch">(</span>`cat foo.txt&#39;<span class="ch">)</span></span></code></pre></div>
+<p>foo.m4 的展开结果为</p>
+<pre><code>Hello world!</code></pre>
+<p>在上述示例中，<code>cat</code> 是 Linux
+命令，可以输出文件内容，该命令被 m4 宏 <code>syscmd</code>
+执行，其输出流与 m4 的输出流恰好重合，从而出现 <code>cat</code>
+的输出流被 m4 捕获这样一种假象，而实际上 <code>syscmd</code>
+的展开结果在 m4 看来，是空文本。由于这是假象，故而无法用
+<code>divert</code> 改变其流向。例如</p>
+<div class="sourceCode" id="cb131"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a>... <span class="dv">0</span> 号流 ...</span>
+<span id="cb131-2"><a href="#cb131-2" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">1</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb131-3"><a href="#cb131-3" aria-hidden="true" tabindex="-1"></a>... <span class="dv">1</span> 号流 ...</span>
+<span id="cb131-4"><a href="#cb131-4" aria-hidden="true" tabindex="-1"></a><span class="kw">syscmd</span><span class="ch">(</span>`cat foo.txt&#39;<span class="ch">)</span></span></code></pre></div>
+<p>展开结果为</p>
+<pre><code>... 0 号流 ...
+Hello world!
+... 1 号流 ...</code></pre>
+<p><code>esyscmd</code> 具有 <code>syscmd</code>
+相同的功能，但是其展开结果的确是外部程序的输出，其流向可以改变，例如</p>
+<div class="sourceCode" id="cb133"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a>... <span class="dv">0</span> 号流 ...</span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">1</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a>... <span class="dv">1</span> 号流 ...</span>
+<span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a><span class="kw">esyscmd</span><span class="ch">(</span>`cat foo.txt&#39;<span class="ch">)</span></span></code></pre></div>
+<p>展开结果为</p>
+<pre><code>... 0 号流 ...
+... 1 号流 ...
+Hello world!</code></pre>
+<p>如果你的文本处理任务始终在 0 号流，用 <code>syscmd</code>
+是安全的，否则会造成时空紊乱……例如</p>
+<div class="sourceCode" id="cb135"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`foo&#39;<span class="ch">,</span> `<span class="ch">***</span> <span class="kw">syscmd</span><span class="ch">(</span>`cat foo.txt&#39;<span class="ch">)</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">1</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb135-3"><a href="#cb135-3" aria-hidden="true" tabindex="-1"></a>foo</span></code></pre></div>
+<p>展开结果并非你所想的</p>
+<pre><code>*** Hello world!</code></pre>
+<p>而是</p>
+<pre><code>Hello world!
+*** </code></pre>
+<p>在上述示例中，用 <code>esyscmd</code> 是安全的。倘若你所用的 m4 是
+GNU m4，我建议只用 <code>esyscmd</code>。</p>
+<p>上一节破费心思写出的高性能版本 <code>Fib</code> 宏，基于
+<code>esyscmd</code>，可将其修改为 Lua 语言版本。首先，写出 Lua 脚本
+fib.lua，</p>
+<div class="sourceCode" id="cb138"><pre
+class="sourceCode lua"><code class="sourceCode lua"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> fib<span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
+<span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> <span class="va">a</span><span class="op">,</span> <span class="va">b</span> <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span></span>
+<span id="cb138-3"><a href="#cb138-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="va">i</span> <span class="op">=</span> <span class="dv">1</span><span class="op">,</span> <span class="va">n</span> <span class="cf">do</span></span>
+<span id="cb138-4"><a href="#cb138-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">a</span><span class="op">,</span> <span class="va">b</span> <span class="op">=</span> <span class="va">b</span><span class="op">,</span> <span class="va">a</span> <span class="op">+</span> <span class="va">b</span></span>
+<span id="cb138-5"><a href="#cb138-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb138-6"><a href="#cb138-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">io.write</span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
+<span id="cb138-7"><a href="#cb138-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb138-8"><a href="#cb138-8" aria-hidden="true" tabindex="-1"></a>fib<span class="op">(</span><span class="fu">tonumber</span><span class="op">(</span><span class="va">arg</span><span class="op">[</span><span class="dv">1</span><span class="op">]))</span></span></code></pre></div>
+<p>然后用 <code>esyscmd</code> 调用 Lua 解释器执行 fib.lua
+脚本并获得其结果，</p>
+<div class="sourceCode" id="cb139"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb139-2"><a href="#cb139-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`Fib&#39;<span class="ch">,</span> `esyscmd<span class="ch">(</span>`lua fib.lua <span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb139-3"><a href="#cb139-3" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb139-4"><a href="#cb139-4" aria-hidden="true" tabindex="-1"></a>Fib<span class="ch">(</span><span class="dv">30</span><span class="ch">)</span></span></code></pre></div>
+<p>上述文本展开结果为</p>
+<pre><code>832040</code></pre>
+<p>从上述示例可以看到，复杂的计算逻辑交给更为专业的语言是合理的，m4
+层面只需要驱动该语言的解释器去完成计算，用意不用力，四两拨千斤。</p>
+<h1 id="复归其根">复归其根</h1>
+<p>本文档至此该结束了。它不可能覆盖 m4
+语言的全部。我的任务是带你走上一段领略 m4 山水的路，至于如何画出 m4
+世界的地图，那是 GNU m4
+手册的任务。不过，最后我想谈谈一些不严肃的看法。</p>
+<blockquote>
+<p>GNU m4 手册：<a
+href="https://www.gnu.org/software/m4/manual/index.html"
+class="uri">https://www.gnu.org/software/m4/manual/index.html</a></p>
+</blockquote>
+<p>用 m4
+语言写出来的代码可能会无比复杂，宛若《尚书》，诘屈聱牙，可是其工作原理却异常简单。如果你熟悉计算机语言编译原理，也许能感受到
+m4 像一个天然的词法分析器，只是宏调用语句在风格上有些像 C 语言函数。</p>
+<p>m4
+将输入文本视为一段记号流。记号是什么呢？引号、宏名、宏参数列表、空白字符、数字以及其他符号，皆为记号。不必将自身变成
+m4，去分析它如何识别和处理当前所遇到的记号。m4
+的所有记号实际上只是为两种对象服务，其一是普通文本，其二是宏调用语句。未定义的宏以及带引号的文本，会被
+m4 视为普通文本，直接发送至输出流。宏调用语句会被 m4
+展开，但是展开结果不会被立刻发送至输出流，而是作为输入流当前的内容，被
+m4 继续处理，直至 m4 认为所得结果只是普通文本，便将其发送至输出流。</p>
+<p>宏调用语句中的参数文本有其特殊性。m4
+在对宏调用语句展开之前，先尽可能将其参数展开，此即为何新手经常遇到宏像野马一样不受控制的原因所在。例如</p>
+<div class="sourceCode" id="cb141"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>hello<span class="ch">,</span> hello world<span class="ch">!)</span></span></code></pre></div>
+<p>m4 在处理这行文本时，<code>hello</code>
+是宏名，<code>hello world!</code> 是宏体，但二者实际上都是
+<code>define</code> 宏的参数。若 <code>hello</code> 是已有定义的宏，则
+m4
+会将其展开，这意味着这行语句所定义的宏不是你所看到的这个样子。为安全起见，通常需将其写成</p>
+<div class="sourceCode" id="cb142"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`hello&#39;<span class="ch">,</span> `hello world<span class="ch">!</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>亦即用引号告诉 m4，将它们当成普通文本，无需作展开处理。</p>
+<p>事实上，m4
+语言在功能上是超越词法分析的。词法分析器的灵魂是正则表达式，而正则表达式作为语言，不具备图灵完备性。宏的递归展开机制使得
+m4
+语言超越了正则表达式边界。有许多基于正则表达式难以完成的文本替换任务，在
+m4
+语言面前，往往可以手到擒来。还记得在「山外青山楼外楼」一节里，我们基于宏定义栈所完成嵌套的结构化文本处理示例吗？基于正则表达式，很难处理文本中的一些嵌套结构。</p>
+<p>m4
+处理器像是一台织布机。普通文本像是经线，宏调用语句像是穿行不息的梭子，每穿行一次，便引出一根纬线。当文本流过
+m4
+处理器，所得结果就像是一匹织好的布。只要你足够用心，便可在布上织出精美的图案。很多人害怕甚至诟病宏语言，认为使用宏语言编程，是取乱之道。可是，这世上有什么衣服，不是用布料做的呢？
+这世上有哪种编程语言不需要作词法分析呢？词法分析是织布，宏展开也是织布；至于用布做什么衣服，那是缝纫机的事。织布机要做好织布机的事，缝纫机要做好缝纫机的事。我未曾见过，服装厂的工人抱怨织布是取乱之道。</p>
 
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
