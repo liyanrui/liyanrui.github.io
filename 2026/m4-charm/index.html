@@ -629,15 +629,16 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb77-1"><a href="#cb
 <h1 id="或跃在渊">或跃在渊</h1>
 <p>上一节定义的 <code>_N_incr_</code> 和 <code>_N_decr_</code> 宏虽然被
 m4 内建宏 <code>pushdef</code> 和 <code>popdef</code>
-降维打击了，但它们是由启发性的，我们有能力定义更为通用的操作计数器的宏。m4
+降维打击了，但它们的存在，意味着我们有能力定义更为通用的操作计数器的宏。m4
 的 <code>incr</code> 和 <code>decr</code>
-只能操作数字，它无法将运算结果保存起来备用。如果，定义
-<code>_incr_</code> 宏，其调用语句形如</p>
+只能操作数字，它无法将运算结果保存起来备用。如果定义 <code>_incr_</code>
+宏，令其调用语句形如</p>
 <div class="sourceCode" id="cb78"><pre
 class="sourceCode m4"><code class="sourceCode m4"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>_incr<span class="ch">(</span>`n&#39;<span class="ch">)</span></span></code></pre></div>
-<p>其展开结果形如</p>
-<pre><code>如果 _counter_n_ 未定义，则 define(`_counter_n_&#39;, 1)，
+<p>希望其展开结果形如</p>
+<pre><code>如果 _counter_n_ 未定义，则 define(`_counter_n_&#39;, 1)
 否则 define(`_counter_n_&#39;, incr(_counter_n_))</code></pre>
+<p>该如何实现呢？</p>
 <p>m4 语言提供了条件表达式。内建宏 <code>ifdef</code>
 可用于检测一个宏是否有定义，例如</p>
 <div class="sourceCode" id="cb80"><pre
@@ -804,9 +805,9 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb104-1"><a href="#c
 <code>Fib</code> 的递归过程中充满了大量的重复计算，例如，要计算
 <code>Fib(3)</code>，需要先算出 <code>Fib(2)</code> 和
 <code>Fib(1)</code>，而要计算 <code>Fib(4)</code>，需要先算出
-<code>Fib(3)</code> 和 <code>Fib(2)</code>，导致 <code>Fib(2)</code>
-被计算了两次。随着 <code>$1</code>
-的增大，重复的计算次数会急剧飚升。</p>
+<code>Fib(3)</code> 和 <code>Fib(2)</code>，于是 <code>Fib(2)</code>
+被计算了两次。随着 <code>$1</code> 的增大，<code>Fib</code>
+展开过程中的重复计算次数会急剧飙升。</p>
 <p>若想改善 <code>Fib</code>
 宏的计算性能，需要设法构造计算历史，亦即将一些计算结果保存起来，以备后续计算过程使用。假设用
 <code>_A_</code> 表示 <code>F(1)</code>，用 <code>_B_</code> 表示
