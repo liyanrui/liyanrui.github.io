@@ -1,10 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
-dnl 模板
+dnl 实参转发
+define(`print',
+       `ifelse(_arg_t(`$2'), _type_id(`int'), `printf("%s%d%s", $@)',
+               _arg_t(`$2'), _type_id(`double'), `printf("%s%.3f%s", $@)',
+               `$0'_arg_t($2)($@))')dnl
+
+dnl 结构体模板
 @template(Array) {
         size_t n;
         $1 *body;
 }
+dnl 结构体模板实例
+Array_type(int);
+Array_type(double);
+
+dnl 函数模板
 @func_template(array_new)(size_t n) {
         Array($1) *a;
         a = malloc(sizeof(Array($1)));
@@ -12,22 +23,44 @@ dnl 模板
         a->body = malloc(n * sizeof($1));
         return a;
 }
+@func_template(array_print)(Array($1) *a) {
+        printf("{");
+        for (size_t i = 0; i < a->n - 1; i++) {
+            print("", _expr(a->body[i], $1), `", "');
+        }
+        print("", _expr(a->body[a->n - 1], $1), "}\n");
+}
 @func_template(array_free)($1 a) {
         free(a->body);
         free(a);
 }
-dnl 模板实例
-Array_type(double);
-Array(double) *array_new_type(double);
-void array_free_type(Array(double) *);
-dnl 实参转发
-define(`array_new', `$0_`'_type_id($1)')
-define(`array_free', ``$0'_arg_t($1)($1)')
+dnl 函数模板实例
+/* int */
+Array(int) *array_new_func(int);
+void array_free_func(Array(int) *);
+void array_print_func(int);
+/* double */
+Array(double) *array_new_func(double);
+void array_free_func(Array(double) *);
+void array_print_func(double);
 
+dnl 实参转发
+define(`array_new', ``$0'_type_id($1)')dnl;
+define(`print_array',``$0'_arg_t($1)($1)')dnl;
+define(`array_free', ``$0'_arg_t($1)($1)')dnl;
+
+dnl 测试
 int main(void) {
         size_t n = 7;
-        _var(a, Array(double) *,array_new(double)(n));
+        /* 整型数组 a */
+        _var(a, Array(int) *,array_new(int)(n));
         for (size_t i = 0; i < n; i++) a->body[i] = i + 1;
+        array_print(int)(a);
         array_free(a);
+        /* 双精度浮点型数组 b */
+        _var(b, Array(double) *,array_new(double)(n));
+        for (size_t i = 0; i < n; i++) b->body[i] = i + 1;
+        array_print(double)(b);
+        array_free(b);
         return 0;
 }

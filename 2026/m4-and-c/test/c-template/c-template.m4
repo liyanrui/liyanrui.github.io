@@ -18,10 +18,10 @@ define(`_var',
                                     `',
                                     ` = $3')define(`_var_$1_t_'_scope_,
                                                    `$2')_def_type(`$2')')
-define(`expr', `$1`'define(`_expr_$1_t_'_scope_, `$2')_def_type(`$2')')
-define(`_type_id', `_def_type(`$1')indir(`_$1_type_')')
+define(`_expr', `$1`'define(`_expr_$1_t_'_scope_, `$2')_def_type(`$2')')
+define(`_type_id', ``_'_def_type(`$1')indir(`_$1_type_')')
 define(`_type_ids', 
-       `_`'ifelse(`$2', `', 
+       `ifelse(`$2', `', 
                `_type_id(`$1')', 
                `_type_id(`$1')$0(shift($@))')')
 define(`_type_name', `ifdef(`_var_$1_t_'_scope_, 
@@ -32,10 +32,10 @@ define(`_type_name', `ifdef(`_var_$1_t_'_scope_,
 changequote([[,]]) # 将左右引号更改为 [[ 和 ]]
 define([[_RSQ_]], [[']]) # 定义 _RSQ_，其展开结果是右单引号
 changequote # 恢复 m4 默认引号
-define(`_func_name', ``$1'`_'esyscmd(`echo '_RSQ_`$2'_RSQ_` | awk -f snap-types.awk')')
-define(`_unmark',`esyscmd(`echo '_RSQ_`$1'_RSQ_` | awk -f unmarks.awk')')
+define(`_func_name', ``$1'`_'esyscmd(`echo '_RSQ_`$2'_RSQ_` | awk -f ui/snap-types.awk')')
+define(`_unmark',`esyscmd(`echo '_RSQ_`$1'_RSQ_` | awk -f ui/unmarks.awk')')
 define(`_func', `$3 _func_name(`$1', `$2')_unmark(`$2')')
-define(`_arg_t', `_`'_type_id(_type_name(`$1'))')
+define(`_arg_t', `_type_id(_type_name(`$1'))')
 define(`_args_t', 
        `ifelse(`$2', `', 
                `_arg_t(`$1')', 
