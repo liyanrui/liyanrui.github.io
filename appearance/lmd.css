@@ -55,12 +55,12 @@ h1, h2, h3, h4, h5 {
 }
 /*****************************************/
 
-h1.title { font-size: 1.8em; margin: 0 auto; color: #c27698;}
+h1.title { margin: 0 auto; font-size: 1.5em;}
 .back-to-top-span {margin: 0 0 0 .5em; }
 #back-to-top {width: 2.5em; height: 1.8em; position: relative; top: -4px;}
 
 h1, h2, h3, h4, h5 {
-    color: #c27698;
+    color: #907dab;
 }
 h1 { font-size: 1.3em; }
 h2 { font-size: 1.15em; }
@@ -151,7 +151,7 @@ pre code {
     color: #000000;
 }
 a:link {
-    color: #c27698;
+    color: #907dab;
     font-weight: bold;
     text-decoration: underline; 
 }
@@ -160,7 +160,7 @@ a:hover {
     text-decoration: none;
 }
 a:visited {
-    color: #c27698;
+    color: #907dab;
     text-decoration: none;
 }
 /* metadata */
