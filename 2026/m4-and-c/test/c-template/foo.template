@@ -16,11 +16,12 @@ Array_type(int);
 Array_type(double);
 
 dnl 函数模板
-@func_template(array_new)(size_t n) {
+@func_template(array_new)(size_t n, $1 x) {
         Array($1) *a;
         a = malloc(sizeof(Array($1)));
         a->n = n;
         a->body = malloc(n * sizeof($1));
+        for (size_t i = 0; i < n; i++) a->body[i] = x;
         return a;
 }
 @func_template(array_print)(Array($1) *a) {
@@ -30,37 +31,34 @@ dnl 函数模板
         }
         print("", _expr(a->body[a->n - 1], $1), "}\n");
 }
-@func_template(array_free)($1 a) {
+@func_template(array_free)(Array($1) *a) {
         free(a->body);
         free(a);
 }
+
 dnl 函数模板实例
-/* int */
 Array(int) *array_new_func(int);
-void array_free_func(Array(int) *);
 void array_print_func(int);
-/* double */
+void array_free_func(int);
 Array(double) *array_new_func(double);
-void array_free_func(Array(double) *);
 void array_print_func(double);
+void array_free_func(double);
 
 dnl 实参转发
-define(`array_new', ``$0'_type_id($1)')dnl;
-define(`print_array',``$0'_arg_t($1)($1)')dnl;
-define(`array_free', ``$0'_arg_t($1)($1)')dnl;
+define(`array_new', `$0_with(_type_name($2))($@)')
 
 dnl 测试
 int main(void) {
-        size_t n = 7;
+        _var(n, size_t, 7);
         /* 整型数组 a */
-        _var(a, Array(int) *,array_new(int)(n));
+        _var(a, Array(int) *, array_new(n, _expr(0, int)));
         for (size_t i = 0; i < n; i++) a->body[i] = i + 1;
-        array_print(int)(a);
-        array_free(a);
+        array_print_with(int)(a);
+        array_free_with(int)(a);
         /* 双精度浮点型数组 b */
-        _var(b, Array(double) *,array_new(double)(n));
+        _var(b, Array(double) *, array_new(n, _expr(0, double)));
         for (size_t i = 0; i < n; i++) b->body[i] = i + 1;
-        array_print(double)(b);
-        array_free(b);
+        array_print_with(double)(b);
+        array_free_with(double)(b);
         return 0;
 }

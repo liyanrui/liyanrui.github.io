@@ -817,8 +817,8 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb75-1"><a href="#cb
 有些啰嗦，可以将其封装为一个辅助宏，</p>
 <div class="sourceCode" id="cb77"><pre
 class="sourceCode m4"><code class="sourceCode m4"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_args_t&#39;<span class="ch">,</span> </span>
-<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
-<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>               `_arg_t<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span> </span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>               `&#39;<span class="ch">,</span> </span>
 <span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>               `_arg_t<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)$0(</span><span class="kw">shift</span><span class="ch">($@))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
 <blockquote>
 <p><code>$0</code> 是宏名，<code>shift</code>
@@ -913,14 +913,14 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb87-1"><a href="#cb
 <code>_def_types</code>，批量构造类型名与类型 id 的映射，</p>
 <div class="sourceCode" id="cb90"><pre
 class="sourceCode m4"><code class="sourceCode m4"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_def_types&#39;<span class="ch">,</span> </span>
-<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
-<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>               `_def_type<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span> </span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>               `&#39;<span class="ch">,</span> </span>
 <span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>               `_def_type<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)$0(</span><span class="kw">shift</span><span class="ch">($@))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
 <p>再定义 <code>_type_ids</code>，批量构造结构体类型名后缀数字，</p>
 <div class="sourceCode" id="cb91"><pre
 class="sourceCode m4"><code class="sourceCode m4"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_type_ids&#39;<span class="ch">,</span> </span>
-<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>       `_`&#39;ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
-<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>               `_type_id<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span> </span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>       `_`&#39;ifelse<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>               `&#39;<span class="ch">,</span> </span>
 <span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>               `_type_id<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)$0(</span><span class="kw">shift</span><span class="ch">($@))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
 <p>定义 <code>_with</code> 宏，用于将一组类型转化为类型名后缀，</p>
 <div class="sourceCode" id="cb92"><pre
@@ -955,11 +955,11 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb94-1"><a href="#cb
 }</code></pre>
 <p>对应的 m4 代码为</p>
 <div class="sourceCode" id="cb98"><pre
-class="sourceCode m4"><code class="sourceCode m4"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`add_type&#39;<span class="ch">,</span> ``add&#39;_with<span class="ch">($@)($1</span> a<span class="ch">,</span> <span class="ch">$2</span> b<span class="ch">)</span> {</span>
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`add_func&#39;<span class="ch">,</span> ``add&#39;_with<span class="ch">($@)($1</span> a<span class="ch">,</span> <span class="ch">$2</span> b<span class="ch">)</span> {</span>
 <span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>        return a <span class="ch">+</span> b;</span>
 <span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a>dnl&#39;<span class="ch">)</span></span>
-<span id="cb98-5"><a href="#cb98-5" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`add&#39;<span class="ch">,</span> ``add&#39;_with<span class="ch">($@)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<span id="cb98-5"><a href="#cb98-5" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`add_with&#39;<span class="ch">,</span> ``add&#39;_with<span class="ch">($@)</span>&#39;<span class="ch">)</span></span></code></pre></div>
 <p>基于上述设计，我让 DeepSeek 写出了 可将 <code>@template</code> 和
 <code>@func_template</code> 转换为 m4 代码的 awk
 脚本，只是该脚本分为预处理、转换和后处理三个阶段，分别对应
@@ -1253,60 +1253,58 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb103-1"><a href="#c
 <span id="cb103-16"><a href="#cb103-16" aria-hidden="true" tabindex="-1"></a>Array_type<span class="ch">(</span>double<span class="ch">)</span>;</span>
 <span id="cb103-17"><a href="#cb103-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb103-18"><a href="#cb103-18" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 函数模板</span>
-<span id="cb103-19"><a href="#cb103-19" aria-hidden="true" tabindex="-1"></a>@func_template<span class="ch">(</span>array_new<span class="ch">)(</span>size_t n<span class="ch">)</span> {</span>
+<span id="cb103-19"><a href="#cb103-19" aria-hidden="true" tabindex="-1"></a>@func_template<span class="ch">(</span>array_new<span class="ch">)(</span>size_t n<span class="ch">,</span> <span class="ch">$1</span> x<span class="ch">)</span> {</span>
 <span id="cb103-20"><a href="#cb103-20" aria-hidden="true" tabindex="-1"></a>        Array<span class="ch">($1)</span> <span class="ch">*</span>a;</span>
 <span id="cb103-21"><a href="#cb103-21" aria-hidden="true" tabindex="-1"></a>        a <span class="ch">=</span> malloc<span class="ch">(</span>sizeof<span class="ch">(</span>Array<span class="ch">($1)))</span>;</span>
 <span id="cb103-22"><a href="#cb103-22" aria-hidden="true" tabindex="-1"></a>        a<span class="ch">-&gt;</span>n <span class="ch">=</span> n;</span>
 <span id="cb103-23"><a href="#cb103-23" aria-hidden="true" tabindex="-1"></a>        a<span class="ch">-&gt;</span>body <span class="ch">=</span> malloc<span class="ch">(</span>n <span class="ch">*</span> sizeof<span class="ch">($1))</span>;</span>
-<span id="cb103-24"><a href="#cb103-24" aria-hidden="true" tabindex="-1"></a>        return a;</span>
-<span id="cb103-25"><a href="#cb103-25" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb103-26"><a href="#cb103-26" aria-hidden="true" tabindex="-1"></a>@func_template<span class="ch">(</span>array_print<span class="ch">)(</span>Array<span class="ch">($1)</span> <span class="ch">*</span>a<span class="ch">)</span> {</span>
-<span id="cb103-27"><a href="#cb103-27" aria-hidden="true" tabindex="-1"></a>        printf<span class="ch">(</span>&quot;{&quot;<span class="ch">)</span>;</span>
-<span id="cb103-28"><a href="#cb103-28" aria-hidden="true" tabindex="-1"></a>        for <span class="ch">(</span>size_t i <span class="ch">=</span> <span class="dv">0</span>; i <span class="ch">&lt;</span> a<span class="ch">-&gt;</span>n <span class="ch">-</span> <span class="dv">1</span>; i<span class="ch">++)</span> {</span>
-<span id="cb103-29"><a href="#cb103-29" aria-hidden="true" tabindex="-1"></a>            print<span class="ch">(</span>&quot;&quot;<span class="ch">,</span> _expr<span class="ch">(</span>a<span class="ch">-&gt;</span>body[i]<span class="ch">,</span> <span class="ch">$1),</span> `&quot;<span class="ch">,</span> &quot;&#39;<span class="ch">)</span>;</span>
-<span id="cb103-30"><a href="#cb103-30" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb103-31"><a href="#cb103-31" aria-hidden="true" tabindex="-1"></a>        print<span class="ch">(</span>&quot;&quot;<span class="ch">,</span> _expr<span class="ch">(</span>a<span class="ch">-&gt;</span>body[a<span class="ch">-&gt;</span>n <span class="ch">-</span> <span class="dv">1</span>]<span class="ch">,</span> <span class="ch">$1),</span> &quot;}\n&quot;<span class="ch">)</span>;</span>
-<span id="cb103-32"><a href="#cb103-32" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb103-33"><a href="#cb103-33" aria-hidden="true" tabindex="-1"></a>@func_template<span class="ch">(</span>array_free<span class="ch">)($1</span> a<span class="ch">)</span> {</span>
-<span id="cb103-34"><a href="#cb103-34" aria-hidden="true" tabindex="-1"></a>        free<span class="ch">(</span>a<span class="ch">-&gt;</span>body<span class="ch">)</span>;</span>
-<span id="cb103-35"><a href="#cb103-35" aria-hidden="true" tabindex="-1"></a>        free<span class="ch">(</span>a<span class="ch">)</span>;</span>
-<span id="cb103-36"><a href="#cb103-36" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb103-37"><a href="#cb103-37" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 函数模板实例</span>
-<span id="cb103-38"><a href="#cb103-38" aria-hidden="true" tabindex="-1"></a><span class="ch">/*</span> int <span class="ch">*/</span></span>
-<span id="cb103-39"><a href="#cb103-39" aria-hidden="true" tabindex="-1"></a>Array<span class="ch">(</span>int<span class="ch">)</span> <span class="ch">*</span>array_new_func<span class="ch">(</span>int<span class="ch">)</span>;</span>
-<span id="cb103-40"><a href="#cb103-40" aria-hidden="true" tabindex="-1"></a>void array_free_func<span class="ch">(</span>Array<span class="ch">(</span>int<span class="ch">)</span> <span class="ch">*)</span>;</span>
+<span id="cb103-24"><a href="#cb103-24" aria-hidden="true" tabindex="-1"></a>        for <span class="ch">(</span>size_t i <span class="ch">=</span> <span class="dv">0</span>; i <span class="ch">&lt;</span> n; i<span class="ch">++)</span> a<span class="ch">-&gt;</span>body[i] <span class="ch">=</span> x;</span>
+<span id="cb103-25"><a href="#cb103-25" aria-hidden="true" tabindex="-1"></a>        return a;</span>
+<span id="cb103-26"><a href="#cb103-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb103-27"><a href="#cb103-27" aria-hidden="true" tabindex="-1"></a>@func_template<span class="ch">(</span>array_print<span class="ch">)(</span>Array<span class="ch">($1)</span> <span class="ch">*</span>a<span class="ch">)</span> {</span>
+<span id="cb103-28"><a href="#cb103-28" aria-hidden="true" tabindex="-1"></a>        printf<span class="ch">(</span>&quot;{&quot;<span class="ch">)</span>;</span>
+<span id="cb103-29"><a href="#cb103-29" aria-hidden="true" tabindex="-1"></a>        for <span class="ch">(</span>size_t i <span class="ch">=</span> <span class="dv">0</span>; i <span class="ch">&lt;</span> a<span class="ch">-&gt;</span>n <span class="ch">-</span> <span class="dv">1</span>; i<span class="ch">++)</span> {</span>
+<span id="cb103-30"><a href="#cb103-30" aria-hidden="true" tabindex="-1"></a>            print<span class="ch">(</span>&quot;&quot;<span class="ch">,</span> _expr<span class="ch">(</span>a<span class="ch">-&gt;</span>body[i]<span class="ch">,</span> <span class="ch">$1),</span> `&quot;<span class="ch">,</span> &quot;&#39;<span class="ch">)</span>;</span>
+<span id="cb103-31"><a href="#cb103-31" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb103-32"><a href="#cb103-32" aria-hidden="true" tabindex="-1"></a>        print<span class="ch">(</span>&quot;&quot;<span class="ch">,</span> _expr<span class="ch">(</span>a<span class="ch">-&gt;</span>body[a<span class="ch">-&gt;</span>n <span class="ch">-</span> <span class="dv">1</span>]<span class="ch">,</span> <span class="ch">$1),</span> &quot;}\n&quot;<span class="ch">)</span>;</span>
+<span id="cb103-33"><a href="#cb103-33" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb103-34"><a href="#cb103-34" aria-hidden="true" tabindex="-1"></a>@func_template<span class="ch">(</span>array_free<span class="ch">)(</span>Array<span class="ch">($1)</span> <span class="ch">*</span>a<span class="ch">)</span> {</span>
+<span id="cb103-35"><a href="#cb103-35" aria-hidden="true" tabindex="-1"></a>        free<span class="ch">(</span>a<span class="ch">-&gt;</span>body<span class="ch">)</span>;</span>
+<span id="cb103-36"><a href="#cb103-36" aria-hidden="true" tabindex="-1"></a>        free<span class="ch">(</span>a<span class="ch">)</span>;</span>
+<span id="cb103-37"><a href="#cb103-37" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb103-38"><a href="#cb103-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-39"><a href="#cb103-39" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 函数模板实例</span>
+<span id="cb103-40"><a href="#cb103-40" aria-hidden="true" tabindex="-1"></a>Array<span class="ch">(</span>int<span class="ch">)</span> <span class="ch">*</span>array_new_func<span class="ch">(</span>int<span class="ch">)</span>;</span>
 <span id="cb103-41"><a href="#cb103-41" aria-hidden="true" tabindex="-1"></a>void array_print_func<span class="ch">(</span>int<span class="ch">)</span>;</span>
-<span id="cb103-42"><a href="#cb103-42" aria-hidden="true" tabindex="-1"></a><span class="ch">/*</span> double <span class="ch">*/</span></span>
+<span id="cb103-42"><a href="#cb103-42" aria-hidden="true" tabindex="-1"></a>void array_free_func<span class="ch">(</span>int<span class="ch">)</span>;</span>
 <span id="cb103-43"><a href="#cb103-43" aria-hidden="true" tabindex="-1"></a>Array<span class="ch">(</span>double<span class="ch">)</span> <span class="ch">*</span>array_new_func<span class="ch">(</span>double<span class="ch">)</span>;</span>
-<span id="cb103-44"><a href="#cb103-44" aria-hidden="true" tabindex="-1"></a>void array_free_func<span class="ch">(</span>Array<span class="ch">(</span>double<span class="ch">)</span> <span class="ch">*)</span>;</span>
-<span id="cb103-45"><a href="#cb103-45" aria-hidden="true" tabindex="-1"></a>void array_print_func<span class="ch">(</span>double<span class="ch">)</span>;</span>
+<span id="cb103-44"><a href="#cb103-44" aria-hidden="true" tabindex="-1"></a>void array_print_func<span class="ch">(</span>double<span class="ch">)</span>;</span>
+<span id="cb103-45"><a href="#cb103-45" aria-hidden="true" tabindex="-1"></a>void array_free_func<span class="ch">(</span>double<span class="ch">)</span>;</span>
 <span id="cb103-46"><a href="#cb103-46" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb103-47"><a href="#cb103-47" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 实参转发</span>
-<span id="cb103-48"><a href="#cb103-48" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`array_new&#39;<span class="ch">,</span> ``<span class="ch">$0</span>&#39;_type_id<span class="ch">($1)</span>&#39;<span class="ch">)</span><span class="kw">dnl</span>;</span>
-<span id="cb103-49"><a href="#cb103-49" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`print_array&#39;<span class="ch">,</span>``<span class="ch">$0</span>&#39;_arg_t<span class="ch">($1)($1)</span>&#39;<span class="ch">)</span><span class="kw">dnl</span>;</span>
-<span id="cb103-50"><a href="#cb103-50" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`array_free&#39;<span class="ch">,</span> ``<span class="ch">$0</span>&#39;_arg_t<span class="ch">($1)($1)</span>&#39;<span class="ch">)</span><span class="kw">dnl</span>;</span>
-<span id="cb103-51"><a href="#cb103-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb103-52"><a href="#cb103-52" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 测试</span>
-<span id="cb103-53"><a href="#cb103-53" aria-hidden="true" tabindex="-1"></a>int main<span class="ch">(</span>void<span class="ch">)</span> {</span>
-<span id="cb103-54"><a href="#cb103-54" aria-hidden="true" tabindex="-1"></a>        size_t n <span class="ch">=</span> <span class="dv">7</span>;</span>
-<span id="cb103-55"><a href="#cb103-55" aria-hidden="true" tabindex="-1"></a>        <span class="ch">/*</span> 整型数组 a <span class="ch">*/</span></span>
-<span id="cb103-56"><a href="#cb103-56" aria-hidden="true" tabindex="-1"></a>        _var<span class="ch">(</span>a<span class="ch">,</span> Array<span class="ch">(</span>int<span class="ch">)</span> <span class="ch">*,</span>array_new<span class="ch">(</span>int<span class="ch">)(</span>n<span class="ch">))</span>;</span>
-<span id="cb103-57"><a href="#cb103-57" aria-hidden="true" tabindex="-1"></a>        for <span class="ch">(</span>size_t i <span class="ch">=</span> <span class="dv">0</span>; i <span class="ch">&lt;</span> n; i<span class="ch">++)</span> a<span class="ch">-&gt;</span>body[i] <span class="ch">=</span> i <span class="ch">+</span> <span class="dv">1</span>;</span>
-<span id="cb103-58"><a href="#cb103-58" aria-hidden="true" tabindex="-1"></a>        array_print<span class="ch">(</span>int<span class="ch">)(</span>a<span class="ch">)</span>;</span>
-<span id="cb103-59"><a href="#cb103-59" aria-hidden="true" tabindex="-1"></a>        array_free<span class="ch">(</span>a<span class="ch">)</span>;</span>
-<span id="cb103-60"><a href="#cb103-60" aria-hidden="true" tabindex="-1"></a>        <span class="ch">/*</span> 双精度浮点型数组 b <span class="ch">*/</span></span>
-<span id="cb103-61"><a href="#cb103-61" aria-hidden="true" tabindex="-1"></a>        _var<span class="ch">(</span>b<span class="ch">,</span> Array<span class="ch">(</span>double<span class="ch">)</span> <span class="ch">*,</span>array_new<span class="ch">(</span>double<span class="ch">)(</span>n<span class="ch">))</span>;</span>
-<span id="cb103-62"><a href="#cb103-62" aria-hidden="true" tabindex="-1"></a>        for <span class="ch">(</span>size_t i <span class="ch">=</span> <span class="dv">0</span>; i <span class="ch">&lt;</span> n; i<span class="ch">++)</span> b<span class="ch">-&gt;</span>body[i] <span class="ch">=</span> i <span class="ch">+</span> <span class="dv">1</span>;</span>
-<span id="cb103-63"><a href="#cb103-63" aria-hidden="true" tabindex="-1"></a>        array_print<span class="ch">(</span>double<span class="ch">)(</span>b<span class="ch">)</span>;</span>
-<span id="cb103-64"><a href="#cb103-64" aria-hidden="true" tabindex="-1"></a>        array_free<span class="ch">(</span>b<span class="ch">)</span>;</span>
-<span id="cb103-65"><a href="#cb103-65" aria-hidden="true" tabindex="-1"></a>        return <span class="dv">0</span>;</span>
-<span id="cb103-66"><a href="#cb103-66" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<p>执行</p>
+<span id="cb103-48"><a href="#cb103-48" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`array_new&#39;<span class="ch">,</span> `<span class="ch">$0</span>_with<span class="ch">(</span>_type_name<span class="ch">($2))($@)</span>&#39;<span class="ch">)</span></span>
+<span id="cb103-49"><a href="#cb103-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-50"><a href="#cb103-50" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 测试</span>
+<span id="cb103-51"><a href="#cb103-51" aria-hidden="true" tabindex="-1"></a>int main<span class="ch">(</span>void<span class="ch">)</span> {</span>
+<span id="cb103-52"><a href="#cb103-52" aria-hidden="true" tabindex="-1"></a>        _var<span class="ch">(</span>n<span class="ch">,</span> size_t<span class="ch">,</span> <span class="dv">7</span><span class="ch">)</span>;</span>
+<span id="cb103-53"><a href="#cb103-53" aria-hidden="true" tabindex="-1"></a>        <span class="ch">/*</span> 整型数组 a <span class="ch">*/</span></span>
+<span id="cb103-54"><a href="#cb103-54" aria-hidden="true" tabindex="-1"></a>        _var<span class="ch">(</span>a<span class="ch">,</span> Array<span class="ch">(</span>int<span class="ch">)</span> <span class="ch">*,</span> array_new<span class="ch">(</span>n<span class="ch">,</span> _expr<span class="ch">(</span><span class="dv">0</span><span class="ch">,</span> int<span class="ch">)))</span>;</span>
+<span id="cb103-55"><a href="#cb103-55" aria-hidden="true" tabindex="-1"></a>        for <span class="ch">(</span>size_t i <span class="ch">=</span> <span class="dv">0</span>; i <span class="ch">&lt;</span> n; i<span class="ch">++)</span> a<span class="ch">-&gt;</span>body[i] <span class="ch">=</span> i <span class="ch">+</span> <span class="dv">1</span>;</span>
+<span id="cb103-56"><a href="#cb103-56" aria-hidden="true" tabindex="-1"></a>        array_print_with<span class="ch">(</span>int<span class="ch">)(</span>a<span class="ch">)</span>;</span>
+<span id="cb103-57"><a href="#cb103-57" aria-hidden="true" tabindex="-1"></a>        array_free_with<span class="ch">(</span>int<span class="ch">)(</span>a<span class="ch">)</span>;</span>
+<span id="cb103-58"><a href="#cb103-58" aria-hidden="true" tabindex="-1"></a>        <span class="ch">/*</span> 双精度浮点型数组 b <span class="ch">*/</span></span>
+<span id="cb103-59"><a href="#cb103-59" aria-hidden="true" tabindex="-1"></a>        _var<span class="ch">(</span>b<span class="ch">,</span> Array<span class="ch">(</span>double<span class="ch">)</span> <span class="ch">*,</span> array_new<span class="ch">(</span>n<span class="ch">,</span> _expr<span class="ch">(</span><span class="dv">0</span><span class="ch">,</span> double<span class="ch">)))</span>;</span>
+<span id="cb103-60"><a href="#cb103-60" aria-hidden="true" tabindex="-1"></a>        for <span class="ch">(</span>size_t i <span class="ch">=</span> <span class="dv">0</span>; i <span class="ch">&lt;</span> n; i<span class="ch">++)</span> b<span class="ch">-&gt;</span>body[i] <span class="ch">=</span> i <span class="ch">+</span> <span class="dv">1</span>;</span>
+<span id="cb103-61"><a href="#cb103-61" aria-hidden="true" tabindex="-1"></a>        array_print_with<span class="ch">(</span>double<span class="ch">)(</span>b<span class="ch">)</span>;</span>
+<span id="cb103-62"><a href="#cb103-62" aria-hidden="true" tabindex="-1"></a>        array_free_with<span class="ch">(</span>double<span class="ch">)(</span>b<span class="ch">)</span>;</span>
+<span id="cb103-63"><a href="#cb103-63" aria-hidden="true" tabindex="-1"></a>        return <span class="dv">0</span>;</span>
+<span id="cb103-64"><a href="#cb103-64" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>foo.template 基本上用到了上文构造的主要元素，若执行</p>
 <pre class="console"><code>$ awk -f ui/preprocess.awk &quot;$1&quot; \
       | awk -f ui/template-to-m4.awk \
       | awk -f ui/trace-scopes.awk \
       | awk -f ui/postprocess.awk \
-      | m4 c-template.m4 -</code></pre>
+      | m4 c-template.m4 - &gt; foo.c</code></pre>
 <p>便可将 foo.template 转换为 foo.c，后者内容为</p>
 <div class="sourceCode" id="cb105"><pre
 class="sourceCode c"><code class="sourceCode c"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
@@ -1321,60 +1319,59 @@ class="sourceCode c"><code class="sourceCode c"><span id="cb105-1"><a href="#cb1
 <span id="cb105-10"><a href="#cb105-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> <span class="op">*</span>body<span class="op">;</span></span>
 <span id="cb105-11"><a href="#cb105-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Array_type_2<span class="op">;</span></span>
 <span id="cb105-12"><a href="#cb105-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-13"><a href="#cb105-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-14"><a href="#cb105-14" aria-hidden="true" tabindex="-1"></a>Array_type_1 <span class="op">*</span>array_new_1<span class="op">(</span><span class="dt">size_t</span> n<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb105-15"><a href="#cb105-15" aria-hidden="true" tabindex="-1"></a>        Array_type_1 <span class="op">*</span>a<span class="op">;</span></span>
-<span id="cb105-16"><a href="#cb105-16" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>Array_type_1<span class="op">));</span></span>
-<span id="cb105-17"><a href="#cb105-17" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>n <span class="op">=</span> n<span class="op">;</span></span>
-<span id="cb105-18"><a href="#cb105-18" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>body <span class="op">=</span> malloc<span class="op">(</span>n <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb105-13"><a href="#cb105-13" aria-hidden="true" tabindex="-1"></a>Array_type_1 <span class="op">*</span>array_new_1<span class="op">(</span><span class="dt">size_t</span> n<span class="op">,</span> <span class="dt">int</span> x<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb105-14"><a href="#cb105-14" aria-hidden="true" tabindex="-1"></a>        Array_type_1 <span class="op">*</span>a<span class="op">;</span></span>
+<span id="cb105-15"><a href="#cb105-15" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>Array_type_1<span class="op">));</span></span>
+<span id="cb105-16"><a href="#cb105-16" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>n <span class="op">=</span> n<span class="op">;</span></span>
+<span id="cb105-17"><a href="#cb105-17" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>body <span class="op">=</span> malloc<span class="op">(</span>n <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb105-18"><a href="#cb105-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> x<span class="op">;</span></span>
 <span id="cb105-19"><a href="#cb105-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a<span class="op">;</span></span>
 <span id="cb105-20"><a href="#cb105-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb105-21"><a href="#cb105-21" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_free_3<span class="op">(</span>Array_type_1 <span class="op">*</span> a<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb105-22"><a href="#cb105-22" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">-&gt;</span>body<span class="op">);</span></span>
-<span id="cb105-23"><a href="#cb105-23" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">);</span></span>
-<span id="cb105-24"><a href="#cb105-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb105-25"><a href="#cb105-25" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_print_1<span class="op">(</span>Array_type_1 <span class="op">*</span>a<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb105-26"><a href="#cb105-26" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;{&quot;</span><span class="op">);</span></span>
-<span id="cb105-27"><a href="#cb105-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb105-28"><a href="#cb105-28" aria-hidden="true" tabindex="-1"></a>            printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%d%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span>a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">],</span><span class="st">&quot;, &quot;</span><span class="op">);</span></span>
-<span id="cb105-29"><a href="#cb105-29" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb105-30"><a href="#cb105-30" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%d%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span>a<span class="op">-&gt;</span>body<span class="op">[</span>a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">],</span><span class="st">&quot;}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb105-21"><a href="#cb105-21" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_print_1<span class="op">(</span>Array_type_1 <span class="op">*</span>a<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb105-22"><a href="#cb105-22" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;{&quot;</span><span class="op">);</span></span>
+<span id="cb105-23"><a href="#cb105-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb105-24"><a href="#cb105-24" aria-hidden="true" tabindex="-1"></a>            printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%d%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span>a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">],</span><span class="st">&quot;, &quot;</span><span class="op">);</span></span>
+<span id="cb105-25"><a href="#cb105-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb105-26"><a href="#cb105-26" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%d%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span>a<span class="op">-&gt;</span>body<span class="op">[</span>a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">],</span><span class="st">&quot;}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb105-27"><a href="#cb105-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb105-28"><a href="#cb105-28" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_free_1<span class="op">(</span>Array_type_1 <span class="op">*</span>a<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb105-29"><a href="#cb105-29" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">-&gt;</span>body<span class="op">);</span></span>
+<span id="cb105-30"><a href="#cb105-30" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">);</span></span>
 <span id="cb105-31"><a href="#cb105-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb105-32"><a href="#cb105-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-33"><a href="#cb105-33" aria-hidden="true" tabindex="-1"></a>Array_type_2 <span class="op">*</span>array_new_2<span class="op">(</span><span class="dt">size_t</span> n<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb105-34"><a href="#cb105-34" aria-hidden="true" tabindex="-1"></a>        Array_type_2 <span class="op">*</span>a<span class="op">;</span></span>
-<span id="cb105-35"><a href="#cb105-35" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>Array_type_2<span class="op">));</span></span>
-<span id="cb105-36"><a href="#cb105-36" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>n <span class="op">=</span> n<span class="op">;</span></span>
-<span id="cb105-37"><a href="#cb105-37" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>body <span class="op">=</span> malloc<span class="op">(</span>n <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb105-32"><a href="#cb105-32" aria-hidden="true" tabindex="-1"></a>Array_type_2 <span class="op">*</span>array_new_2<span class="op">(</span><span class="dt">size_t</span> n<span class="op">,</span> <span class="dt">double</span> x<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb105-33"><a href="#cb105-33" aria-hidden="true" tabindex="-1"></a>        Array_type_2 <span class="op">*</span>a<span class="op">;</span></span>
+<span id="cb105-34"><a href="#cb105-34" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>Array_type_2<span class="op">));</span></span>
+<span id="cb105-35"><a href="#cb105-35" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>n <span class="op">=</span> n<span class="op">;</span></span>
+<span id="cb105-36"><a href="#cb105-36" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>body <span class="op">=</span> malloc<span class="op">(</span>n <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb105-37"><a href="#cb105-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> x<span class="op">;</span></span>
 <span id="cb105-38"><a href="#cb105-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a<span class="op">;</span></span>
 <span id="cb105-39"><a href="#cb105-39" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb105-40"><a href="#cb105-40" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_free_4<span class="op">(</span>Array_type_2 <span class="op">*</span> a<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb105-41"><a href="#cb105-41" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">-&gt;</span>body<span class="op">);</span></span>
-<span id="cb105-42"><a href="#cb105-42" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">);</span></span>
-<span id="cb105-43"><a href="#cb105-43" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb105-44"><a href="#cb105-44" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_print_2<span class="op">(</span>Array_type_2 <span class="op">*</span>a<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb105-45"><a href="#cb105-45" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;{&quot;</span><span class="op">);</span></span>
-<span id="cb105-46"><a href="#cb105-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb105-47"><a href="#cb105-47" aria-hidden="true" tabindex="-1"></a>            printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%.3f%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span>a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">],</span><span class="st">&quot;, &quot;</span><span class="op">);</span></span>
-<span id="cb105-48"><a href="#cb105-48" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb105-49"><a href="#cb105-49" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%.3f%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span>a<span class="op">-&gt;</span>body<span class="op">[</span>a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">],</span><span class="st">&quot;}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb105-40"><a href="#cb105-40" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_print_2<span class="op">(</span>Array_type_2 <span class="op">*</span>a<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb105-41"><a href="#cb105-41" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;{&quot;</span><span class="op">);</span></span>
+<span id="cb105-42"><a href="#cb105-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb105-43"><a href="#cb105-43" aria-hidden="true" tabindex="-1"></a>            printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%.3f%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span>a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">],</span><span class="st">&quot;, &quot;</span><span class="op">);</span></span>
+<span id="cb105-44"><a href="#cb105-44" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb105-45"><a href="#cb105-45" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%.3f%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span>a<span class="op">-&gt;</span>body<span class="op">[</span>a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">],</span><span class="st">&quot;}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb105-46"><a href="#cb105-46" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb105-47"><a href="#cb105-47" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_free_2<span class="op">(</span>Array_type_2 <span class="op">*</span>a<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb105-48"><a href="#cb105-48" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">-&gt;</span>body<span class="op">);</span></span>
+<span id="cb105-49"><a href="#cb105-49" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">);</span></span>
 <span id="cb105-50"><a href="#cb105-50" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
 <span id="cb105-51"><a href="#cb105-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-52"><a href="#cb105-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb105-53"><a href="#cb105-53" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb105-54"><a href="#cb105-54" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n <span class="op">=</span> <span class="dv">7</span><span class="op">;</span></span>
-<span id="cb105-55"><a href="#cb105-55" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb105-56"><a href="#cb105-56" aria-hidden="true" tabindex="-1"></a>        Array_type_1 <span class="op">*</span>a <span class="op">=</span> array_new_1<span class="op">(</span>n<span class="op">);</span></span>
-<span id="cb105-57"><a href="#cb105-57" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb105-58"><a href="#cb105-58" aria-hidden="true" tabindex="-1"></a>        array_print_1<span class="op">(</span>a<span class="op">);</span></span>
-<span id="cb105-59"><a href="#cb105-59" aria-hidden="true" tabindex="-1"></a>        array_free_3<span class="op">(</span>a<span class="op">);</span></span>
-<span id="cb105-60"><a href="#cb105-60" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb105-61"><a href="#cb105-61" aria-hidden="true" tabindex="-1"></a>        Array_type_2 <span class="op">*</span>b <span class="op">=</span> array_new_2<span class="op">(</span>n<span class="op">);</span></span>
-<span id="cb105-62"><a href="#cb105-62" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> b<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb105-63"><a href="#cb105-63" aria-hidden="true" tabindex="-1"></a>        array_print_2<span class="op">(</span>b<span class="op">);</span></span>
-<span id="cb105-64"><a href="#cb105-64" aria-hidden="true" tabindex="-1"></a>        array_free_4<span class="op">(</span>b<span class="op">);</span></span>
-<span id="cb105-65"><a href="#cb105-65" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb105-66"><a href="#cb105-66" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<span id="cb105-52"><a href="#cb105-52" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb105-53"><a href="#cb105-53" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n <span class="op">=</span> <span class="dv">7</span><span class="op">;</span></span>
+<span id="cb105-54"><a href="#cb105-54" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb105-55"><a href="#cb105-55" aria-hidden="true" tabindex="-1"></a>        Array_type_1 <span class="op">*</span>a <span class="op">=</span> array_new_1<span class="op">(</span>n<span class="op">,</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb105-56"><a href="#cb105-56" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb105-57"><a href="#cb105-57" aria-hidden="true" tabindex="-1"></a>        array_print_1<span class="op">(</span>a<span class="op">);</span></span>
+<span id="cb105-58"><a href="#cb105-58" aria-hidden="true" tabindex="-1"></a>        array_free_1<span class="op">(</span>a<span class="op">);</span></span>
+<span id="cb105-59"><a href="#cb105-59" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb105-60"><a href="#cb105-60" aria-hidden="true" tabindex="-1"></a>        Array_type_2 <span class="op">*</span>b <span class="op">=</span> array_new_2<span class="op">(</span>n<span class="op">,</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb105-61"><a href="#cb105-61" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> b<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb105-62"><a href="#cb105-62" aria-hidden="true" tabindex="-1"></a>        array_print_2<span class="op">(</span>b<span class="op">);</span></span>
+<span id="cb105-63"><a href="#cb105-63" aria-hidden="true" tabindex="-1"></a>        array_free_2<span class="op">(</span>b<span class="op">);</span></span>
+<span id="cb105-64"><a href="#cb105-64" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb105-65"><a href="#cb105-65" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a

@@ -67,7 +67,7 @@ function count_braces(text,    i, n, c, out) {
             suffix = substr(tail, scan_pos + 1)
             printf "}\n"
             printf "dnl')\n"
-            printf "define(`%s', ``$0'_with($@)')%s\n", name, suffix
+            printf "define(`%s_with', ``%s'_with($@)')%s\n", name, name, suffix
             printf "divert(0)dnl\n"
         } else {
             printf "\n"
@@ -117,7 +117,7 @@ in_func {
         suffix = substr(line, scan_pos + 1)
         printf "%s}\n", out
         printf "dnl')\n"
-        printf "define(`%s', ``$0'_with($@)')%s\n", f_name, suffix
+        printf "define(`%s_with', ``%s'_with($@)')%s\n", f_name, f_name, suffix
         printf "divert(0)dnl\n"
         in_func = 0; f_name = ""
     } else {

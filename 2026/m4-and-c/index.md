@@ -837,8 +837,8 @@ print_1_1(a, b, c + 2.0);
 
 ```m4
 define(`_args_t', 
-       `ifelse(`$2', `', 
-               `_arg_t(`$1')', 
+       `ifelse(`$1', `', 
+               `', 
                `_arg_t(`$1')$0(shift($@))')')
 ```
 
@@ -970,8 +970,8 @@ Array_type_2_3 b;
 
 ```m4
 define(`_def_types', 
-       `ifelse(`$2', `', 
-               `_def_type(`$1')', 
+       `ifelse(`$1', `', 
+               `', 
                `_def_type(`$1')$0(shift($@))')')
 ```
 
@@ -979,8 +979,8 @@ define(`_def_types',
 
 ```m4
 define(`_type_ids', 
-       `_`'ifelse(`$2', `', 
-               `_type_id(`$1')', 
+       `_`'ifelse(`$1', `', 
+               `', 
                `_type_id(`$1')$0(shift($@))')')
 ```
 
@@ -1035,11 +1035,11 @@ define(`Array', `$0_`type'_with($@)')
 对应的 m4 代码为
 
 ```m4
-define(`add_type', ``add'_with($@)($1 a, $2 b) {
+define(`add_func', ``add'_with($@)($1 a, $2 b) {
         return a + b;
 }
 dnl')
-define(`add', ``add'_with($@)')
+define(`add_with', ``add'_with($@)')
 ```
 
 基于上述设计，我让 DeepSeek 写出了 可将 `@template` 和 `@func_template` 转换为 m4 代码的 awk 脚本，只是该脚本分为预处理、转换和后处理三个阶段，分别对应 preprocess.awk，template-to-m4.awk 和 postprocess.awk 脚本。
@@ -1333,11 +1333,12 @@ Array_type(int);
 Array_type(double);
 
 dnl 函数模板
-@func_template(array_new)(size_t n) {
+@func_template(array_new)(size_t n, $1 x) {
         Array($1) *a;
         a = malloc(sizeof(Array($1)));
         a->n = n;
         a->body = malloc(n * sizeof($1));
+        for (size_t i = 0; i < n; i++) a->body[i] = x;
         return a;
 }
 @func_template(array_print)(Array($1) *a) {
@@ -1347,50 +1348,47 @@ dnl 函数模板
         }
         print("", _expr(a->body[a->n - 1], $1), "}\n");
 }
-@func_template(array_free)($1 a) {
+@func_template(array_free)(Array($1) *a) {
         free(a->body);
         free(a);
 }
+
 dnl 函数模板实例
-/* int */
 Array(int) *array_new_func(int);
-void array_free_func(Array(int) *);
 void array_print_func(int);
-/* double */
+void array_free_func(int);
 Array(double) *array_new_func(double);
-void array_free_func(Array(double) *);
 void array_print_func(double);
+void array_free_func(double);
 
 dnl 实参转发
-define(`array_new', ``$0'_type_id($1)')dnl;
-define(`print_array',``$0'_arg_t($1)($1)')dnl;
-define(`array_free', ``$0'_arg_t($1)($1)')dnl;
+define(`array_new', `$0_with(_type_name($2))($@)')
 
 dnl 测试
 int main(void) {
-        size_t n = 7;
+        _var(n, size_t, 7);
         /* 整型数组 a */
-        _var(a, Array(int) *,array_new(int)(n));
+        _var(a, Array(int) *, array_new(n, _expr(0, int)));
         for (size_t i = 0; i < n; i++) a->body[i] = i + 1;
-        array_print(int)(a);
-        array_free(a);
+        array_print_with(int)(a);
+        array_free_with(int)(a);
         /* 双精度浮点型数组 b */
-        _var(b, Array(double) *,array_new(double)(n));
+        _var(b, Array(double) *, array_new(n, _expr(0, double)));
         for (size_t i = 0; i < n; i++) b->body[i] = i + 1;
-        array_print(double)(b);
-        array_free(b);
+        array_print_with(double)(b);
+        array_free_with(double)(b);
         return 0;
 }
 ```
 
-执行 
+foo.template 基本上用到了上文构造的主要元素，若执行 
 
 ```console
 $ awk -f ui/preprocess.awk "$1" \
       | awk -f ui/template-to-m4.awk \
       | awk -f ui/trace-scopes.awk \
       | awk -f ui/postprocess.awk \
-      | m4 c-template.m4 -
+      | m4 c-template.m4 - > foo.c
 ```
 
 便可将 foo.template 转换为 foo.c，后者内容为
@@ -1408,17 +1406,13 @@ typedef struct {
         double *body;
 } Array_type_2;
 
-
-Array_type_1 *array_new_1(size_t n) {
+Array_type_1 *array_new_1(size_t n, int x) {
         Array_type_1 *a;
         a = malloc(sizeof(Array_type_1));
         a->n = n;
         a->body = malloc(n * sizeof(int));
+        for (size_t i = 0; i < n; i++) a->body[i] = x;
         return a;
-}
-void array_free_3(Array_type_1 * a) {
-        free(a->body);
-        free(a);
 }
 void array_print_1(Array_type_1 *a) {
         printf("{");
@@ -1427,17 +1421,17 @@ void array_print_1(Array_type_1 *a) {
         }
         printf("%s%d%s", "",a->body[a->n - 1],"}\n");
 }
-
-Array_type_2 *array_new_2(size_t n) {
+void array_free_1(Array_type_1 *a) {
+        free(a->body);
+        free(a);
+}
+Array_type_2 *array_new_2(size_t n, double x) {
         Array_type_2 *a;
         a = malloc(sizeof(Array_type_2));
         a->n = n;
         a->body = malloc(n * sizeof(double));
+        for (size_t i = 0; i < n; i++) a->body[i] = x;
         return a;
-}
-void array_free_4(Array_type_2 * a) {
-        free(a->body);
-        free(a);
 }
 void array_print_2(Array_type_2 *a) {
         printf("{");
@@ -1446,20 +1440,25 @@ void array_print_2(Array_type_2 *a) {
         }
         printf("%s%.3f%s", "",a->body[a->n - 1],"}\n");
 }
-
+void array_free_2(Array_type_2 *a) {
+        free(a->body);
+        free(a);
+}
 
 int main(void) {
         size_t n = 7;
         
-        Array_type_1 *a = array_new_1(n);
+        Array_type_1 *a = array_new_1(n,0);
         for (size_t i = 0; i < n; i++) a->body[i] = i + 1;
         array_print_1(a);
-        array_free_3(a);
+        array_free_1(a);
         
-        Array_type_2 *b = array_new_2(n);
+        Array_type_2 *b = array_new_2(n,0);
         for (size_t i = 0; i < n; i++) b->body[i] = i + 1;
         array_print_2(b);
-        array_free_4(b);
+        array_free_2(b);
         return 0;
 }
+
 ```
+
