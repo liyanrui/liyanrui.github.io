@@ -967,7 +967,12 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb123-1"><a href="#c
 能完成简单的整数运算，但其所用的数字，于本质上依然是文本。m4
 有一些内建宏，可用于更为精细的文本处理任务，例如计算文本长度，</p>
 <div class="sourceCode" id="cb124"><pre
-class="sourceCode m4"><code class="sourceCode m4"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="kw">len</span><span class="ch">(</span>`hello world<span class="ch">!</span>&#39;<span class="ch">)</span><span class="kw">dnl</span> 结果为 <span class="dv">12</span></span></code></pre></div>
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="kw">len</span><span class="ch">(</span>`hello world<span class="ch">!</span>&#39;<span class="ch">)</span></span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 结果为 <span class="dv">12</span></span></code></pre></div>
+<blockquote>
+<p><code>len</code> 只对 ASCII
+编码的文本有效，对于中文文本，它得到的是字节数，而非字符数。</p>
+</blockquote>
 <p>将字母从小写变为大写，从大写变为小写</p>
 <div class="sourceCode" id="cb125"><pre
 class="sourceCode m4"><code class="sourceCode m4"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="kw">translit</span><span class="ch">(</span>`GNUs not Unix&#39;<span class="ch">,</span> `a<span class="ch">-</span>z&#39;<span class="ch">,</span> `A<span class="ch">-</span>Z&#39;<span class="ch">)</span></span>
@@ -981,10 +986,40 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb126-1"><a href="#c
 <span id="cb126-3"><a href="#cb126-3" aria-hidden="true" tabindex="-1"></a><span class="kw">substr</span><span class="ch">(</span>`<span class="dv">0123456789</span>&#39;<span class="ch">,</span> <span class="dv">5</span><span class="ch">,</span> <span class="dv">3</span><span class="ch">)</span></span>
 <span id="cb126-4"><a href="#cb126-4" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 结果为 <span class="dv">567</span></span></code></pre></div>
 <p>也能基于正则表达式作文本替换，例如去除文本首尾空白字符，</p>
-<pre><code>|patsubst(patsubst(`   abc   &#39;, `^[[:space:]]+&#39;, `&#39;), `[[:space:]]+$&#39;, `&#39;)|
-dnl 结果为 |abc|</code></pre>
-<p>这些可精细操控文本的内建宏，若配合宏递归展开机制，m4
-可以像一叶轻舟，起伏穿梭在一团混沌的文字之间，完成更为复杂的文本处理任务。然而在前文中构造的一些示例里，如你所见，当宏的定义略显复杂时，便已难以阅读和理解了，故而我多次强调，要注重如何从你想要的结果中逐步倒推出宏的定义，而不要从宏定义本身去理解它是否能得到你想要的结果。</p>
+<div class="sourceCode" id="cb127"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="ch">|</span><span class="kw">patsubst</span><span class="ch">(</span><span class="kw">patsubst</span><span class="ch">(</span>`   abc   &#39;<span class="ch">,</span> `<span class="ch">^</span>[[:space:]]<span class="ch">+</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">),</span> `[[:space:]]<span class="ch">+</span>$&#39;<span class="ch">,</span> `&#39;<span class="ch">)|</span></span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 结果为 <span class="ch">|</span>abc<span class="ch">|</span></span></code></pre></div>
+<p>还有一个有趣的内建宏 <code>defn</code>，它能够引用宏的定义，例如</p>
+<div class="sourceCode" id="cb128"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="kw">defn</span><span class="ch">(</span>`foo&#39;<span class="ch">)</span></span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`foo&#39;<span class="ch">,</span> `I am foo<span class="ch">!</span>&#39;<span class="ch">)</span></span>
+<span id="cb128-3"><a href="#cb128-3" aria-hidden="true" tabindex="-1"></a><span class="kw">defn</span><span class="ch">(</span>`foo&#39;<span class="ch">)</span></span></code></pre></div>
+<p>第一个 <code>defn</code> 语句的展开结果为空，因为此时
+<code>foo</code> 尚无定义。第二个 <code>defn</code> 语句的展开结果是
+<code>I am foo!</code>，它是 <code>foo</code> 的定义。利用
+<code>defn</code>，可以用 m4 语言模拟数组或散列表，例如</p>
+<div class="sourceCode" id="cb129"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb129-2"><a href="#cb129-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_set&#39;<span class="ch">,</span> `define<span class="ch">(</span>`<span class="ch">$1</span>[<span class="ch">$2</span>]&#39;<span class="ch">,</span> `<span class="ch">$3</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb129-3"><a href="#cb129-3" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_get&#39;<span class="ch">,</span> `defn<span class="ch">(</span>`<span class="ch">$1</span>[<span class="ch">$2</span>]&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb129-4"><a href="#cb129-4" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 构造散列表</span>
+<span id="cb129-5"><a href="#cb129-5" aria-hidden="true" tabindex="-1"></a>_set<span class="ch">(</span>`myarray&#39;<span class="ch">,</span> <span class="dv">1</span><span class="ch">,</span> `alpha&#39;<span class="ch">)</span></span>
+<span id="cb129-6"><a href="#cb129-6" aria-hidden="true" tabindex="-1"></a>_set<span class="ch">(</span>`myarray&#39;<span class="ch">,</span> `alpha&#39;<span class="ch">,</span> `omega&#39;<span class="ch">)</span></span>
+<span id="cb129-7"><a href="#cb129-7" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb129-8"><a href="#cb129-8" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 访问散列表</span>
+<span id="cb129-9"><a href="#cb129-9" aria-hidden="true" tabindex="-1"></a>_get<span class="ch">(</span>`myarray&#39;<span class="ch">,</span> <span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb129-10"><a href="#cb129-10" aria-hidden="true" tabindex="-1"></a>_get<span class="ch">(</span>`myarray&#39;<span class="ch">,</span> `alpha&#39;<span class="ch">)</span></span>
+<span id="cb129-11"><a href="#cb129-11" aria-hidden="true" tabindex="-1"></a>_get<span class="ch">(</span>`myarray&#39;<span class="ch">,</span> _get<span class="ch">(</span>`myarray&#39;<span class="ch">,</span><span class="dv">1</span><span class="ch">))</span></span>
+<span id="cb129-12"><a href="#cb129-12" aria-hidden="true" tabindex="-1"></a><span class="kw">defn</span><span class="ch">(</span>`myarray[alpha]&#39;<span class="ch">)</span></span></code></pre></div>
+<p>展开结果为</p>
+<pre><code>alpha
+omega
+omega
+omega</code></pre>
+<p>能使用 m4
+语言定义散列表，意味着什么？在面向对象编程中，对象在本质上也是散列表啊……</p>
+<p>基于上述内建宏以及宏递归展开机制，足以让 m4
+像一叶轻舟，起伏穿梭在一团混沌的文字之间，完成更为复杂的文本处理任务。然而在前文中构造的一些示例里，如你所见，当宏的定义略显复杂时，便已难以阅读和理解了，故而我多次强调，要注重如何从你想要的结果中逐步倒推出宏的定义，而不要从宏定义本身去理解它是否能得到你想要的结果。</p>
 <p>你从
 C，C++，Java，C#，Go，Rust，Python……等主流编程语言中培养的思维模式，在宏编程的世界里，需要颠倒过来。你习惯的因果关系，需要倒果为因，亦即你习惯的调试和维护的对象不再是代码本身，而是一些隐性的推导过程。倘若你不能适应如此颠倒的宏世界，也不必担心，在理解其最为根本的运行原理后，复杂的计算逻辑依然可以用你熟悉的编程语言完成，只需将其结果传于
 m4。</p>
@@ -994,8 +1029,8 @@ m4。</p>
 foo.txt，其内容为</p>
 <pre><code>Hello world!</code></pre>
 <p>然后在 foo.txt 所在目录下创建 foo.m4 文件，其内容为</p>
-<div class="sourceCode" id="cb129"><pre
-class="sourceCode m4"><code class="sourceCode m4"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="kw">syscmd</span><span class="ch">(</span>`cat foo.txt&#39;<span class="ch">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb132"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="kw">syscmd</span><span class="ch">(</span>`cat foo.txt&#39;<span class="ch">)</span></span></code></pre></div>
 <p>foo.m4 的展开结果为</p>
 <pre><code>Hello world!</code></pre>
 <p>在上述示例中，<code>cat</code> 是 Linux
@@ -1003,33 +1038,33 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb129-1"><a href="#c
 执行，其输出流与 m4 的输出流恰好重合，从而出现 <code>cat</code>
 的输出流被 m4 捕获这样一种假象，而实际上 <code>syscmd</code>
 的展开结果在 m4 看来，是空文本。由于这是假象，故而无法用
-<code>divert</code> 改变其流向。例如</p>
-<div class="sourceCode" id="cb131"><pre
-class="sourceCode m4"><code class="sourceCode m4"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a>... <span class="dv">0</span> 号流 ...</span>
-<span id="cb131-2"><a href="#cb131-2" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">1</span><span class="ch">)</span><span class="kw">dnl</span></span>
-<span id="cb131-3"><a href="#cb131-3" aria-hidden="true" tabindex="-1"></a>... <span class="dv">1</span> 号流 ...</span>
-<span id="cb131-4"><a href="#cb131-4" aria-hidden="true" tabindex="-1"></a><span class="kw">syscmd</span><span class="ch">(</span>`cat foo.txt&#39;<span class="ch">)</span></span></code></pre></div>
+<code>divert</code> 改变外部程序的输出流向。例如</p>
+<div class="sourceCode" id="cb134"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>... <span class="dv">0</span> 号流 ...</span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">1</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a>... <span class="dv">1</span> 号流 ...</span>
+<span id="cb134-4"><a href="#cb134-4" aria-hidden="true" tabindex="-1"></a><span class="kw">syscmd</span><span class="ch">(</span>`cat foo.txt&#39;<span class="ch">)</span></span></code></pre></div>
 <p>展开结果为</p>
 <pre><code>... 0 号流 ...
 Hello world!
 ... 1 号流 ...</code></pre>
 <p><code>esyscmd</code> 具有 <code>syscmd</code>
 相同的功能，但是其展开结果的确是外部程序的输出，其流向可以改变，例如</p>
-<div class="sourceCode" id="cb133"><pre
-class="sourceCode m4"><code class="sourceCode m4"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a>... <span class="dv">0</span> 号流 ...</span>
-<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">1</span><span class="ch">)</span><span class="kw">dnl</span></span>
-<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a>... <span class="dv">1</span> 号流 ...</span>
-<span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a><span class="kw">esyscmd</span><span class="ch">(</span>`cat foo.txt&#39;<span class="ch">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb136"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a>... <span class="dv">0</span> 号流 ...</span>
+<span id="cb136-2"><a href="#cb136-2" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">1</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb136-3"><a href="#cb136-3" aria-hidden="true" tabindex="-1"></a>... <span class="dv">1</span> 号流 ...</span>
+<span id="cb136-4"><a href="#cb136-4" aria-hidden="true" tabindex="-1"></a><span class="kw">esyscmd</span><span class="ch">(</span>`cat foo.txt&#39;<span class="ch">)</span></span></code></pre></div>
 <p>展开结果为</p>
 <pre><code>... 0 号流 ...
 ... 1 号流 ...
 Hello world!</code></pre>
 <p>如果你的文本处理任务始终在 0 号流，用 <code>syscmd</code>
 是安全的，否则会造成时空紊乱……例如</p>
-<div class="sourceCode" id="cb135"><pre
-class="sourceCode m4"><code class="sourceCode m4"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`foo&#39;<span class="ch">,</span> `<span class="ch">***</span> <span class="kw">syscmd</span><span class="ch">(</span>`cat foo.txt&#39;<span class="ch">)</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
-<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">1</span><span class="ch">)</span><span class="kw">dnl</span></span>
-<span id="cb135-3"><a href="#cb135-3" aria-hidden="true" tabindex="-1"></a>foo</span></code></pre></div>
+<div class="sourceCode" id="cb138"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`foo&#39;<span class="ch">,</span> `<span class="ch">***</span> <span class="kw">syscmd</span><span class="ch">(</span>`cat foo.txt&#39;<span class="ch">)</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">1</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb138-3"><a href="#cb138-3" aria-hidden="true" tabindex="-1"></a>foo</span></code></pre></div>
 <p>展开结果并非你所想的</p>
 <pre><code>*** Hello world!</code></pre>
 <p>而是</p>
@@ -1037,25 +1072,25 @@ class="sourceCode m4"><code class="sourceCode m4"><span id="cb135-1"><a href="#c
 *** </code></pre>
 <p>在上述示例中，用 <code>esyscmd</code> 是安全的。倘若你所用的 m4 是
 GNU m4，我建议只用 <code>esyscmd</code>。</p>
-<p>上一节破费心思写出的高性能版本 <code>Fib</code> 宏，基于
+<p>上一节颇费心思写出的高性能版本 <code>Fib</code> 宏，基于
 <code>esyscmd</code>，可将其修改为 Lua 语言版本。首先，写出 Lua 脚本
 fib.lua，</p>
-<div class="sourceCode" id="cb138"><pre
-class="sourceCode lua"><code class="sourceCode lua"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> fib<span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
-<span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> <span class="va">a</span><span class="op">,</span> <span class="va">b</span> <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span></span>
-<span id="cb138-3"><a href="#cb138-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="va">i</span> <span class="op">=</span> <span class="dv">1</span><span class="op">,</span> <span class="va">n</span> <span class="cf">do</span></span>
-<span id="cb138-4"><a href="#cb138-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">a</span><span class="op">,</span> <span class="va">b</span> <span class="op">=</span> <span class="va">b</span><span class="op">,</span> <span class="va">a</span> <span class="op">+</span> <span class="va">b</span></span>
-<span id="cb138-5"><a href="#cb138-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb138-6"><a href="#cb138-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">io.write</span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
-<span id="cb138-7"><a href="#cb138-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb138-8"><a href="#cb138-8" aria-hidden="true" tabindex="-1"></a>fib<span class="op">(</span><span class="fu">tonumber</span><span class="op">(</span><span class="va">arg</span><span class="op">[</span><span class="dv">1</span><span class="op">]))</span></span></code></pre></div>
+<div class="sourceCode" id="cb141"><pre
+class="sourceCode lua"><code class="sourceCode lua"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> fib<span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
+<span id="cb141-2"><a href="#cb141-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> <span class="va">a</span><span class="op">,</span> <span class="va">b</span> <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">1</span></span>
+<span id="cb141-3"><a href="#cb141-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="va">i</span> <span class="op">=</span> <span class="dv">1</span><span class="op">,</span> <span class="va">n</span> <span class="cf">do</span></span>
+<span id="cb141-4"><a href="#cb141-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">a</span><span class="op">,</span> <span class="va">b</span> <span class="op">=</span> <span class="va">b</span><span class="op">,</span> <span class="va">a</span> <span class="op">+</span> <span class="va">b</span></span>
+<span id="cb141-5"><a href="#cb141-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb141-6"><a href="#cb141-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">io.write</span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
+<span id="cb141-7"><a href="#cb141-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb141-8"><a href="#cb141-8" aria-hidden="true" tabindex="-1"></a>fib<span class="op">(</span><span class="fu">tonumber</span><span class="op">(</span><span class="va">arg</span><span class="op">[</span><span class="dv">1</span><span class="op">]))</span></span></code></pre></div>
 <p>然后用 <code>esyscmd</code> 调用 Lua 解释器执行 fib.lua
 脚本并获得其结果，</p>
-<div class="sourceCode" id="cb139"><pre
-class="sourceCode m4"><code class="sourceCode m4"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
-<span id="cb139-2"><a href="#cb139-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`Fib&#39;<span class="ch">,</span> `esyscmd<span class="ch">(</span>`lua fib.lua <span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
-<span id="cb139-3"><a href="#cb139-3" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
-<span id="cb139-4"><a href="#cb139-4" aria-hidden="true" tabindex="-1"></a>Fib<span class="ch">(</span><span class="dv">30</span><span class="ch">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb142"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb142-2"><a href="#cb142-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`Fib&#39;<span class="ch">,</span> `esyscmd<span class="ch">(</span>`lua fib.lua <span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb142-3"><a href="#cb142-3" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb142-4"><a href="#cb142-4" aria-hidden="true" tabindex="-1"></a>Fib<span class="ch">(</span><span class="dv">30</span><span class="ch">)</span></span></code></pre></div>
 <p>上述文本展开结果为</p>
 <pre><code>832040</code></pre>
 <p>从上述示例可以看到，复杂的计算逻辑交给更为专业的语言是合理的，m4
@@ -1082,15 +1117,15 @@ m4 视为普通文本，直接发送至输出流。宏调用语句会被 m4
 m4 继续处理，直至 m4 认为所得结果只是普通文本，便将其发送至输出流。</p>
 <p>宏调用语句中的参数文本有其特殊性。m4
 在对宏调用语句展开之前，先尽可能将其参数展开，此即为何新手经常遇到宏像野马一样不受控制的原因所在。例如</p>
-<div class="sourceCode" id="cb141"><pre
-class="sourceCode m4"><code class="sourceCode m4"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>hello<span class="ch">,</span> hello world<span class="ch">!)</span></span></code></pre></div>
+<div class="sourceCode" id="cb144"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>hello<span class="ch">,</span> hello world<span class="ch">!)</span></span></code></pre></div>
 <p>m4 在处理这行文本时，<code>hello</code>
 是宏名，<code>hello world!</code> 是宏体，但二者实际上都是
 <code>define</code> 宏的参数。若 <code>hello</code> 是已有定义的宏，则
 m4
 会将其展开，这意味着这行语句所定义的宏不是你所看到的这个样子。为安全起见，通常需将其写成</p>
-<div class="sourceCode" id="cb142"><pre
-class="sourceCode m4"><code class="sourceCode m4"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`hello&#39;<span class="ch">,</span> `hello world<span class="ch">!</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb145"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`hello&#39;<span class="ch">,</span> `hello world<span class="ch">!</span>&#39;<span class="ch">)</span></span></code></pre></div>
 <p>亦即用引号告诉 m4，将它们当成普通文本，无需作展开处理。</p>
 <p>事实上，m4
 语言在功能上是超越词法分析的。词法分析器的灵魂是正则表达式，而正则表达式作为语言，不具备图灵完备性。宏的递归展开机制使得

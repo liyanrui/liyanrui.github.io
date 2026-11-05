@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <stdlib.h>
+dnl 模板
+@template(Array) {
+        size_t n;
+        $1 *body;
+}
+@func_template(array_new)(size_t n) {
+        Array($1) *a;
+        a = malloc(sizeof(Array($1)));
+        a->n = n;
+        a->body = malloc(n * sizeof($1));
+        return a;
+}
+@func_template(array_free)($1 a) {
+        free(a->body);
+        free(a);
+}
+dnl 模板实例
+Array_type(double);
+Array(double) *array_new_type(double);
+void array_free_type(Array(double) *);
+dnl 实参转发
+define(`array_new', `$0_`'_type_id($1)')
+define(`array_free', ``$0'_arg_t($1)($1)')
+
+int main(void) {
+        size_t n = 7;
+        _var(a, Array(double) *,array_new(double)(n));
+        for (size_t i = 0; i < n; i++) a->body[i] = i + 1;
+        array_free(a);
+        return 0;
+}

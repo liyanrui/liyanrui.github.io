@@ -1108,8 +1108,11 @@ define(`Fib', `_do_fib(1, 0, `$1')')
 m4 只能处理文本，即便 `eval` 能完成简单的整数运算，但其所用的数字，于本质上依然是文本。m4 有一些内建宏，可用于更为精细的文本处理任务，例如计算文本长度，
 
 ```m4
-len(`hello world!')dnl 结果为 12
+len(`hello world!')
+dnl 结果为 12
 ```
+
+> `len` 只对 ASCII 编码的文本有效，对于中文文本，它得到的是字节数，而非字符数。
 
 将字母从小写变为大写，从大写变为小写
 
@@ -1131,12 +1134,48 @@ dnl 结果为 567
 
 也能基于正则表达式作文本替换，例如去除文本首尾空白字符，
 
-```
+```m4
 |patsubst(patsubst(`   abc   ', `^[[:space:]]+', `'), `[[:space:]]+$', `')|
 dnl 结果为 |abc|
 ```
 
-这些可精细操控文本的内建宏，若配合宏递归展开机制，m4 可以像一叶轻舟，起伏穿梭在一团混沌的文字之间，完成更为复杂的文本处理任务。然而在前文中构造的一些示例里，如你所见，当宏的定义略显复杂时，便已难以阅读和理解了，故而我多次强调，要注重如何从你想要的结果中逐步倒推出宏的定义，而不要从宏定义本身去理解它是否能得到你想要的结果。
+还有一个有趣的内建宏 `defn`，它能够引用宏的定义，例如
+
+```m4
+defn(`foo')
+define(`foo', `I am foo!')
+defn(`foo')
+```
+
+第一个 `defn` 语句的展开结果为空，因为此时 `foo` 尚无定义。第二个 `defn` 语句的展开结果是 `I am foo!`，它是 `foo` 的定义。利用 `defn`，可以用 m4 语言模拟数组或散列表，例如
+
+```m4
+divert(-1)
+define(`_set', `define(`$1[$2]', `$3')')
+define(`_get', `defn(`$1[$2]')')
+dnl 构造散列表
+_set(`myarray', 1, `alpha')
+_set(`myarray', `alpha', `omega')
+divert(0)dnl
+dnl 访问散列表
+_get(`myarray', 1)
+_get(`myarray', `alpha')
+_get(`myarray', _get(`myarray',1))
+defn(`myarray[alpha]')
+```
+
+展开结果为
+
+```
+alpha
+omega
+omega
+omega
+```
+
+能使用 m4 语言定义散列表，意味着什么？在面向对象编程中，对象在本质上也是散列表啊……
+
+基于上述内建宏以及宏递归展开机制，足以让 m4 像一叶轻舟，起伏穿梭在一团混沌的文字之间，完成更为复杂的文本处理任务。然而在前文中构造的一些示例里，如你所见，当宏的定义略显复杂时，便已难以阅读和理解了，故而我多次强调，要注重如何从你想要的结果中逐步倒推出宏的定义，而不要从宏定义本身去理解它是否能得到你想要的结果。
 
 你从 C，C++，Java，C#，Go，Rust，Python……等主流编程语言中培养的思维模式，在宏编程的世界里，需要颠倒过来。你习惯的因果关系，需要倒果为因，亦即你习惯的调试和维护的对象不再是代码本身，而是一些隐性的推导过程。倘若你不能适应如此颠倒的宏世界，也不必担心，在理解其最为根本的运行原理后，复杂的计算逻辑依然可以用你熟悉的编程语言完成，只需将其结果传于 m4。
 
@@ -1158,7 +1197,7 @@ foo.m4 的展开结果为
 Hello world!
 ```
 
-在上述示例中，`cat` 是 Linux 命令，可以输出文件内容，该命令被 m4 宏 `syscmd` 执行，其输出流与 m4 的输出流恰好重合，从而出现 `cat` 的输出流被 m4 捕获这样一种假象，而实际上 `syscmd` 的展开结果在 m4 看来，是空文本。由于这是假象，故而无法用 `divert` 改变其流向。例如
+在上述示例中，`cat` 是 Linux 命令，可以输出文件内容，该命令被 m4 宏 `syscmd` 执行，其输出流与 m4 的输出流恰好重合，从而出现 `cat` 的输出流被 m4 捕获这样一种假象，而实际上 `syscmd` 的展开结果在 m4 看来，是空文本。由于这是假象，故而无法用 `divert` 改变外部程序的输出流向。例如
 
 ```m4
 ... 0 号流 ...
@@ -1216,7 +1255,7 @@ Hello world!
 
 在上述示例中，用 `esyscmd` 是安全的。倘若你所用的 m4 是 GNU m4，我建议只用 `esyscmd`。
 
-上一节破费心思写出的高性能版本 `Fib` 宏，基于 `esyscmd`，可将其修改为 Lua 语言版本。首先，写出 Lua 脚本 fib.lua，
+上一节颇费心思写出的高性能版本 `Fib` 宏，基于 `esyscmd`，可将其修改为 Lua 语言版本。首先，写出 Lua 脚本 fib.lua，
 
 ```lua
 function fib(n)
@@ -1274,4 +1313,84 @@ define(`hello', `hello world!')
 
 m4 处理器像是一台织布机。普通文本像是经线，宏调用语句像是穿行不息的梭子，每穿行一次，便引出一根纬线。当文本流过 m4 处理器，所得结果就像是一匹织好的布。只要你足够用心，便可在布上织出精美的图案。很多人害怕甚至诟病宏语言，认为使用宏语言编程，是取乱之道。可是，这世上有什么衣服，不是用布料做的呢？ 这世上有哪种编程语言不需要作词法分析呢？词法分析是织布，宏展开也是织布；至于用布做什么衣服，那是缝纫机的事。织布机要做好织布机的事，缝纫机要做好缝纫机的事。我未曾见过，服装厂的工人抱怨织布是取乱之道。
 
+# 附录
 
+```m4
+divert(-1)
+changequote(‘,’)
+# 作用域
+define(‘_scope_’, 0)
+define(‘_begin_scope_’, ‘define(‘_scope_’, incr(_scope_)){’)
+define(‘_end_scope_’, ‘define(‘_scope_’, decr(_scope_))}’)
+# 类型信息
+define(‘_type_’, 0)
+define(‘_type_incr_’, ‘define(‘_type_’, incr(_type_))’)
+define(‘_de_sep’, ‘ifelse(regexp(‘$1’,‘\*$’), -1,‘ ’)’)
+define(‘_var’,
+       ‘define(‘_$1_type_’_scope_,
+               ‘$2’)ifdef(‘_$2_t_’,
+                          ‘’,
+                          ‘define(‘_$2_t_’,
+                                  _type_incr_‘’_type_)’)$2‘’_de_sep(‘$2’)$1‘’ifelse(‘$3’, ‘’, ‘’, ‘ = $3’)’)
+define(‘_type_name’, ‘"defn(‘_$1_type_’_scope_)"’)
+define(‘_type’, ‘indir(‘_’defn(‘_$1_type_’_scope_)‘_t_’)’)
+define(‘_type_id’, ‘indir(‘_$1_t_’)’)
+# 泛型函数
+divert(0)dnl
+```
+
+```awk
+# scope.awk
+BEGIN {
+    state = "normal"    # normal | string | char | line_comment | block_comment
+}
+{
+    line = $0
+    out  = ""
+    n    = length(line)
+
+    for (i = 1; i <= n; i++) {
+        c  = substr(line, i, 1)
+        c2 = substr(line, i + 1, 1)
+
+        if (state == "normal") {
+            if (c == "/" && c2 == "/") {
+                out = out c c2; i++; state = "line_comment"
+            } else if (c == "/" && c2 == "*") {
+                out = out c c2; i++; state = "block_comment"
+            } else if (c == "\"") {
+                out = out c; state = "string"
+            } else if (c == "'") {
+                out = out c; state = "char"
+            } else if (c == "{") {
+                out = out "_begin_scope_"
+            } else if (c == "}") {
+                out = out "_end_scope_"
+            } else {
+                out = out c
+            }
+
+        } else if (state == "string" || state == "char") {
+            out = out c
+            if (c == "\\") {                 # 处理转义：\ 及紧随其后的字符原样输出
+                i++; out = out substr(line, i, 1)
+            } else if (state == "string" && c == "\"") {
+                state = "normal"
+            } else if (state == "char" && c == "'") {
+                state = "normal"
+            }
+
+        } else if (state == "line_comment") {
+            out = out c                     # 行注释整行原样输出
+
+        } else if (state == "block_comment") {
+            out = out c
+            if (c == "*" && c2 == "/") {     # 块注释结束
+                out = out c2; i++; state = "normal"
+            }
+        }
+    }
+    print out
+    if (state == "line_comment") state = "normal"   # 行注释到行尾自动结束
+}
+```

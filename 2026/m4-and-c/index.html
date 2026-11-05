@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>用 m4 武装 C</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">用 m4 武装 C
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2026 年 11 月 02 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#c11-泛型" id="toc-c11-泛型">C11 泛型</a></li>
+  <li><a href="#变量类型" id="toc-变量类型">变量类型</a></li>
+  <li><a href="#作用域" id="toc-作用域">作用域</a></li>
+  <li><a href="#类型-id" id="toc-类型-id">类型 id</a></li>
+  <li><a href="#表达式" id="toc-表达式">表达式</a></li>
+  <li><a href="#函数版本" id="toc-函数版本">函数版本</a></li>
+  <li><a href="#实参转发" id="toc-实参转发">实参转发</a></li>
+  <li><a href="#结构体模板" id="toc-结构体模板">结构体模板</a></li>
+  <li><a href="#函数模板" id="toc-函数模板">函数模板</a></li>
+  <li><a href="#收获" id="toc-收获">收获</a></li>
+  </ul>
+</nav>
+
+<p>在「<a href="../m4-and-xi/index.html">用 m4 武装 xi</a>」中，基于 m4
+为 xi 实现了代码文件载入功能。对于 C 语言而言，m4
+能做什么呢？我首先想到的是泛型编程。C 语言从 C11 标准开始，提供
+<code>_Generic</code>
+表达式，对泛型编程提供了聊胜于无的支持，与真正意义上的泛型编程相比，相差甚远。在读过《<a
+href="../m4-charm/index.html">m4 的咒语</a>》之后，你具备了驾驭 m4
+语言的能力，大概会想，能否基于 m4 在 C
+语言的外围建立泛型编程机制呢？</p>
+<h1 id="c11-泛型">C11 泛型</h1>
+<p>一个 C
+语言函数，它可能存在多个版本，甚至有可能是宏函数。在泛型编程中，我们希望有一种机制，能够基于函数所接受的变量类型，在函数的多个版本中自动选出适配者然后调用。例如，<code>printf</code>
+函数有以下版本</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define print_int</span><span class="op">(</span><span class="pp">x</span><span class="op">)</span><span class="pp"> printf</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">%d\n</span><span class="st">&quot;</span><span class="op">,</span><span class="pp"> </span><span class="op">(</span><span class="pp">x</span><span class="op">))</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#define print_string</span><span class="op">(</span><span class="pp">x</span><span class="op">)</span><span class="pp"> printf</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">%s\n</span><span class="st">&quot;</span><span class="op">,</span><span class="pp"> </span><span class="op">(</span><span class="pp">x</span><span class="op">))</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="pp">#define print_double</span><span class="op">(</span><span class="pp">x</span><span class="op">)</span><span class="pp"> printf</span><span class="op">(</span><span class="st">&quot;</span><span class="sc">%lf\n</span><span class="st">&quot;</span><span class="op">,</span><span class="pp"> </span><span class="op">(</span><span class="pp">x</span><span class="op">))</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_foo<span class="op">(</span><span class="kw">struct</span> foo x<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">....</span> <span class="op">....</span> <span class="op">...</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>假设有一个变量 <code>a</code>，其类型为 <code>double</code>，调用
+<code>print</code> 函数打印其值，</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> a <span class="op">=</span> <span class="fl">3.14</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>print<span class="op">(</span>a<span class="op">);</span></span></code></pre></div>
+<p>此时，我们会希望有一种机制能自动将 <code>print(a)</code> 转换为
+<code>print_double(a)</code>。若你熟悉 C11，应该知道，基于
+<code>_Generic</code> 宏能构造一个 <code>print</code> 宏，可根据
+<code>a</code> 的类型，将 <code>a</code> 转发给相应的函数，例如</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define print</span><span class="op">(</span><span class="pp">x</span><span class="op">)</span><span class="pp"> </span><span class="dt">_Generic</span><span class="op">((</span><span class="pp">x</span><span class="op">),</span><span class="pp">          </span><span class="op">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="pp">    </span><span class="dt">int</span><span class="op">:</span><span class="pp">          print_int</span><span class="op">,</span><span class="pp">            </span><span class="op">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="pp">    </span><span class="dt">char</span><span class="pp"> </span><span class="op">*:</span><span class="pp">       print_string</span><span class="op">,</span><span class="pp">         </span><span class="op">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="pp">    </span><span class="dt">const</span><span class="pp"> </span><span class="dt">char</span><span class="pp"> </span><span class="op">*:</span><span class="pp"> print_string</span><span class="op">,</span><span class="pp">         </span><span class="op">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="pp">    </span><span class="dt">double</span><span class="op">:</span><span class="pp">       print_double</span><span class="op">,</span><span class="pp">         </span><span class="op">\</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="pp">    </span><span class="kw">struct</span><span class="pp"> foo</span><span class="op">:</span><span class="pp">   print_foo             </span><span class="op">\</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="op">)(</span><span class="pp">x</span><span class="op">)</span></span></code></pre></div>
+<p>然而，<code>_Generic</code>
+选择的结果必须是表达式。函数名本质上是地址，属于表达式，故而
+<code>print_foo</code> 作为选择结果是可行的。<code>print_int</code>
+之类的宏名是 C
+预处理过程中的符号，并非表达式，而且是有参数宏的非法调用，亦即宏名后未有跟随参数，C
+预处理器会将其视为未声明的标识符，亦即 <code>print</code>
+宏的定义无法通过编译，更遑论 <code>print(a)</code>
+时去选择适当的类型分支了。若要解决这个问题，必须将
+<code>print_int</code>，<code>print_string</code> 和
+<code>print_double</code> 定义为函数。</p>
+<p><code>_Generic</code> 的另一个局限是，只能基于 1
+个参数选择函数版本。如果 <code>print</code>
+的各个版本是打印两个变量的值，例如</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_int_double<span class="op">(</span><span class="dt">int</span> x<span class="op">,</span> <span class="dt">double</span> y<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;(</span><span class="sc">%d</span><span class="st">, </span><span class="sc">%lf</span><span class="st">)</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">,</span> y<span class="op">);</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_double_int<span class="op">(</span><span class="dt">double</span> x<span class="op">,</span> <span class="dt">int</span> y<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;(</span><span class="sc">%lf</span><span class="st">, </span><span class="sc">%d</span><span class="st">)</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">,</span> y<span class="op">);</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>则 <code>print</code> 宏在用 <code>_Generic</code>
+选择函数版本时，需要作两次选择，亦即</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#define print</span><span class="op">(</span><span class="pp">x</span><span class="op">,</span><span class="pp"> y</span><span class="op">)</span><span class="pp"> </span><span class="dt">_Generic</span><span class="op">((</span><span class="pp">x</span><span class="op">),</span><span class="pp">        </span><span class="op">\</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="pp">    </span><span class="dt">int</span><span class="op">:</span><span class="pp"> </span><span class="dt">_Generic</span><span class="op">((</span><span class="pp">y</span><span class="op">),</span><span class="pp">                   </span><span class="op">\</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="pp">            </span><span class="dt">double</span><span class="op">:</span><span class="pp"> print_int_double</span><span class="op">)</span><span class="pp">    </span><span class="op">\</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="pp">    </span><span class="dt">double</span><span class="op">:</span><span class="pp"> </span><span class="dt">_Generic</span><span class="op">((</span><span class="pp">y</span><span class="op">),</span><span class="pp">                </span><span class="op">\</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="pp">            </span><span class="dt">int</span><span class="op">:</span><span class="pp">    print_double_int     </span><span class="op">\</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="op">)(</span><span class="pp">x</span><span class="op">,</span><span class="pp"> y</span><span class="op">)</span></span></code></pre></div>
+<p>然而这样写是错误的，<code>_Generic</code>
+要求你必须写出全量组合，亦即你需要提供面向两种类型所有组合的函数版本的选择分支，即使你不需要
+<code>print_int_int</code> 和
+<code>print_double_double</code>，也必须定义它们，亦即</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_int_int<span class="op">(</span><span class="dt">int</span> x<span class="op">,</span> <span class="dt">int</span> y<span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_double_double<span class="op">(</span><span class="dt">double</span> x<span class="op">,</span> <span class="dt">double</span> y<span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_int_double<span class="op">(</span><span class="dt">int</span> x<span class="op">,</span> <span class="dt">double</span> y<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;(</span><span class="sc">%d</span><span class="st">, </span><span class="sc">%lf</span><span class="st">)</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">,</span> y<span class="op">);</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_double_int<span class="op">(</span><span class="dt">double</span> x<span class="op">,</span> <span class="dt">int</span> y<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;(</span><span class="sc">%lf</span><span class="st">, </span><span class="sc">%d</span><span class="st">)</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> x<span class="op">,</span> y<span class="op">);</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="pp">#define print</span><span class="op">(</span><span class="pp">x</span><span class="op">,</span><span class="pp"> y</span><span class="op">)</span><span class="pp"> </span><span class="dt">_Generic</span><span class="op">((</span><span class="pp">x</span><span class="op">),</span><span class="pp">            </span><span class="op">\</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="pp">    </span><span class="dt">int</span><span class="op">:</span><span class="pp"> </span><span class="dt">_Generic</span><span class="op">((</span><span class="pp">y</span><span class="op">),</span><span class="pp">                       </span><span class="op">\</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="pp">            </span><span class="dt">int</span><span class="op">:</span><span class="pp"> print_int_int</span><span class="op">,</span><span class="pp">              </span><span class="op">\</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="pp">            </span><span class="dt">double</span><span class="op">:</span><span class="pp"> print_int_double</span><span class="op">),</span><span class="pp">       </span><span class="op">\</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="pp">    </span><span class="dt">double</span><span class="op">:</span><span class="pp"> </span><span class="dt">_Generic</span><span class="op">((</span><span class="pp">y</span><span class="op">),</span><span class="pp">                    </span><span class="op">\</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="pp">            </span><span class="dt">int</span><span class="op">:</span><span class="pp">    print_double_int</span><span class="op">,</span><span class="pp">        </span><span class="op">\</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="pp">            </span><span class="dt">double</span><span class="op">:</span><span class="pp"> print_double_double</span><span class="op">)</span><span class="pp">     </span><span class="op">\</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="op">)(</span><span class="pp">x</span><span class="op">,</span><span class="pp"> y</span><span class="op">)</span></span></code></pre></div>
+<p>如果 <code>print</code> 需要处理 3
+个甚至更多个参数呢……所以我说，<code>_Generic</code> 只是 C11
+对泛型编程提供的聊胜于无的支持。若用 m4 在 C
+语言的创造泛型机制，会更好吗？</p>
+<h1 id="变量类型">变量类型</h1>
+<p>由于 m4 与 C 毫无实质上的交集，这意味着 m4
+能够根据变量的类型选择相应的宏、函数甚至任意语句，然而也意味着 m4
+无法利用 C
+编译器的一切功能。故而要解决的第一个问题是，如何随时获得变量类型。</p>
+<p>编写程序，扫描 C 代码，获得所有变量的类型，对于 m4
+语言并不现实，它不适合编写复杂程序。定义一个 m4 宏，用它取代 C
+变量声明/定义语法，在调用这个宏的过程中，将变量类型保存下来，这个方案非常适合
+m4。</p>
+<p>按照《<a href="../m4-charm/index.html">m4 的咒语</a>》介绍的 m4
+宏编程基本思维，先从我们想要得到的结果出发，倒推宏的定义。假设
+<code>$1</code> 是类型，<code>$2</code> 是变量名，<code>$3</code>
+是变量的值，并且 <code>$3</code>
+可能不存在，也可能存在，我希望得到的结果是</p>
+<pre><code>$2 $1`&#39;ifelse(`$3&#39;, `&#39;, `&#39;, ` = $3&#39;)</code></pre>
+<blockquote>
+<p>想必你是知道的，m4 引号包含空文本时，它可以作为文本的间隔符，也能在
+<code>ifelse</code> 语句中作为空值。</p>
+</blockquote>
+<p>若在上述结果之后，基于 <code>$1</code> 定义一个宏，将类型亦即
+<code>$2</code> 保存下来，</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ch">$2</span> <span class="ch">$1</span>`&#39;ifelse<span class="ch">(</span>`<span class="ch">$3</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> ` <span class="ch">=</span> <span class="ch">$3</span>&#39;<span class="ch">)</span><span class="kw">define</span><span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>再为上述这个结果添加一层引号，便可定义出 <code>_var</code> 宏，</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_var&#39;<span class="ch">,</span> `<span class="ch">$2</span> <span class="ch">$1</span>`&#39;ifelse<span class="ch">(</span>`<span class="ch">$3</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> ` <span class="ch">=</span> <span class="ch">$3</span>&#39;<span class="ch">)</span><span class="kw">define</span><span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>试着用 <code>_var</code> 定义或声明几个变量，且以
+<code>_var_变量名_t_</code> 的方式获得以 m4
+宏的形式保存的变量类型信息，</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>_var<span class="op">(</span>a<span class="op">,</span> <span class="dt">int</span><span class="op">,</span> <span class="dv">42</span><span class="op">);</span>            <span class="co">/* [_var_a_t_] */</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>_var<span class="op">(</span>pi<span class="op">,</span> <span class="dt">double</span><span class="op">,</span> <span class="fl">3.14</span><span class="op">);</span>      <span class="co">/* [_var_pi_t_] */</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>_var<span class="op">(</span>text<span class="op">,</span> <span class="dt">char</span> <span class="op">*,</span> <span class="st">&quot;hello&quot;</span><span class="op">);</span> <span class="co">/* [_var_text_t_] */</span></span></code></pre></div>
+<p>展开结果应当是</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> <span class="dv">42</span><span class="op">;</span>            <span class="co">/* [int] */</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> pi <span class="op">=</span> <span class="fl">3.14</span><span class="op">;</span>      <span class="co">/* [double] */</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span> text <span class="op">=</span> <span class="st">&quot;hello&quot;</span><span class="op">;</span> <span class="co">/* [char *] */</span></span></code></pre></div>
+<p>由于我的 C 变量声明或定义习惯是，指针的 <code>*</code>
+符号紧贴变量名，所以，对 <code>$2</code> 和 <code>$1</code>
+的间隔略作修饰，</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_delsep&#39;<span class="ch">,</span> `ifelse<span class="ch">(</span><span class="kw">regexp</span><span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> `\<span class="ch">*</span>$&#39;<span class="ch">),</span> <span class="ch">-</span><span class="dv">1</span><span class="ch">,</span> ` &#39;<span class="ch">,</span> `&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_var&#39;<span class="ch">,</span> `<span class="ch">$2</span>`&#39;_delsep<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)$1</span>`&#39;ifelse<span class="ch">(</span>`<span class="ch">$3</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> ` <span class="ch">=</span> <span class="ch">$3</span>&#39;<span class="ch">)</span><span class="kw">define</span><span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<blockquote>
+<p><code>regexp</code> 语句用于判断类型名是否以 <code>*</code>
+结尾，结果为 -1，表示否，则用 1
+个空格间隔类型与变量名，否则以空文本间隔二者。</p>
+</blockquote>
+<p>如此修改，可让上述示例的展开结果为</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> <span class="dv">42</span><span class="op">;</span>            <span class="co">/* [int] */</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> pi <span class="op">=</span> <span class="fl">3.14</span><span class="op">;</span>      <span class="co">/* [double] */</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>text <span class="op">=</span> <span class="st">&quot;hello&quot;</span><span class="op">;</span> <span class="co">/* [char *] */</span></span></code></pre></div>
+<h1 id="作用域">作用域</h1>
+<p>虽然能够在 m4 层面获得 C 语言变量类型信息，但是在 C
+语言中，变量是有作用域的，例如</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> <span class="dv">42</span><span class="op">;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">double</span> a <span class="op">=</span> <span class="fl">3.14</span><span class="op">;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>若将上述代码写成 <code>_var</code> 形式，且在 <code>if</code>
+语句之后获取 <code>a</code> 的类型，</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>_var<span class="op">(</span>a<span class="op">,</span> <span class="dt">int</span><span class="op">,</span> <span class="dv">42</span><span class="op">);</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    _var<span class="op">(</span>a<span class="op">,</span> <span class="dt">double</span><span class="op">);</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">/* a 的类型 _var_a_t_ */</span></span></code></pre></div>
+<p>则展开结果为</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> <span class="dv">42</span><span class="op">;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">double</span> a<span class="op">;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">/* a 的类型 double */</span></span></code></pre></div>
+<p>如你所见，变量 <code>a</code> 记录的类型信息原本是
+<code>int</code>，但是在 <code>if</code> 语句之后，却变为
+<code>double</code>，这是因为 <code>_var</code> 并未考虑 C
+语言变量在不同的作用域中会出现同名情况，导致在记录变量类型信息时，当前变量的类型信息总是会覆盖之前所为与之同名的变量所记录的类型信息。要解决该问题，必须跟踪
+C 语言作用域，亦即跟踪花括号的嵌套层次。该任务对于 m4
+而言是复杂的，可是对于 <code>awk</code> 之类的语言则简单许多，而 m4
+语言所擅长的是记录信息，并对所记录的信息作一些处理。</p>
+<p>可以定义两个 m4 宏，<code>_begin_scope_</code>
+记录作用域开始，<code>_end_scope_</code> 记录作用域结束，用计数器
+<code>_scope_</code> 记录嵌套层次，</p>
+<pre><code>define(`_scope_&#39;, 0)
+define(`_begin_scope_&#39;, `define(`_scope_&#39;, incr(_scope_)){&#39;)
+define(`_end_scope_&#39;, `define(`_scope_&#39;, decr(_scope_))}&#39;)</code></pre>
+<p><code>_begin_scope</code> 会在每个作用域开始时，让
+<code>_scope_</code> 增 1，然后展开为 <code>{</code>，而
+<code>_end_scope_</code> 则相反，在作用域结束时，让 <code>_scope_</code>
+减 1，然后展开为 <code>}</code>，例如</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* `_scope_&#39; 的值为 _scope_ */</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> _begin_scope_</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* `_scope_&#39; 的值为 _scope_ */</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="dv">0</span><span class="op">)</span> _begin_scope_</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* `_scope_&#39; 的值为 _scope_ */</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    _end_scope_</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* `_scope_&#39; 的值为 _scope_ */</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>_end_scope_</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co">/* `_scope_&#39; 的值为 _scope_ */</span></span></code></pre></div>
+<p>展开结果为</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* _scope_ 的值为 0 */</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* _scope_ 的值为 1 */</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* _scope_ 的值为 2 */</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* _scope_ 的值为 1 */</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">/* _scope_ 的值为 0 */</span></span></code></pre></div>
+<p>显然，如果将 C 源码文件里的所有表征作用域的花括号 <code>{</code> 和
+<code>}</code> 分别换成 <code>_beging_scope_</code> 和
+<code>_end_scope_</code>，在 m4 层面便可基于 <code>_scope_</code>
+的值跟踪作用域了，至少能跟踪到作用域的当前深度。假设 C 源码文件为
+foo.c，若不想写脚本替换作用域符号，可以用 <code>sed</code> 命令，</p>
+<pre class="console"><code>$ sed &#39;s/{/_begin_scope_/g; s/}/_end_scope_/g&#39; foo.c</code></pre>
+<p>只是如此替换，很容易误伤位于代码注释或者字符串中的花括号，稳妥起见，可以写一个
+awk
+脚本，实现更为精确的花括号替换。在这个时代，这种脚本属于体力活，不必自己写，可以交给
+AI……以下脚本 trace-scopes.awk 便是 DeepSeek 所写，</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trace-scopes.awk</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 用法：awk -f trace-scopes.awk foo.c</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># normal | string | char | line_comment | block_comment</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    state <span class="op">=</span> <span class="st">&quot;normal&quot;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> <span class="dt">$0</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    out  <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    n    <span class="op">=</span> <span class="fu">length</span><span class="op">(</span>line<span class="op">)</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> n<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        c  <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>        c2 <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;normal&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;/&quot;</span> <span class="op">&amp;&amp;</span> c2 <span class="op">==</span> <span class="st">&quot;/&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out c c2<span class="op">;</span> i<span class="op">++;</span> state <span class="op">=</span> <span class="st">&quot;line_comment&quot;</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;/&quot;</span> <span class="op">&amp;&amp;</span> c2 <span class="op">==</span> <span class="st">&quot;*&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out c c2<span class="op">;</span> i<span class="op">++;</span> state <span class="op">=</span> <span class="st">&quot;block_comment&quot;</span></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;</span><span class="sc">\</span><span class="er">&quot;</span><span class="st">&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out c<span class="op">;</span> state <span class="op">=</span> <span class="st">&quot;string&quot;</span></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;&#39;&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out c<span class="op">;</span> state <span class="op">=</span> <span class="st">&quot;char&quot;</span></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out <span class="st">&quot;_begin_scope_&quot;</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out <span class="st">&quot;_end_scope_&quot;</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out c</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;string&quot;</span> <span class="op">||</span> state <span class="op">==</span> <span class="st">&quot;char&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>            out <span class="op">=</span> out c</span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;</span><span class="sc">\\</span><span class="st">&quot;</span><span class="op">)</span> <span class="op">{</span> <span class="co"># 处理转义：\ 及紧随其后的字符原样输出</span></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>                i<span class="op">++;</span> out <span class="op">=</span> out <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;string&quot;</span> <span class="op">&amp;&amp;</span> c <span class="op">==</span> <span class="st">&quot;</span><span class="sc">\</span><span class="er">&quot;</span><span class="st">&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> <span class="st">&quot;normal&quot;</span></span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;char&quot;</span> <span class="op">&amp;&amp;</span> c <span class="op">==</span> <span class="st">&quot;&#39;&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> <span class="st">&quot;normal&quot;</span></span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;line_comment&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>            out <span class="op">=</span> out c <span class="co"># 行注释整行原样输出</span></span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;block_comment&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>            out <span class="op">=</span> out c</span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;*&quot;</span> <span class="op">&amp;&amp;</span> c2 <span class="op">==</span> <span class="st">&quot;/&quot;</span><span class="op">)</span> <span class="op">{</span> <span class="co"># 块注释结束</span></span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out c2<span class="op">;</span> i<span class="op">++;</span> state <span class="op">=</span> <span class="st">&quot;normal&quot;</span></span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> out</span>
+<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;line_comment&quot;</span><span class="op">)</span> state <span class="op">=</span> <span class="st">&quot;normal&quot;</span> <span class="co"># 行注释到行尾自动结束</span></span>
+<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>假设 foo.c 文件的内容为</p>
+<pre><code>/* `_scope_&#39; 的值为 _scope_ */
+if (1) {
+    /* `_scope_&#39; 的值为 _scope_ */
+    if (0) {
+        /* `_scope_&#39; 的值为 _scope_ */
+    }
+    /* `_scope_&#39; 的值为 _scope_ */
+}
+/* `_scope_&#39; 的值为 _scope_ */</code></pre>
+<p>执行 <code>awk</code> 命令，</p>
+<pre class="console"><code>$ awk -f trace-scopes.awk foo.c</code></pre>
+<p>便可得到</p>
+<pre><code>/* `_scope_&#39; 的值为 _scope_ */
+if (1) _begin_scope_
+    /* `_scope_&#39; 的值为 _scope_ */
+    if (0) _begin_scope_
+        /* `_scope_&#39; 的值为 _scope_ */
+    _end_scope_
+    /* `_scope_&#39; 的值为 _scope_ */
+_end_scope_
+/* `_scope_&#39; 的值为 _scope_ */</code></pre>
+<p>假设上述 m4 宏的定义是在 c-template.m4 文件中，将 awk 和 m4
+命令组合起来，</p>
+<pre class="console"><code>$ awk -f trace-scopes.awk foo.c | m4 c-template.m4 -</code></pre>
+<blockquote>
+<p>m4 支持多个文件输入，其命令中的 <code>-</code>
+符号表示标准输入（stdin），可用于通过管道将其他命令的输出作为 m4
+的输入。</p>
+</blockquote>
+<p>便可得到</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* _scope_ 的值为 0 */</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* _scope_ 的值为 1 */</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* _scope_ 的值为 2 */</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* _scope_ 的值为 1 */</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co">/* _scope_ 的值为 0 */</span></span></code></pre></div>
+<p>在 <code>_var</code> 的定义中，将 <code>_scope_</code> 的值添加到
+<code>_var_变量名_t_</code>，便可区分出不同作用域中的同名变量，同时也能正确获取其类型信息，</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_var&#39;<span class="ch">,</span> `<span class="ch">$2</span>`&#39;_delsep<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)$1</span>`&#39;ifelse<span class="ch">(</span>`<span class="ch">$3</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> ` <span class="ch">=</span> <span class="ch">$3</span>&#39;<span class="ch">)</span><span class="kw">define</span><span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>m4
+宏定义写成单行，很容易过长，但不能随意将其断开，否则在宏的展开结果中引入多余的换行符和空格。在宏调用语句的参数间隔符后断行，通常是安全的，因为
+m4 会自动忽略每个参数前后的空白字符。<code>_var</code> 可写成</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_var&#39;<span class="ch">,</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>       `<span class="ch">$2</span>`&#39;_delsep<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)$1</span>`&#39;ifelse<span class="ch">(</span>`<span class="ch">$3</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                                    `&#39;<span class="ch">,</span> ` <span class="ch">=</span> <span class="ch">$3</span>&#39;<span class="ch">)</span><span class="kw">define</span><span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>倘若在任意位置断行，需要用
+<code>dnl</code>，并注意所开的新行行首不要出现空白字符，例如</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_var&#39;<span class="ch">,</span> `<span class="ch">$2</span>`&#39;_delsep<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)$1</span>`&#39;ifelse<span class="ch">(</span>`<span class="ch">$3</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> ` <span class="ch">=</span> <span class="ch">$3</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>这种修改，很容易误以为第 2 行的 <code>define</code>
+语句是独立的宏定义，实际上它是 <code>_var</code>
+展开语句中定义的。为了防止这种误认，可以用引号包含空文本充当缩进，</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_var&#39;<span class="ch">,</span> `<span class="ch">$2</span>`&#39;_delsep<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)$1</span>`&#39;ifelse<span class="ch">(</span>`<span class="ch">$3</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> ` <span class="ch">=</span> <span class="ch">$3</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>`&#39;`&#39;define<span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>基于 <code>_begin_scope_</code>，<code>_end_scope_</code> 以及
+<code>_var</code> 宏，可以记录任意作用域中的变量类型，例如</p>
+<pre><code>_var(a, int, 42);
+if (1) {
+    _var(a, double);
+    if (0) {
+        _var(a, char *);
+        /* a 的类型 indir(`_var_a_t_&#39;_scope_) */
+    }
+    /* a 的类型 indir(`_var_a_t_&#39;_scope_) */
+}
+/* a 的类型 indir(`_var_a_t_&#39;_scope_) */</code></pre>
+<blockquote>
+<p>注意，直接用 <code>_var_a_t__scope</code> 无法获得 <code>a</code>
+的类型信息，因为 <code>_scope_</code>
+和前面的文本结合，若是用引号包含的空文本作为间隔，m4
+也不认为那是一个宏的名字，故而只能先拼出宏名，然后 <code>indir</code>
+以间接方式调用。</p>
+</blockquote>
+<p>展开结果为</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> <span class="dv">42</span><span class="op">;</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">double</span> a<span class="op">;</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>a<span class="op">;</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* a 的类型 char * */</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* a 的类型 double */</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co">/* a 的类型 int */</span></span></code></pre></div>
+<p>由于下文需要经常获取所记录的变量类型，需专门为此定义一个宏，将变量的名字传给它，它便给出其类型，</p>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_type_name&#39;<span class="ch">,</span> `indir<span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>于是，上述示例可简化为</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>_var<span class="op">(</span>a<span class="op">,</span> <span class="dt">int</span><span class="op">,</span> <span class="dv">42</span><span class="op">);</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    _var<span class="op">(</span>a<span class="op">,</span> <span class="dt">double</span><span class="op">);</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>        _var<span class="op">(</span>a<span class="op">,</span> <span class="dt">char</span> <span class="op">*);</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* a 的类型 _type_name(a) */</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* a 的类型 _type_name(a) */</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co">/* a 的类型 _type_name(a) */</span></span></code></pre></div>
+<h1 id="类型-id">类型 id</h1>
+<p>当我们能够成功拿到每个变量的类型之后，需要考虑的问题便是，如何基于这些类型选择函数、宏、表达式或者代码片段的版本？例如，若变量
+<code>a</code> 的类型是 <code>int</code>，则可选 <code>print_int</code>
+这样的函数名，可是若类型为 <code>char *</code> 或者
+<code>struct {...}</code>
+甚至函数指针之类呢？此时，函数名便不可能直接以类型名作为后缀了。</p>
+<p>在标识命名规则上，C
+语言只允许使用字母、数字和下划线，故而可用的后缀名也只能是这些符号。若是以数字代表类型名，将其作为任何名字的后缀都是合规的。这意味着需要在
+m4 层面，将类型名映射为数字。例如，若 <code>int</code> 类型用数字
+<code>1</code> 表示，则 <code>print_int</code> 便可表示为
+<code>print_1</code>，若 <code>char *</code> 类型用 <code>3</code>
+表示，则打印字符串的函数可表示为 <code>print_3</code>。</p>
+<p>在上文最后一个版本的 <code>_var</code> 定义中，是通过</p>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>完成变量名至类型名的映射。用类似的办法，为类型也定义一个计数器，</p>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_type_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span></span></code></pre></div>
+<p>然后在 <code>_var</code> 的定义中，将 <code>_type_</code> 增
+1，并将其作为 <code>_$2_type</code> 的定义，</p>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_<span class="ch">$2</span>_type_&#39;<span class="ch">,</span> <span class="kw">define</span><span class="ch">(</span>`_type_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_type_<span class="ch">))</span>_type_<span class="ch">)</span></span></code></pre></div>
+<blockquote>
+<p>注意，在上述宏定义里，需要注意，宏体不可以加引号，需要其内容比
+<code>define</code>
+先展开方能达成建立类型到数字映射的目的。不要忘记，无论是
+<code>define</code> 语句还是普通宏调用语句，参数总是比宏本身先展开。</p>
+</blockquote>
+<p>在 <code>_var</code> 的定义中，<code>$2</code> 表示类型名，假设
+<code>$2</code> 是 <code>int</code>，则上述代码定义的是
+<code>_int_type_</code>，其值为 <code>_type_</code> 的当前值。不过，若是
+<code>_var</code> 多次遇到 <code>int</code> 类型的变量，意味着
+<code>_int_type_</code>
+也会被定义多次，且其值会多次递增。倘若希望每种类型到 <code>_type_</code>
+的值的映射只被定义一次，可以用 <code>ifdef</code> 语句检测
+<code>_$2_type</code> 宏是否存在，若存在则不再定义，否则给出其定义，</p>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ifdef</span><span class="ch">(</span>`_<span class="ch">$2</span>_type_&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_<span class="ch">$2</span>_type_&#39;<span class="ch">,</span> _type_`&#39;define<span class="ch">(</span>`_type_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_type_<span class="ch">)))</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>将这行代码插入 <code>_var</code> 宏的定义里，</p>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_var&#39;<span class="ch">,</span> `<span class="ch">$2</span>`&#39;_delsep<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)$1</span>`&#39;ifelse<span class="ch">(</span>`<span class="ch">$3</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> ` <span class="ch">=</span> <span class="ch">$3</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>`&#39;`&#39;define<span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span><span class="kw">ifdef</span><span class="ch">(</span>`_<span class="ch">$2</span>_type_&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                                           `define<span class="ch">(</span>`_<span class="ch">$2</span>_type_&#39;<span class="ch">,</span> </span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>                                                   _type_`&#39;define<span class="ch">(</span>`_type_&#39;<span class="ch">,</span> </span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>                                                                 <span class="kw">incr</span><span class="ch">(</span>_type_<span class="ch">)))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>便可在每次使用 <code>_var</code>
+定义或声明变量时，不仅能记录变量的类型信息，而且也能将类型信息映射为数字，该数字称为<strong>类型
+id</strong>。</p>
+<p>为了方便基于类型名查询其对应的 id，定义一个辅助宏，</p>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_type_id&#39;<span class="ch">,</span> `indir<span class="ch">(</span>`_<span class="ch">$1</span>_type_&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>若将上述内容确定的宏汇集至 c-template.m4 文件，则有</p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> c<span class="ch">-</span>template.m4</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 作用域</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_scope_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_begin_scope_&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_scope_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_scope_<span class="ch">))</span>{&#39;<span class="ch">)</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_end_scope_&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_scope_&#39;<span class="ch">,</span> <span class="kw">decr</span><span class="ch">(</span>_scope_<span class="ch">))</span>}&#39;<span class="ch">)</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 变量类型</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_type_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_delsep&#39;<span class="ch">,</span> `ifelse<span class="ch">(</span><span class="kw">regexp</span><span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> `\<span class="ch">*</span>$&#39;<span class="ch">),</span> <span class="ch">-</span><span class="dv">1</span><span class="ch">,</span> ` &#39;<span class="ch">,</span> `&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_var&#39;<span class="ch">,</span> `<span class="ch">$2</span>`&#39;_delsep<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)$1</span>`&#39;ifelse<span class="ch">(</span>`<span class="ch">$3</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> ` <span class="ch">=</span> <span class="ch">$3</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>`&#39;`&#39;define<span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span><span class="kw">ifdef</span><span class="ch">(</span>`_<span class="ch">$2</span>_type_&#39;<span class="ch">,</span> </span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>                                           `&#39;<span class="ch">,</span> </span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>                                           `define<span class="ch">(</span>`_<span class="ch">$2</span>_type_&#39;<span class="ch">,</span> </span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>                                                   _type_`&#39;define<span class="ch">(</span>`_type_&#39;<span class="ch">,</span> </span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>                                                                 <span class="kw">incr</span><span class="ch">(</span>_type_<span class="ch">)))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_type_name&#39;<span class="ch">,</span> `indir<span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_type_id&#39;<span class="ch">,</span> `indir<span class="ch">(</span>_<span class="ch">$1</span>_type_<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>将测试文件 foo.c 修改为</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>_var<span class="op">(</span>a<span class="op">,</span> <span class="dt">int</span><span class="op">,</span> <span class="dv">42</span><span class="op">);</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    _var<span class="op">(</span>a<span class="op">,</span> <span class="dt">int</span><span class="op">);</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>        _var<span class="op">(</span>a<span class="op">,</span> <span class="dt">char</span> <span class="op">*);</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* a 的类型 _type_name(a), 类型 id 为 _type_id(_type_name(a)) */</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* a 的类型 _type_name(a), 类型 id 为 _type_id(_type_name(a)) */</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a><span class="co">/* a 的类型 _type_name(a), 类型 id 为 _type_id(_type_name(a)) */</span></span></code></pre></div>
+<p>执行</p>
+<pre class="console"><code>$ awk -f trace-scopes.awk foo.c | m4 c-template.m4 -</code></pre>
+<p>所得结果为</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> <span class="dv">42</span><span class="op">;</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> a<span class="op">;</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span>a<span class="op">;</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* a 的类型 char *, 类型 id 为 2 */</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* a 的类型 int, 类型 id 为 1 */</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="co">/* a 的类型 int, 类型 id 为 1 */</span></span></code></pre></div>
+<h1 id="表达式">表达式</h1>
+<p>虽然我也很想快进到思考如何构造模板形式的函数和数据类型，可是我们必须考虑一种特殊的变量，即表达式，例如
+<code>print(a + b)</code>，此时 <code>a + b</code>
+的类型是什么呢？或者更简单的情况，<code>print(42)</code>，此时
+<code>42</code> 的类型是什么呢？前文定义的 <code>_var</code>
+宏没法处理这些非常规情况，不过这些也不是 <code>_var</code>
+应该处理的情况。表达式应该需要有一个 <code>_expr</code>
+宏来记录其类型。</p>
+<p>假设 <code>expr</code> 的参数 <code>$1</code>
+是表达式，<code>$2</code> 是其类型，我希望得到展开结果是</p>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="ch">$1</span>`&#39;define<span class="ch">(</span>`_expr_<span class="ch">$1</span>_t_&#39;_scope<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>`&#39;`&#39;ifdef<span class="ch">(</span>`_<span class="ch">$2</span>_type_&#39;<span class="ch">,</span> </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>          `&#39;<span class="ch">,</span> </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>          `define<span class="ch">(</span>`_<span class="ch">$2</span>_type_&#39;<span class="ch">,</span> </span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>                  <span class="kw">define</span><span class="ch">(</span>`_type_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_type_<span class="ch">))</span>_type_`&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>亦即，将 <code>$1</code> 作为 <code>expr</code>
+的展开结果，随后记录表达式类型，并构造该类型与类型 id
+的映射。将以上代码套上一层引号，便可构成 <code>expr</code> 的定义，</p>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`expr&#39;<span class="ch">,</span> `<span class="ch">$1</span>`&#39;dnl</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>`&#39;`&#39;define<span class="ch">(</span>`_expr_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>`&#39;`&#39;ifdef<span class="ch">(</span>`_<span class="ch">$2</span>_type_&#39;<span class="ch">,</span> </span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>          `&#39;<span class="ch">,</span> </span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>          `define<span class="ch">(</span>`_<span class="ch">$2</span>_type_&#39;<span class="ch">,</span> </span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>                  <span class="kw">define</span><span class="ch">(</span>`_type_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_type_<span class="ch">))</span>_type_`&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>为了获得指定表达式类型，重新定义辅助宏 <code>_type_name</code>，</p>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_type_name&#39;<span class="ch">,</span> `ifdef<span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span> </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>                            `indir<span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">)</span>&#39;<span class="ch">,</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                            `ifdef<span class="ch">(</span>`_expr_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>                                  `indir<span class="ch">(</span>`_expr_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">)</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p><code>_type_id</code> 宏暂时无需重新定义，它只与类型有关。</p>
+<p>构造几个表达式，测试 <code>expr</code> 是否可用，</p>
+<pre><code>print(expr(a + b, int));       /* _type_name(a + b) */
+if (1) {
+    int a = expr(42.0, float); /* _type_name(42.0) */
+}
+print(a + b);                  /* _type_name(a + b) */</code></pre>
+<p>上述代码展开结果为</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>print<span class="op">(</span>a <span class="op">+</span> b<span class="op">);</span>       <span class="co">/* int */</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">int</span> a <span class="op">=</span> <span class="fl">42.0</span><span class="op">;</span> <span class="co">/* float */</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>print<span class="op">(</span>a <span class="op">+</span> b<span class="op">);</span>                  <span class="co">/* int */</span></span></code></pre></div>
+<blockquote>
+<p>注意，由于 C 语言表达式中可能会出现逗号和单引号等符号，可能会污染 m4
+代码。对于逗号之类的符号，只需要用 m4 的引号便可逃逸，但是遇到单引号，m4
+便无能为力，除非使用 <code>changequote</code> 对 m4
+自身的引号修改为其他字符，此事暂且待定。</p>
+</blockquote>
+<p>也许你已经发现了，<code>_var</code> 和 <code>_expr</code>
+中有一部分代码是重复的，即</p>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ifdef</span><span class="ch">(</span>`_<span class="ch">$2</span>_type_&#39;<span class="ch">,</span> </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>      `&#39;<span class="ch">,</span> </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>      `define<span class="ch">(</span>`_<span class="ch">$2</span>_type_&#39;<span class="ch">,</span> </span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>              <span class="kw">define</span><span class="ch">(</span>`_type_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_type_<span class="ch">))</span>_type_`&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>可将这部分代码单独定义为一个宏，</p>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_def_type&#39;<span class="ch">,</span> </span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>       `ifdef<span class="ch">(</span>`_<span class="ch">$1</span>_type_&#39;<span class="ch">,</span> </span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>              `&#39;<span class="ch">,</span> </span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>              `define<span class="ch">(</span>`_<span class="ch">$1</span>_type_&#39;<span class="ch">,</span> </span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>                      <span class="kw">define</span><span class="ch">(</span>`_type_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_type_<span class="ch">))</span>_type_`&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p><code>def_type</code> 的用途是基于类型名，定义
+<code>_类型名_type</code> 宏，若该宏已经存在，则什么都不做。</p>
+<p>基于 <code>_def_type</code>，<code>_var</code> 和 <code>_expr</code>
+的定义可简化为</p>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_var&#39;<span class="ch">,</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>       `<span class="ch">$2</span>`&#39;_delsep<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)$1</span>`&#39;ifelse<span class="ch">(</span>`<span class="ch">$3</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>                                    `&#39;<span class="ch">,</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>                                    ` <span class="ch">=</span> <span class="ch">$3</span>&#39;<span class="ch">)</span><span class="kw">define</span><span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span>_def_type<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_expr&#39;<span class="ch">,</span> `<span class="ch">$1</span>`&#39;define<span class="ch">(</span>`_expr_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span>_def_type<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<h1 id="函数版本">函数版本</h1>
+<p>既然 <code>_var</code> 能记录变量类型，<code>_expr</code>
+能记录表达式类型，那么函数的类型信息是否也能用同样的方式记录下来呢？假设用于记录函数类型的宏为
+<code>_func</code>，其 <code>$1</code> 参数是函数名，<code>$2</code>
+是函数的参数表，<code>$3</code> 是函数的返回类型。<code>_func</code>
+的展开结果是 C 语言函数的声明，亦即其展开结果的第一部分应该是</p>
+<div class="sourceCode" id="cb53"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="ch">$3</span> <span class="ch">$1</span>`&#39;<span class="ch">$2</span></span></code></pre></div>
+<p>例如</p>
+<pre><code>_func(print, (int x, double y), void);</code></pre>
+<p>展开结果应当是</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print<span class="op">(</span><span class="dt">int</span> x<span class="op">,</span> <span class="dt">double</span> y<span class="op">);</span></span></code></pre></div>
+<p>然而，这个结果却并非我想要的。原因很简单，既然是用 m4 在 C
+语言的外围提供泛型编程扩展，应当支持 <code>print</code>
+函数有多个版本，亦即 <code>_func</code>
+展开结果中的函数名应该含有特定信息，从而与其他版本区分开来。同名函数，其不同之处在于参数类型。在前文中，已设法将变量和表达式类型都映射为数字，若在函数的参数列表中提取参数类型，将它们转换为数字并嵌入函数名，问题便得以解决。</p>
+<p>可是，从 <code>(int x, double y)</code> 这样的参数表中提取
+<code>int</code> 和 <code>double</code>，对于 m4
+而言是颇为困难的任务，即使对于 awk
+之类的脚本语言亦非易事。函数的参数表虽然并没有太多内容，然而涉及的情况有时会颇为复杂。若是直接在代码中用特殊符号，将需要记录的类型标记出来，然后再写
+awk 脚本处理，应当会容易许多。例如，</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>_func<span class="op">(</span>print<span class="op">,</span> <span class="op">(&lt;</span><span class="dt">int</span><span class="op">&gt;</span> a<span class="op">,</span> <span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;</span> b<span class="op">),</span> <span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<p>假设 <code>int</code> 类型的 id 为 1，<code>double</code> 类型的 id
+为 3，则可以用 <code>_func_print_t_1_3</code> 作为该 <code>print</code>
+函数的版本名。若函数的参数并非都用于构造函数版本名，无需标记其类型，例如</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>_func<span class="op">(</span>print<span class="op">,</span> <span class="op">(&lt;</span><span class="dt">int</span><span class="op">&gt;</span> a<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>sep<span class="op">,</span> <span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;</span> b<span class="op">),</span> <span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<p>所生成的 <code>print</code> 版本名依然是
+<code>_func_print_t_1_3</code>。提取类型名并将其转换为类型 id
+的任务，我交给 DeepSeek，它写出来 snap-types.awk 脚本，</p>
+<div class="sourceCode" id="cb58"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/awk -f</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> buf <span class="op">=</span> buf <span class="dt">$0</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span> <span class="op">}</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="cf">END</span> <span class="op">{</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> buf</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span>s<span class="op">,</span> <span class="ot">/</span><span class="ss">&lt;</span><span class="ot">[^</span><span class="ss">&lt;&gt;</span><span class="ot">]*</span><span class="ss">&gt;</span><span class="ot">/</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>        ty <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>s<span class="op">,</span> <span class="bu">RSTART</span> <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> <span class="bu">RLENGTH</span> <span class="op">-</span> <span class="dv">2</span><span class="op">)</span></span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 只去首尾空白，内部原样保留</span></span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">r</span><span class="ot">\</span><span class="sc">n</span><span class="ot">]+/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> ty<span class="op">)</span></span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sub</span><span class="op">(</span><span class="ot">/[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">\</span><span class="sc">r</span><span class="ot">\</span><span class="sc">n</span><span class="ot">]+$/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> ty<span class="op">)</span></span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>        n<span class="op">++</span></span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>        item[n] <span class="op">=</span> <span class="st">&quot;_def_type(`&quot;</span> ty <span class="st">&quot;&#39;)indir(`_&quot;</span> ty <span class="st">&quot;_type_&#39;)&quot;</span></span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>        s <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>s<span class="op">,</span> <span class="bu">RSTART</span> <span class="op">+</span> <span class="bu">RLENGTH</span><span class="op">)</span></span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>    SEP <span class="op">=</span> <span class="st">&quot;`_&#39;&quot;</span></span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> n<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>i <span class="op">&gt;</span> <span class="dv">1</span><span class="op">)</span> out <span class="op">=</span> out SEP</span>
+<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> out item[i]</span>
+<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">printf</span> <span class="st">&quot;%s&quot;</span><span class="op">,</span> out</span>
+<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>snap-types.awk 脚本用法为</p>
+<pre class="console"><code>$ echo &#39;(&lt;double&gt; a, int b, &lt;char *&gt; c)&#39; | awk -f snap-types.awk 
+_def_type(`double&#39;)indir(`_double_type_&#39;)`_&#39;_def_type(`char *&#39;)indir(`_char *_type_&#39;)</code></pre>
+<p>以防 <code>_func</code>
+的定义过于复杂，对于含有版本信息的函数名，可为其构造过程定义一个专用宏，</p>
+<div class="sourceCode" id="cb60"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_func_name&#39;<span class="ch">,</span> `<span class="ch">$1</span>`_&#39;esyscmd<span class="ch">(</span>`echo &#39;<span class="ch">$2</span>&#39; <span class="ch">|</span> awk <span class="ch">-</span>f snap<span class="ch">-</span>types.awk&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>我希望</p>
+<pre><code>_func_name(print, `(&lt;double&gt; a, char *b, &lt;int&gt; c)&#39;)</code></pre>
+<p>的展开结果是
+<code>print_3_1</code>，然而这却是不可能的。<code>_func_name</code>
+宏在定义阶段便会被 m4 判错，原因是，为了让 <code>esyscmd</code> 中的
+echo 命令足够安全，我用单引号将其参数围住，可是 shell 层面的单引号与 m4
+的右引号会发生冲突，导致 <code>_func_name</code> 的定义无法被 m4
+接受。要解决这个问题，可以利用 m4 的引号临时修改机制，将 shell
+层面所用的单引号定义为 m4 宏，然后在 <code>esyscmd</code> 中使用它，</p>
+<div class="sourceCode" id="cb62"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="kw">changequote</span><span class="ch">(</span>[[<span class="ch">,</span>]]<span class="ch">)</span> <span class="co"># 将左右引号更改为 [[ 和 ]]</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>[[_RSQ_]]<span class="ch">,</span> [[&#39;]]<span class="ch">)</span> <span class="co"># 定义 _RSQ_，其展开结果是右单引号</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="kw">changequote</span> <span class="co"># 恢复 m4 默认引号</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_func_name&#39;<span class="ch">,</span> `<span class="ch">$1</span>`_&#39;esyscmd<span class="ch">(</span>`echo &#39;_RSQ_`<span class="ch">$2</span>&#39;_RSQ_` <span class="ch">|</span> awk <span class="ch">-</span>f snap<span class="ch">-</span>types.awk&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>注意，<code>esyscmd</code> 的参数实际上是 5 个部分拼接而成，即</p>
+<pre><code>`echo &#39;
+_RSQ_
+`$2&#39;
+_RSQ_
+` | awk -f snap-types.awk&#39;</code></pre>
+<p>之所以如此拼接，是为了让 <code>_RSQ_</code> 有机会被 m4
+展开。讨论这样的细节，总是令人难以愉快，不过琐事要我们的命，也养着我们。</p>
+<p>函数的参数表中所用的类型标记 <code>&lt;</code> 和
+<code>&gt;</code>，在 <code>_func</code>
+的展开结果里需要清除掉，否则会生成不合法的 C 代码。该过程也可以让
+DeepSeek 为我们写一个 awk 脚本完成，</p>
+<div class="sourceCode" id="cb64"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unmarks.awk</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 整段收集，以支持跨行标记</span></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="op">{</span> buf <span class="op">=</span> buf <span class="dt">$0</span> <span class="op">}</span></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="cf">END</span> <span class="op">{</span></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> buf</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span>s<span class="op">,</span> <span class="ot">/</span><span class="ss">&lt;</span><span class="ot">[^</span><span class="ss">&lt;&gt;</span><span class="ot">]*</span><span class="ss">&gt;</span><span class="ot">/</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 保留 &lt; 之前的内容</span></span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> out <span class="fu">substr</span><span class="op">(</span>s<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="bu">RSTART</span> <span class="op">-</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 只取尖括号内部，丢掉 &lt; 和 &gt;</span></span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> out <span class="fu">substr</span><span class="op">(</span>s<span class="op">,</span> <span class="bu">RSTART</span> <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> <span class="bu">RLENGTH</span> <span class="op">-</span> <span class="dv">2</span><span class="op">)</span></span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 跳过整个 &lt;...&gt; 继续</span></span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a>        s <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>s<span class="op">,</span> <span class="bu">RSTART</span> <span class="op">+</span> <span class="bu">RLENGTH</span><span class="op">)</span></span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb64-15"><a href="#cb64-15" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> out s</span>
+<span id="cb64-16"><a href="#cb64-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 用 printf 避免 awk 额外补换行</span></span>
+<span id="cb64-17"><a href="#cb64-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">printf</span> <span class="st">&quot;%s&quot;</span><span class="op">,</span> out</span>
+<span id="cb64-18"><a href="#cb64-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>类似于 <code>_func_name</code>，为去除类型标记也专门定义一个宏，</p>
+<div class="sourceCode" id="cb65"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_unmark&#39;<span class="ch">,</span>`esyscmd<span class="ch">(</span>`echo &#39;_RSQ_`<span class="ch">$1</span>&#39;_RSQ_` <span class="ch">|</span> awk <span class="ch">-</span>f unmarks.awk&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>例如</p>
+<pre><code>_unmark(`(&lt;double&gt; a, int b, &lt;char *&gt;c)&#39;)</code></pre>
+<p>展开结果为</p>
+<pre><code>(double a, int b, char *c)</code></pre>
+<p>至此，便可将 <code>_func</code> 定义出来，</p>
+<div class="sourceCode" id="cb68"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_func&#39;<span class="ch">,</span> `<span class="ch">$3</span> _func_name<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span>_unmark<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p><code>_func</code> 的用法如下，</p>
+<div class="sourceCode" id="cb69"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>_func<span class="ch">(</span>print<span class="ch">,</span> `<span class="ch">(&lt;</span>double<span class="ch">&gt;</span> a<span class="ch">,</span> int b<span class="ch">,</span> <span class="ch">&lt;</span>char <span class="ch">*&gt;</span>c<span class="ch">)</span>&#39;<span class="ch">,</span> void<span class="ch">)</span>;</span></code></pre></div>
+<p>上述文本的展开结果为</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_3_2<span class="op">(</span><span class="dt">double</span> a<span class="op">,</span> <span class="dt">int</span> b<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>c<span class="op">);</span></span></code></pre></div>
+<p><code>3</code> 表示 <code>double</code> 类型，<code>2</code> 表示
+<code>char *</code> 类型，故而 <code>print_3_2</code>
+蕴含了函数的类型信息。</p>
+<h1 id="实参转发">实参转发</h1>
+<p>在处理函数调用时，若能根据实参的类型构造出同样的函数名，则意味着选出了正确的函数，于是便相当于实现了
+m4 版本的 C11 的 <code>_Generic</code>。对于一个具有多个版本的函数，在 C
+语言层面中完全不可能存在，但是在 m4 层面能够以宏的形式存在的，它就像一个
+Hub，将数据发送到目标设备。在构造这样的宏之前，先定义一个辅助宏，用于简化获取变量或表达式类型
+id 的过程，</p>
+<pre><code>define(`_arg_t&#39;, `_`&#39;_type_id(_type_name(`$1&#39;))&#39;)</code></pre>
+<p>以三个参数的多版本 <code>print</code> 函数为例，若根据第 1 个和第 3
+个参数完成函数匹配和调用，其 m4 宏可写为</p>
+<pre><code>define(`print&#39;, ``$0&#39;_arg_t($1)_arg_t($3)($1, $2, $3)&#39;)</code></pre>
+<blockquote>
+<p>在 m4 宏定义中，<code>$0</code> 表示宏名。</p>
+</blockquote>
+<p><code>print</code> 宏能够将其参数转发给匹配的 <code>print</code>
+函数版本，例如</p>
+<pre><code>_func(`print&#39;, `(&lt;int&gt; x, char *y, &lt;int&gt; z)&#39;, void);
+_func(`print&#39;, `(&lt;int&gt; x, char *y, &lt;double&gt; z)&#39;, void);
+_func(`print&#39;, `(&lt;double&gt; x, char *y, &lt;double&gt; z)&#39;, void);
+_var(a, int, 42);
+_var(b, char *, &quot;hello&quot;);
+_var(c, double, 3.14);
+print(a, b, c);
+print(a, b, expr(`c + 2.0&#39;, int));</code></pre>
+<p>展开结果为</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_1_1<span class="op">(</span><span class="dt">int</span> x<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>y<span class="op">,</span> <span class="dt">int</span> z<span class="op">);</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_1_2<span class="op">(</span><span class="dt">int</span> x<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>y<span class="op">,</span> <span class="dt">double</span> z<span class="op">);</span></span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_2_2<span class="op">(</span><span class="dt">double</span> x<span class="op">,</span> <span class="dt">char</span> <span class="op">*</span>y<span class="op">,</span> <span class="dt">double</span> z<span class="op">);</span></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> a <span class="op">=</span> <span class="dv">42</span><span class="op">;</span></span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a><span class="dt">char</span> <span class="op">*</span>b <span class="op">=</span> <span class="st">&quot;hello&quot;</span><span class="op">;</span></span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> c <span class="op">=</span> <span class="fl">3.14</span><span class="op">;</span></span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>print_1_2<span class="op">(</span>a<span class="op">,</span> b<span class="op">,</span> c<span class="op">);</span></span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a>print_1_1<span class="op">(</span>a<span class="op">,</span> b<span class="op">,</span> c <span class="op">+</span> <span class="fl">2.0</span><span class="op">);</span></span></code></pre></div>
+<p>暂且不必挂关心上述代码是否合乎 C 语法，只需关心 <code>print</code>
+的实参是否正确转发给了类型与之匹配的函数版本。</p>
+<p>在 <code>_print</code>
+宏的定义里，可以针对一些类型作特化处理，例如，当 <code>a</code> 的类型为
+<code>int</code> 且 <code>c</code> 的类型为 <code>double</code>
+时，可以直接将参数转发给 <code>printf</code> 函数，</p>
+<div class="sourceCode" id="cb75"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`print&#39;<span class="ch">,</span> </span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>_type_name<span class="ch">($1),</span> `int&#39;<span class="ch">,</span></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>               `ifelse<span class="ch">(</span>_type_name<span class="ch">($3),</span> `double&#39;<span class="ch">,</span></span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>                       `printf<span class="ch">(</span>&quot;<span class="ch">%</span>d<span class="ch">,</span> <span class="ch">%</span>s<span class="ch">,</span> <span class="ch">%</span>lf&quot;<span class="ch">,</span> <span class="ch">$1,</span> <span class="ch">$2,</span> <span class="ch">$3)</span>&#39;<span class="ch">,</span></span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>                       ``<span class="ch">$0</span>&#39;_arg_t<span class="ch">($1)</span>_arg_t<span class="ch">($3)($1,</span> <span class="ch">$2,</span> <span class="ch">$3)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span></span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>               ``<span class="ch">$0</span>&#39;_arg_t<span class="ch">($1)</span>_arg_t<span class="ch">($3)($1,</span> <span class="ch">$2,</span> <span class="ch">$3)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>于是上述示例的最后两行，在新的 <code>print</code>
+宏的作用下，展开结果为</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%d</span><span class="st">, </span><span class="sc">%s</span><span class="st">, </span><span class="sc">%lf</span><span class="st">&quot;</span><span class="op">,</span> a<span class="op">,</span> b<span class="op">,</span> c<span class="op">);</span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>print_1_1<span class="op">(</span>a<span class="op">,</span> b<span class="op">,</span> c <span class="op">+</span> <span class="fl">2.0</span><span class="op">);</span></span></code></pre></div>
+<p>我知道对于不熟悉 m4 语言的人，上述 <code>print</code>
+宏的定义已宛若魔咒。不过，一旦你理解了 m4 咒语的基本逻辑，看懂
+<code>print</code>
+的定义并不难，甚至你能发现，<code>_arg_t($1)_arg_t($3)</code>
+有些啰嗦，可以将其封装为一个辅助宏，</p>
+<div class="sourceCode" id="cb77"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_args_t&#39;<span class="ch">,</span> </span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>               `_arg_t<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span> </span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>               `_arg_t<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)$0(</span><span class="kw">shift</span><span class="ch">($@))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<blockquote>
+<p><code>$0</code> 是宏名，<code>shift</code>
+可将宏参数列表左移，亦即去掉第 1 个参数。<code>$@</code>
+表示当前宏的所有参数。</p>
+</blockquote>
+<p><code>_args_t</code>
+是一个递归宏，每次递归过程都会消耗掉参数表中最左侧的参数，直至列表剩下最后一个参数为止，其展开结果是为每个参数套上
+<code>_type</code> 宏，例如</p>
+<div class="sourceCode" id="cb78"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>_args_t<span class="ch">(</span>`a&#39;<span class="ch">,</span> `b&#39;<span class="ch">,</span> `foo&#39;<span class="ch">,</span> `bar&#39;<span class="ch">)</span></span></code></pre></div>
+<p>展开结果为</p>
+<pre><code>_arg_t(a)_arg_t(b)_arg_t(foo)_arg_t(bar)</code></pre>
+<p>基于 <code>_args_t</code> 宏，<code>print</code> 宏可修改为</p>
+<div class="sourceCode" id="cb80"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`print&#39;<span class="ch">,</span> </span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>_type_name<span class="ch">($1),</span> `int&#39;<span class="ch">,</span></span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>               `ifelse<span class="ch">(</span>_type_name<span class="ch">($3),</span> `double&#39;<span class="ch">,</span></span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>                       `printf<span class="ch">(</span>&quot;<span class="ch">%</span>d<span class="ch">,</span> <span class="ch">%</span>s<span class="ch">,</span> <span class="ch">%</span>lf&quot;<span class="ch">,</span> <span class="ch">$1,</span> <span class="ch">$2,</span> <span class="ch">$3)</span>&#39;<span class="ch">,</span></span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>                       ``<span class="ch">$0</span>&#39;_args_t<span class="ch">($1,</span> <span class="ch">$3)($1,</span> <span class="ch">$2,</span> <span class="ch">$3)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span></span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a>               ``<span class="ch">$0</span>&#39;_args_t<span class="ch">($1,</span> <span class="ch">$3)($1,</span> <span class="ch">$2,</span> <span class="ch">$3)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>上述 <code>print</code> 定义中的嵌套 <code>ifelse</code>
+语句，若写成类 C 伪码，形式为</p>
+<pre><code>if (_type_name($1) == `int&#39;) {
+    if (type_name($3) == `double&#39;) {
+        `printf(&quot;%d, %s, %lf&quot;, $1, $2, $3)&#39;
+    } else {
+        ``$0&#39;_args_t($1, $3)$1, $2, $3)&#39;
+    }
+} else {
+    ``$0&#39;_args_t($1, $3)($1, $2, $3)&#39;
+}</code></pre>
+<p>显然，这种逻辑可以简化为</p>
+<pre><code>if (_type_name($1) == `int&#39; &amp;&amp; type_name($3) == `double&#39;) {
+        `printf(&quot;%d, %s, %lf&quot;, $1, $2, $3)&#39;
+} else {
+    ``$0&#39;_args_t($1, $3)($1, $2, $3)&#39;
+}</code></pre>
+<p>于是更为简单的 <code>print</code> 定义是</p>
+<div class="sourceCode" id="cb83"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`print&#39;<span class="ch">,</span> </span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>_type_name<span class="ch">($1)</span>` <span class="ch">&amp;&amp;</span> &#39;_type_name<span class="ch">($3),</span> `int <span class="ch">&amp;&amp;</span> double&#39;<span class="ch">,</span></span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>               `printf<span class="ch">(</span>&quot;<span class="ch">%</span>d<span class="ch">,</span> <span class="ch">%</span>s<span class="ch">,</span> <span class="ch">%</span>lf&quot;<span class="ch">,</span> <span class="ch">$1,</span> <span class="ch">$2,</span> <span class="ch">$3)</span>&#39;<span class="ch">,</span></span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a>               ``<span class="ch">$0</span>&#39;_args_t<span class="ch">($1,</span> <span class="ch">$3)($1,</span> <span class="ch">$2,</span> <span class="ch">$3)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>像</p>
+<pre><code>_type_name(`$1&#39;)` &amp;&amp; &#39;_type_name(`$3&#39;)</code></pre>
+<p>这样的语句，在写 <code>print</code>
+这样的函数实参转发宏时可能会经常出现，故而为其定义一个辅助宏，以提供简写形式，</p>
+<div class="sourceCode" id="cb85"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_args_t_name&#39;<span class="ch">,</span></span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span></span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>               `_type_name<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span></span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>               `_type_name<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span> and <span class="ch">$0(</span><span class="kw">shift</span><span class="ch">($@))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>基于 <code>_args_t_name</code> 宏，<code>print</code>
+的定义可改写为</p>
+<div class="sourceCode" id="cb86"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`print&#39;<span class="ch">,</span> </span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>_args_t_name<span class="ch">($1,</span> <span class="ch">$3),</span> `int and double&#39;<span class="ch">,</span></span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>               `printf<span class="ch">(</span>&quot;<span class="ch">%</span>d<span class="ch">,</span> <span class="ch">%</span>s<span class="ch">,</span> <span class="ch">%</span>lf&quot;<span class="ch">,</span> <span class="ch">$1,</span> <span class="ch">$2,</span> <span class="ch">$3)</span>&#39;<span class="ch">,</span></span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>               ``<span class="ch">$0</span>&#39;_args_t<span class="ch">($1,</span> <span class="ch">$3)($1,</span> <span class="ch">$2,</span> <span class="ch">$3)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<h1 id="结构体模板">结构体模板</h1>
+<p>若是基于 m4 为 C 语言提供结构体模板，便可构造一些容器类型，例如</p>
+<div class="sourceCode" id="cb87"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`Array_type&#39;<span class="ch">,</span>`_def_type<span class="ch">($1)</span>_def_type<span class="ch">($2)</span><span class="kw">dnl</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>typedef struct {</span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>        <span class="ch">$1</span> n;</span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>        <span class="ch">$2</span> <span class="ch">*</span>body;</span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>} `<span class="ch">$0</span>_&#39;_type_id<span class="ch">($1)</span>`_&#39;_type_id<span class="ch">($2)</span>&#39;<span class="ch">)</span></span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`Array&#39;<span class="ch">,</span> `<span class="ch">$0</span>_type_`&#39;_type_id<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>_`&#39;_type_id<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>以下语句可以生成一些确定类型的定义，并基于这些类型定义对象，</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* 容器类型 */</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>Array_type<span class="op">(</span><span class="dt">int</span><span class="op">,</span> <span class="dt">int</span><span class="op">);</span></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>Array_type<span class="op">(</span><span class="dt">size_t</span><span class="op">,</span> <span class="dt">char</span> <span class="op">*);</span></span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a><span class="co">/* 容器对象 */</span></span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a>Array<span class="op">(</span><span class="dt">int</span><span class="op">,</span> <span class="dt">int</span><span class="op">)</span> a<span class="op">;</span></span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a>Array<span class="op">(</span><span class="dt">size_t</span><span class="op">,</span> <span class="dt">char</span> <span class="op">*)</span> b<span class="op">;</span></span></code></pre></div>
+<p>展开结果为</p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* 容器类型 */</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> n<span class="op">;</span></span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> <span class="op">*</span>body<span class="op">;</span></span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Array_type_1_1<span class="op">;</span></span>
+<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb89-7"><a href="#cb89-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n<span class="op">;</span></span>
+<span id="cb89-8"><a href="#cb89-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">char</span> <span class="op">*</span> <span class="op">*</span>body<span class="op">;</span></span>
+<span id="cb89-9"><a href="#cb89-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Array_type_2_3<span class="op">;</span></span>
+<span id="cb89-10"><a href="#cb89-10" aria-hidden="true" tabindex="-1"></a><span class="co">/* 容器对象 */</span></span>
+<span id="cb89-11"><a href="#cb89-11" aria-hidden="true" tabindex="-1"></a>Array_type_1_1 a<span class="op">;</span></span>
+<span id="cb89-12"><a href="#cb89-12" aria-hidden="true" tabindex="-1"></a>Array_type_2_3 b<span class="op">;</span></span></code></pre></div>
+<p>虽然上述方案可行，但是容易吓退一些不熟悉甚至也没有计划学习 m4
+语言的人，当尽力令其简化。首先，定义辅助宏
+<code>_def_types</code>，批量构造类型名与类型 id 的映射，</p>
+<div class="sourceCode" id="cb90"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_def_types&#39;<span class="ch">,</span> </span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>               `_def_type<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span> </span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>               `_def_type<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)$0(</span><span class="kw">shift</span><span class="ch">($@))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>将定义 <code>_type_ids</code>，批量构造结构体类型名后缀数字，</p>
+<div class="sourceCode" id="cb91"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_type_ids&#39;<span class="ch">,</span> </span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>       `_`&#39;ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>               `_type_id<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span> </span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>               `_type_id<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)$0(</span><span class="kw">shift</span><span class="ch">($@))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>定义 <code>_with</code> 宏，用于将一组类型转化为类型名后缀，</p>
+<div class="sourceCode" id="cb92"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_with&#39;<span class="ch">,</span> `_type_ids<span class="ch">($@)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>于是，<code>Array_type</code> 的定义便可简化为</p>
+<div class="sourceCode" id="cb93"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`Array_type&#39;<span class="ch">,</span> `typedef struct {</span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>        <span class="ch">$1</span> n;</span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>        <span class="ch">$2</span> <span class="ch">*</span>body;</span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>} `<span class="ch">$0</span>&#39;_with<span class="ch">($@)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p><code>Array</code> 的定义可简化为</p>
+<div class="sourceCode" id="cb94"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`Array&#39;<span class="ch">,</span> `<span class="ch">$0</span>_`type&#39;_with<span class="ch">($@)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<blockquote>
+<p>注意，写成 <code>$0_type</code> 不可以，因为 <code>Array</code>
+的展开结果中含有 <code>Array_type</code>，后者会被 m4
+再度展开，导致出现错误结果。</p>
+</blockquote>
+<p>现在，m4 形式的 C
+结构体模板，在语法上已近乎最简了，但是除了我之外，应该不会有人喜欢。不过，可以为该形式的模板设计一个更简洁的语法，</p>
+<pre><code>@template(Array) {
+        $1 n;
+        $2 *body;
+}</code></pre>
+<p>然后让 DeepSeek 写一个 awk 脚本，将上述内容转换为 m4
+形式，如此便可将结构体模板代码只保留 m4 风格的宏参数，其余 m4
+元素皆被隐藏至幕后。DeepSeek 为此所写的 awk 脚本 ui.awk 为</p>
+<pre><code># ui.awk
+BEGIN {
+    in_template = 0
+    t_name = &quot;&quot;
+    in_func = 0
+    f_name = &quot;&quot;
+}
+# ---------- 正常状态 ----------
+!in_template {
+    line = $0
+    # --- @template ---
+    tp = index(line, &quot;@template(&quot;)
+    if (tp &gt; 0) {
+        prefix = substr(line, 1, tp - 1)
+        rest   = substr(line, tp)
+        p = index(rest, &quot;(&quot;)
+        q = index(rest, &quot;)&quot;)
+        if (q &gt; p) {
+            name = substr(rest, p + 1, q - p - 1)
+            after = substr(rest, q + 1)
+            sub(/^[ \t]+/, &quot;&quot;, after)
+            if (substr(after, 1, 1) == &quot;{&quot; &amp;&amp; name ~ /^[A-Za-z_][A-Za-z0-9_]*$/) {
+                tail = substr(after, 2)
+                sub(/[ \t]+$/, &quot;&quot;, tail)
+
+                printf &quot;divert(-1)\n&quot;
+                printf &quot;%s&quot;, prefix
+                printf &quot;define(`%s_type&#39;, `typedef struct {&quot;, name
+                if (tail != &quot;&quot;) printf &quot;%s&quot;, tail
+                printf &quot;\n&quot;
+                t_name = name
+                in_template = 1
+                next
+            }
+        }
+    }
+    print line
+    next
+}
+# ---------- @template 块体 ----------
+in_template {
+    line = $0
+    stripped = line
+    sub(/^[ \t]+/, &quot;&quot;, stripped)
+    if (substr(stripped, 1, 1) == &quot;}&quot;) {
+        pos = index(line, &quot;}&quot;)
+        brace_prefix = substr(line, 1, pos - 1)
+        suffix = substr(line, pos + 1)
+
+        printf &quot;%s} `$0&#39;_with($@)&#39;)\n&quot;, brace_prefix
+        printf &quot;define(`%s&#39;, `$0_`type&#39;_with($@)&#39;)%s\n&quot;, t_name, suffix
+        printf &quot;divert(0)dnl\n&quot;
+        in_template = 0
+        t_name = &quot;&quot;
+        next
+    }
+    printf &quot;%s\n&quot;, line
+}
+END {
+    if (in_template)
+        printf &quot;ERROR: unterminated @template(%s) block\n&quot;, t_name &gt; &quot;/dev/stderr&quot;
+}</code></pre>
+<p>将 c-template.m4 文件更新为</p>
+<div class="sourceCode" id="cb97"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 作用域</span></span>
+<span id="cb97-3"><a href="#cb97-3" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_scope_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span></span>
+<span id="cb97-4"><a href="#cb97-4" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_begin_scope_&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_scope_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_scope_<span class="ch">))</span>{&#39;<span class="ch">)</span></span>
+<span id="cb97-5"><a href="#cb97-5" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_end_scope_&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_scope_&#39;<span class="ch">,</span> <span class="kw">decr</span><span class="ch">(</span>_scope_<span class="ch">))</span>}&#39;<span class="ch">)</span></span>
+<span id="cb97-6"><a href="#cb97-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 变量和表达式</span></span>
+<span id="cb97-7"><a href="#cb97-7" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_type_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span></span>
+<span id="cb97-8"><a href="#cb97-8" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_def_type&#39;<span class="ch">,</span> `ifdef<span class="ch">(</span>`_<span class="ch">$1</span>_type_&#39;<span class="ch">,</span></span>
+<span id="cb97-9"><a href="#cb97-9" aria-hidden="true" tabindex="-1"></a>                           `&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_<span class="ch">$1</span>_type_&#39;<span class="ch">,</span> </span>
+<span id="cb97-10"><a href="#cb97-10" aria-hidden="true" tabindex="-1"></a>                                       <span class="kw">define</span><span class="ch">(</span>`_type_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_type_<span class="ch">))</span>_type_<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-11"><a href="#cb97-11" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_def_types&#39;<span class="ch">,</span> </span>
+<span id="cb97-12"><a href="#cb97-12" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
+<span id="cb97-13"><a href="#cb97-13" aria-hidden="true" tabindex="-1"></a>               `_def_type<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span> </span>
+<span id="cb97-14"><a href="#cb97-14" aria-hidden="true" tabindex="-1"></a>               `_def_type<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)$0(</span><span class="kw">shift</span><span class="ch">($@))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-15"><a href="#cb97-15" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_delsep&#39;<span class="ch">,</span> `ifelse<span class="ch">(</span><span class="kw">regexp</span><span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> `\<span class="ch">*</span>$&#39;<span class="ch">),</span> <span class="ch">-</span><span class="dv">1</span><span class="ch">,</span> ` &#39;<span class="ch">,</span> `&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-16"><a href="#cb97-16" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_var&#39;<span class="ch">,</span></span>
+<span id="cb97-17"><a href="#cb97-17" aria-hidden="true" tabindex="-1"></a>       `<span class="ch">$2</span>`&#39;_delsep<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)$1</span>`&#39;ifelse<span class="ch">(</span>`<span class="ch">$3</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span></span>
+<span id="cb97-18"><a href="#cb97-18" aria-hidden="true" tabindex="-1"></a>                                    `&#39;<span class="ch">,</span></span>
+<span id="cb97-19"><a href="#cb97-19" aria-hidden="true" tabindex="-1"></a>                                    ` <span class="ch">=</span> <span class="ch">$3</span>&#39;<span class="ch">)</span><span class="kw">define</span><span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span></span>
+<span id="cb97-20"><a href="#cb97-20" aria-hidden="true" tabindex="-1"></a>                                                   `<span class="ch">$2</span>&#39;<span class="ch">)</span>_def_type<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-21"><a href="#cb97-21" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`expr&#39;<span class="ch">,</span> `<span class="ch">$1</span>`&#39;define<span class="ch">(</span>`_expr_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span>_def_type<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-22"><a href="#cb97-22" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_type_id&#39;<span class="ch">,</span> `_def_type<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span><span class="kw">indir</span><span class="ch">(</span>`_<span class="ch">$1</span>_type_&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-23"><a href="#cb97-23" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_type_ids&#39;<span class="ch">,</span> </span>
+<span id="cb97-24"><a href="#cb97-24" aria-hidden="true" tabindex="-1"></a>       `_`&#39;ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
+<span id="cb97-25"><a href="#cb97-25" aria-hidden="true" tabindex="-1"></a>               `_type_id<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span> </span>
+<span id="cb97-26"><a href="#cb97-26" aria-hidden="true" tabindex="-1"></a>               `_type_id<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)$0(</span><span class="kw">shift</span><span class="ch">($@))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-27"><a href="#cb97-27" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_type_name&#39;<span class="ch">,</span> `ifdef<span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span> </span>
+<span id="cb97-28"><a href="#cb97-28" aria-hidden="true" tabindex="-1"></a>                            `indir<span class="ch">(</span>`_var_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">)</span>&#39;<span class="ch">,</span></span>
+<span id="cb97-29"><a href="#cb97-29" aria-hidden="true" tabindex="-1"></a>                            `ifdef<span class="ch">(</span>`_expr_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">,</span></span>
+<span id="cb97-30"><a href="#cb97-30" aria-hidden="true" tabindex="-1"></a>                                  `indir<span class="ch">(</span>`_expr_<span class="ch">$1</span>_t_&#39;_scope_<span class="ch">)</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-31"><a href="#cb97-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 函数</span></span>
+<span id="cb97-32"><a href="#cb97-32" aria-hidden="true" tabindex="-1"></a><span class="kw">changequote</span><span class="ch">(</span>[[<span class="ch">,</span>]]<span class="ch">)</span> <span class="co"># 将左右引号更改为 [[ 和 ]]</span></span>
+<span id="cb97-33"><a href="#cb97-33" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>[[_RSQ_]]<span class="ch">,</span> [[&#39;]]<span class="ch">)</span> <span class="co"># 定义 _RSQ_，其展开结果是右单引号</span></span>
+<span id="cb97-34"><a href="#cb97-34" aria-hidden="true" tabindex="-1"></a><span class="kw">changequote</span> <span class="co"># 恢复 m4 默认引号</span></span>
+<span id="cb97-35"><a href="#cb97-35" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_func_name&#39;<span class="ch">,</span> ``<span class="ch">$1</span>&#39;`_&#39;esyscmd<span class="ch">(</span>`echo &#39;_RSQ_`<span class="ch">$2</span>&#39;_RSQ_` <span class="ch">|</span> awk <span class="ch">-</span>f snap<span class="ch">-</span>types.awk&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-36"><a href="#cb97-36" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_unmark&#39;<span class="ch">,</span>`esyscmd<span class="ch">(</span>`echo &#39;_RSQ_`<span class="ch">$1</span>&#39;_RSQ_` <span class="ch">|</span> awk <span class="ch">-</span>f unmarks.awk&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-37"><a href="#cb97-37" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_func&#39;<span class="ch">,</span> `<span class="ch">$3</span> _func_name<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">,</span> `<span class="ch">$2</span>&#39;<span class="ch">)</span>_unmark<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-38"><a href="#cb97-38" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_arg_t&#39;<span class="ch">,</span> `_`&#39;_type_id<span class="ch">(</span>_type_name<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">))</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-39"><a href="#cb97-39" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_args_t&#39;<span class="ch">,</span> </span>
+<span id="cb97-40"><a href="#cb97-40" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span> </span>
+<span id="cb97-41"><a href="#cb97-41" aria-hidden="true" tabindex="-1"></a>               `_arg_t<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span> </span>
+<span id="cb97-42"><a href="#cb97-42" aria-hidden="true" tabindex="-1"></a>               `_arg_t<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)$0(</span><span class="kw">shift</span><span class="ch">($@))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-43"><a href="#cb97-43" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_args_t_name&#39;<span class="ch">,</span></span>
+<span id="cb97-44"><a href="#cb97-44" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">,</span> `&#39;<span class="ch">,</span></span>
+<span id="cb97-45"><a href="#cb97-45" aria-hidden="true" tabindex="-1"></a>               `_type_name<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span>&#39;<span class="ch">,</span></span>
+<span id="cb97-46"><a href="#cb97-46" aria-hidden="true" tabindex="-1"></a>               `_type_name<span class="ch">(</span>`<span class="ch">$1</span>&#39;<span class="ch">)</span> and <span class="ch">$0(</span><span class="kw">shift</span><span class="ch">($@))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-47"><a href="#cb97-47" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_with&#39;<span class="ch">,</span> `_type_ids<span class="ch">($@)</span>&#39;<span class="ch">)</span></span>
+<span id="cb97-48"><a href="#cb97-48" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>假设 foo.c 文件内容为</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>@template<span class="op">(</span>Array<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">size_t</span> n<span class="op">;</span></span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>    $<span class="dv">2</span> <span class="op">*</span>body<span class="op">;</span></span>
+<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb98-5"><a href="#cb98-5" aria-hidden="true" tabindex="-1"></a><span class="co">/* 容器类型 */</span></span>
+<span id="cb98-6"><a href="#cb98-6" aria-hidden="true" tabindex="-1"></a>Array_type<span class="op">(</span><span class="dt">int</span><span class="op">);</span></span>
+<span id="cb98-7"><a href="#cb98-7" aria-hidden="true" tabindex="-1"></a>Array_type<span class="op">(</span><span class="dt">char</span> <span class="op">*);</span></span>
+<span id="cb98-8"><a href="#cb98-8" aria-hidden="true" tabindex="-1"></a><span class="co">/* 容器对象 */</span></span>
+<span id="cb98-9"><a href="#cb98-9" aria-hidden="true" tabindex="-1"></a>Array<span class="op">(</span><span class="dt">int</span><span class="op">)</span> a<span class="op">;</span></span>
+<span id="cb98-10"><a href="#cb98-10" aria-hidden="true" tabindex="-1"></a>Array<span class="op">(</span><span class="dt">char</span> <span class="op">*)</span> b<span class="op">;</span></span></code></pre></div>
+<p>执行</p>
+<pre class="console"><code>$ awk -f ui.awk foo.c | m4 c-template.m4 -</code></pre>
+<p>可得</p>
+<div class="sourceCode" id="cb100"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* 容器类型 */</span></span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">size_t</span> n<span class="op">;</span></span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>     <span class="op">*</span>body<span class="op">;</span></span>
+<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Array_type_1<span class="op">;</span></span>
+<span id="cb100-6"><a href="#cb100-6" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb100-7"><a href="#cb100-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">size_t</span> n<span class="op">;</span></span>
+<span id="cb100-8"><a href="#cb100-8" aria-hidden="true" tabindex="-1"></a>     <span class="op">*</span>body<span class="op">;</span></span>
+<span id="cb100-9"><a href="#cb100-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Array_type_2<span class="op">;</span></span>
+<span id="cb100-10"><a href="#cb100-10" aria-hidden="true" tabindex="-1"></a><span class="co">/* 容器对象 */</span></span>
+<span id="cb100-11"><a href="#cb100-11" aria-hidden="true" tabindex="-1"></a>Array_type_1 a<span class="op">;</span></span>
+<span id="cb100-12"><a href="#cb100-12" aria-hidden="true" tabindex="-1"></a>Array_type_2 b<span class="op">;</span></span></code></pre></div>
+<h1 id="函数模板">函数模板</h1>
+<p>与结构体模板相比，函数模板则简单得多，甚至我直接能设计出它的
+<code>@template</code> 语法，</p>
+<pre><code>@func_template(函数名)(参数表){
+        /* ... 函数体 ... */
+}</code></pre>
+<p>例如</p>
+<pre><code>@func_template(add)($1 a, $1 b){
+        return a + b;
+}</code></pre>
+<p>我希望 DeepSeek 能写出 awk 脚本，将其转换为</p>
+<div class="sourceCode" id="cb103"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`add_type&#39;<span class="ch">,</span> ``add&#39;_with<span class="ch">($@)($1</span> a<span class="ch">,</span> <span class="ch">$2</span> b<span class="ch">)</span> {</span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a>        return a <span class="ch">+</span> b;</span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb103-4"><a href="#cb103-4" aria-hidden="true" tabindex="-1"></a>dnl&#39;<span class="ch">)</span></span></code></pre></div>
+<p>然后，便可使用 <code>add_type</code> 定义函数的各个版本，例如</p>
+<div class="sourceCode" id="cb104"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> add_type<span class="op">(</span><span class="dt">int</span><span class="op">);</span></span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> add_type<span class="op">(</span><span class="dt">double</span><span class="op">);</span></span></code></pre></div>
+<p>展开结果为</p>
+<div class="sourceCode" id="cb105"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> add_1<span class="op">(</span><span class="dt">int</span> a<span class="op">,</span>  b<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a <span class="op">+</span> b<span class="op">;</span></span>
+<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb105-4"><a href="#cb105-4" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> add_2<span class="op">(</span><span class="dt">double</span> a<span class="op">,</span>  b<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb105-5"><a href="#cb105-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a <span class="op">+</span> b<span class="op">;</span></span>
+<span id="cb105-6"><a href="#cb105-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>基于上述设计，DeepSeek 写出了 <code>@func_template</code>
+的转换代码，并与上一节的 <code>@template</code> 的转换代码合并，结果所得
+awk 脚本 ui.awk 为</p>
+<div class="sourceCode" id="cb106"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ui.awk</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>    in_template <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a>    t_name <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb106-5"><a href="#cb106-5" aria-hidden="true" tabindex="-1"></a>    in_func <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb106-6"><a href="#cb106-6" aria-hidden="true" tabindex="-1"></a>    f_name <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb106-7"><a href="#cb106-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb106-8"><a href="#cb106-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------- 正常状态 ----------</span></span>
+<span id="cb106-9"><a href="#cb106-9" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>in_template <span class="op">&amp;&amp;</span> <span class="op">!</span>in_func <span class="op">{</span></span>
+<span id="cb106-10"><a href="#cb106-10" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> <span class="dt">$0</span></span>
+<span id="cb106-11"><a href="#cb106-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- @func_template ---</span></span>
+<span id="cb106-12"><a href="#cb106-12" aria-hidden="true" tabindex="-1"></a>    fp <span class="op">=</span> <span class="fu">index</span><span class="op">(</span>line<span class="op">,</span> <span class="st">&quot;@func_template(&quot;</span><span class="op">)</span></span>
+<span id="cb106-13"><a href="#cb106-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>fp <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb106-14"><a href="#cb106-14" aria-hidden="true" tabindex="-1"></a>        prefix <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> fp <span class="op">-</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb106-15"><a href="#cb106-15" aria-hidden="true" tabindex="-1"></a>        rest   <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> fp<span class="op">)</span></span>
+<span id="cb106-16"><a href="#cb106-16" aria-hidden="true" tabindex="-1"></a>        p1 <span class="op">=</span> <span class="fu">index</span><span class="op">(</span>rest<span class="op">,</span> <span class="st">&quot;(&quot;</span><span class="op">)</span></span>
+<span id="cb106-17"><a href="#cb106-17" aria-hidden="true" tabindex="-1"></a>        q1 <span class="op">=</span> <span class="fu">index</span><span class="op">(</span>rest<span class="op">,</span> <span class="st">&quot;)&quot;</span><span class="op">)</span></span>
+<span id="cb106-18"><a href="#cb106-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>q1 <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span> <span class="kw">print</span> line<span class="op">;</span> <span class="kw">next</span> <span class="op">}</span></span>
+<span id="cb106-19"><a href="#cb106-19" aria-hidden="true" tabindex="-1"></a>        name <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>rest<span class="op">,</span> p1 <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> q1 <span class="op">-</span> p1 <span class="op">-</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb106-20"><a href="#cb106-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>name <span class="op">!~</span> <span class="ot">/^[</span><span class="ss">A</span><span class="ot">-</span><span class="ss">Za</span><span class="ot">-</span><span class="ss">z_</span><span class="ot">][</span><span class="ss">A</span><span class="ot">-</span><span class="ss">Za</span><span class="ot">-</span><span class="ss">z0</span><span class="ot">-</span><span class="ss">9_</span><span class="ot">]*$/</span><span class="op">)</span> <span class="op">{</span> <span class="kw">print</span> line<span class="op">;</span> <span class="kw">next</span> <span class="op">}</span></span>
+<span id="cb106-21"><a href="#cb106-21" aria-hidden="true" tabindex="-1"></a>        after_name <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>rest<span class="op">,</span> q1 <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb106-22"><a href="#cb106-22" aria-hidden="true" tabindex="-1"></a>        p2 <span class="op">=</span> <span class="fu">index</span><span class="op">(</span>after_name<span class="op">,</span> <span class="st">&quot;(&quot;</span><span class="op">)</span></span>
+<span id="cb106-23"><a href="#cb106-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>p2 <span class="op">!=</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span> <span class="kw">print</span> line<span class="op">;</span> <span class="kw">next</span> <span class="op">}</span></span>
+<span id="cb106-24"><a href="#cb106-24" aria-hidden="true" tabindex="-1"></a>        depth <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb106-25"><a href="#cb106-25" aria-hidden="true" tabindex="-1"></a>        args_end <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb106-26"><a href="#cb106-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> <span class="fu">length</span><span class="op">(</span>after_name<span class="op">);</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb106-27"><a href="#cb106-27" aria-hidden="true" tabindex="-1"></a>            c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>after_name<span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb106-28"><a href="#cb106-28" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;(&quot;</span><span class="op">)</span> depth<span class="op">++</span></span>
+<span id="cb106-29"><a href="#cb106-29" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;)&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb106-30"><a href="#cb106-30" aria-hidden="true" tabindex="-1"></a>                depth<span class="op">--</span></span>
+<span id="cb106-31"><a href="#cb106-31" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>depth <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span> args_end <span class="op">=</span> i <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> <span class="cf">break</span> <span class="op">}</span></span>
+<span id="cb106-32"><a href="#cb106-32" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb106-33"><a href="#cb106-33" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb106-34"><a href="#cb106-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>args_end <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span> <span class="kw">print</span> line<span class="op">;</span> <span class="kw">next</span> <span class="op">}</span></span>
+<span id="cb106-35"><a href="#cb106-35" aria-hidden="true" tabindex="-1"></a>        args <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>after_name<span class="op">,</span> <span class="dv">2</span><span class="op">,</span> args_end <span class="op">-</span> <span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb106-36"><a href="#cb106-36" aria-hidden="true" tabindex="-1"></a>        rest2 <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>after_name<span class="op">,</span> args_end <span class="op">+</span> <span class="dv">2</span><span class="op">)</span></span>
+<span id="cb106-37"><a href="#cb106-37" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> rest2<span class="op">)</span></span>
+<span id="cb106-38"><a href="#cb106-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="fu">substr</span><span class="op">(</span>rest2<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span> <span class="op">!=</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span> <span class="kw">print</span> line<span class="op">;</span> <span class="kw">next</span> <span class="op">}</span></span>
+<span id="cb106-39"><a href="#cb106-39" aria-hidden="true" tabindex="-1"></a>        tail <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>rest2<span class="op">,</span> <span class="dv">2</span><span class="op">)</span></span>
+<span id="cb106-40"><a href="#cb106-40" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sub</span><span class="op">(</span><span class="ot">/[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+$/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> tail<span class="op">)</span></span>
+<span id="cb106-41"><a href="#cb106-41" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;divert(-1)</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb106-42"><a href="#cb106-42" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;%s&quot;</span><span class="op">,</span> prefix</span>
+<span id="cb106-43"><a href="#cb106-43" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;define(`%s_type&#39;, ``%s&#39;_with($@)(%s) {&quot;</span><span class="op">,</span> name<span class="op">,</span> name<span class="op">,</span> args</span>
+<span id="cb106-44"><a href="#cb106-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>tail <span class="op">!=</span> <span class="st">&quot;&quot;</span><span class="op">)</span> <span class="kw">printf</span> <span class="st">&quot;%s&quot;</span><span class="op">,</span> tail</span>
+<span id="cb106-45"><a href="#cb106-45" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb106-46"><a href="#cb106-46" aria-hidden="true" tabindex="-1"></a>        f_name <span class="op">=</span> name</span>
+<span id="cb106-47"><a href="#cb106-47" aria-hidden="true" tabindex="-1"></a>        in_func <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb106-48"><a href="#cb106-48" aria-hidden="true" tabindex="-1"></a>        <span class="kw">next</span></span>
+<span id="cb106-49"><a href="#cb106-49" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb106-50"><a href="#cb106-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># --- @template ---</span></span>
+<span id="cb106-51"><a href="#cb106-51" aria-hidden="true" tabindex="-1"></a>    tp <span class="op">=</span> <span class="fu">index</span><span class="op">(</span>line<span class="op">,</span> <span class="st">&quot;@template(&quot;</span><span class="op">)</span></span>
+<span id="cb106-52"><a href="#cb106-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>tp <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb106-53"><a href="#cb106-53" aria-hidden="true" tabindex="-1"></a>        prefix <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> tp <span class="op">-</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb106-54"><a href="#cb106-54" aria-hidden="true" tabindex="-1"></a>        rest   <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> tp<span class="op">)</span></span>
+<span id="cb106-55"><a href="#cb106-55" aria-hidden="true" tabindex="-1"></a>        p <span class="op">=</span> <span class="fu">index</span><span class="op">(</span>rest<span class="op">,</span> <span class="st">&quot;(&quot;</span><span class="op">)</span></span>
+<span id="cb106-56"><a href="#cb106-56" aria-hidden="true" tabindex="-1"></a>        q <span class="op">=</span> <span class="fu">index</span><span class="op">(</span>rest<span class="op">,</span> <span class="st">&quot;)&quot;</span><span class="op">)</span></span>
+<span id="cb106-57"><a href="#cb106-57" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>q <span class="op">&gt;</span> p<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb106-58"><a href="#cb106-58" aria-hidden="true" tabindex="-1"></a>            name <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>rest<span class="op">,</span> p <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> q <span class="op">-</span> p <span class="op">-</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb106-59"><a href="#cb106-59" aria-hidden="true" tabindex="-1"></a>            after <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>rest<span class="op">,</span> q <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb106-60"><a href="#cb106-60" aria-hidden="true" tabindex="-1"></a>            <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> after<span class="op">)</span></span>
+<span id="cb106-61"><a href="#cb106-61" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span><span class="fu">substr</span><span class="op">(</span>after<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span> <span class="op">==</span> <span class="st">&quot;{&quot;</span> <span class="op">&amp;&amp;</span> name <span class="op">~</span> <span class="ot">/^[</span><span class="ss">A</span><span class="ot">-</span><span class="ss">Za</span><span class="ot">-</span><span class="ss">z_</span><span class="ot">][</span><span class="ss">A</span><span class="ot">-</span><span class="ss">Za</span><span class="ot">-</span><span class="ss">z0</span><span class="ot">-</span><span class="ss">9_</span><span class="ot">]*$/</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb106-62"><a href="#cb106-62" aria-hidden="true" tabindex="-1"></a>                tail <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>after<span class="op">,</span> <span class="dv">2</span><span class="op">)</span></span>
+<span id="cb106-63"><a href="#cb106-63" aria-hidden="true" tabindex="-1"></a>                <span class="fu">sub</span><span class="op">(</span><span class="ot">/[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+$/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> tail<span class="op">)</span></span>
+<span id="cb106-64"><a href="#cb106-64" aria-hidden="true" tabindex="-1"></a>                <span class="kw">printf</span> <span class="st">&quot;divert(-1)</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb106-65"><a href="#cb106-65" aria-hidden="true" tabindex="-1"></a>                <span class="kw">printf</span> <span class="st">&quot;%s&quot;</span><span class="op">,</span> prefix</span>
+<span id="cb106-66"><a href="#cb106-66" aria-hidden="true" tabindex="-1"></a>                <span class="kw">printf</span> <span class="st">&quot;define(`%s_type&#39;, `typedef struct {&quot;</span><span class="op">,</span> name</span>
+<span id="cb106-67"><a href="#cb106-67" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>tail <span class="op">!=</span> <span class="st">&quot;&quot;</span><span class="op">)</span> <span class="kw">printf</span> <span class="st">&quot;%s&quot;</span><span class="op">,</span> tail</span>
+<span id="cb106-68"><a href="#cb106-68" aria-hidden="true" tabindex="-1"></a>                <span class="kw">printf</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb106-69"><a href="#cb106-69" aria-hidden="true" tabindex="-1"></a>                t_name <span class="op">=</span> name</span>
+<span id="cb106-70"><a href="#cb106-70" aria-hidden="true" tabindex="-1"></a>                in_template <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb106-71"><a href="#cb106-71" aria-hidden="true" tabindex="-1"></a>                <span class="kw">next</span></span>
+<span id="cb106-72"><a href="#cb106-72" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb106-73"><a href="#cb106-73" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb106-74"><a href="#cb106-74" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb106-75"><a href="#cb106-75" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> line</span>
+<span id="cb106-76"><a href="#cb106-76" aria-hidden="true" tabindex="-1"></a>    <span class="kw">next</span></span>
+<span id="cb106-77"><a href="#cb106-77" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb106-78"><a href="#cb106-78" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------- @func_template 块体 ----------</span></span>
+<span id="cb106-79"><a href="#cb106-79" aria-hidden="true" tabindex="-1"></a>in_func <span class="op">{</span></span>
+<span id="cb106-80"><a href="#cb106-80" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> <span class="dt">$0</span></span>
+<span id="cb106-81"><a href="#cb106-81" aria-hidden="true" tabindex="-1"></a>    stripped <span class="op">=</span> line</span>
+<span id="cb106-82"><a href="#cb106-82" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> stripped<span class="op">)</span></span>
+<span id="cb106-83"><a href="#cb106-83" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">substr</span><span class="op">(</span>stripped<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span> <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb106-84"><a href="#cb106-84" aria-hidden="true" tabindex="-1"></a>        pos <span class="op">=</span> <span class="fu">index</span><span class="op">(</span>line<span class="op">,</span> <span class="st">&quot;}&quot;</span><span class="op">)</span></span>
+<span id="cb106-85"><a href="#cb106-85" aria-hidden="true" tabindex="-1"></a>        brace_prefix <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> pos <span class="op">-</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb106-86"><a href="#cb106-86" aria-hidden="true" tabindex="-1"></a>        suffix <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> pos <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb106-87"><a href="#cb106-87" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;%s}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> brace_prefix</span>
+<span id="cb106-88"><a href="#cb106-88" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;dnl&#39;)%s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> suffix</span>
+<span id="cb106-89"><a href="#cb106-89" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;divert(0)dnl</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb106-90"><a href="#cb106-90" aria-hidden="true" tabindex="-1"></a>        in_func <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb106-91"><a href="#cb106-91" aria-hidden="true" tabindex="-1"></a>        f_name <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb106-92"><a href="#cb106-92" aria-hidden="true" tabindex="-1"></a>        <span class="kw">next</span></span>
+<span id="cb106-93"><a href="#cb106-93" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb106-94"><a href="#cb106-94" aria-hidden="true" tabindex="-1"></a>    <span class="kw">printf</span> <span class="st">&quot;%s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> line</span>
+<span id="cb106-95"><a href="#cb106-95" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb106-96"><a href="#cb106-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-97"><a href="#cb106-97" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------- @template 块体 ----------</span></span>
+<span id="cb106-98"><a href="#cb106-98" aria-hidden="true" tabindex="-1"></a>in_template <span class="op">{</span></span>
+<span id="cb106-99"><a href="#cb106-99" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> <span class="dt">$0</span></span>
+<span id="cb106-100"><a href="#cb106-100" aria-hidden="true" tabindex="-1"></a>    stripped <span class="op">=</span> line</span>
+<span id="cb106-101"><a href="#cb106-101" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> stripped<span class="op">)</span></span>
+<span id="cb106-102"><a href="#cb106-102" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">substr</span><span class="op">(</span>stripped<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span> <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb106-103"><a href="#cb106-103" aria-hidden="true" tabindex="-1"></a>        pos <span class="op">=</span> <span class="fu">index</span><span class="op">(</span>line<span class="op">,</span> <span class="st">&quot;}&quot;</span><span class="op">)</span></span>
+<span id="cb106-104"><a href="#cb106-104" aria-hidden="true" tabindex="-1"></a>        brace_prefix <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> pos <span class="op">-</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb106-105"><a href="#cb106-105" aria-hidden="true" tabindex="-1"></a>        suffix <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> pos <span class="op">+</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb106-106"><a href="#cb106-106" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;%s} `$0&#39;_with($@)&#39;)</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> brace_prefix</span>
+<span id="cb106-107"><a href="#cb106-107" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;define(`%s&#39;, `$0_`type&#39;_with($@)&#39;)%s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> t_name<span class="op">,</span> suffix</span>
+<span id="cb106-108"><a href="#cb106-108" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;divert(0)dnl</span><span class="sc">\n</span><span class="st">&quot;</span></span>
+<span id="cb106-109"><a href="#cb106-109" aria-hidden="true" tabindex="-1"></a>        in_template <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb106-110"><a href="#cb106-110" aria-hidden="true" tabindex="-1"></a>        t_name <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb106-111"><a href="#cb106-111" aria-hidden="true" tabindex="-1"></a>        <span class="kw">next</span></span>
+<span id="cb106-112"><a href="#cb106-112" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb106-113"><a href="#cb106-113" aria-hidden="true" tabindex="-1"></a>    <span class="kw">printf</span> <span class="st">&quot;%s</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> line</span>
+<span id="cb106-114"><a href="#cb106-114" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb106-115"><a href="#cb106-115" aria-hidden="true" tabindex="-1"></a><span class="cf">END</span> <span class="op">{</span></span>
+<span id="cb106-116"><a href="#cb106-116" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>in_template<span class="op">)</span></span>
+<span id="cb106-117"><a href="#cb106-117" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;ERROR: unterminated @template(%s) block</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> t_name <span class="op">&gt;</span> <span class="st">&quot;/dev/stderr&quot;</span></span>
+<span id="cb106-118"><a href="#cb106-118" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>in_func<span class="op">)</span></span>
+<span id="cb106-119"><a href="#cb106-119" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;ERROR: unterminated @func_template(%s) block</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> f_name <span class="op">&gt;</span> <span class="st">&quot;/dev/stderr&quot;</span></span>
+<span id="cb106-120"><a href="#cb106-120" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h1 id="收获">收获</h1>
+<p>现在，可以收网了。我们的收获是，</p>
+<ul>
+<li>c-template.m4：提供
+<code>_begin_scope_</code>，<code>_end_scope_</code>，<code>_var</code>,
+<code>_expr</code>, <code>_func</code> 等关键字；</li>
+<li>trace-scopes.awk：将 C 代码中表示作用域开始和结束的花括号分别替换为
+<code>_begin_scope_</code> 和 <code>_end_scope_</code>；</li>
+<li>snap-types.awk：从函数参数表中类型标记 <code>&lt;...&gt;</code>
+中获取类型；</li>
+<li>unmarks.awk：从函数参数表去除类型标记
+<code>&lt;...&gt;</code>；</li>
+<li>ui.awk：将 C 代码中的 <code>@template</code> 和
+<code>@func_template</code> 块转换为 m4 代码。</li>
+</ul>
+<p>c-template.m4 是我们所写，其他所有 awk 脚本皆由 DeepSeek
+所写。这些文件我已打包，位于</p>
+<blockquote>
+<p><a
+href="https://liyanrui.github.io/2026/m4-and-c/test/c-template.zip"
+class="uri">https://liyanrui.github.io/2026/m4-and-c/test/c-template.zip</a></p>
+</blockquote>
+<p>这个泛型层的基本用法是，先用 ui.awk 处理结构体和函数模板，然后用
+trace-scopes.awk 处理 C 作用域，最后将所得结果交给 m4 命令。例如
+foo.template 文件，其内容为</p>
+<div class="sourceCode" id="cb107"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb107-3"><a href="#cb107-3" aria-hidden="true" tabindex="-1"></a>dnl 模板</span>
+<span id="cb107-4"><a href="#cb107-4" aria-hidden="true" tabindex="-1"></a>@template<span class="op">(</span>Array<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb107-5"><a href="#cb107-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n<span class="op">;</span></span>
+<span id="cb107-6"><a href="#cb107-6" aria-hidden="true" tabindex="-1"></a>        $<span class="dv">1</span> <span class="op">*</span>body<span class="op">;</span></span>
+<span id="cb107-7"><a href="#cb107-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb107-8"><a href="#cb107-8" aria-hidden="true" tabindex="-1"></a>@func_template<span class="op">(</span>array_new<span class="op">)(</span><span class="dt">size_t</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb107-9"><a href="#cb107-9" aria-hidden="true" tabindex="-1"></a>        Array<span class="op">(</span>$<span class="dv">1</span><span class="op">)</span> <span class="op">*</span>a<span class="op">;</span></span>
+<span id="cb107-10"><a href="#cb107-10" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>Array<span class="op">(</span>$<span class="dv">1</span><span class="op">)));</span></span>
+<span id="cb107-11"><a href="#cb107-11" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>body <span class="op">=</span> malloc<span class="op">(</span>n <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span>$<span class="dv">1</span><span class="op">));</span></span>
+<span id="cb107-12"><a href="#cb107-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a<span class="op">;</span></span>
+<span id="cb107-13"><a href="#cb107-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb107-14"><a href="#cb107-14" aria-hidden="true" tabindex="-1"></a>@func_template<span class="op">(</span>array_free<span class="op">)(</span>$<span class="dv">1</span> a<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb107-15"><a href="#cb107-15" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">-&gt;</span>body<span class="op">);</span></span>
+<span id="cb107-16"><a href="#cb107-16" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">);</span></span>
+<span id="cb107-17"><a href="#cb107-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb107-18"><a href="#cb107-18" aria-hidden="true" tabindex="-1"></a>dnl 模板实例</span>
+<span id="cb107-19"><a href="#cb107-19" aria-hidden="true" tabindex="-1"></a>Array_type<span class="op">(</span><span class="dt">double</span><span class="op">);</span></span>
+<span id="cb107-20"><a href="#cb107-20" aria-hidden="true" tabindex="-1"></a>Array<span class="op">(</span><span class="dt">double</span><span class="op">)</span> <span class="op">*</span>array_new_type<span class="op">(</span><span class="dt">double</span><span class="op">);</span></span>
+<span id="cb107-21"><a href="#cb107-21" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_free_type<span class="op">(</span>Array<span class="op">(</span><span class="dt">double</span><span class="op">)</span> <span class="op">*);</span></span>
+<span id="cb107-22"><a href="#cb107-22" aria-hidden="true" tabindex="-1"></a>dnl 实参转发</span>
+<span id="cb107-23"><a href="#cb107-23" aria-hidden="true" tabindex="-1"></a>define<span class="op">(</span>`array_new<span class="ch">&#39;,</span><span class="er"> `$0_`</span><span class="ch">&#39;</span>_type_id<span class="op">(</span>$<span class="dv">1</span><span class="op">)</span><span class="ch">&#39;)</span><span class="er">dnl;</span></span>
+<span id="cb107-24"><a href="#cb107-24" aria-hidden="true" tabindex="-1"></a>define<span class="op">(</span>`array_free<span class="ch">&#39;,</span><span class="er"> ``$0</span><span class="ch">&#39;</span>_arg_t<span class="op">(</span>$<span class="dv">1</span><span class="op">)(</span>$<span class="dv">1</span><span class="op">)</span><span class="ch">&#39;)</span><span class="er">dnl;</span></span>
+<span id="cb107-25"><a href="#cb107-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb107-26"><a href="#cb107-26" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb107-27"><a href="#cb107-27" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n <span class="op">=</span> <span class="dv">7</span><span class="op">;</span></span>
+<span id="cb107-28"><a href="#cb107-28" aria-hidden="true" tabindex="-1"></a>        _var<span class="op">(</span>a<span class="op">,</span> Array<span class="op">(</span><span class="dt">double</span><span class="op">)</span> <span class="op">*,</span>array_new<span class="op">(</span><span class="dt">double</span><span class="op">)(</span>n<span class="op">));</span></span>
+<span id="cb107-29"><a href="#cb107-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb107-30"><a href="#cb107-30" aria-hidden="true" tabindex="-1"></a>        array_free<span class="op">(</span>a<span class="op">);</span></span>
+<span id="cb107-31"><a href="#cb107-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb107-32"><a href="#cb107-32" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>执行</p>
+<pre class="console"><code>$ awk -f ui.awk foo.template | awk -f trace-scopes.awk | m4 c-template.m4 - &gt; foo.c</code></pre>
+<p>便可将 foo.template 转换为 foo.c，后者内容为</p>
+<div class="sourceCode" id="cb109"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
+<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb109-4"><a href="#cb109-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n<span class="op">;</span></span>
+<span id="cb109-5"><a href="#cb109-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> <span class="op">*</span>body<span class="op">;</span></span>
+<span id="cb109-6"><a href="#cb109-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Array_type_1<span class="op">;</span></span>
+<span id="cb109-7"><a href="#cb109-7" aria-hidden="true" tabindex="-1"></a>Array_type_1 <span class="op">*</span>array_new_1<span class="op">(</span><span class="dt">size_t</span> n<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-8"><a href="#cb109-8" aria-hidden="true" tabindex="-1"></a>        Array_type_1 <span class="op">*</span>a<span class="op">;</span></span>
+<span id="cb109-9"><a href="#cb109-9" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>Array_type_1<span class="op">));</span></span>
+<span id="cb109-10"><a href="#cb109-10" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>body <span class="op">=</span> malloc<span class="op">(</span>n <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb109-11"><a href="#cb109-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a<span class="op">;</span></span>
+<span id="cb109-12"><a href="#cb109-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb109-13"><a href="#cb109-13" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_free_2<span class="op">(</span>Array_type_1 <span class="op">*</span> a<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-14"><a href="#cb109-14" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">-&gt;</span>body<span class="op">);</span></span>
+<span id="cb109-15"><a href="#cb109-15" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">);</span></span>
+<span id="cb109-16"><a href="#cb109-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb109-17"><a href="#cb109-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-18"><a href="#cb109-18" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-19"><a href="#cb109-19" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n <span class="op">=</span> <span class="dv">7</span><span class="op">;</span></span>
+<span id="cb109-20"><a href="#cb109-20" aria-hidden="true" tabindex="-1"></a>        Array_type_1 <span class="op">*</span>a <span class="op">=</span> array_new_1<span class="op">(</span>n<span class="op">);</span></span>
+<span id="cb109-21"><a href="#cb109-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb109-22"><a href="#cb109-22" aria-hidden="true" tabindex="-1"></a>        array_free_2<span class="op">(</span>a<span class="op">);</span></span>
+<span id="cb109-23"><a href="#cb109-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb109-24"><a href="#cb109-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>注意，上述 foo.template 里，没有用到 <code>_expr</code> 和
+<code>_func</code>。<code>_expr</code> 的用法与 <code>_var</code>
+相似，而 <code>_func</code>
+主要用于构造一些特化函数，亦即函数模板不能定义的函数。不过，我现在并未想好这个面向
+C 的泛型层究竟如何使用，故而先不必急于展现 c-template.m4 的一切。</p>
+
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
+class="email">lyr.m2@live.cn</a> 或在<a
+href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>
