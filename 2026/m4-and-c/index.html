@@ -109,7 +109,7 @@
   <li><a href="#函数版本" id="toc-函数版本">函数版本</a></li>
   <li><a href="#实参转发" id="toc-实参转发">实参转发</a></li>
   <li><a href="#模板" id="toc-模板">模板</a></li>
-  <li><a href="#泛型层示例" id="toc-泛型层示例">泛型层示例</a></li>
+  <li><a href="#泛型层" id="toc-泛型层">泛型层</a></li>
   <li><a href="#总结" id="toc-总结">总结</a></li>
   </ul>
 </nav>
@@ -975,7 +975,7 @@ class="sourceCode c"><code class="sourceCode c"><span id="cb101-1"><a href="#cb1
 脚本，只是该脚本分为预处理、转换和后处理三个阶段，分别对应
 preprocess.awk，template-to-m4.awk 和 postprocess.awk
 脚本。这三个脚本的具体内容和用途见下一节。</p>
-<h1 id="泛型层示例">泛型层示例</h1>
+<h1 id="泛型层">泛型层</h1>
 <p>现在可以收网了，我们的收获是，</p>
 <ul>
 <li>c-template.m4：提供
@@ -998,147 +998,169 @@ postprocess.awk：将 C 代码中的 <code>@template</code> 和
 href="https://liyanrui.github.io/2026/m4-and-c/test/c-template.zip"
 class="uri">https://liyanrui.github.io/2026/m4-and-c/test/c-template.zip</a></p>
 </blockquote>
-<p>这个泛型层的基本用法是，先用 ui.awk 处理结构体和函数模板，然后用
-trace-scopes.awk 处理 C 作用域，最后将所得结果交给 m4 命令。例如
-foo.template 文件，其内容为</p>
-<div class="sourceCode" id="cb102"><pre
-class="sourceCode m4"><code class="sourceCode m4"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co">#include &lt;stdio.h&gt;</span></span>
-<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="co">#include &lt;stdlib.h&gt;</span></span>
-<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 实参转发</span>
-<span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`print&#39;<span class="ch">,</span></span>
-<span id="cb102-5"><a href="#cb102-5" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>_arg_t<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">),</span> _type_id<span class="ch">(</span>`int&#39;<span class="ch">),</span> `printf<span class="ch">(</span>&quot;<span class="ch">%</span>s<span class="ch">%</span>d<span class="ch">%</span>s&quot;<span class="ch">,</span> <span class="ch">$@)</span>&#39;<span class="ch">,</span></span>
-<span id="cb102-6"><a href="#cb102-6" aria-hidden="true" tabindex="-1"></a>               _arg_t<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">),</span> _type_id<span class="ch">(</span>`double&#39;<span class="ch">),</span> `printf<span class="ch">(</span>&quot;<span class="ch">%</span>s<span class="ch">%</span>.<span class="dv">3</span>f<span class="ch">%</span>s&quot;<span class="ch">,</span> <span class="ch">$@)</span>&#39;<span class="ch">,</span></span>
-<span id="cb102-7"><a href="#cb102-7" aria-hidden="true" tabindex="-1"></a>               `<span class="ch">$0</span>&#39;_arg_t<span class="ch">($2)($@))</span>&#39;<span class="ch">)</span><span class="kw">dnl</span></span>
-<span id="cb102-8"><a href="#cb102-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb102-9"><a href="#cb102-9" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 结构体模板</span>
-<span id="cb102-10"><a href="#cb102-10" aria-hidden="true" tabindex="-1"></a>@template<span class="ch">(</span>Array<span class="ch">)</span> {</span>
-<span id="cb102-11"><a href="#cb102-11" aria-hidden="true" tabindex="-1"></a>        size_t n;</span>
-<span id="cb102-12"><a href="#cb102-12" aria-hidden="true" tabindex="-1"></a>        <span class="ch">$1</span> <span class="ch">*</span>body;</span>
-<span id="cb102-13"><a href="#cb102-13" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb102-14"><a href="#cb102-14" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 结构体模板实例</span>
-<span id="cb102-15"><a href="#cb102-15" aria-hidden="true" tabindex="-1"></a>Array_type<span class="ch">(</span>int<span class="ch">)</span>;</span>
-<span id="cb102-16"><a href="#cb102-16" aria-hidden="true" tabindex="-1"></a>Array_type<span class="ch">(</span>double<span class="ch">)</span>;</span>
-<span id="cb102-17"><a href="#cb102-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb102-18"><a href="#cb102-18" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 函数模板</span>
-<span id="cb102-19"><a href="#cb102-19" aria-hidden="true" tabindex="-1"></a>@func_template<span class="ch">(</span>array_new<span class="ch">)(</span>size_t n<span class="ch">,</span> <span class="ch">$1</span> x<span class="ch">)</span> {</span>
-<span id="cb102-20"><a href="#cb102-20" aria-hidden="true" tabindex="-1"></a>        Array<span class="ch">($1)</span> <span class="ch">*</span>a;</span>
-<span id="cb102-21"><a href="#cb102-21" aria-hidden="true" tabindex="-1"></a>        a <span class="ch">=</span> malloc<span class="ch">(</span>sizeof<span class="ch">(</span>Array<span class="ch">($1)))</span>;</span>
-<span id="cb102-22"><a href="#cb102-22" aria-hidden="true" tabindex="-1"></a>        a<span class="ch">-&gt;</span>n <span class="ch">=</span> n;</span>
-<span id="cb102-23"><a href="#cb102-23" aria-hidden="true" tabindex="-1"></a>        a<span class="ch">-&gt;</span>body <span class="ch">=</span> malloc<span class="ch">(</span>n <span class="ch">*</span> sizeof<span class="ch">($1))</span>;</span>
-<span id="cb102-24"><a href="#cb102-24" aria-hidden="true" tabindex="-1"></a>        for <span class="ch">(</span>size_t i <span class="ch">=</span> <span class="dv">0</span>; i <span class="ch">&lt;</span> n; i<span class="ch">++)</span> a<span class="ch">-&gt;</span>body[i] <span class="ch">=</span> x;</span>
-<span id="cb102-25"><a href="#cb102-25" aria-hidden="true" tabindex="-1"></a>        return a;</span>
-<span id="cb102-26"><a href="#cb102-26" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb102-27"><a href="#cb102-27" aria-hidden="true" tabindex="-1"></a>@func_template<span class="ch">(</span>array_print<span class="ch">)(</span>Array<span class="ch">($1)</span> <span class="ch">*</span>a<span class="ch">)</span> {</span>
-<span id="cb102-28"><a href="#cb102-28" aria-hidden="true" tabindex="-1"></a>        printf<span class="ch">(</span>&quot;{&quot;<span class="ch">)</span>;</span>
-<span id="cb102-29"><a href="#cb102-29" aria-hidden="true" tabindex="-1"></a>        for <span class="ch">(</span>size_t i <span class="ch">=</span> <span class="dv">0</span>; i <span class="ch">&lt;</span> a<span class="ch">-&gt;</span>n <span class="ch">-</span> <span class="dv">1</span>; i<span class="ch">++)</span> {</span>
-<span id="cb102-30"><a href="#cb102-30" aria-hidden="true" tabindex="-1"></a>            print<span class="ch">(</span>&quot;&quot;<span class="ch">,</span> _expr<span class="ch">(</span>a<span class="ch">-&gt;</span>body[i]<span class="ch">,</span> <span class="ch">$1),</span> `&quot;<span class="ch">,</span> &quot;&#39;<span class="ch">)</span>;</span>
-<span id="cb102-31"><a href="#cb102-31" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb102-32"><a href="#cb102-32" aria-hidden="true" tabindex="-1"></a>        print<span class="ch">(</span>&quot;&quot;<span class="ch">,</span> _expr<span class="ch">(</span>a<span class="ch">-&gt;</span>body[a<span class="ch">-&gt;</span>n <span class="ch">-</span> <span class="dv">1</span>]<span class="ch">,</span> <span class="ch">$1),</span> &quot;}\n&quot;<span class="ch">)</span>;</span>
-<span id="cb102-33"><a href="#cb102-33" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb102-34"><a href="#cb102-34" aria-hidden="true" tabindex="-1"></a>@func_template<span class="ch">(</span>array_free<span class="ch">)(</span>Array<span class="ch">($1)</span> <span class="ch">*</span>a<span class="ch">)</span> {</span>
-<span id="cb102-35"><a href="#cb102-35" aria-hidden="true" tabindex="-1"></a>        free<span class="ch">(</span>a<span class="ch">-&gt;</span>body<span class="ch">)</span>;</span>
-<span id="cb102-36"><a href="#cb102-36" aria-hidden="true" tabindex="-1"></a>        free<span class="ch">(</span>a<span class="ch">)</span>;</span>
-<span id="cb102-37"><a href="#cb102-37" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb102-38"><a href="#cb102-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb102-39"><a href="#cb102-39" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 函数模板实例</span>
-<span id="cb102-40"><a href="#cb102-40" aria-hidden="true" tabindex="-1"></a>Array<span class="ch">(</span>int<span class="ch">)</span> <span class="ch">*</span>array_new_func<span class="ch">(</span>int<span class="ch">)</span>;</span>
-<span id="cb102-41"><a href="#cb102-41" aria-hidden="true" tabindex="-1"></a>void array_print_func<span class="ch">(</span>int<span class="ch">)</span>;</span>
-<span id="cb102-42"><a href="#cb102-42" aria-hidden="true" tabindex="-1"></a>void array_free_func<span class="ch">(</span>int<span class="ch">)</span>;</span>
-<span id="cb102-43"><a href="#cb102-43" aria-hidden="true" tabindex="-1"></a>Array<span class="ch">(</span>double<span class="ch">)</span> <span class="ch">*</span>array_new_func<span class="ch">(</span>double<span class="ch">)</span>;</span>
-<span id="cb102-44"><a href="#cb102-44" aria-hidden="true" tabindex="-1"></a>void array_print_func<span class="ch">(</span>double<span class="ch">)</span>;</span>
-<span id="cb102-45"><a href="#cb102-45" aria-hidden="true" tabindex="-1"></a>void array_free_func<span class="ch">(</span>double<span class="ch">)</span>;</span>
-<span id="cb102-46"><a href="#cb102-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb102-47"><a href="#cb102-47" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 实参转发</span>
-<span id="cb102-48"><a href="#cb102-48" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`array_new&#39;<span class="ch">,</span> `<span class="ch">$0</span>_with<span class="ch">(</span>_type_name<span class="ch">($2))($@)</span>&#39;<span class="ch">)</span></span>
-<span id="cb102-49"><a href="#cb102-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb102-50"><a href="#cb102-50" aria-hidden="true" tabindex="-1"></a><span class="kw">dnl</span> 测试</span>
-<span id="cb102-51"><a href="#cb102-51" aria-hidden="true" tabindex="-1"></a>int main<span class="ch">(</span>void<span class="ch">)</span> {</span>
-<span id="cb102-52"><a href="#cb102-52" aria-hidden="true" tabindex="-1"></a>        _var<span class="ch">(</span>n<span class="ch">,</span> size_t<span class="ch">,</span> <span class="dv">7</span><span class="ch">)</span>;</span>
-<span id="cb102-53"><a href="#cb102-53" aria-hidden="true" tabindex="-1"></a>        <span class="ch">/*</span> 整型数组 a <span class="ch">*/</span></span>
-<span id="cb102-54"><a href="#cb102-54" aria-hidden="true" tabindex="-1"></a>        _var<span class="ch">(</span>a<span class="ch">,</span> Array<span class="ch">(</span>int<span class="ch">)</span> <span class="ch">*,</span> array_new<span class="ch">(</span>n<span class="ch">,</span> _expr<span class="ch">(</span><span class="dv">0</span><span class="ch">,</span> int<span class="ch">)))</span>;</span>
-<span id="cb102-55"><a href="#cb102-55" aria-hidden="true" tabindex="-1"></a>        for <span class="ch">(</span>size_t i <span class="ch">=</span> <span class="dv">0</span>; i <span class="ch">&lt;</span> n; i<span class="ch">++)</span> a<span class="ch">-&gt;</span>body[i] <span class="ch">=</span> i <span class="ch">+</span> <span class="dv">1</span>;</span>
-<span id="cb102-56"><a href="#cb102-56" aria-hidden="true" tabindex="-1"></a>        array_print_with<span class="ch">(</span>int<span class="ch">)(</span>a<span class="ch">)</span>;</span>
-<span id="cb102-57"><a href="#cb102-57" aria-hidden="true" tabindex="-1"></a>        array_free_with<span class="ch">(</span>int<span class="ch">)(</span>a<span class="ch">)</span>;</span>
-<span id="cb102-58"><a href="#cb102-58" aria-hidden="true" tabindex="-1"></a>        <span class="ch">/*</span> 双精度浮点型数组 b <span class="ch">*/</span></span>
-<span id="cb102-59"><a href="#cb102-59" aria-hidden="true" tabindex="-1"></a>        _var<span class="ch">(</span>b<span class="ch">,</span> Array<span class="ch">(</span>double<span class="ch">)</span> <span class="ch">*,</span> array_new<span class="ch">(</span>n<span class="ch">,</span> _expr<span class="ch">(</span><span class="dv">0</span><span class="ch">,</span> double<span class="ch">)))</span>;</span>
-<span id="cb102-60"><a href="#cb102-60" aria-hidden="true" tabindex="-1"></a>        for <span class="ch">(</span>size_t i <span class="ch">=</span> <span class="dv">0</span>; i <span class="ch">&lt;</span> n; i<span class="ch">++)</span> b<span class="ch">-&gt;</span>body[i] <span class="ch">=</span> i <span class="ch">+</span> <span class="dv">1</span>;</span>
-<span id="cb102-61"><a href="#cb102-61" aria-hidden="true" tabindex="-1"></a>        array_print_with<span class="ch">(</span>double<span class="ch">)(</span>b<span class="ch">)</span>;</span>
-<span id="cb102-62"><a href="#cb102-62" aria-hidden="true" tabindex="-1"></a>        array_free_with<span class="ch">(</span>double<span class="ch">)(</span>b<span class="ch">)</span>;</span>
-<span id="cb102-63"><a href="#cb102-63" aria-hidden="true" tabindex="-1"></a>        return <span class="dv">0</span>;</span>
-<span id="cb102-64"><a href="#cb102-64" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<p>foo.template 基本上用到了上文构造的主要元素，若执行</p>
-<pre class="console"><code>$ awk -f ui/preprocess.awk &quot;$1&quot; \
+<p>现在，假设我们要创建一个小型 C 项目，其目录为
+foo，若希望使用本文档创建的 C 泛型层，可按照以下步骤创造项目目录
+foo，</p>
+<pre class="console"><code>$ wget https://liyanrui.github.io/2026/m4-and-c/test/c-template.zip
+$ unzip c-template.zip &amp;&amp; rm c-template.zip
+$ mv c-template foo
+$ cd foo</code></pre>
+<p>此时，foo 目录的结构如下图所示，</p>
+<p><img src="figures/01.png" /></p>
+<p>在 foo
+项目里，我要构造几个简单的例子，演示其泛型层的基本用法。首先，在 foo
+目录创建 defs.template 文件，其内容为</p>
+<div class="sourceCode" id="cb103"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="co">#include &lt;stdio.h&gt;</span></span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`print&#39;<span class="ch">,</span></span>
+<span id="cb103-4"><a href="#cb103-4" aria-hidden="true" tabindex="-1"></a>       `ifelse<span class="ch">(</span>_arg_t<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">),</span> _type_id<span class="ch">(</span>`int&#39;<span class="ch">),</span> `printf<span class="ch">(</span>&quot;<span class="ch">%</span>s<span class="ch">%</span>d<span class="ch">%</span>s&quot;<span class="ch">,</span> <span class="ch">$@)</span>&#39;<span class="ch">,</span></span>
+<span id="cb103-5"><a href="#cb103-5" aria-hidden="true" tabindex="-1"></a>               _arg_t<span class="ch">(</span>`<span class="ch">$2</span>&#39;<span class="ch">),</span> _type_id<span class="ch">(</span>`double&#39;<span class="ch">),</span> `printf<span class="ch">(</span>&quot;<span class="ch">%</span>s<span class="ch">%</span>.<span class="dv">3</span>f<span class="ch">%</span>s&quot;<span class="ch">,</span> <span class="ch">$@)</span>&#39;<span class="ch">,</span></span>
+<span id="cb103-6"><a href="#cb103-6" aria-hidden="true" tabindex="-1"></a>               `<span class="ch">$0</span>&#39;_arg_t<span class="ch">($2)($@))</span>&#39;<span class="ch">)</span></span>
+<span id="cb103-7"><a href="#cb103-7" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb103-8"><a href="#cb103-8" aria-hidden="true" tabindex="-1"></a>_func<span class="ch">(</span>`print&#39;<span class="ch">,</span> <span class="ch">(</span>const char <span class="ch">*</span>prefix<span class="ch">,</span> <span class="ch">&lt;</span>const char <span class="ch">*&gt;</span>a<span class="ch">,</span> const char <span class="ch">*</span>suffix<span class="ch">),</span> void<span class="ch">)</span> {</span>
+<span id="cb103-9"><a href="#cb103-9" aria-hidden="true" tabindex="-1"></a>        printf<span class="ch">(</span>&quot;<span class="ch">%</span>s<span class="ch">%</span>s<span class="ch">%</span>s\n&quot;<span class="ch">,</span> prefix<span class="ch">,</span> a<span class="ch">,</span> suffix<span class="ch">)</span>;</span>
+<span id="cb103-10"><a href="#cb103-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<blockquote>
+<p><code>_arg_t</code> 可宏可根据实参变量名获得其类型
+id，<code>_type_id</code> 可基于类型名获得类型 id。c-template.m4
+能保证同一类型的 id 是相等的。</p>
+</blockquote>
+<p>这些代码看着很吓人，不过对于读过<a
+href="https://zhuanlan.zhihu.com/p/2100470786247213189">《m4
+的咒语》</a>的人而言，可一眼洞悉其意。在 m4 的 -1 流中定义的
+<code>print</code> 宏，用于将参数转发给合适的代码。在 m4 的 0
+号流中定义了 <code>print</code> 函数的 <code>const char *</code>
+版本。</p>
+<p>执行以下命令，可将 defs.template 的内容展开，</p>
+<pre class="console"><code>$ awk -f ui/preprocess.awk defs.template \
       | awk -f ui/template-to-m4.awk \
       | awk -f ui/trace-scopes.awk \
       | awk -f ui/postprocess.awk \
-      | m4 c-template.m4 - &gt; foo.c</code></pre>
-<p>便可将 foo.template 转换为 foo.c，后者内容为</p>
-<div class="sourceCode" id="cb104"><pre
-class="sourceCode c"><code class="sourceCode c"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
-<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></span>
-<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb104-4"><a href="#cb104-4" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
-<span id="cb104-5"><a href="#cb104-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n<span class="op">;</span></span>
-<span id="cb104-6"><a href="#cb104-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> <span class="op">*</span>body<span class="op">;</span></span>
-<span id="cb104-7"><a href="#cb104-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Array_type_1<span class="op">;</span></span>
-<span id="cb104-8"><a href="#cb104-8" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
-<span id="cb104-9"><a href="#cb104-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n<span class="op">;</span></span>
-<span id="cb104-10"><a href="#cb104-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> <span class="op">*</span>body<span class="op">;</span></span>
-<span id="cb104-11"><a href="#cb104-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Array_type_2<span class="op">;</span></span>
-<span id="cb104-12"><a href="#cb104-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb104-13"><a href="#cb104-13" aria-hidden="true" tabindex="-1"></a>Array_type_1 <span class="op">*</span>array_new_1<span class="op">(</span><span class="dt">size_t</span> n<span class="op">,</span> <span class="dt">int</span> x<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb104-14"><a href="#cb104-14" aria-hidden="true" tabindex="-1"></a>        Array_type_1 <span class="op">*</span>a<span class="op">;</span></span>
-<span id="cb104-15"><a href="#cb104-15" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>Array_type_1<span class="op">));</span></span>
-<span id="cb104-16"><a href="#cb104-16" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>n <span class="op">=</span> n<span class="op">;</span></span>
-<span id="cb104-17"><a href="#cb104-17" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>body <span class="op">=</span> malloc<span class="op">(</span>n <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
-<span id="cb104-18"><a href="#cb104-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> x<span class="op">;</span></span>
-<span id="cb104-19"><a href="#cb104-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a<span class="op">;</span></span>
-<span id="cb104-20"><a href="#cb104-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb104-21"><a href="#cb104-21" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_print_1<span class="op">(</span>Array_type_1 <span class="op">*</span>a<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb104-22"><a href="#cb104-22" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;{&quot;</span><span class="op">);</span></span>
-<span id="cb104-23"><a href="#cb104-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb104-24"><a href="#cb104-24" aria-hidden="true" tabindex="-1"></a>            printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%d%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span>a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">],</span><span class="st">&quot;, &quot;</span><span class="op">);</span></span>
-<span id="cb104-25"><a href="#cb104-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb104-26"><a href="#cb104-26" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%d%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span>a<span class="op">-&gt;</span>body<span class="op">[</span>a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">],</span><span class="st">&quot;}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb104-27"><a href="#cb104-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb104-28"><a href="#cb104-28" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_free_1<span class="op">(</span>Array_type_1 <span class="op">*</span>a<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb104-29"><a href="#cb104-29" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">-&gt;</span>body<span class="op">);</span></span>
-<span id="cb104-30"><a href="#cb104-30" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">);</span></span>
-<span id="cb104-31"><a href="#cb104-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb104-32"><a href="#cb104-32" aria-hidden="true" tabindex="-1"></a>Array_type_2 <span class="op">*</span>array_new_2<span class="op">(</span><span class="dt">size_t</span> n<span class="op">,</span> <span class="dt">double</span> x<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb104-33"><a href="#cb104-33" aria-hidden="true" tabindex="-1"></a>        Array_type_2 <span class="op">*</span>a<span class="op">;</span></span>
-<span id="cb104-34"><a href="#cb104-34" aria-hidden="true" tabindex="-1"></a>        a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span>Array_type_2<span class="op">));</span></span>
-<span id="cb104-35"><a href="#cb104-35" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>n <span class="op">=</span> n<span class="op">;</span></span>
-<span id="cb104-36"><a href="#cb104-36" aria-hidden="true" tabindex="-1"></a>        a<span class="op">-&gt;</span>body <span class="op">=</span> malloc<span class="op">(</span>n <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
-<span id="cb104-37"><a href="#cb104-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> x<span class="op">;</span></span>
-<span id="cb104-38"><a href="#cb104-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> a<span class="op">;</span></span>
-<span id="cb104-39"><a href="#cb104-39" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb104-40"><a href="#cb104-40" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_print_2<span class="op">(</span>Array_type_2 <span class="op">*</span>a<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb104-41"><a href="#cb104-41" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;{&quot;</span><span class="op">);</span></span>
-<span id="cb104-42"><a href="#cb104-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
-<span id="cb104-43"><a href="#cb104-43" aria-hidden="true" tabindex="-1"></a>            printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%.3f%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span>a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">],</span><span class="st">&quot;, &quot;</span><span class="op">);</span></span>
-<span id="cb104-44"><a href="#cb104-44" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
-<span id="cb104-45"><a href="#cb104-45" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%.3f%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span>a<span class="op">-&gt;</span>body<span class="op">[</span>a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">],</span><span class="st">&quot;}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
-<span id="cb104-46"><a href="#cb104-46" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb104-47"><a href="#cb104-47" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_free_2<span class="op">(</span>Array_type_2 <span class="op">*</span>a<span class="op">)</span> <span class="op">{</span></span>
-<span id="cb104-48"><a href="#cb104-48" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">-&gt;</span>body<span class="op">);</span></span>
-<span id="cb104-49"><a href="#cb104-49" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>a<span class="op">);</span></span>
-<span id="cb104-50"><a href="#cb104-50" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
-<span id="cb104-51"><a href="#cb104-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb104-52"><a href="#cb104-52" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb104-53"><a href="#cb104-53" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n <span class="op">=</span> <span class="dv">7</span><span class="op">;</span></span>
-<span id="cb104-54"><a href="#cb104-54" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb104-55"><a href="#cb104-55" aria-hidden="true" tabindex="-1"></a>        Array_type_1 <span class="op">*</span>a <span class="op">=</span> array_new_1<span class="op">(</span>n<span class="op">,</span><span class="dv">0</span><span class="op">);</span></span>
-<span id="cb104-56"><a href="#cb104-56" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb104-57"><a href="#cb104-57" aria-hidden="true" tabindex="-1"></a>        array_print_1<span class="op">(</span>a<span class="op">);</span></span>
-<span id="cb104-58"><a href="#cb104-58" aria-hidden="true" tabindex="-1"></a>        array_free_1<span class="op">(</span>a<span class="op">);</span></span>
-<span id="cb104-59"><a href="#cb104-59" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb104-60"><a href="#cb104-60" aria-hidden="true" tabindex="-1"></a>        Array_type_2 <span class="op">*</span>b <span class="op">=</span> array_new_2<span class="op">(</span>n<span class="op">,</span><span class="dv">0</span><span class="op">);</span></span>
-<span id="cb104-61"><a href="#cb104-61" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> i<span class="op">++)</span> b<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
-<span id="cb104-62"><a href="#cb104-62" aria-hidden="true" tabindex="-1"></a>        array_print_2<span class="op">(</span>b<span class="op">);</span></span>
-<span id="cb104-63"><a href="#cb104-63" aria-hidden="true" tabindex="-1"></a>        array_free_2<span class="op">(</span>b<span class="op">);</span></span>
-<span id="cb104-64"><a href="#cb104-64" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
-<span id="cb104-65"><a href="#cb104-65" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+      | m4 c-template.m4 -</code></pre>
+<p>展开结果为</p>
+<div class="sourceCode" id="cb105"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_1<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>prefix<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>a<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>suffix<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%s%s\n</span><span class="st">&quot;</span><span class="op">,</span> prefix<span class="op">,</span> a<span class="op">,</span> suffix<span class="op">);</span></span>
+<span id="cb105-4"><a href="#cb105-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>需要注意的是，在 m4 的 -1 流里，宏定义是有效的，但是所有的文本会被 m4
+抛弃，这意味着 <code>print</code> 宏定义中所引入空行，不会被输出。</p>
+<p>gen.sh
+脚本将上述冗长的管道命令封装了起来，执行以下命令，依然可正确展开
+defs.template，</p>
+<pre class="console"><code>$ ./gen.sh defs.template</code></pre>
+<p>为了演示 <code>print</code> 宏以及 <code>print</code> 函数的
+<code>const char *</code> 版本的用法，可新建 foo.template
+文件，其内容为</p>
+<div class="sourceCode" id="cb107"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a>        _var<span class="op">(</span>a<span class="op">,</span> <span class="dt">int</span><span class="op">,</span> <span class="dv">42</span><span class="op">);</span></span>
+<span id="cb107-3"><a href="#cb107-3" aria-hidden="true" tabindex="-1"></a>        _var<span class="op">(</span>b<span class="op">,</span> <span class="dt">double</span><span class="op">,</span> <span class="fl">3.14</span><span class="op">);</span></span>
+<span id="cb107-4"><a href="#cb107-4" aria-hidden="true" tabindex="-1"></a>        print<span class="op">(</span><span class="st">&quot;a = &quot;</span><span class="op">,</span> a<span class="op">,</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb107-5"><a href="#cb107-5" aria-hidden="true" tabindex="-1"></a>        print<span class="op">(</span><span class="st">&quot;b = &quot;</span><span class="op">,</span> b<span class="op">,</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb107-6"><a href="#cb107-6" aria-hidden="true" tabindex="-1"></a>        print<span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">,</span> _expr<span class="op">(</span><span class="st">&quot;hello&quot;</span><span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*),</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb107-7"><a href="#cb107-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb107-8"><a href="#cb107-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>_var</code> 记录了 <code>a</code> 和 <code>b</code>
+的类型信息，<code>print</code> 宏会根据二者的类型选出合适的
+<code>printf</code> 语句。注意，第 3 条 <code>print</code>
+宏调用语句，其第二个参数是表达式，<code>_expr</code> 将其类型信息
+<code>const char *</code> 也记录了下来，使得 <code>print</code>
+宏能为之选出 <code>print</code> 的 <code>const char *</code>
+版本。倘若执行</p>
+<pre class="console"><code>$ ./gen.sh defs.template foo.template</code></pre>
+<p>便可展开 defs.template 和 foo.template
+中的内容，并将结果一并输出，结果为</p>
+<div class="sourceCode" id="cb109"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> print_1<span class="op">(</span><span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>prefix<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>a<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>suffix<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%s%s\n</span><span class="st">&quot;</span><span class="op">,</span> prefix<span class="op">,</span> a<span class="op">,</span> suffix<span class="op">);</span></span>
+<span id="cb109-4"><a href="#cb109-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb109-5"><a href="#cb109-5" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-6"><a href="#cb109-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> a <span class="op">=</span> <span class="dv">42</span><span class="op">;</span></span>
+<span id="cb109-7"><a href="#cb109-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> b <span class="op">=</span> <span class="fl">3.14</span><span class="op">;</span></span>
+<span id="cb109-8"><a href="#cb109-8" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%d%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;a = &quot;</span><span class="op">,</span>a<span class="op">,</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb109-9"><a href="#cb109-9" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;</span><span class="sc">%s%.3f%s</span><span class="st">&quot;</span><span class="op">,</span> <span class="st">&quot;b = &quot;</span><span class="op">,</span>b<span class="op">,</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb109-10"><a href="#cb109-10" aria-hidden="true" tabindex="-1"></a>        print_1<span class="op">(</span><span class="st">&quot;c = &quot;</span><span class="op">,</span><span class="st">&quot;hello&quot;</span><span class="op">,</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb109-11"><a href="#cb109-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb109-12"><a href="#cb109-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>现在想必你已经掌握了这个 C 泛型层的基本用法了，接下来，可以修改
+defs.template，定义一个简单的结构体模板，</p>
+<div class="sourceCode" id="cb110"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>@template<span class="op">(</span>Array<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n<span class="op">;</span></span>
+<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a>        $<span class="dv">1</span> <span class="op">*</span>body<span class="op">;</span></span>
+<span id="cb110-5"><a href="#cb110-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>$1</code> 是模板参数。此时，若执行 gen.sh 脚本，将
+defs.template 展开，结果只是</p>
+<div class="sourceCode" id="cb111"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span></code></pre></div>
+<p>原因是 <code>@template</code> 块本质上是定义了一些 m4
+宏，需要调用这些宏，才能生成模板实例代码，例如将 defs.template
+修改为</p>
+<div class="sourceCode" id="cb112"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>@template<span class="op">(</span>Array<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n<span class="op">;</span></span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a>        $<span class="dv">1</span> <span class="op">*</span>body<span class="op">;</span></span>
+<span id="cb112-5"><a href="#cb112-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb112-6"><a href="#cb112-6" aria-hidden="true" tabindex="-1"></a>Array_type<span class="op">(</span><span class="dt">int</span><span class="op">);</span></span>
+<span id="cb112-7"><a href="#cb112-7" aria-hidden="true" tabindex="-1"></a>Array_type<span class="op">(</span><span class="dt">double</span><span class="op">);</span></span></code></pre></div>
+<p>亦即给 <code>Array</code> 模板填上 <code>int</code> 和
+<code>double</code> 参数，展开后，便可得到两个结构体类型的定义，</p>
+<div class="sourceCode" id="cb113"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb113-3"><a href="#cb113-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n<span class="op">;</span></span>
+<span id="cb113-4"><a href="#cb113-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> <span class="op">*</span>body<span class="op">;</span></span>
+<span id="cb113-5"><a href="#cb113-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Array_type_1<span class="op">;</span></span>
+<span id="cb113-6"><a href="#cb113-6" aria-hidden="true" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb113-7"><a href="#cb113-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">size_t</span> n<span class="op">;</span></span>
+<span id="cb113-8"><a href="#cb113-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> <span class="op">*</span>body<span class="op">;</span></span>
+<span id="cb113-9"><a href="#cb113-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> Array_type_2<span class="op">;</span></span></code></pre></div>
+<p>在模板代码中自然不能直接用 <code>Array_type_1</code>
+这样的类型去声明变量，上述的 <code>@template</code> 块会定义
+<code>Array</code> 宏，只需为其设定类型参数，便可声明变量，例如在
+defs.template 中增加以下代码，</p>
+<div class="sourceCode" id="cb114"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>Array<span class="op">(</span><span class="dt">int</span><span class="op">)</span> a<span class="op">;</span></span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>Array<span class="op">(</span><span class="dt">double</span><span class="op">)</span> b<span class="op">;</span></span></code></pre></div>
+<p>则这两行代码会被 gen.sh 展开为</p>
+<div class="sourceCode" id="cb115"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>Array_type_1 a<span class="op">;</span></span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>Array_type_2 b<span class="op">;</span></span></code></pre></div>
+<p>最后来看函数模板的用法。在上述示例所用的 defs.template
+文件中添加以下内容，</p>
+<div class="sourceCode" id="cb116"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>@func_template<span class="ch">(</span>array_print<span class="ch">)(</span>Array<span class="ch">($1)</span> <span class="ch">*</span>a<span class="ch">)</span> {</span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>        printf<span class="ch">(</span>&quot;{&quot;<span class="ch">)</span>;</span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>        for <span class="ch">(</span>size_t i <span class="ch">=</span> <span class="dv">0</span>; i <span class="ch">&lt;</span> a<span class="ch">-&gt;</span>n <span class="ch">-</span> <span class="dv">1</span>; i<span class="ch">++)</span> {</span>
+<span id="cb116-4"><a href="#cb116-4" aria-hidden="true" tabindex="-1"></a>            print<span class="ch">(</span>&quot;&quot;<span class="ch">,</span> _expr<span class="ch">(</span>a<span class="ch">-&gt;</span>body[i]<span class="ch">,</span> <span class="ch">$1),</span> `&quot;<span class="ch">,</span> &quot;&#39;<span class="ch">)</span>;</span>
+<span id="cb116-5"><a href="#cb116-5" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb116-6"><a href="#cb116-6" aria-hidden="true" tabindex="-1"></a>        print<span class="ch">(</span>&quot;&quot;<span class="ch">,</span> _expr<span class="ch">(</span>a<span class="ch">-&gt;</span>body[a<span class="ch">-&gt;</span>n <span class="ch">-</span> <span class="dv">1</span>]<span class="ch">,</span> <span class="ch">$1),</span> &quot;}\n&quot;<span class="ch">)</span>;</span>
+<span id="cb116-7"><a href="#cb116-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>此时，若使用 gen.sh 展开
+defs.template，也会一无所得，但是会暗自定义出
+<code>array_print_func</code> 和 <code>array_print_with</code>
+宏，牵着用于生成函数实例，后者用于根据指定类型调用相应的函数版本，例如在
+defs.template 里增加以下内容</p>
+<div class="sourceCode" id="cb117"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>void array_print_func<span class="ch">(</span>double<span class="ch">)</span>;</span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a>array_print_with<span class="ch">(</span>double<span class="ch">)(</span>b<span class="ch">)</span>;</span></code></pre></div>
+<p>其展开结果为</p>
+<div class="sourceCode" id="cb118"><pre
+class="sourceCode c"><code class="sourceCode c"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> array_print_2<span class="op">(</span>Array_type_2 <span class="op">*</span>a<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>        printf<span class="op">(</span><span class="st">&quot;{&quot;</span><span class="op">);</span></span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a>            print<span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">,</span> a<span class="op">-&gt;</span>body<span class="op">[</span>i<span class="op">],</span> <span class="st">&quot;, &quot;</span><span class="op">);</span></span>
+<span id="cb118-5"><a href="#cb118-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb118-6"><a href="#cb118-6" aria-hidden="true" tabindex="-1"></a>        print<span class="op">(</span><span class="st">&quot;&quot;</span><span class="op">,</span> a<span class="op">-&gt;</span>body<span class="op">[</span>a<span class="op">-&gt;</span>n <span class="op">-</span> <span class="dv">1</span><span class="op">],</span> <span class="st">&quot;}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">);</span></span>
+<span id="cb118-7"><a href="#cb118-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb118-8"><a href="#cb118-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-9"><a href="#cb118-9" aria-hidden="true" tabindex="-1"></a>array_print_2<span class="op">(</span>b<span class="op">);</span></span></code></pre></div>
 <h1 id="总结">总结</h1>
 <p>c-template.m4 以及一干 awk 脚本为 C 语言构造的外围泛型层，与 C++
 模板泛型机制相比，依然相去甚远，但是作为一个试验或雏形，基本能符合我的预期，我甚至有些自信，认为该方案可以用在小型
