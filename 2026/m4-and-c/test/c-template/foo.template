@@ -43,7 +43,7 @@ void array_free_func(int);
 Array(double) *array_new_func(double);
 void array_print_func(double);
 void array_free_func(double);
-
+Array(double) *array_new_func(double);
 dnl 实参转发
 define(`array_new', `$0_with(_type_name($2))($@)')
 

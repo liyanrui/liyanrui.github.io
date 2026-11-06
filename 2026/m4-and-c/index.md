@@ -609,6 +609,12 @@ define(`_var',
 define(`_expr', `$1`'define(`_expr_$1_t_'_scope_, `$2')_def_type(`$2')')
 ```
 
+基于 `_def_type` 宏，可让 `_type_id` 宏也具备为类型名和类型 id 构造映射的能力，
+
+```m4
+define(`_type_id', ``_'_def_type(`$1')indir(`_$1_type_')')
+```
+
 # 函数版本
 
 既然 `_var` 能记录变量类型，`_expr` 能记录表达式类型，那么函数的类型信息是否也能用同样的方式记录下来呢？假设用于记录函数类型的宏为 `_func`，其 `$1` 参数是函数名，`$2` 是函数的参数表，`$3` 是函数的返回类型。`_func` 的展开结果是 C 语言函数的声明，亦即其展开结果的第一部分应该是
@@ -773,7 +779,7 @@ void print_3_2(double a, int b, char *c);
 
 # 实参转发
 
-在处理函数调用时，若能根据实参的类型构造出同样的函数名，则意味着选出了正确的函数，于是便相当于实现了 m4 版本的 C11 的 `_Generic`。对于一个具有多个版本的函数，在 C 语言层面中完全不可能存在，但是在 m4 层面能够以宏的形式存在的，它就像一个 Hub，将数据发送到目标设备。在构造这样的宏之前，先定义一个辅助宏，用于简化获取变量或表达式类型 id 的过程，
+在处理函数调用时，若能根据实参的类型构造出同样的函数名，则意味着选出了正确的函数，于是便相当于实现了 m4 版本的 `_Generic`。一个具有多个版本的函数，在 C 语言层面中完全不可能存在，但是在 m4 层面能够以宏的形式存在的，它就像一个 Hub，将数据发送到目标设备。在构造这样的宏之前，先定义一个辅助宏，用于简化变量或表达式类型 id 获取过程，
 
 ```
 define(`_arg_t', `_`'_type_id(_type_name(`$1'))')
@@ -785,7 +791,7 @@ define(`_arg_t', `_`'_type_id(_type_name(`$1'))')
 define(`print', ``$0'_arg_t($1)_arg_t($3)($1, $2, $3)')
 ```
 
-> 在 m4 宏定义中，`$0` 表示宏名。
+> 在 m4 宏定义中，`$0` 表示宏名。上述代码为了防止 m4 陷入宏的递归展开，为 $0 加了一层引号保护。
 
 `print` 宏能够将其参数转发给匹配的 `print` 函数版本，例如
 
@@ -815,7 +821,7 @@ print_1_1(a, b, c + 2.0);
 
 暂且不必挂关心上述代码是否合乎 C 语法，只需关心 `print` 的实参是否正确转发给了类型与之匹配的函数版本。
 
-在 `_print` 宏的定义里，可以针对一些类型作特化处理，例如，当 `a` 的类型为 `int` 且 `c` 的类型为 `double` 时，可以直接将参数转发给 `printf` 函数，
+在 `print` 宏的定义里，可以针对一些类型作特化处理，例如，当 `a` 的类型为 `int` 且 `c` 的类型为 `double` 时，可以直接将参数转发给 `printf` 函数，
 
 ```m4
 define(`print', 
@@ -925,13 +931,12 @@ define(`print',
                ``$0'_args_t($1, $3)($1, $2, $3)')')
 ```
 
-# 结构体模板
+# 模板
 
 若是基于 m4 为 C 语言提供结构体模板，便可构造一些容器类型，例如
 
 ```m4
-define(`Array_type',`_def_type($1)_def_type($2)dnl
-typedef struct {
+define(`Array_type',`typedef struct {
         $1 n;
         $2 *body;
 } `$0_'_type_id($1)`_'_type_id($2)')
@@ -966,28 +971,13 @@ Array_type_1_1 a;
 Array_type_2_3 b;
 ```
 
-虽然上述方案可行，但是容易吓退一些不熟悉甚至也没有计划学习 m4 语言的人，当尽力令其简化。首先，定义辅助宏 `_def_types`，批量构造类型名与类型 id 的映射，
+虽然上述方案可行，但是容易吓退一些不熟悉甚至也没有计划学习 m4 语言的人，当尽力令其简化。首先，定义辅助宏 `_with`，用于将一组类型转化为类型名的后缀数字，
 
 ```m4
-define(`_def_types', 
-       `ifelse(`$1', `', 
-               `', 
-               `_def_type(`$1')$0(shift($@))')')
-```
-
-再定义 `_type_ids`，批量构造结构体类型名后缀数字，
-
-```m4
-define(`_type_ids', 
-       `_`'ifelse(`$1', `', 
-               `', 
+define(`_with', 
+       `ifelse(`$2', `', 
+               `_type_id(`$1')', 
                `_type_id(`$1')$0(shift($@))')')
-```
-
-定义 `_with` 宏，用于将一组类型转化为类型名后缀，
-
-```m4
-define(`_with', `_type_ids($@)')
 ```
 
 于是，`Array_type` 的定义便可简化为
@@ -1007,7 +997,7 @@ define(`Array', `$0_`type'_with($@)')
 
 > 注意，写成 `$0_type` 不可以，因为 `Array` 的展开结果中含有 `Array_type`，后者会被 m4 再度展开，导致出现错误结果。
 
-现在，m4 形式的 C 结构体模板，在语法上已近乎最简了，但是除了我之外，应该不会有人喜欢。不过，可以为该形式的模板设计一个更简洁的语法，
+现在，m4 形式的 C 结构体模板，在语法上已近乎最简了，但是除了我之外，应该不会有人喜欢。不过，可以为该形式的模板设计一个更简洁的语法，例如
 
 ```
 @template(Array) {
@@ -1042,266 +1032,37 @@ dnl')
 define(`add_with', ``add'_with($@)')
 ```
 
-基于上述设计，我让 DeepSeek 写出了 可将 `@template` 和 `@func_template` 转换为 m4 代码的 awk 脚本，只是该脚本分为预处理、转换和后处理三个阶段，分别对应 preprocess.awk，template-to-m4.awk 和 postprocess.awk 脚本。
+`add_func` 宏用于生成函数模板实例，例如
 
-preprocess.awk 脚本的用途是删除 C 代码注释，并将代码中字面量花括号替换为占位符，其内容为
+```m4
+double add_func(double);
+```
 
-```awk
-# preprocess.awk
-#
-# 用法：awk -f preprocess.awk foo.c
-#
-# 1. 删除 C 注释 // 和 /* */
-# 2. 字符串 "..." 内的 { } 替换为占位符
-# 3. 字符字面量 '{' '}' 整体替换为占位符
-# 4. m4 引号 ` ' 按普通字符处理
-BEGIN {
-    in_block_comment = 0
-    OPEN_STR  = "\\001???001!!!"
-    CLOSE_STR = "\\002???002!!!"
-    OPEN_CHR  = "\\003???003!!!"
-    CLOSE_CHR = "\\004???004!!!"
-}
-{
-    line = $0
-    out = ""
-    n = length(line)
-    state = "normal"
-    for (i = 1; i <= n; i++) {
-        c  = substr(line, i, 1)
-        c2 = substr(line, i + 1, 1)
-        c3 = substr(line, i + 2, 1)
-        if (state == "normal") {
-            if (in_block_comment) {
-                if (c == "*" && c2 == "/") { in_block_comment = 0; i++ }
-            } else if (c == "/" && c2 == "/") {
-                break
-            } else if (c == "/" && c2 == "*") {
-                in_block_comment = 1; i++
-            } else if (c == "\"") {
-                state = "string"; out = out c
-            } else if (c == "'" && c2 == "{" && c3 == "'") {
-                out = out OPEN_CHR; i += 2
-            } else if (c == "'" && c2 == "}" && c3 == "'") {
-                out = out CLOSE_CHR; i += 2
-            } else {
-                out = out c
-            }
-        } else if (state == "string") {
-            if (c == "\\") {
-                out = out c
-                if (i < n) { out = out substr(line, i + 1, 1); i++ }
-            } else if (c == "\"") {
-                out = out c; state = "normal"
-            } else if (c == "{") {
-                out = out OPEN_STR
-            } else if (c == "}") {
-                out = out CLOSE_STR
-            } else {
-                out = out c
-            }
-        }
-    }
-    print out
+假设 `double` 类型的 id 为 2，则上述语句的展开结果为
+
+```c
+double add_2(double a, double b) {
+    return a + b;
 }
 ```
 
-template-to-m4.awk 脚本负责将 C 代码中的 `@template` 和 `@func_template` 转换为 m4 代码，其内容为
+`add_with` 宏用于生成特定版本的函数名，以调用对应的函数，例如
 
-```awk
-# template-to-m4.awk
-#
-# 前提：输入已由 preprocess.awk 处理。
-# 只识别 @template / @func_template，只数真花括号。
-BEGIN {
-    in_template = 0; t_name = ""
-    in_func = 0; f_name = ""
-    brace_depth = 0
-    scan_pos = 0
-}
-
-function count_braces(text,    i, n, c, out) {
-    n = length(text)
-    out = ""
-    scan_pos = 0
-    for (i = 1; i <= n; i++) {
-        c = substr(text, i, 1)
-        if (c == "{") {
-            brace_depth++
-            out = out c
-        } else if (c == "}") {
-            brace_depth--
-            if (brace_depth == 0) { scan_pos = i; break }
-            out = out c
-        } else {
-            out = out c
-        }
-    }
-    return out
-}
-
-!in_template && !in_func {
-    line = $0
-    tp = index(line, "@template(")
-    fp = index(line, "@func_template(")
-
-    if (fp > 0 && (tp == 0 || fp < tp)) {
-        prefix = substr(line, 1, fp - 1)
-        rest   = substr(line, fp)
-        p1 = index(rest, "("); q1 = index(rest, ")")
-        if (q1 == 0) { print line; next }
-        name = substr(rest, p1 + 1, q1 - p1 - 1)
-        if (name !~ /^[A-Za-z_][A-Za-z0-9_]*$/) { print line; next }
-        after = substr(rest, q1 + 1)
-        if (substr(after, 1, 1) != "(") { print line; next }
-        depth = 0; args_end = 0
-        for (i = 1; i <= length(after); i++) {
-            c = substr(after, i, 1)
-            if (c == "(") depth++
-            else if (c == ")") { depth--; if (depth == 0) { args_end = i - 1; break } }
-        }
-        if (args_end == 0) { print line; next }
-        args = substr(after, 2, args_end - 1)
-        rest2 = substr(after, args_end + 2)
-        sub(/^[ \t]+/, "", rest2)
-        if (substr(rest2, 1, 1) != "{") { print line; next }
-        tail = substr(rest2, 2); sub(/[ \t]+$/, "", tail)
-
-        brace_depth = 1
-        out = count_braces(tail)
-
-        printf "divert(-1)\n"
-        printf "%s", prefix
-        printf "define(`%s_type', ``%s'_with($@)(%s) {", name, name, args
-        printf "%s", out
-        if (scan_pos > 0) {
-            suffix = substr(tail, scan_pos + 1)
-            printf "}\n"
-            printf "dnl')\n"
-            printf "define(`%s', ``$0'_with($@)')%s\n", name, suffix
-            printf "divert(0)dnl\n"
-        } else {
-            printf "\n"
-            f_name = name; in_func = 1
-        }
-        next
-    }
-
-    if (tp > 0) {
-        prefix = substr(line, 1, tp - 1)
-        rest   = substr(line, tp)
-        p = index(rest, "("); q = index(rest, ")")
-        if (q == 0) { print line; next }
-        name = substr(rest, p + 1, q - p - 1)
-        if (name !~ /^[A-Za-z_][A-Za-z0-9_]*$/) { print line; next }
-        after = substr(rest, q + 1); sub(/^[ \t]+/, "", after)
-        if (substr(after, 1, 1) != "{") { print line; next }
-        tail = substr(after, 2); sub(/[ \t]+$/, "", tail)
-
-        brace_depth = 1
-        out = count_braces(tail)
-
-        printf "divert(-1)\n"
-        printf "%s", prefix
-        printf "define(`%s_type', `typedef struct {", name
-        printf "%s", out
-        if (scan_pos > 0) {
-            suffix = substr(tail, scan_pos + 1)
-            printf "} `$0'_with($@)')\n"
-            printf "define(`%s', `$0_`type'_with($@)')%s\n", name, suffix
-            printf "divert(0)dnl\n"
-        } else {
-            printf "\n"
-            t_name = name; in_template = 1
-        }
-        next
-    }
-
-    print line
-    next
-}
-
-in_func {
-    line = $0
-    out = count_braces(line)
-    if (scan_pos > 0) {
-        suffix = substr(line, scan_pos + 1)
-        printf "%s}\n", out
-        printf "dnl')\n"
-        printf "define(`%s', ``$0'_with($@)')%s\n", f_name, suffix
-        printf "divert(0)dnl\n"
-        in_func = 0; f_name = ""
-    } else {
-        print out
-    }
-    next
-}
-
-in_template {
-    line = $0
-    out = count_braces(line)
-    if (scan_pos > 0) {
-        suffix = substr(line, scan_pos + 1)
-        printf "%s} `$0'_with($@)')\n", out
-        printf "define(`%s', `$0_`type'_with($@)')%s\n", t_name, suffix
-        printf "divert(0)dnl\n"
-        in_template = 0; t_name = ""
-    } else {
-        print out
-    }
-    next
-}
-
-END {
-    if (in_template) printf "ERROR: unterminated @template(%s)\n", t_name > "/dev/stderr"
-    if (in_func)     printf "ERROR: unterminated @func_template(%s)\n", f_name > "/dev/stderr"
-}
+```m4
+add_with(double)(a, b);
 ```
 
-postprocess.awk 脚本将花括号占位符换回原字符，其内容为
+展开结果为
 
-```awk
-# postprocess.awk
-#
-# 将占位符换回原字符。按字面匹配，不用正则。
-
-BEGIN {
-    OPEN_STR  = "\\001???001!!!"
-    CLOSE_STR = "\\002???002!!!"
-    OPEN_CHR  = "\\003???003!!!"
-    CLOSE_CHR = "\\004???004!!!"
-}
-
-function replace_all(s, from, to,    out, p) {
-    out = ""
-    while ((p = index(s, from)) > 0) {
-        out = out substr(s, 1, p - 1) to
-        s = substr(s, p + length(from))
-    }
-    return out s
-}
-
-{
-    line = $0
-    line = replace_all(line, OPEN_STR,  "{")
-    line = replace_all(line, CLOSE_STR, "}")
-    line = replace_all(line, OPEN_CHR,  "'{'")
-    line = replace_all(line, CLOSE_CHR, "'}'")
-    print line
-}
+```c
+add_2(a, b);
 ```
 
-这三个脚本需要形成一条管道命令方能完成结构体和函数模板语法的转换，例如
-
-```console
-$ awk -f preprocess.awk foo.c \
-      | awk -f template-to-m4.awk \
-      | awk -f postprocess.awk
-```
+基于上述设计，我让 DeepSeek 写出了 可将 `@template` 和 `@func_template` 转换为 m4 代码的 awk 脚本，只是该脚本分为预处理、转换和后处理三个阶段，分别对应 preprocess.awk，template-to-m4.awk 和 postprocess.awk 脚本。这三个脚本的具体内容和用途见下一节。
 
 # 泛型层示例
 
-现在，可以收网了。我们的收获是，
+现在可以收网了，我们的收获是，
 
 * c-template.m4：提供 `_begin_scope_`，`_end_scope_`，`_var`, `_expr`, `_func` 等关键字；
 * snap-types.awk：从函数参数表中类型标记 `<...>` 中获取类型；
@@ -1459,6 +1220,8 @@ int main(void) {
         array_free_2(b);
         return 0;
 }
-
 ```
 
+# 总结
+
+c-template.m4 以及一干 awk 脚本为 C 语言构造的外围泛型层，与 C++ 模板泛型机制相比，依然相去甚远，但是作为一个试验或雏形，基本能符合我的预期，我甚至有些自信，认为该方案可以用在小型 C 项目里，前提是不要畏惧 m4 语言，否则实参转发给指定的函数或代码片段过程不太容易实现，因为该过程需要手写一些 m4 代码，以处理各种难以自动化的情况。此外，本文档所讨论的内容，对于 m4 语言的初学者而言，可以体验以元编程的方式如何创造出一套晦涩的咒语。
