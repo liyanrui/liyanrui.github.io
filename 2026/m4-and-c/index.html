@@ -772,7 +772,7 @@ m4 版本的 <code>_Generic</code>。一个具有多个版本的函数，在 C
 语言层面中完全不可能存在，但是在 m4 层面能够以宏的形式存在的，它就像一个
 Hub，将数据发送到目标设备。在构造这样的宏之前，先定义一个辅助宏，用于简化变量或表达式类型
 id 获取过程，</p>
-<pre><code>define(`_arg_t&#39;, `_`&#39;_type_id(_type_name(`$1&#39;))&#39;)</code></pre>
+<pre><code>define(`_arg_t&#39;, `_type_id(_type_name(`$1&#39;))&#39;)</code></pre>
 <p>以三个参数的多版本 <code>print</code> 函数为例，若根据第 1 个和第 3
 个参数完成函数匹配和调用，其 m4 宏可写为</p>
 <pre><code>define(`print&#39;, ``$0&#39;_arg_t($1)_arg_t($3)($1, $2, $3)&#39;)</code></pre>

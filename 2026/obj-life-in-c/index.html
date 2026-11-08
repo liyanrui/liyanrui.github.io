@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>基于 m4 管理 C 对象的生命域</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">基于 m4 管理 C 对象的生命域
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2026 年 11 月 07 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#生命域标记" id="toc-生命域标记">生命域标记</a></li>
+  <li><a href="#内存分配与释放"
+  id="toc-内存分配与释放">内存分配与释放</a></li>
+  <li><a href="#自动构造生命域"
+  id="toc-自动构造生命域">自动构造生命域</a></li>
+  <li><a href="#一些特殊情况"
+  id="toc-一些特殊情况">一些特殊情况</a></li>
+  <li><a href="#总结" id="toc-总结">总结</a></li>
+  </ul>
+</nav>
+
+<h1 id="前言">前言</h1>
+<p>在 C++ 和 Rust
+这样的语言里，一个对象在退出其所属作用域时，其占用的资源通常可被自动释放。C
+语言没有这样的机制，对象的资源无论是分配还是释放，皆需手工完成。不过，基于
+m4 语言，可以在 C
+语言的外围，为对象构造生命域，当对象退出其所属生命域时，便自动释放其资源。</p>
+<blockquote>
+<p>不知 m4 者，可阅读​<a
+href="https://zhuanlan.zhihu.com/p/2100470786247213189">《m4
+的咒语》</a>； 对 m4 有所了解但缺乏实践经验者，可阅读​<a
+href="https://zhuanlan.zhihu.com/p/2102055308759774229">《用 m4 武装
+C》</a>； 有 m4 实践经验者，若想有所精进，可阅读​<a
+href="https://zhuanlan.zhihu.com/p/2102122424175271972">《GNU m4
+技法集录》</a>以及本文。</p>
+</blockquote>
+<h1 id="生命域标记">生命域标记</h1>
+<p>C 语言的每个作用域可以包含 1
+个或多个生命域。每个生命域都要维护一个表达生命域深度的宏变量，该变量为</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_life_n_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span></span></code></pre></div>
+<p>生命域的开始标记是 <code>_life_start_</code>，其定义为，</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_life_start_&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_life_n_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_life_n_<span class="ch">))</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>生命域的结束标记是 <code>_life_stop_</code>，其定义为</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_life_stop_&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_life_n_&#39;<span class="ch">,</span> <span class="kw">decr</span><span class="ch">(</span>_life_n_<span class="ch">))</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>以下文本可用于验证生命域开始和结束标记能否维护生命域深度，</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        <span class="co">// _life_start_</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        _life_n_</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                <span class="co">// _life_start_</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                _life_n_</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                <span class="co">// _life_stop_</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        _life_n_</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">// _life_stop_</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>展开结果为</p>
+<pre><code>if (1) {
+        // 
+        1
+        if (1) {
+                // 
+                2
+                // 
+        }
+        1
+        // 
+}</code></pre>
+<h1 id="内存分配与释放">内存分配与释放</h1>
+<p>需要进入生命域的对象，其内存必须由 <code>_malloc</code>
+宏分配。<code>_malloc</code> 的定义为</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_malloc&#39;<span class="ch">,</span> `<span class="ch">$2</span> <span class="ch">$1</span> <span class="ch">=</span> malloc<span class="ch">($3)</span><span class="kw">pushdef</span><span class="ch">(</span>`_free_&#39;_life_n_<span class="ch">,</span> `free<span class="ch">($1)</span>;&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>以下代码</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// _life_start_</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>_malloc<span class="op">(</span>a<span class="op">,</span> <span class="dt">int</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>_malloc<span class="op">(</span>b<span class="op">,</span> <span class="dt">double</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>indir<span class="op">(</span>`_free_<span class="ch">&#39;_</span><span class="er">life_n_)popdef(`_free_</span><span class="ch">&#39;</span>_life_n_<span class="op">)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>indir<span class="op">(</span>`_free_<span class="ch">&#39;_</span><span class="er">life_n_)popdef(`_free_</span><span class="ch">&#39;</span>_life_n_<span class="op">)</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">// _life_stop_</span></span></code></pre></div>
+<p>上述代码的展开结果为</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">*</span> a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> <span class="op">*</span> b <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>free<span class="op">(</span>b<span class="op">);</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>free<span class="op">(</span>a<span class="op">);</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">// </span></span></code></pre></div>
+<p>由于生命域中每个对象的 <code>free</code>
+语句已经存入了宏定义栈，释放生命域中每个对象的方法，调出位于栈顶的
+<code>free</code> 语句，然后将其宿主宏从栈中弹出，该过程由
+<code>_exec_free_</code> 宏完成，</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode m4"><code class="sourceCode m4"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_exec_free_&#39;<span class="ch">,</span> `indir<span class="ch">(</span>`_free_&#39;_life_n_<span class="ch">)</span><span class="kw">popdef</span><span class="ch">(</span>`_free_&#39;_life_n_<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p><code>_free</code> 宏递归运行，每次递归皆会调用
+<code>_exec_free_</code> 输出一条 <code>free</code>
+语句，直至宏定义栈为空，</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_free_&#39;<span class="ch">,</span> `ifdef<span class="ch">(</span>`_free_&#39;_life_n_<span class="ch">,</span> `_exec_free_<span class="ch">$0</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>以下代码构造了两层生命域，用于验证 <code>_free_</code> 宏，</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">// _life_start_</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>_malloc<span class="op">(</span>a<span class="op">,</span> <span class="dt">int</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>_malloc<span class="op">(</span>b<span class="op">,</span> <span class="dt">double</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// _life_start_</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        _malloc<span class="op">(</span>c<span class="op">,</span> <span class="dt">int</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        _malloc<span class="op">(</span>d<span class="op">,</span> <span class="dt">double</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        _free_</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// _life_stop_</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>_free_</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">// _life_stop_</span></span></code></pre></div>
+<p>上述代码的展开结果为</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">// </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">*</span> a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> <span class="op">*</span> b <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// </span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> <span class="op">*</span> c <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> <span class="op">*</span> d <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>d<span class="op">);</span>free<span class="op">(</span>c<span class="op">);</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// </span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>free<span class="op">(</span>b<span class="op">);</span>free<span class="op">(</span>a<span class="op">);</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">// </span></span></code></pre></div>
+<p>你会发现除了 <code>free</code> 语句不能换行，并无其他问题。让
+<code>free</code> 换行并不困难，只需将 <code>_free_</code> 定义为</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_free_&#39;<span class="ch">,</span> `ifdef<span class="ch">(</span>`_free_&#39;_life_n_<span class="ch">,</span> `_exec_free_</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ch">$0</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>只是增加换行后，第一条 <code>free</code> 语句之前的缩进在后续
+<code>free</code> 语句里不会出现，因为 <code>_free_</code>
+宏并不知道它前面的缩进多长。不过，基于生命域的深度值能够构造缩进，但前提是需要固定每一层生命域的缩进长度。这只是一个想法，我无意实现，因为这些
+<code>free</code> 语句位于同一行，对于 C 语言而言是合法的。</p>
+<p><code>_free_</code> 不需要我们手工调用，可以将其植入
+<code>_life_stop_</code> 宏，由后者调用，</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_life_stop_&#39;<span class="ch">,</span> `_free_`&#39;define<span class="ch">(</span>`_life_n_&#39;<span class="ch">,</span> <span class="kw">decr</span><span class="ch">(</span>_life_n_<span class="ch">))</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>只是 <code>_life_stop_</code>
+不能再像前面的示例里那样放在注释里了，例如</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">// _life_start_</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>_malloc<span class="op">(</span>a<span class="op">,</span> <span class="dt">int</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>_malloc<span class="op">(</span>b<span class="op">,</span> <span class="dt">double</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">// _life_start_</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        _malloc<span class="op">(</span>c<span class="op">,</span> <span class="dt">int</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        _malloc<span class="op">(</span>d<span class="op">,</span> <span class="dt">double</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>        _life_stop_ <span class="co">//</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>_life_stop_ <span class="co">//</span></span></code></pre></div>
+<p>展开结果为</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> <span class="op">*</span> a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="dt">double</span> <span class="op">*</span> b <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        <span class="co">// </span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> <span class="op">*</span> c <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> <span class="op">*</span> d <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>d<span class="op">);</span>free<span class="op">(</span>c<span class="op">);</span> <span class="co">//</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>free<span class="op">(</span>b<span class="op">);</span>free<span class="op">(</span>a<span class="op">);</span> <span class="co">//</span></span></code></pre></div>
+<p>不过，从形式上看，<code>// _life_start_</code> 和
+<code>_life_stop_ //</code> 也能构成一种对称结构。</p>
+<h1 id="自动构造生命域">自动构造生命域</h1>
+<p>若是写一个程序，将 C 代码里表达作用域的花括号全部替换为
+<code>_life_start_</code> 和
+<code>_life_stop_</code>，这意味着我们拥有了一个隐形的 C
+内存管理层。这样的脚本，之前我已经让 DeepSeek 写出了，见「<a
+href="https://zhuanlan.zhihu.com/p/2101264471725438962">用 m4 武装 C |
+§3. 作用域</a>」，对该文中的 trace-scopes.awk 脚本只需稍加改动，</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trace-scopes.awk</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 用法：awk -f trace-scopes.awk foo-meta.c &gt; foo-meta-scoped.c</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 功能：</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   1. 将 C 代码中的作用域花括号 { } 替换为 _life_start_ / _life_stop_</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   2. 跳过字符串、字符字面量、行注释、块注释中的花括号</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   3. 跳过预处理指令（# 开头，含 \ 续行）中的花括号</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   4. 处理行尾反斜杠续行（行注释、字符串、字符字面量）</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   5. 对 _malloc 的托管变量名做跨作用域重名检查，警告输出到 stderr</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 约定：</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   - _malloc 的调用不跨行</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   - _obj_life 的变量名重名不做检查，靠约定</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   - 字符串/字符字面量跨行仅通过行尾 \ 续行实现</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    state       <span class="op">=</span> <span class="st">&quot;normal&quot;</span>   <span class="co"># normal | string | char | line_comment | block_comment</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    in_pp       <span class="op">=</span> <span class="dv">0</span>          <span class="co"># 是否在预处理指令中</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    pp_cont     <span class="op">=</span> <span class="dv">0</span>          <span class="co"># 预处理指令是否续行</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    scope_depth <span class="op">=</span> <span class="dv">0</span>          <span class="co"># 与 m4 的 _life_n_ 同步</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> <span class="dt">$0</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>    n    <span class="op">=</span> <span class="fu">length</span><span class="op">(</span>line<span class="op">)</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    cont <span class="op">=</span> <span class="op">(</span>n <span class="op">&gt;</span> <span class="dv">0</span> <span class="op">&amp;&amp;</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> n<span class="op">,</span> <span class="dv">1</span><span class="op">)</span> <span class="op">==</span> <span class="st">&quot;</span><span class="sc">\\</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 预处理行检测：仅在 normal 状态、非续行中、行首（去空白）为 # 时进入</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;normal&quot;</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>pp_cont<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>        tmp <span class="op">=</span> line</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> tmp<span class="op">)</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="fu">substr</span><span class="op">(</span>tmp<span class="op">,</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span> <span class="op">==</span> <span class="st">&quot;#&quot;</span><span class="op">)</span> in_pp <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>in_pp<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>        <span class="kw">print</span> line</span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>cont<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>            pp_cont <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>            in_pp   <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>            pp_cont <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>        <span class="kw">next</span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>i <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;=</span> n<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>        c  <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>        c2 <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> i <span class="op">+</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;normal&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;/&quot;</span> <span class="op">&amp;&amp;</span> c2 <span class="op">==</span> <span class="st">&quot;/&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out c c2<span class="op">;</span> i<span class="op">++;</span> state <span class="op">=</span> <span class="st">&quot;line_comment&quot;</span></span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;/&quot;</span> <span class="op">&amp;&amp;</span> c2 <span class="op">==</span> <span class="st">&quot;*&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out c c2<span class="op">;</span> i<span class="op">++;</span> state <span class="op">=</span> <span class="st">&quot;block_comment&quot;</span></span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;</span><span class="sc">\</span><span class="er">&quot;</span><span class="st">&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out c<span class="op">;</span> state <span class="op">=</span> <span class="st">&quot;string&quot;</span></span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;&#39;&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out c<span class="op">;</span> state <span class="op">=</span> <span class="st">&quot;char&quot;</span></span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;{&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out <span class="st">&quot;_life_start_&quot;</span></span>
+<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a>                scope_depth<span class="op">++</span></span>
+<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;}&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out <span class="st">&quot;_life_stop_&quot;</span></span>
+<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a>                <span class="co"># 清理当前作用域的托管变量记录</span></span>
+<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> <span class="op">(</span>k <span class="kw">in</span> managed<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">split</span><span class="op">(</span>k<span class="op">,</span> parts<span class="op">,</span> <span class="bu">SUBSEP</span><span class="op">)</span></span>
+<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> <span class="op">(</span>parts[<span class="dv">1</span>] <span class="op">+</span> <span class="dv">0</span> <span class="op">==</span> scope_depth<span class="op">)</span> <span class="kw">delete</span> managed[k]</span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a>                scope_depth<span class="op">--</span></span>
+<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a>                <span class="co"># 检测 _malloc 变量名，用于重名检查</span></span>
+<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a>                prev <span class="op">=</span> <span class="op">(</span>i <span class="op">&gt;</span> <span class="dv">1</span><span class="op">)</span> <span class="op">?</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> i <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span> <span class="op">:</span> <span class="st">&quot; &quot;</span></span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="op">(</span>prev <span class="op">!~</span> <span class="ot">/[</span><span class="ss">A</span><span class="ot">-</span><span class="ss">Za</span><span class="ot">-</span><span class="ss">z0</span><span class="ot">-</span><span class="ss">9_</span><span class="ot">]/</span> <span class="op">&amp;&amp;</span> c <span class="op">==</span> <span class="st">&quot;_&quot;</span> <span class="op">&amp;&amp;</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> i<span class="op">,</span> <span class="dv">7</span><span class="op">)</span> <span class="op">==</span> <span class="st">&quot;_malloc&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a>                    j <span class="op">=</span> i <span class="op">+</span> <span class="dv">8</span></span>
+<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">while</span> <span class="op">(</span>j <span class="op">&lt;=</span> n <span class="op">&amp;&amp;</span> <span class="op">(</span><span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> j<span class="op">,</span> <span class="dv">1</span><span class="op">)</span> <span class="op">==</span> <span class="st">&quot; &quot;</span> <span class="op">||</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> j<span class="op">,</span> <span class="dv">1</span><span class="op">)</span> <span class="op">==</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span><span class="op">))</span> j<span class="op">++</span></span>
+<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a>                    k <span class="op">=</span> j</span>
+<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">while</span> <span class="op">(</span>k <span class="op">&lt;=</span> n <span class="op">&amp;&amp;</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> k<span class="op">,</span> <span class="dv">1</span><span class="op">)</span> <span class="op">~</span> <span class="ot">/[</span><span class="ss">A</span><span class="ot">-</span><span class="ss">Za</span><span class="ot">-</span><span class="ss">z0</span><span class="ot">-</span><span class="ss">9_</span><span class="ot">]/</span><span class="op">)</span> k<span class="op">++</span></span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a>                    name <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> j<span class="op">,</span> k <span class="op">-</span> j<span class="op">)</span></span>
+<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> <span class="op">(</span>name <span class="op">!=</span> <span class="st">&quot;&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">for</span> <span class="op">(</span>d <span class="op">=</span> <span class="dv">1</span><span class="op">;</span> d <span class="op">&lt;=</span> scope_depth<span class="op">;</span> d<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a>                            <span class="cf">if</span> <span class="op">((</span>d<span class="op">,</span> name<span class="op">)</span> <span class="kw">in</span> managed<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a>                                <span class="kw">printf</span> <span class="st">&quot;warning: managed variable </span><span class="sc">\</span><span class="er">&quot;</span><span class="st">%s</span><span class="sc">\</span><span class="er">&quot;</span><span class="st"> at depth %d shadows depth %d</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">,</span> \</span>
+<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a>                                       name<span class="op">,</span> scope_depth<span class="op">,</span> d <span class="op">&gt;</span> <span class="st">&quot;/dev/stderr&quot;</span></span>
+<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a>                                <span class="cf">break</span></span>
+<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a>                            <span class="op">}</span></span>
+<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a>                        <span class="op">}</span></span>
+<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a>                        managed[scope_depth<span class="op">,</span> name] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a>                    <span class="op">}</span></span>
+<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb17-90"><a href="#cb17-90" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out c</span>
+<span id="cb17-91"><a href="#cb17-91" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;string&quot;</span> <span class="op">||</span> state <span class="op">==</span> <span class="st">&quot;char&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a>            out <span class="op">=</span> out c</span>
+<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;</span><span class="sc">\\</span><span class="st">&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a>                i<span class="op">++;</span> out <span class="op">=</span> out <span class="fu">substr</span><span class="op">(</span>line<span class="op">,</span> i<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;string&quot;</span> <span class="op">&amp;&amp;</span> c <span class="op">==</span> <span class="st">&quot;</span><span class="sc">\</span><span class="er">&quot;</span><span class="st">&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> <span class="st">&quot;normal&quot;</span></span>
+<span id="cb17-98"><a href="#cb17-98" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;char&quot;</span> <span class="op">&amp;&amp;</span> c <span class="op">==</span> <span class="st">&quot;&#39;&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> <span class="st">&quot;normal&quot;</span></span>
+<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;line_comment&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a>            out <span class="op">=</span> out c</span>
+<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;block_comment&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a>            out <span class="op">=</span> out c</span>
+<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;*&quot;</span> <span class="op">&amp;&amp;</span> c2 <span class="op">==</span> <span class="st">&quot;/&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> out c2<span class="op">;</span> i<span class="op">++;</span> state <span class="op">=</span> <span class="st">&quot;normal&quot;</span></span>
+<span id="cb17-107"><a href="#cb17-107" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb17-108"><a href="#cb17-108" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a>    <span class="kw">print</span> out</span>
+<span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 行注释在行尾结束，除非有 \ 续行</span></span>
+<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="st">&quot;line_comment&quot;</span> <span class="op">&amp;&amp;</span> <span class="op">!</span>cont<span class="op">)</span> state <span class="op">=</span> <span class="st">&quot;normal&quot;</span></span>
+<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>便可用于将 C 的作用域替换为生命域。例如，假设 foo.c 的内容为</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>        _malloc<span class="op">(</span>a<span class="op">,</span> <span class="dt">int</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>        _malloc<span class="op">(</span>b<span class="op">,</span> <span class="dt">double</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>                _malloc<span class="op">(</span>c<span class="op">,</span> <span class="dt">int</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                _malloc<span class="op">(</span>d<span class="op">,</span> <span class="dt">double</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>可见 foo.c 中并无生命域标记。使用 trace-scopes.awk 处理 foo.c，</p>
+<pre class="console"><code>$ awk -f trace-scopes.awk foo.c</code></pre>
+<p>结果为</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> _life_start_</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>        _malloc<span class="op">(</span>a<span class="op">,</span> <span class="dt">int</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>        _malloc<span class="op">(</span>b<span class="op">,</span> <span class="dt">double</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> _life_start_</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>                _malloc<span class="op">(</span>c<span class="op">,</span> <span class="dt">int</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>                _malloc<span class="op">(</span>d<span class="op">,</span> <span class="dt">double</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        _life_stop_</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>_life_stop_</span></code></pre></div>
+<p>只需重新定义 <code>_life_start_</code> 和
+<code>_life_stop_</code>，</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_life_start_&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_life_n_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_life_n_<span class="ch">))</span>{&#39;<span class="ch">)</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_life_stop_&#39;<span class="ch">,</span> `_free_}<span class="kw">define</span><span class="ch">(</span>`_life_n_&#39;<span class="ch">,</span> <span class="kw">decr</span><span class="ch">(</span>_life_n_<span class="ch">))</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>亦即令生命域标记的展开结果含有花括号，用于还原 C 的作用域。于是，上述
+awk 脚本的处理结果最终会被展开为</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> <span class="op">*</span> a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> <span class="op">*</span> b <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span><span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>                <span class="dt">int</span> <span class="op">*</span> c <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>                <span class="dt">double</span> <span class="op">*</span> d <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>d<span class="op">);</span>free<span class="op">(</span>c<span class="op">);}</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>free<span class="op">(</span>b<span class="op">);</span>free<span class="op">(</span>a<span class="op">);}</span></span></code></pre></div>
+<p>虽然代码并不好看，但是这些代码是让 C
+编译器看的，你无需在意它是否美好。</p>
+<h1 id="一些特殊情况">一些特殊情况</h1>
+<p>前文已经实现了一个基于 m4 的隐形的 C 内存管理层。不过，需要考虑
+<code>return</code>，<code>break</code>，<code>continue</code>，<code>goto</code>
+等跳转语句，它们可以让程序流从 C
+的当前作用域中跳出，导致当前生命域无法终止，内存出现泄漏。</p>
+<p><code>return</code>
+语句的问题可以解决，只需在一个递归过程中，调用各层生命域所保存的
+<code>free</code>
+语句即可。只是在此过程中，生命域栈会被逐层清空，需要将每个被调用的
+<code>free</code>
+语句存入一个临时栈，最后基于该临时栈恢复生命域栈，该过程由
+<code>_exec_return</code> 宏实现，</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_exec_return&#39;<span class="ch">,</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>`ifdef<span class="ch">(</span>`_free_&#39;<span class="ch">$1,</span> </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>`pushdef<span class="ch">(</span>`_free_tmp_&#39;<span class="ch">$1,</span> <span class="kw">defn</span><span class="ch">(</span>`_free_&#39;<span class="ch">$1))</span><span class="kw">dnl</span> 保存 free 语句</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="kw">indir</span><span class="ch">(</span>`_free_&#39;<span class="ch">$1)</span><span class="kw">popdef</span><span class="ch">(</span>`_free_&#39;<span class="ch">$1)$0($1)</span>&#39;<span class="ch">,</span> <span class="kw">dnl</span> 执行 free 语句</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>`ifelse<span class="ch">(</span><span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$1</span> <span class="ch">&gt;</span> <span class="dv">0</span> &#39;<span class="ch">),</span> <span class="dv">1</span><span class="ch">,</span> `<span class="ch">$0(</span><span class="kw">decr</span><span class="ch">($1))</span>&#39;<span class="ch">)</span>&#39;dnl 递归遍历</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>从各层临时栈中恢复生命域栈的过程由 <code>_recover_life_stack</code>
+完成，</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_recover_life_stack&#39;<span class="ch">,</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>`ifdef<span class="ch">(</span>`_free_tmp_&#39;<span class="ch">$1,</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>`pushdef<span class="ch">(</span>`_free_&#39;<span class="ch">$1,</span> <span class="kw">defn</span><span class="ch">(</span>`_free_tmp_&#39;<span class="ch">$1))</span><span class="kw">popdef</span><span class="ch">(</span>`_free_tmp_&#39;<span class="ch">$1)$0($1)</span>&#39;<span class="ch">,</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>`ifelse<span class="ch">(</span><span class="kw">eval</span><span class="ch">($1</span> <span class="ch">&lt;</span> _life_n_<span class="ch">),</span> <span class="dv">1</span><span class="ch">,</span> `<span class="ch">$0(</span><span class="kw">incr</span><span class="ch">($1))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p><code>_return</code> 宏在完成调用各层 <code>free</code>
+语句后，恢复生命栈，最后展开为 <code>return</code> 语句，</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_return&#39;<span class="ch">,</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>       `do {_exec_return<span class="ch">(</span>_life_n_<span class="ch">)</span>_recover_life_stack<span class="ch">(</span><span class="dv">1</span><span class="ch">)</span><span class="kw">dnl</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>return <span class="ch">$1</span>;} while <span class="ch">(</span><span class="dv">0</span><span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p><code>break</code> 和 <code>continue</code>
+语句的生命域问题不好解决，因为与它们配合使用的
+<code>for</code>，<code>while</code> 以及 <code>switch</code>
+等语句的作用域实际上是同一个作用域在时间作用下的叠加结构，而生命域没有时间。此外，在循环语句中，<code>break</code>
+和 <code>continue</code>
+可能会在嵌套的条件语句里出现，需要为其寻找最近的有效生命域层，但最近的有效生命域层可能位于循环语句之外。最难以解决的是
+<code>goto</code>
+语句，在该语句面前，函数内部的作用域相当于不存在，故而生命域也不存在。对于这些语句的生命域维护，最好的方案是不解决，而是给出一个普适的约定，<strong>对于任一对象，若确定其所有权需要转移到其他作用域，则其内存资源只能用
+C
+原生的机制管理。</strong>本质上，<code>break</code>，<code>continue</code>
+以及 <code>goto</code> 会对一些对象产生了所有权转移效用。</p>
+<p>一些对象的内存是由特定函数分配的，例如动态数组、链表、树等容器对象，通常有专用的分配和释放函数，需要定义一个更具一般性的内存分配宏
+<code>_obj_life</code>，</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_obj_life&#39;<span class="ch">,</span> `<span class="ch">$1</span>`&#39;pushdef<span class="ch">(</span>`_free_&#39;_life_n_<span class="ch">,</span> `<span class="ch">$2</span>;&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span></code></pre></div>
+<p>例如，假设 <code>List</code> 是链表类型，构造链表对象的函数是
+<code>list_new</code>，释放链表的函数是 <code>lise_free</code>，则
+<code>_obj_life</code> 的用法为</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>        List <span class="op">*</span>a <span class="op">=</span> _obj_life<span class="op">(</span>list_new<span class="op">(),</span> list_free<span class="op">(</span>a<span class="op">));</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码的展开结果为</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>        List <span class="op">*</span>a <span class="op">=</span> list_new<span class="op">();</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>list_free<span class="op">(</span>a<span class="op">);}</span></span></code></pre></div>
+<p>还有一种情况，在嵌套的 C
+作用域里，内层作用域的对象可以与外层作用域的对象重名，而
+<code>_malloc</code> 宏所保存的 <code>free</code>
+语句基于对象名释放内存，对于正常的生命域而言，不会出现问题，但是若是在内层作用域里调用了
+<code>_return</code>
+宏，便会出现对象被重复释放内存的情况。为此，还需作一个约定，<strong>在嵌套的作用域中，不要创建同名对象。</strong></p>
+<h1 id="总结">总结</h1>
+<p>除了上述的 trace-scopes.awk 脚本，我将 C 语言生命域所需的所有的 m4
+代码汇总为 c-life.m4 文件，</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_life_n_&#39;<span class="ch">,</span> <span class="dv">0</span><span class="ch">)</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_life_start_&#39;<span class="ch">,</span> `define<span class="ch">(</span>`_life_n_&#39;<span class="ch">,</span> <span class="kw">incr</span><span class="ch">(</span>_life_n_<span class="ch">))</span>{&#39;<span class="ch">)</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_malloc&#39;<span class="ch">,</span> `<span class="ch">$2</span> <span class="ch">$1</span> <span class="ch">=</span> malloc<span class="ch">($3)</span><span class="kw">pushdef</span><span class="ch">(</span>`_free_&#39;_life_n_<span class="ch">,</span> `free<span class="ch">($1)</span>;&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_exec_free_&#39;<span class="ch">,</span> `indir<span class="ch">(</span>`_free_&#39;_life_n_<span class="ch">)</span><span class="kw">popdef</span><span class="ch">(</span>`_free_&#39;_life_n_<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_free_&#39;<span class="ch">,</span> `ifdef<span class="ch">(</span>`_free_&#39;_life_n_<span class="ch">,</span> `_exec_free_`&#39;<span class="ch">$0</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_life_stop_&#39;<span class="ch">,</span> `_free_}<span class="kw">define</span><span class="ch">(</span>`_life_n_&#39;<span class="ch">,</span> <span class="kw">decr</span><span class="ch">(</span>_life_n_<span class="ch">))</span>&#39;<span class="ch">)</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_exec_return&#39;<span class="ch">,</span> </span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>       `ifdef<span class="ch">(</span>`_free_&#39;<span class="ch">$1,</span> </span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>              `indir<span class="ch">(</span>`_free_&#39;<span class="ch">$1)</span><span class="kw">pushdef</span><span class="ch">(</span>`_free_tmp_&#39;<span class="ch">$1,</span> <span class="kw">defn</span><span class="ch">(</span>`_free_&#39;<span class="ch">$1))</span><span class="kw">popdef</span><span class="ch">(</span>`_free_&#39;<span class="ch">$1)$0($1)</span>&#39;<span class="ch">,</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>              `ifelse<span class="ch">(</span><span class="kw">eval</span><span class="ch">(</span>`<span class="ch">$1</span> <span class="ch">&gt;</span> <span class="dv">0</span> &#39;<span class="ch">),</span> <span class="dv">1</span><span class="ch">,</span> `<span class="ch">$0(</span><span class="kw">decr</span><span class="ch">($1))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_recover_life_stack&#39;<span class="ch">,</span> </span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>       `ifdef<span class="ch">(</span>`_free_tmp_&#39;<span class="ch">$1,</span> </span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>              `pushdef<span class="ch">(</span>`_free_&#39;<span class="ch">$1,</span> <span class="kw">defn</span><span class="ch">(</span>`_free_tmp_&#39;<span class="ch">$1))</span><span class="kw">popdef</span><span class="ch">(</span>`_free_tmp_&#39;<span class="ch">$1)$0($1)</span>&#39;<span class="ch">,</span></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>              `ifelse<span class="ch">(</span><span class="kw">eval</span><span class="ch">($1</span> <span class="ch">&lt;</span> _life_n_<span class="ch">),</span> <span class="dv">1</span><span class="ch">,</span> `<span class="ch">$0(</span><span class="kw">incr</span><span class="ch">($1))</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_return&#39;<span class="ch">,</span> </span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>       `_exec_return<span class="ch">(</span>_life_n_<span class="ch">)</span>_recover_life_stack<span class="ch">(</span><span class="dv">1</span><span class="ch">)</span>`&#39;return <span class="ch">$1</span>&#39;<span class="ch">)</span></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>`_obj_life&#39;<span class="ch">,</span> `<span class="ch">$1</span>`&#39;pushdef<span class="ch">(</span>`_free_&#39;_life_n_<span class="ch">,</span> `<span class="ch">$2</span>;&#39;<span class="ch">)</span>&#39;<span class="ch">)</span></span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>为演示 C 生命域的用法，构造 foo-meta.c 文件，其内容为</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>        _malloc<span class="op">(</span>a<span class="op">,</span> <span class="dt">int</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>        _malloc<span class="op">(</span>b<span class="op">,</span> <span class="dt">double</span> <span class="op">*,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>        List <span class="op">*</span>foo <span class="op">=</span> _obj_life<span class="op">(</span>list_new<span class="op">(),</span> list_free<span class="op">(</span>foo<span class="op">));</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">10</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>                _malloc<span class="op">(</span>c<span class="op">,</span> <span class="dt">float</span> <span class="op">*,</span> i <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">float</span><span class="op">));</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>        _return<span class="op">(</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>执行以下命令，可将 foo-meta.c 转化为 foo.c 文件，</p>
+<pre class="console"><code>$ awk -f trace-scopes.awk foo-meta.c | m4 c-life.m4 - &gt; foo.c</code></pre>
+<p>foo.c 的内容为</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> main<span class="op">(</span><span class="dt">void</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>        <span class="dt">int</span> <span class="op">*</span> a <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> <span class="op">*</span> b <span class="op">=</span> malloc<span class="op">(</span><span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>        List <span class="op">*</span>foo <span class="op">=</span> list_new<span class="op">();</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">(</span><span class="dt">size_t</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">10</span><span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>                <span class="dt">float</span> <span class="op">*</span> c <span class="op">=</span> malloc<span class="op">(</span>i <span class="op">*</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">float</span><span class="op">));</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>        free<span class="op">(</span>c<span class="op">);}</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">do</span> <span class="op">{</span>list_free<span class="op">(</span>foo<span class="op">);</span>free<span class="op">(</span>b<span class="op">);</span>free<span class="op">(</span>a<span class="op">);;</span><span class="cf">return</span> <span class="dv">0</span><span class="op">;}</span> <span class="cf">while</span><span class="op">(</span><span class="dv">0</span><span class="op">);</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>list_free<span class="op">(</span>foo<span class="op">);</span>free<span class="op">(</span>b<span class="op">);</span>free<span class="op">(</span>a<span class="op">);}</span></span></code></pre></div>
+
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
+class="email">lyr.m2@live.cn</a> 或在<a
+href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>

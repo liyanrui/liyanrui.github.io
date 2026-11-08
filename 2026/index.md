@@ -3,6 +3,7 @@ title: 日志：2026 年
 subtitle: 
 ...
 
+* [基于 m4 管理 C 对象的生命域](obj-life-in-c/index.html)
 * [用 m4 武装 C](m4-and-c/index.html)
 * [用 m4 武装 xi](m4-and-xi/index.html)
 * [zhe 脚本](zhe/index.html)
