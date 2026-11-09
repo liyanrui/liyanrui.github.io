@@ -1103,7 +1103,7 @@ _func(`print', (const char *prefix, <const char *>a, const char *suffix), void) 
 
 > `_arg_t` 可宏可根据实参变量名获得其类型 id，`_type_id` 可基于类型名获得类型 id。c-template.m4 能保证同一类型的 id 是相等的。
 
-这些代码看着很吓人，不过对于读过[《m4 的咒语》](https://zhuanlan.zhihu.com/p/2100470786247213189)的人而言，可一眼洞悉其意。在 m4 的 -1 流中定义的 `print` 宏，用于将参数转发给合适的代码。在 m4 的 0 号流中定义了 `print` 函数的 `const char *` 版本。
+这些代码看着很吓人，不过对于读过[《m4 的咒语》](../m4-charm/index.html)的人而言，可一眼洞悉其意。在 m4 的 -1 流中定义的 `print` 宏，用于将参数转发给合适的代码。在 m4 的 0 号流中定义了 `print` 函数的 `const char *` 版本。
 
 执行以下命令，可将 defs.template 的内容展开，
 
