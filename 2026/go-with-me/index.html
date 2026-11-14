@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-CN" 
+      xml:lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" 
+        content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>与我同 Go</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../appearance/lmd.css" />
+</head>
+<body>
+
+<header id="title-block-header">
+  <h1 class="title">与我同 Go
+    <span class="back-to-top-span">    <a href="../index.html">
+      <button id="back-to-top" aria-label="返回目录">▲</button>
+    </a></span></h1>
+</header>
+<p class="date">2026 年 11 月 11 日</p>
+
+<nav id="TOC" role="doc-toc">
+  <ul>
+  <li><a href="#前言" id="toc-前言">前言</a></li>
+  <li><a href="#有朋自远方来"
+  id="toc-有朋自远方来">有朋自远方来</a></li>
+  <li><a href="#李雷输入韩梅梅"
+  id="toc-李雷输入韩梅梅">李雷输入韩梅梅</a></li>
+  <li><a href="#脚踏实地的感觉"
+  id="toc-脚踏实地的感觉">脚踏实地的感觉</a></li>
+  <li><a href="#投我以木桃报之以琼瑶"
+  id="toc-投我以木桃报之以琼瑶">投我以木桃，报之以琼瑶</a></li>
+  <li><a href="#百手观音" id="toc-百手观音">百手观音</a></li>
+  <li><a href="#多闻数穷不若守中"
+  id="toc-多闻数穷不若守中">多闻数穷，不若守中</a></li>
+  <li><a href="#君子终日行不离辎重"
+  id="toc-君子终日行不离辎重">君子终日行，不离辎重</a></li>
+  </ul>
+</nav>
+
+<h1 id="前言">前言</h1>
+<p>AI
+编程的兴起，让以往的编程范式快速步入末法时代，而我在不经意中发现，Go
+语言并非如我以前所想，不值得我涉足。之前我有一些想写的程序，若用 Go
+语言来写，应该比用我现在熟悉的语言更为容易。若能对 Go 语言有所把握，驱动
+AI 替我用 Go
+语言写出这些程序，未必能襄我大业，至少也能卸下心里一些块垒。</p>
+<p>在此番学习 Go 语言的过程中，我决定让 AI
+充当助教，加快进度。我会尽力忠实记录这一过程。本文最终会成为一份另类的
+Go 语言教程，它不会追求向你展示 Go
+语言的一切，只是忠实于我个人的需求。弱水三千，我只能让你领略一瓢，但它应该足够精彩。我通常无法忍受乏味的事情，会尽力不让它们出现在这份文档里。若你觉得这份文档甚为乏味，也只是我内心存在着我无法觉察的乏味，而非你的品味出现了问题。</p>
+<p>若你此前已经有了一些编程经验，亦即你已经熟悉了一种甚至多种编程语言，我认为无需再沿着最基本的变量、表达式、循环语句、函数、复合数据结构……这条面向零编程经验者的路线去学习
+Go
+语言，更应立足于自身需求，以问题驱动的方式去熟悉它。这种学习方法对于其他你想要学习的语言应该同样成立。</p>
+<p>人类文明传续至今，而你深处其中，这通常意味着，无论学习任何知识，你都不是一张白纸。以问题驱动的学习方式，一直适合每个人，只是以往许多写教程的人，习惯性地将读者当成了零基础的人。</p>
+<p>每当遇到自己难以理解之处，无需怀疑自己天资太差，而应当尽力凭借以往的经验或感受，逐步将其拆解并吸纳。这份文档也在尝试践行这一理念。或许在
+AI 时代，这种学习方式会更为容易一些。借助
+AI，你能快速检索到许多看似不如你的人的经验和感受，而其中往往包含着你因自恃聪明而忽略的一些视角。甚至可以断定，现在的
+AI 之所以显得比人类聪明，正是因为它足够笨。</p>
+<h1 id="有朋自远方来">有朋自远方来</h1>
+<p>深夜，我在微信里跟老家的李雷说，Linux 系统里有一个命令叫
+<code>echo</code>，你向它输入什么，它就会输出什么，像 f(x) =
+x，输入韩梅梅，它就会输出韩梅梅。李雷不信，世上怎么会有人如此无聊，写出如此无聊的命令。</p>
+<p>我忽然发现，竟然一时无法向他证明此事。虽然我能够将 <code>echo</code>
+命令的执行过程录成视频，但是他会怀疑我在拿 AI
+生成的视频忽悠他，过去我时常这样骗他。他从未用过 Linux，自然不知如何通过
+ssh 登陆我的机器，亲手敲一遍这个命令。</p>
+<p>这次我不想再骗他。我觉得，我可以写一个网络程序，从一个网页里接收他输入的
+<code>echo</code>
+命令，转发到我本地的终端去执行，再将所得结果写入网页，让他看到。倘若他还是不信，那至少这个网页的行为和
+<code>echo</code>
+命令一模一样——他亲手输入，亲眼看到输出，总不能说我又在骗他，他顶多会说没想到我竟然如此无聊。</p>
+<p>可是我不会写网络程序。我倒是懂一些 C socket
+API，但我总不能为了做这件无聊的事情，去写几百行 C 程序。我听说过 Go
+是云计算时代的主力语言，于是问 DeepSeek
+能否给我写一个最简单的程序，只要它能够让他人在远方通过网页浏览器便可调用，并在网页里输出「李雷，你好啊！」</p>
+<p>我不会用 AI agent，因为我没钱。我是在免费的聊天网页里问的
+DeepSeek，它并未歧视我很穷，很爽快地给出了答案，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-1"> hi-lilei.go </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+        "fmt"
+        "net/http"
+)
+
+func main() {
+        http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+                fmt.Fprint(w, "李雷，你好啊！")
+        })
+        http.ListenAndServe(":8080", nil)
+}
+</pre>
+<p>先等等……我的机器上好像还没有 Go 编译器。DeepSeek 说，最好没有，你的
+Linux mint 官方仓库里的 Go 编译器包 golang-go 太旧了，用最新的吧！去 Go
+官方下载页面 <a href="https://go.dev/dl/"
+class="uri">https://go.dev/dl/</a>，找到 Linux 对应的
+go1.xx.x.linux-amd64.tar.gz 压缩包链接，下载，解包，安装到 /usr/local/go
+目录，</p>
+<pre class="console"><code>$ wget https://go.dev/dl/go1.27.4.linux-amd64.tar.gz
+$ tar zxvf go1.27.4.linux-amd64.tar.gz
+$ sudo rm -rf /usr/local/go  # 若之前在此装过 go，便将其删除
+$ sudo mv go /usr/local</code></pre>
+<p>这些操作一气呵成后，只需再修改 Bash 配置文件
+$HOME/.bashrc，在其中增加</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span>/usr/local/go/bin:<span class="va">$PATH</span></span></code></pre></div>
+<p>至此，在新开启的 Bash 命令行环境中，便可使用 <code>go</code> 命令编译
+Go 语言所写的程序了。</p>
+<p>这种安装和配置软件的任务，按照 DeepSeek
+所说的步骤去做，虽然要动手，但是可以知道 Go
+编译器从哪里来，到哪里去。若是有钱，也可以雇佣 DeepSeek
+装好这一切，而我们装作什么都知道。这样的时代真好，大家不用再去比较
+Windows 是不是比 Linux 更易用了。</p>
+<p>然后呢？我问 DeepSeek。它说，将刚才给出的 Go
+代码除第一行「<code>@ hi-lilei.go #</code>」 之外的所有内容保存为
+hi-lilei.go 文件，执行</p>
+<pre class="console"><code>$ go run hi-lilei.go</code></pre>
+<p>然后打开网页浏览器，输入
+<code>127.0.0.1:8080</code>，回车，便可看到</p>
+<p><img src="figures/01.png" /></p>
+<p>我有一件 t 恤衫，胸前印着「There is no place like
+127.0.0.1」，我知道只要这个叫 127.0.0.1 的地方能让 hi-lilei.go
+这个程序产生响应，就意味着有可能全世界的机器都能通过网络访问这个程序，只是全世界的人都不会这么无聊罢了。</p>
+<p>根据我的一些编程经验，能够看得出来，</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span><span class="op">(</span>w http<span class="op">.</span>ResponseWriter<span class="op">,</span> r <span class="op">*</span>http<span class="op">.</span>Request<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Fprint<span class="op">(</span>w<span class="op">,</span> <span class="st">&quot;李雷，你好啊！&quot;</span><span class="op">)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>是匿名函数，<code>w</code> 和 <code>r</code>
+皆为该函数的参数。这个匿名函数的功能应该是将文本写到我访问的那个网页里，于是我看到了「<code>李雷，你好啊！</code>」。我将这几行代码写成
+C 代码的样子，</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> 匿名函数<span class="op">(</span>http<span class="op">.</span>ResponseWriter w<span class="op">,</span> http<span class="op">.</span>Request <span class="op">*</span>r<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Fprint<span class="op">(</span>w<span class="op">,</span> <span class="st">&quot;李雷，你好啊！&quot;</span><span class="op">);</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>然后问
+DeepSeek，这样理解可以？它说可以。然而我的理解也仅到这个程度，至于变量类型
+<code>http.ResponseWriter</code> 和 <code>http.Request</code>
+所指为何，我知道，只要我追问下去，DeepSeek
+一定会给我详细解释清楚，然而那样会让我过早地陷入细节里，忘记了我要为李雷所写的这个程序该如何继续演绎成我想要的样子。我没有追问下去，而是问
+DeepSeek，我现在是否可以顾名思义，<code>w</code>
+像是可以在网页里写东西的工具，而 <code>fmt.Fprint</code>
+是将所写的东西整理成指定的格式转交给 <code>w</code>？可以，DeepSeek
+回应我。</p>
+<p>我在 C
+语言里见识过回调函数，我大概能猜得出来，<code>http.HandleFunc</code>
+是在处理一个叫做 <code>"/"</code>
+的事件，而那个匿名函数会被该事件触发。至于
+<code>http.ListenAndServe(":8080", nil)</code> 便是这个 go
+程序在等待别人访问我机器上的 <code>8080</code>
+端口，一旦有人访问，便会触发 <code>"/"</code>
+事件，于是匿名函数被调用，访问者就会得到写有内容的页面了。</p>
+<p>DeepSeek 指出了我的猜想中的一个不实之处。<code>"/"</code>
+是路径，既可表示根路径，也可用于兜底一些未被响应的路径。实际上，当我在网页浏览器输入
+<code>127.0.0.1:8080</code> 并回车时，浏览器会自动补上
+<code>/</code>，亦即浏览器发送的地址实际上是
+<code>127.0.0.1:8080/</code>，当 Go
+程序响应浏览器的请求时，会认为用户试图调用为 <code>"/"</code>
+指派的函数。倘若我向浏览器提交的地址是
+<code>127.0.0.1:8080/foo</code>，而程序中没有为 <code>"/foo"</code>
+指派函数，则以 <code>"/"</code> 方式处理。</p>
+<p>可是，我该如何让李雷访问这个程序呢？127.0.0.1
+只是我的机器的自指地址。李雷若是用这个地址，他访问的只是自己的机器里一个不存在的网络程序。我想起来，之前曾用过一个用
+Rust 语言编写的内网穿透工具，名字好像叫 bore-cli。我问 DeepSeek，在 Go
+的世界里有没有类似工具，它想了想，说可以试试 expose，只需执行</p>
+<pre class="console"><code>$ go install github.com/kernelshard/expose/cmd/expose@latest</code></pre>
+<p>就有了。我说，理论上可能如此，然而我在国内啊，这 github.com
+时常可望而不可及。DeepSeek 说，无妨，可将 Go
+语言模块下载站点设为国内镜像站点，</p>
+<pre class="console"><code>$ go env -w GOPROXY=https://goproxy.cn,direct</code></pre>
+<p>我问，这样可一劳永逸？DeepSeek 说，没错，你若执行</p>
+<pre class="console"><code>$ go env GOENV</code></pre>
+<p>便可得到 Go 环境变量文件所在路径，<code>go env -w</code>
+可将所作的设定写入该文件里。之后，当你执行 <code>go install</code>
+之类的命令时，便会先从设定的国内镜像站点下载文件。若所求文件，镜像站没有，会自动回退为
+<code>direct</code>，亦即回退至 Go 模块的源仓库。</p>
+<p>装好了 expose，然后呢？DeepSeek 说，执行</p>
+<pre class="console"><code>$ expose tunnel 8080</code></pre>
+<p>注意端口号要与上面的 Go
+程序所用的端口号相同。我执行了这个命令，得到了以下输出，</p>
+<pre><code>🚀 Tunnel[LocalTunnel] started for localhost:8080
+✓ Public URL: https://legal-seals-camp.loca.lt
+✓ Forwarding to: http://localhost:8080 (Ready)
+✓ Provider: LocalTunnel
+Press Ctrl+C to stop</code></pre>
+<p>当我用浏览器打开 <code>https://legal-seals-camp.loca.lt</code>
+这个网址时，我以为它已经能映射到 <code>http://localhost:8080</code>
+了，可实际上看到的是</p>
+<p><img src="figures/02.png" /></p>
+<p>这个页面里的 IP 地址，应该是我的网络运营商的分配的出口公网
+IP。我的机器，像是住在一栋没有门牌号的大楼（内网）里，但整栋大楼有一个对外的门牌号（出口公网
+IP）。我通过这台机器发出的所有网络请求，外界看到的都是这个大楼的门牌号。</p>
+<p>expose
+为了避免自身被大家滥用，便设立了一道门槛，要求大家手动将自己的公网 IP
+当作「验证码」输入后点击 Continue，方能穿过这道门槛，从而访问到我机器上
+8080 端口，亦即 <code>http://localhost:8080</code>，而后者等效于
+<code>127.0.0.1:8080</code>。</p>
+<p>我在完成 IP 验证后，通过
+<code>https://legal-seals-camp.loca.lt</code> 便可访问尚在运行中的
+hi-lilei.go 程序，结果为</p>
+<p><img src="figures/03.png" /></p>
+<p>我将这个网址发给李雷，告诉他，在访问这个网址时，它会要求你输入页面上方给出的验证码，之后便可以看到来自远方的一句问候了。只是我有些累了，等明天我再为你创造那个
+<code>echo</code> 命令。</p>
+<h1 id="李雷输入韩梅梅">李雷输入韩梅梅</h1>
+<p>李雷打开了我发给他的网址，看到了页面上显示的问候，然后在微信里说，哦，我看到了。</p>
+<p>我能感受到他的语气非常平淡。他无法感受到，这世上有一个专为他而写的 Go
+程序向他发来一句问候且仅此一次。即使他能感受到这些，回应的大概也不会变。毕竟这个页面所能产生的效果，还不如我直接从微信上给他发消息。他应该永远也无法理解我在激动什么，而我之所以激动，是因为在我写过的所有程序里，这是第一个能被别人在异地执行的。鲁迅早就说过，人类的悲欢并不相通。大概李雷只是觉得我吵闹……特别是那个需要手工输入
+IP 地址的网页里含有太多的英文。</p>
+<p>我很清楚，即使我能让他在那个网页里输入韩梅梅，他的反应也不过是，哦，我能输入……可是对于我而言，这个在我机器上运行的程序，若是能从异地获得别人输入的一些文字，宛若有了千里眼、顺风耳的法力。在接下来的故事里，DeepSeek
+隐身了，但是你看到每一段代码，都是它写出来的。</p>
+<p>一个能让他人输入一些文字的网页，若使让它足够简单，则其 HTML
+代码为</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;!DOCTYPE </span>html<span class="dt">&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">html</span><span class="dt">&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">head</span><span class="dt">&gt;&lt;</span><span class="kw">meta</span> <span class="er">charset</span><span class="ot">=</span><span class="st">&quot;utf-8&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">form</span> <span class="er">method</span><span class="ot">=</span><span class="st">&quot;POST&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;</span><span class="kw">input</span> <span class="er">type</span><span class="ot">=</span><span class="st">&quot;text&quot;</span> <span class="er">name</span><span class="ot">=</span><span class="st">&quot;from-lilei&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;</span><span class="kw">button</span><span class="dt">&gt;</span>提交<span class="dt">&lt;/</span><span class="kw">button</span><span class="dt">&gt;</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;/</span><span class="kw">form</span><span class="dt">&gt;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">html</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>如果你将上述代码保存至一份本地文件
+foo.html，然后用浏览器打开它，所见网页会类似于</p>
+<p><img src="figures/04.png" /></p>
+<p>在上一节的 Go 程序里，只需用上述 HTML
+代码替换「<code>李雷，你好啊！</code>」，</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>http<span class="op">.</span>HandleFunc<span class="op">(</span><span class="st">&quot;/&quot;</span><span class="op">,</span> <span class="kw">func</span><span class="op">(</span>w http<span class="op">.</span>ResponseWriter<span class="op">,</span> r <span class="op">*</span>http<span class="op">.</span>Request<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Fprint<span class="op">(</span>w<span class="op">,</span> <span class="st">`&lt;!DOCTYPE html&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;html&gt;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;/head&gt;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;body&gt;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;form method=&quot;POST&quot;&gt;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;input type=&quot;text&quot; name=&quot;from-lilei&quot;&gt;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;button&gt;提交&lt;/button&gt;</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/form&gt;</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/body&gt;</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/html&gt;`</span><span class="op">)</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre></div>
+<blockquote>
+<p>Go 语言字符串的字面值有两种形式，可以是<code>"李雷，你好啊！"</code>
+这种双引号形式，也可以是上述代码里所用的反引号形式，前者可用于表达含有一些转义字符的文本，例如可以用
+<code>\n</code>
+表示换行符，而后者通常用于表达多行文本的原始形式，亦即不支持任何字符的转义。</p>
+</blockquote>
+<p>重新运行这个 Go
+程序，李雷便可以看到这个含有一个文本输入框的网页了，只是无论他输入什么，这个
+Go
+程序都尚无法知悉。当李雷真的在输入框里敲下「韩梅梅」并点击「提交」按钮时，页面会闪烁一下，输入框里的「韩梅梅」会消失不见，因为这个
+Go 程序目前不管收到什么请求，都原样返回这段 HTML 代码。</p>
+<p>那么，这个 Go 程序如何得到李雷的输入的文字呢？上述 HTML
+代码中的输入框亦即 <code>input</code> 标记，其 <code>name</code>
+属性的值是 <code>from-lilei</code>，在 Go 程序里，可以用一个变量通过
+<code>from-lilei</code> 获取输入框中传来的文字，</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>http<span class="op">.</span>HandleFunc<span class="op">(</span><span class="st">&quot;/&quot;</span><span class="op">,</span> <span class="kw">func</span><span class="op">(</span>w http<span class="op">.</span>ResponseWriter<span class="op">,</span> r <span class="op">*</span>http<span class="op">.</span>Request<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>        input <span class="op">:=</span> r<span class="op">.</span>FormValue<span class="op">(</span><span class="st">&quot;from-lilei&quot;</span><span class="op">)</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;李雷的输入：%s</span><span class="ch">\n</span><span class="st">&quot;</span><span class="op">,</span> input<span class="op">)</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Fprint<span class="op">(</span>w<span class="op">,</span> <span class="st">`&lt;!DOCTYPE html&gt;</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;html&gt;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;/head&gt;</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;body&gt;</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;form method=&quot;POST&quot;&gt;</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;input type=&quot;text&quot; name=&quot;from-lilei&quot;&gt;</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="st">        &lt;button&gt;提交&lt;/button&gt;</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/form&gt;</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/body&gt;</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/html&gt;`</span><span class="op">)</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre></div>
+<blockquote>
+<p><code>fmt.Printf</code> 将格式化的文本在本地终端里输出，而
+<code>fmt.Fprint</code> 是将格式化的文本输出到指定的对象，例如
+<code>w</code>。</p>
+</blockquote>
+<p>重新运行修改后的 Go
+程序，若李雷在页面里输入了「韩梅梅」并提交，则这个程序会在其运行的终端里输出</p>
+<pre><code>李雷的输入：
+李雷的输入：韩梅梅</code></pre>
+<p>李雷第一次的输入为空，是因为他刚访问页面时，还没有输入内容，但是为
+<code>"/"</code>
+指派的匿名函数已被调用了。当李雷开始输入内容并提交时，该匿名函数则又被调用一次，这次李雷输入的内容会被
+<code>input</code> 接收，然后在我机器里的终端中被
+<code>fmt.Printf</code> 输出。</p>
+<p>可以用条件语句判断 <code>input</code>
+是否有值，仅在其有值时，才在我的终端里将其输出，</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>input <span class="op">:=</span> r<span class="op">.</span>FormValue<span class="op">(</span><span class="st">&quot;from-lilei&quot;</span><span class="op">)</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> input <span class="op">!=</span> <span class="st">&quot;&quot;</span> <span class="op">{</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;李雷的输入：%s</span><span class="ch">\n</span><span class="st">&quot;</span><span class="op">,</span> input<span class="op">)</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p>Go 语言的条件语句与 C 语言相似，只是条件表达式无需括号。</p>
+</blockquote>
+<p>现在，将 hi-lilei.go 写完整，</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> main</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;fmt&quot;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;net/http&quot;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        http<span class="op">.</span>HandleFunc<span class="op">(</span><span class="st">&quot;/&quot;</span><span class="op">,</span> <span class="kw">func</span><span class="op">(</span>w http<span class="op">.</span>ResponseWriter<span class="op">,</span> r <span class="op">*</span>http<span class="op">.</span>Request<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>                input <span class="op">:=</span> r<span class="op">.</span>FormValue<span class="op">(</span><span class="st">&quot;from-lilei&quot;</span><span class="op">)</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> input <span class="op">!=</span> <span class="st">&quot;&quot;</span> <span class="op">{</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>                        fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;李雷的输入：%s</span><span class="ch">\n</span><span class="st">&quot;</span><span class="op">,</span> input<span class="op">)</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>                fmt<span class="op">.</span>Fprint<span class="op">(</span>w<span class="op">,</span> <span class="st">`&lt;!DOCTYPE html&gt;</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="st">                               &lt;html&gt;</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="st">                                 &lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;/head&gt;</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="st">                                 &lt;body&gt;</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="st">                                   &lt;form method=&quot;POST&quot;&gt;</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="st">                                     &lt;input type=&quot;text&quot; name=&quot;from-lilei&quot;&gt;</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="st">                                     &lt;button&gt;提交&lt;/button&gt;</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="st">                                   &lt;/form&gt;</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="st">                                 &lt;/body&gt;</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="st">                               &lt;/html&gt;`</span><span class="op">)</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">})</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>        http<span class="op">.</span>ListenAndServe<span class="op">(</span><span class="st">&quot;:8080&quot;</span><span class="op">,</span> <span class="ot">nil</span><span class="op">)</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>现在可以在宏观上谈谈我对 hi-lilei.go 程序的一些理解了。一个 Go
+程序的源码，若以 <code>package main</code> 开头，表示这个程序是名为
+<code>main</code> 的包，若此包内含有 <code>main</code>
+函数，则意味着这个包是一个可以独立运行的程序，<code>main</code>
+函数是其入口。</p>
+<p><code>fmt.Fprint</code> 和 <code>fmt.Printf</code> 皆为
+<code>fmt</code> 的函数，而 <code>http.HandleFunc</code> 和
+<code>http.ListenAndServe</code> 皆为 <code>net/http</code>
+的函数。<code>fmt</code> 和 <code>net/http</code>
+也都是包，只是它们无法像 <code>main</code>
+包那样作为程序运行，而是为其他包提供一些功能。要在 Go
+程序中使用某些包的函数，须先用 <code>import</code> 载入这些包。</p>
+<p><code>http.HandleFunc</code> 函数为根路径指派的匿名函数的参数
+<code>r</code>，现在大概能从直觉上确定它的意义了。它是一个指针，所指对象应该含有用户从浏览器发来的请求（request），而请求是什么呢？应该是一个数据包。当李雷在浏览器的一些孔洞里输入了内容并提交，则该数据包便包含李雷的输入且由浏览器发送给
+Go 程序。浏览器的地址栏以及 HTML 的 <code>&lt;input&gt;</code>
+标记都是孔洞，前者的内容可被 <code>http.HandleFunc</code>
+接收，后者的内容则包含在 <code>http.Request</code> 对象中，在程序里通过
+<code>FormValue</code> 根据 <code>&lt;input&gt;</code>
+标记的名字获得。</p>
+<p>匿名函数的另一个参数 <code>w</code>，顾名思义便是回应者（response
+writer）。Go
+程序从浏览器发来的请求中获得数据，对其作出处理后，将结果格式化为 HTML
+代码后交给
+<code>w</code>，由后者将其写入数据包并发给浏览器。于是，从浏览器端来看，它向
+Go
+程序发送的一次请求，得到了一次回应，回应的结果便是网页的内容发生了变化。实际上，hi-lilei.go
+已经创造了一个极为微小的动态网站。</p>
+<p>不过，我没有打扰李雷，而是自己做了一些测试。我已明白，快乐其实很难与他人分享，而悲伤更是如此。当新的
+hi-lilei.go 程序再度跑起来时，它已经很像一个 <code>echo</code>
+命令了，只是我无法看到它的输入，而李雷没法看到它的输出，只是我自己去测试的时候，一切都能看到。</p>
+<h1 id="脚踏实地的感觉">脚踏实地的感觉</h1>
+<p>我已经不在乎李雷是否还在乎 Linux 里真的有一个叫 <code>echo</code>
+的命令。当我发现，使用 Go 语言写出 hi-lilei.go
+这样的程序，能够很简单地与千里之外的人对话，才让我认识到 Go
+语言值得我花一些时间学习，它可以让我不需要耗费太多心思便可让本地的一些程序具备远程交互能力，而这一切需要从一个最简单的事情开始，一个
+Go 程序如何访问我的机器里的确存在着的 <code>echo</code> 命令呢？</p>
+<p>据我所知，C 语言可以通过标准库提供的 <code>popen</code>
+之类的函数调用本地其他程序并获得其输出，Go 语言也应该有类似的能力。Go
+语言的确有这种能力，由 <code>os/exec</code> 包提供。现在，写一个 echo.go
+程序，其代码为</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> main</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;fmt&quot;</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;os/exec&quot;</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        cmd <span class="op">:=</span> exec<span class="op">.</span>Command<span class="op">(</span><span class="st">&quot;echo&quot;</span><span class="op">,</span> <span class="st">&quot;韩梅梅&quot;</span><span class="op">)</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        output<span class="op">,</span> _ <span class="op">:=</span> cmd<span class="op">.</span>Output<span class="op">()</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;%s&quot;</span><span class="op">,</span> output<span class="op">)</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>使用 <code>go run</code> 命令运行 echo.go，</p>
+<pre class="console"><code>$ go run echo.go
+韩梅梅</code></pre>
+<p>如我所愿，echo.go 程序执行了我的系统里的 <code>echo</code>
+命令，且能将其输出转发给 <code>fmt.Printf</code> 函数，这也意味着若将
+<code>output</code> 转发给 <code>http.ResponseWriter</code> 对象，则
+<code>echo</code> 命令的输出发送给浏览器端了，亦即</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>cmd <span class="op">:=</span> exec<span class="op">.</span>Command<span class="op">(</span><span class="st">&quot;echo&quot;</span><span class="op">,</span> <span class="st">&quot;韩梅梅&quot;</span><span class="op">)</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>output<span class="op">,</span> _ <span class="op">:=</span> cmd<span class="op">.</span>Output<span class="op">()</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>http<span class="op">.</span>HandleFunc<span class="op">(</span><span class="st">&quot;/echo&quot;</span><span class="op">,</span> <span class="kw">func</span><span class="op">(</span>w http<span class="op">.</span>ResponseWriter<span class="op">,</span> r <span class="op">*</span>http<span class="op">.</span>Request<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Fprint<span class="op">(</span>w<span class="op">,</span> output<span class="op">)</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>http<span class="op">.</span>ListenAndServe<span class="op">(</span><span class="st">&quot;:8080&quot;</span><span class="op">,</span> <span class="ot">nil</span><span class="op">)</span></span></code></pre></div>
+<p>用上述代码取代 echo.go 里 <code>main</code> 函数的内容，然后在
+<code>import</code> 语句里载入 <code>net/http</code> 包，重新运行
+echo.go 程序后，让浏览器访问 <code>127.0.0.1:8080/echo</code>
+这个地址，可以看到</p>
+<p><img src="figures/05.png" /></p>
+<p>虽然所见并非韩梅梅，但应该能猜测到它是字符的某种编码。<code>cmd.Output</code>
+返回两个值，第一个值是 <code>echo</code> 的输出，被我保存在
+<code>output</code> 变量里，而第二个被一个我不想起名字的变量亦即
+<code>_</code> 符号直接忽略掉了。不过，<code>output</code>
+保存的值并非字符串，而是一个字节序列。<code>fmt.Printf</code>
+函数的格式化标记 <code>%s</code>
+能够将字节序列转化为正常的文本编码——UTF-8 编码，但
+<code>fmt.Fprint</code>
+不具备这种能力，它会将每个字节当作十进制数输出。不过，可以用
+<code>string</code> 函数将字节序列转化为 UTF-8
+编码，亦即只需将上述代码中为 <code>"/echo"</code>
+指派的匿名函数修改为</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span><span class="op">(</span>w http<span class="op">.</span>ResponseWriter<span class="op">,</span> r <span class="op">*</span>http<span class="op">.</span>Request<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Fprint<span class="op">(</span>w<span class="op">,</span> <span class="dt">string</span><span class="op">(</span>output<span class="op">))</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>再重新运行 echo.go 且重新访问 <code>127.0.0.1:8080/echo</code>
+地址，则浏览器页面里便可看到「韩梅梅」。</p>
+<p>于是，一个新世界的大门打开了，像是文明从石器时代跃迁至青铜甚至铁器时代。我试了试
+<code>ls</code> 命令，亦即写一个 ls.go 程序，</p>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> main</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;fmt&quot;</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;os/exec&quot;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;net/http&quot;</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        cmd <span class="op">:=</span> exec<span class="op">.</span>Command<span class="op">(</span><span class="st">&quot;ls&quot;</span><span class="op">,</span> <span class="st">&quot;-l&quot;</span><span class="op">,</span> <span class="st">&quot;/home/garfileo&quot;</span><span class="op">)</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        output<span class="op">,</span> _ <span class="op">:=</span> cmd<span class="op">.</span>Output<span class="op">()</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        http<span class="op">.</span>HandleFunc<span class="op">(</span><span class="st">&quot;/ls&quot;</span><span class="op">,</span> <span class="kw">func</span><span class="op">(</span>w http<span class="op">.</span>ResponseWriter<span class="op">,</span> r <span class="op">*</span>http<span class="op">.</span>Request<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>                fmt<span class="op">.</span>Fprint<span class="op">(</span>w<span class="op">,</span> <span class="dt">string</span><span class="op">(</span>output<span class="op">))</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">})</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>        http<span class="op">.</span>ListenAndServe<span class="op">(</span><span class="st">&quot;:8080&quot;</span><span class="op">,</span> <span class="ot">nil</span><span class="op">)</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>然后执行</p>
+<pre class="console"><code>$ go run ls.go</code></pre>
+<p>当我访问 <code>127.0.0.1:8080/ls</code> 时，我看到了</p>
+<p><img src="figures/06.png" /></p>
+<p>我的 Linux 里有很多命令，它们应该都能通过 Go
+程序被他人调用。这意味着，即使我的 Go
+语言学习过程就此戛然而止，受影响的应该主要是我写的页面没有机会变得更好看，交互方式也不再有机会变得更丰富，此外还有一些安全性问题——方便之门大开，风险自会涌入。</p>
+<h1 id="投我以木桃报之以琼瑶">投我以木桃，报之以琼瑶</h1>
+<p>既然能够用 Go 语言将 <code>echo</code> 和 <code>ls</code> 等 Linux
+命令封装为网络服务，对于更为复杂一些的软件，例如
+Gnuplot，是否也能将其封装为网络服务呢？倘若可以，他人便可通过网页间接调用
+Gnuplot 画出一些数学图形了。</p>
+<p>若想实现上述需求，首先需要让网页能够支持用户输入多行文本。在网页的
+HTML 代码里，将 <code>&lt;input&gt;</code> 标记换成
+<code>&lt;textarea&gt;</code>，便可为用户构造支持多行文本的输入框，其初始尺寸可容纳
+8 行文本，每行文本有 60 个字符的宽度，</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;!DOCTYPE </span>html<span class="dt">&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">html</span><span class="dt">&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">head</span><span class="dt">&gt;&lt;</span><span class="kw">meta</span> <span class="er">charset</span><span class="ot">=</span><span class="st">&quot;utf-8&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">form</span> <span class="er">method</span><span class="ot">=</span><span class="st">&quot;POST&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;</span><span class="kw">textarea</span> <span class="er">name</span><span class="ot">=</span><span class="st">&quot;gnuplot-code&quot;</span> <span class="er">rows</span><span class="ot">=</span><span class="st">&quot;8&quot;</span> <span class="er">cols</span><span class="ot">=</span><span class="st">&quot;60&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">textarea</span><span class="dt">&gt;</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&lt;</span><span class="kw">button</span><span class="dt">&gt;</span>提交<span class="dt">&lt;/</span><span class="kw">button</span><span class="dt">&gt;</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;/</span><span class="kw">form</span><span class="dt">&gt;</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">html</span><span class="dt">&gt;</span></span></code></pre></div>
+<p><img src="figures/07.png" /></p>
+<p>若让页面的外观略微正式一些，需要为 HTML 标记增加一些样式设定，</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;!DOCTYPE </span>html<span class="dt">&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">html</span><span class="dt">&gt;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">head</span><span class="dt">&gt;&lt;</span><span class="kw">meta</span> <span class="er">charset</span><span class="ot">=</span><span class="st">&quot;utf-8&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">head</span><span class="dt">&gt;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">form</span> <span class="er">method</span><span class="ot">=</span><span class="st">&quot;POST&quot;</span> <span class="er">style</span><span class="ot">=</span><span class="st">&quot;width: 480px&quot;</span><span class="dt">&gt;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">textarea</span> <span class="er">name</span><span class="ot">=</span><span class="st">&quot;gnuplot-code&quot;</span> <span class="er">rows</span><span class="ot">=</span><span class="st">&quot;8&quot;</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="ot">              style=</span><span class="st">&quot;display: block;</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="st">                     width: 100%;</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="st">                     box-sizing: border-box;</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="st">                     resize: vertical&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">textarea</span><span class="dt">&gt;</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&lt;</span><span class="kw">button</span> <span class="er">style</span><span class="ot">=</span><span class="st">&quot;display: block;</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="st">                   margin-left: auto;</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="st">                   margin-bottom: 1em&quot;</span><span class="dt">&gt;</span>提交<span class="dt">&lt;/</span><span class="kw">button</span><span class="dt">&gt;</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&lt;/</span><span class="kw">form</span><span class="dt">&gt;</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">body</span><span class="dt">&gt;</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">html</span><span class="dt">&gt;</span></span></code></pre></div>
+<p><img src="figures/08.png" /></p>
+<p>这些 HTML
+样式的作用，我也不尽了然，我只知道它主要是设定了文本框的宽度以及「提交」按钮的位置。将这些
+HTML 代码保存在全局变量 <code>page</code> 里，</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> page <span class="op">=</span> <span class="st">`&lt;!DOCTYPE html&gt;</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;html&gt;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;/head&gt;</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;body&gt;</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;form method=&quot;POST&quot; style=&quot;width: 480px&quot;&gt;</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;textarea name=&quot;gnuplot-code&quot; rows=&quot;8&quot;</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="st">              style=&quot;display: block;</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="st">                     width: 100%;</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="st">                     box-sizing: border-box;</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="st">                     resize: vertical&quot;&gt;{{CODE}}&lt;/textarea&gt;</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;button style=&quot;display: block;</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="st">                   margin-left: auto;</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="st">                   margin-bottom: 1em&quot;&gt;提交&lt;/button&gt;</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/form&gt;</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="st">  {{IMG}}</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/body&gt;</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/html&gt;`</span></span></code></pre></div>
+<p>Go 语言的变量有两种声明方式，第一种是短变量声明，亦即前文所用的
+<code>:=</code> 形式，例如</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">:=</span> <span class="dv">1</span></span></code></pre></div>
+<p>只要 <code>:=</code> 左侧是一个新的变量，则上述语句便声明了变量
+<code>a</code>，并将它的值初始化为
+1。短变量声明只能在函数内使用。另一种是 <code>var</code> 声明，例如</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> b <span class="op">=</span> <span class="dv">1</span></span></code></pre></div>
+<p>声明了变量 <code>b</code> 并将其值初始化为 1。无论是短变量还是
+<code>var</code> 声明，Go
+编译器都能根据变量的值自动推断变量类型，上述示例中的变量 <code>a</code>
+和 <code>b</code> 的类型皆被推断为 <code>int</code>。也可以在
+<code>var</code> 声明中显式设定变量类型，例如</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> c <span class="dt">uint</span> <span class="op">=</span> <span class="dv">42</span></span></code></pre></div>
+<p>在函数内，变量可以先声明，然后再赋值，例如</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> d <span class="dt">float64</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fl">3.1415</span></span></code></pre></div>
+<p>需要注意的是，在全局变量 <code>page</code> 的值内，我特意放置了占位符
+<code>{{CODE}}</code> 与 <code>{{IMG}}</code>，前者表示用户输入的
+Gnuplot 代码，后者是我机器里的 <code>gnuplot</code>
+命令生成的位图文件。若想将占位符替换为具体的文本，可使用
+<code>strings</code> 包的 <code>Replace</code> 函数，例如</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">:=</span> <span class="st">`&lt;img src=&quot;demo.png&quot; width=&quot;300px&quot; /&gt;`</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>page_with_img <span class="op">:=</span> strings<span class="op">.</span>Replace<span class="op">(</span>page<span class="op">,</span> <span class="st">&quot;{{IMG}}&quot;</span><span class="op">,</span> img<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span></code></pre></div>
+<p>则 <code>page</code> 中的占位符 <code>{{IMG}}</code>
+部分便会被替换为给定的文本。<code>Replace</code> 函数的第 4
+个参数用于设定文本替换次数，1
+表示只替换一次，若该参数值为负数，表示占位符会被尽数替换。若让上述代码有效，需要在
+<code>import</code> 语句中载入 <code>strings</code> 包。</p>
+<p>现在若假设 <code>{{CODE}}</code> 的内容是一段可被
+<code>gnuplot</code> 执行的代码，即</p>
+<pre class="gnuplot"><code>var code = `set terminal png
+set output &quot;demo.png&quot;
+plot sin(1/x)`</code></pre>
+<p>则 <code>page</code> 中的 <code>{{CODE}}</code> 部分，可以替换为
+<code>demo</code> 的值，</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>page_with_code <span class="op">:=</span> strings<span class="op">.</span>Replace<span class="op">(</span>page<span class="op">,</span> <span class="st">&quot;{{CODE}}&quot;</span><span class="op">,</span> code<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span></code></pre></div>
+<p>于是，即使尚未开始调用 <code>gnuplot</code>
+命令，也能写出一个具有欺骗性的 Go 程序
+gnuplot.go，它能让别人看到一个代码输入界面和一个不存在的图片，</p>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> main</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;fmt&quot;</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;net/http&quot;</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;strings&quot;</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> page <span class="op">=</span> <span class="st">`&lt;!DOCTYPE html&gt;</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;html&gt;</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;/head&gt;</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;body&gt;</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;form method=&quot;POST&quot; style=&quot;width: 480px&quot;&gt;</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;textarea name=&quot;gnuplot-code&quot; rows=&quot;8&quot;</span></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="st">              style=&quot;display: block;</span></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="st">                     width: 100%;</span></span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a><span class="st">                     box-sizing: border-box;</span></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="st">                     resize: vertical&quot;&gt;{{CODE}}&lt;/textarea&gt;</span></span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;button style=&quot;display: block;</span></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="st">                   margin-left: auto;</span></span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a><span class="st">                   margin-bottom: 1em&quot;&gt;提交&lt;/button&gt;</span></span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/form&gt;</span></span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a><span class="st">  {{IMG}}</span></span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/body&gt;</span></span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/html&gt;`</span></span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> gnuplot<span class="op">(</span>w http<span class="op">.</span>ResponseWriter<span class="op">,</span> r <span class="op">*</span>http<span class="op">.</span>Request<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a>        <span class="kw">var</span> code <span class="op">=</span> <span class="st">`set terminal png</span></span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a><span class="st">set output &quot;demo.png&quot;</span></span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a><span class="st">plot sin(1/x)`</span></span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a>        img <span class="op">:=</span> <span class="st">`&lt;img src=&quot;demo.png&quot; width=&quot;480px&quot; /&gt;`</span></span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a>        out <span class="op">:=</span> strings<span class="op">.</span>Replace<span class="op">(</span>page<span class="op">,</span> <span class="st">&quot;{{CODE}}&quot;</span><span class="op">,</span> code<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>        input <span class="op">:=</span> r<span class="op">.</span>FormValue<span class="op">(</span><span class="st">&quot;gnuplot-code&quot;</span><span class="op">)</span></span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> input <span class="op">!=</span> <span class="st">&quot;&quot;</span> <span class="op">{</span></span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> strings<span class="op">.</span>Replace<span class="op">(</span>out<span class="op">,</span> <span class="st">&quot;{{IMG}}&quot;</span><span class="op">,</span> img<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Fprint<span class="op">(</span>w<span class="op">,</span> out<span class="op">)</span></span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a>        http<span class="op">.</span>HandleFunc<span class="op">(</span><span class="st">&quot;/gnuplot&quot;</span><span class="op">,</span> gnuplot<span class="op">)</span></span>
+<span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a>        http<span class="op">.</span>ListenAndServe<span class="op">(</span><span class="st">&quot;:8080&quot;</span><span class="op">,</span> <span class="ot">nil</span><span class="op">)</span></span>
+<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>gnuplot.go 中与 <code>"/gnuplot"</code>
+匹配的不再是匿名函数，而是普通的实名函数 <code>gnuplot</code>。按照 Go
+语言的术语，应该称 <code>gnuplot</code> 是 <code>/gnuplot</code>
+的路由函数。</p>
+<p>现在若执行</p>
+<pre class="console"><code>$ go run gnuplot.go</code></pre>
+<p>然后在浏览器中访问
+<code>127.0.0.1:8080/gnuplot</code>，则所见如下</p>
+<p><img src="figures/09.png" /></p>
+<p>当我向 gnuplot.go 初次发送请求时，它检测到 <code>input</code>
+为空，则写入网页的内容中会出现占位符
+<code>{{IMG}}</code>，此时若是在网页里点「提交」按钮，则 gnuplot.go
+再次接到请求，此时 <code>input</code>
+不再为空，而是文本框里的代码，于是该程序便向网页中写入
+<code>&lt;img&gt;</code>
+标签，以显示一张图片，只是该图片尚不存在，网页中会显示一个表示图片无效的图标，</p>
+<p><img src="figures/10.png" /></p>
+<p>现在考虑，在 gnuplot.go 程序中，若 <code>input</code>
+非空，则将其内容保存为 demo.gp 文件。该任务可由
+<code>os.WriteFile</code> 函数完成，关键代码为</p>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;os&quot;</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>os<span class="op">.</span>WriteFile<span class="op">(</span><span class="st">&quot;demo.gp&quot;</span><span class="op">,</span> <span class="op">[]</span><span class="dt">byte</span><span class="op">(</span>input<span class="op">),</span> <span class="bn">0644</span><span class="op">)</span></span></code></pre></div>
+<p>上述代码创建的 demo.gp 文件会与 gnuplot.go
+位于同一目录，且文件权限以八进制编码 <code>0644</code> 表示。若以 Linux
+权限的字母表示，该权限即
+<code>rw-r--r--</code>，亦即该文件，我可以看，也可以写，而他人只能看。还需要注意，<code>os.WriteFile</code>
+向文件写入的是字节序列——Go 语言称之为字节切片——，而 <code>input</code>
+的值文本，亦即字符串，需要用 <code>[]byte</code>
+将其转换为字节切片。若将字节切片转换为字符串，可用
+<code>string</code>，前文曾做过此事。</p>
+<p>demo.gp 文件实际上是 Gnuplot 脚本，可被 <code>gnuplot</code>
+命令读取并执行其中语句，输出位图文件 demo.png。若用 Go 程序调用
+<code>gnuplot</code> 命令完成此事，则关键代码可写成</p>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;os/exec&quot;</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> input <span class="op">!=</span> <span class="st">&quot;&quot;</span> <span class="op">{</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>        os<span class="op">.</span>WriteFile<span class="op">(</span><span class="st">&quot;demo.gp&quot;</span><span class="op">,</span> <span class="op">[]</span><span class="dt">byte</span><span class="op">(</span>input<span class="op">),</span> <span class="bn">0644</span><span class="op">)</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>        cmd <span class="op">:=</span> exec<span class="op">.</span>Command<span class="op">(</span><span class="st">&quot;gnuplot&quot;</span><span class="op">,</span> <span class="st">&quot;demo.gp&quot;</span><span class="op">)</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>        cmd<span class="op">.</span>Run<span class="op">()</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> strings<span class="op">.</span>Replace<span class="op">(</span>page<span class="op">,</span> <span class="st">&quot;{{CODE}}&quot;</span><span class="op">,</span> input<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>        out <span class="op">=</span> strings<span class="op">.</span>Replace<span class="op">(</span>out<span class="op">,</span> <span class="st">&quot;{{IMG}}&quot;</span><span class="op">,</span> img<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>需要注意，之前用 <code>cmd.Output</code> 函数让 <code>cmd</code>
+得以运行并获取所调用命令在终端里的输出内容，但是在这个例子并不需要
+<code>gnuplot</code> 命令的输出内容，只需要让该命令得以运行，故而用的是
+<code>cmd.Run</code> 函数。</p>
+<p>现在，将 gnuplot.go 改进为</p>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> main</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;fmt&quot;</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;net/http&quot;</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;strings&quot;</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;os&quot;</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;os/exec&quot;</span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> page <span class="op">=</span> <span class="st">`&lt;!DOCTYPE html&gt;</span></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;html&gt;</span></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;/head&gt;</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;body&gt;</span></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;form method=&quot;POST&quot; style=&quot;width: 480px&quot;&gt;</span></span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;textarea name=&quot;gnuplot-code&quot; rows=&quot;8&quot;</span></span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a><span class="st">              style=&quot;display: block;</span></span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a><span class="st">                     width: 100%;</span></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a><span class="st">                     box-sizing: border-box;</span></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a><span class="st">                     resize: vertical&quot;&gt;{{CODE}}&lt;/textarea&gt;</span></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;button style=&quot;display: block;</span></span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a><span class="st">                   margin-left: auto;</span></span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a><span class="st">                   margin-bottom: 1em&quot;&gt;提交&lt;/button&gt;</span></span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/form&gt;</span></span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a><span class="st">  {{IMG}}</span></span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/body&gt;</span></span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/html&gt;`</span></span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> gnuplot<span class="op">(</span>w http<span class="op">.</span>ResponseWriter<span class="op">,</span> r <span class="op">*</span>http<span class="op">.</span>Request<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a>        <span class="kw">var</span> code <span class="op">=</span> <span class="st">`set terminal png</span></span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a><span class="st">set output &quot;demo.png&quot;</span></span>
+<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a><span class="st">plot sin(1/x)`</span></span>
+<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a>        out <span class="op">:=</span> strings<span class="op">.</span>Replace<span class="op">(</span>page<span class="op">,</span> <span class="st">&quot;{{CODE}}&quot;</span><span class="op">,</span> code<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a>        img <span class="op">:=</span> <span class="st">`&lt;img src=&quot;demo.png&quot; width=&quot;480px&quot; /&gt;`</span></span>
+<span id="cb37-35"><a href="#cb37-35" aria-hidden="true" tabindex="-1"></a>        input <span class="op">:=</span> r<span class="op">.</span>FormValue<span class="op">(</span><span class="st">&quot;gnuplot-code&quot;</span><span class="op">)</span></span>
+<span id="cb37-36"><a href="#cb37-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> input <span class="op">!=</span> <span class="st">&quot;&quot;</span> <span class="op">{</span></span>
+<span id="cb37-37"><a href="#cb37-37" aria-hidden="true" tabindex="-1"></a>                os<span class="op">.</span>WriteFile<span class="op">(</span><span class="st">&quot;demo.gp&quot;</span><span class="op">,</span> <span class="op">[]</span><span class="dt">byte</span><span class="op">(</span>input<span class="op">),</span> <span class="bn">0644</span><span class="op">)</span></span>
+<span id="cb37-38"><a href="#cb37-38" aria-hidden="true" tabindex="-1"></a>                cmd <span class="op">:=</span> exec<span class="op">.</span>Command<span class="op">(</span><span class="st">&quot;gnuplot&quot;</span><span class="op">,</span> <span class="st">&quot;demo.gp&quot;</span><span class="op">)</span></span>
+<span id="cb37-39"><a href="#cb37-39" aria-hidden="true" tabindex="-1"></a>                cmd<span class="op">.</span>Run<span class="op">()</span></span>
+<span id="cb37-40"><a href="#cb37-40" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> strings<span class="op">.</span>Replace<span class="op">(</span>page<span class="op">,</span> <span class="st">&quot;{{CODE}}&quot;</span><span class="op">,</span> input<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb37-41"><a href="#cb37-41" aria-hidden="true" tabindex="-1"></a>                out <span class="op">=</span> strings<span class="op">.</span>Replace<span class="op">(</span>out<span class="op">,</span> <span class="st">&quot;{{IMG}}&quot;</span><span class="op">,</span> img<span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb37-42"><a href="#cb37-42" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb37-43"><a href="#cb37-43" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Fprint<span class="op">(</span>w<span class="op">,</span> out<span class="op">)</span></span>
+<span id="cb37-44"><a href="#cb37-44" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb37-45"><a href="#cb37-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-46"><a href="#cb37-46" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb37-47"><a href="#cb37-47" aria-hidden="true" tabindex="-1"></a>        http<span class="op">.</span>HandleFunc<span class="op">(</span><span class="st">&quot;/gnuplot&quot;</span><span class="op">,</span> gnuplot<span class="op">)</span></span>
+<span id="cb37-48"><a href="#cb37-48" aria-hidden="true" tabindex="-1"></a>        http<span class="op">.</span>ListenAndServe<span class="op">(</span><span class="st">&quot;:8080&quot;</span><span class="op">,</span> <span class="ot">nil</span><span class="op">)</span></span>
+<span id="cb37-49"><a href="#cb37-49" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>只是，执行这个程序后，若访问 <code>127.0.0.1:8080/gnuplot</code>
+服务，即使向 gnuplot.go 提交了 Gnuplot
+代码，网页里文本框的下方依然是图像无效标志，但是在 gnuplot.go
+所在的目录中，的确已经有了 demo.png 文件。造成问题的原因是，浏览器得到
+gnuplot.go 传来的网页后，会对 HTML 解析和渲染，当它遇到
+<code>&lt;img src="demo.png" /&gt;</code> 标记时，会自动向 gnuplot.go
+再次发起请求，所用路径为 <code>/demo.png</code>，而 gnuplot.go
+没有为该路径提供路由函数。</p>
+<p>现在，为 <code>/demo.png</code> 提供路由函数，</p>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>http<span class="op">.</span>HandleFunc<span class="op">(</span><span class="st">&quot;/demo.png&quot;</span><span class="op">,</span> <span class="kw">func</span><span class="op">(</span>w http<span class="op">.</span>ResponseWriter<span class="op">,</span> r <span class="op">*</span>http<span class="op">.</span>Request<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>        http<span class="op">.</span>ServeFile<span class="op">(</span>w<span class="op">,</span> r<span class="op">,</span> <span class="st">&quot;demo.png&quot;</span><span class="op">)</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre></div>
+<p><code>http.ServeFile</code>
+函数的作用是将本地某个文件的内容作为此次请求的响应发送出去，当浏览器端得到了此次响应的内容，便将图片的内容呈现出来。将上述路由设定添加到
+gnuplot.go 的 <code>main</code> 函数里，然后重新运行
+gnuplot.go，此次若在浏览器里提交 Gnuplot 代码，结果为</p>
+<p><img src="figures/11.png" /></p>
+<h1 id="百手观音">百手观音</h1>
+<p>上一节实现的 gnuplot.go
+程序，只能用于证明此路可行，却不能证明此路甚好。实际上这个程序很是狭隘，理论上它只能有效回应一个人向它发起的请求。若是两个人或多个人同时向它发起请求，意味着他们在同时以间接方式将不同内容同时写入
+demo.gp 文件，然后又以间接方式同时查看 gnuplot 命令生成的位图文件
+demo.png，最终可能有人会看不到自己想要的结果。绝大多数网络程序，都要处理这种同时有很多输入和输出的情况。虽然
+Go
+语言已经尽力让这类任务变得颇为容易，却无法阻挡因缺乏基本并发处理意识的我写出脆弱的代码。</p>
+<p>若让 gnuplot.go
+变得更为正确一些，首先应该考虑，将每个用户的输入文本保存为文件时，应当保证该文件的名字具有唯一性。然后，让
+gnuplot
+命令输出的位图文件的名字也具有唯一性，这意味着之前用户可以在自己提交的
+Gnuplot 代码里写</p>
+<pre class="gnuplot"><code>set terminal png
+set output &quot;demo.png&quot;</code></pre>
+<p>现在这个权限需要收回，用户也不会有任何反对，因为他们可以少写两行代码。</p>
+<p>若让文件的名字具有唯一性，可以构造一个全局性的计数器，将计数器不断变化的值嵌入文件名，这是最简单也是最有效的办法。可以用一个无符号整型类型的全局变量表示这个计数器，</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-2"> 计数器 gp_id </span><span class="snippet-name-stop">#</span>
+var gp_id uint = 0
+=><span class="caller"><a class="snippet-reference" href="#xi-6"> gnuplot 函数 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-16"> gnuplot 函数 [v2] </a></span>
+</pre>
+<p>每次将用户的输入文本保存为文件前，让计数器增 1，当此值大于 100
+时，便归零。这意味着 gnuplot.go 提供的服务最多同时支持 100
+人在线访问。Go
+语言提供了字符串格式化函数，可以将计数器的值转化为字面符号，作为文件名后缀，例如</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-3"> 构造唯一的文件名 </span><span class="snippet-name-stop">#</span>
+if gp_id &gt; 99 {
+        gp_id = 0
+}
+gp_id++
+gp_name := fmt.Sprintf("drawing-%d", gp_id)
+gp_file_name := gp_name + ".gp"
+=><span class="caller"><a class="snippet-reference" href="#xi-5"> 处理用户输入 </a></span>
+</pre>
+<p>在将 gnuplot.go 中的 <code>input</code> 的值写入文件之前，在
+<code>input</code> 首部加入 Gnuplot 图形输出终端的设定语句，</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-4"> 构造唯一的文件名 </span><span class="snippet-name-stop">#</span> +
+new_input := "\nset terminal png\nset output "
+new_input += `"` + gp_name + `.png"` + "\n" + input
+</pre>
+<p>这一切都发生在 gnuplot.go 的 <code>input</code> 的值非空时，</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-5"> 处理用户输入 </span><span class="snippet-name-stop">#</span>
+if input != "" {
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-3"> 构造唯一的文件名 </a><span class="snippet-name-stop">@</span>
+        os.WriteFile(gp_file_name, []byte(new_input), 0644)
+        cmd := exec.Command("gnuplot", gp_file_name)
+        cmd.Run()
+        out = strings.Replace(page, "{{CODE}}", input, 1)
+        img := `&lt;img src="` + gp_name + `.png" width="480px" /&gt;`
+        out = strings.Replace(out, "{{IMG}}", img, 1)
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-6"> gnuplot 函数 </a></span>
+</pre>
+<p>上述所写的代码片段使用的 <code>@ ... #</code>
+表示一个代码片段的名字。在一个代码片段里，若使用
+<code># ... @</code>，表示将指定名字的代码片段的内容插入此处。这些符号皆为我设计的文学编程标记，而非
+Go
+语言的语法。这些标记并非仅能用于示意，它们也方便从文档里抽取代码片段，详见《<a
+href="https://zhuanlan.zhihu.com/p/2096395349250269589">xi：一个简单的文学编程工具</a>》。</p>
+<p>gnuplot.go 的 <code>gnuplot</code> 函数现在可修改为</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-6"> gnuplot 函数 </span><span class="snippet-name-stop">#</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-2"> 计数器 gp_id </a><span class="snippet-name-stop">@</span>
+func gnuplot(w http.ResponseWriter, r *http.Request) {
+        var code = "plot sin(1/x)"
+        out := strings.Replace(page, "{{CODE}}", code, 1)
+        input := r.FormValue("gnuplot-code")
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-5"> 处理用户输入 </a><span class="snippet-name-stop">@</span>
+        fmt.Fprint(w, out)
+}
+</pre>
+<p>用上述代码片段替换 gnuplot.go 中的 <code>gnuplot</code>
+函数，便可保证多个用户可以同时提交 Gnuplot
+代码而不会产生冲突。但是，当浏览器得到响应后，发现自己需要再次发送请求，方能获得诸如
+drawing-1.png、drawing-2.png、…… 等位图文件，而 gnuplot.go
+不可能为每个位图文件路径都提供路由函数。Go 语言的 <code>http</code>
+包早已想到了这种需求，它提供了 http.FileServer 函数和 http.Dir
+类型，可以将指定的目录作为浏览器端所认为的根目录，并将其作为 Go
+程序中根路径的路由，亦即</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-7"> 设置网站根目录 </span><span class="snippet-name-stop">#</span>
+http.Handle("/", http.FileServer(http.Dir(".")))
+=><span class="caller"><a class="snippet-reference" href="#xi-8"> 设置了网站根目录的 main 函数 </a></span>
+</pre>
+<p><code>.</code> 表示当前目录，亦即 gnuplot.go
+程序所在目录，该目录会被浏览器端视为根目录，然后便可请求 gnuplot.go
+将该目录下的 <code>drawing-1.png</code>、<code>drawing-2.png</code>、……
+等文件作为响应发给它。</p>
+<p>现在只需将 gnuplot.go 的 <code>main</code> 函数修改为</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-8"> 设置了网站根目录的 main 函数 </span><span class="snippet-name-stop">#</span>
+func main() {
+    http.HandleFunc("/gnuplot", gnuplot)
+    <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-7"> 设置网站根目录 </a><span class="snippet-name-stop">@</span>
+    http.ListenAndServe(":8080", nil)
+}
+</pre>
+<p>便有了一个新的 Gnuplot 网络服务程序了，若用户 A 向它提交 drawing-1.gp
+文件，则该程序以 gnuplot 命令生成的位图文件 drawing-1.png
+作为响应，同时若用户 B 向它提交 drawing-2.gp 文件，则该程序以 gnuplot
+命令生成的位图文件 drawing-2.png
+作为响应……永远不会出现一个用户得到的是另一个用户想要的结果，前提是用户在线人数小于
+100。</p>
+<p><img src="figures/12.png" /></p>
+<h1 id="多闻数穷不若守中">多闻数穷，不若守中</h1>
+<p>也许你已经发现了，上一节所写的 gnuplot.go
+程序在本质上依然不支持多用户同时在线访问，它没有真正解决问题，只是将问题从固定的两个文件转移到了计数器身上了。问题集中在下面这几行代码上，</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-9"> 更新 gp_id </span><span class="snippet-name-stop">#</span>
+if gp_id &gt; 99 {
+        gp_id = 0
+}
+gp_id++
+=><span class="caller"><a class="snippet-reference" href="#xi-16"> gnuplot 函数 [v2] </a></span>
+</pre>
+<p>当多个用户同时向 gnuplot.go
+发起请求时，后者便会同时执行上述代码多次，由于 <code>gp_id</code>
+是全局变量，于是又出现了多次同时修改同一个对象的情况。可能用户 A 拿到的
+<code>gp_id</code> 值本该是 1，但是用户 B 同时执行了这段代码，导致 A
+拿到的值是 2。观音虽有百手，但其本体却只有 1 个，<code>gp_id</code>
+则是其本体的一部分。</p>
+<p>为了克服这类问题，Go 语言的 <code>sync</code>
+包提供了互斥锁机制。该机制的想法非常简单，就是给一段代码加一把锁，所有的同时发生的事情，在这把锁面前，都要排队，然后再逐一穿过这段代码。锁本身也是一个全局变量，例如</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-10"> gp_id 锁 </span><span class="snippet-name-stop">#</span>
+var gp_id_mu sync.Mutex
+=><span class="caller"><a class="snippet-reference" href="#xi-16"> gnuplot 函数 [v2] </a></span>
+</pre>
+<p>对上述代码加锁和解锁的过程可写为</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-11"> 更新 gp_id </span><span class="snippet-name-stop">#</span> ^+
+gp_id_mu.Lock()
+</pre>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-12"> 更新 gp_id </span><span class="snippet-name-stop">#</span> +
+gp_id_mu.Unlock()
+</pre>
+<p>上述代码我用了两个新的文学编程标记，<code>^+</code>
+表示指定的代码片段之前插入代码，<code>+</code>
+则表示在指定的代码片段之后插入代码。上述示例产生的效果是，在名字为「<code>更新 gp_id</code>」这段代码之前添加</p>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>gp_id_mu<span class="op">.</span>Lock<span class="op">()</span></span></code></pre></div>
+<p>然后在其之后添加</p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>gp_id_mu<span class="op">.</span>Unlock<span class="op">()</span></span></code></pre></div>
+<p>于是，意味着名字为「<code>更新 gp_id</code>」这段代码最终变为</p>
+<pre><code>gp_id_mu.Lock()
+if gp_id &gt; 99 {
+        gp_id = 0
+}
+gp_id++
+gp_id_mu.Unlock()</code></pre>
+<p>如此便可保证所有同时修改 <code>gp_id</code> 的操作变成排队修改
+<code>gp_id</code>。排队自然是要以时间为代价，亦即 gnuplot.go
+程序不如之前的版本跑得快，只是用户通常感受不到这点差异，毕竟 gnuplot.go
+在调用 <code>gnuplot</code> 命令时耗费的时间远大于更新
+<code>gp_id</code> 的值。</p>
+<p>现在，正式写出一个真正可用的 gnuplot.go
+程序，并且再普及如何用文学编程的方式定义一些代码片段，并将其组装为完整的程序。首先，需要写出程序几乎千篇一律的开头，它们的区别通常仅仅是所需要的包有所不同，</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-13"> gnuplot.go 程序开头 </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-14"> gnuplot 服务所需要的包 </a><span class="snippet-name-stop">@</span>
+)
+=><span class="caller"><a class="snippet-reference" href="#xi-18"> gnuplot.go 程序 </a></span>
+</pre>
+<p>gnuplot.go 需要以下包</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-14"> gnuplot 服务所需要的包 </span><span class="snippet-name-stop">#</span>
+"fmt"
+"net/http"
+"strings"
+"os"
+"os/exec"
+"sync"
+=><span class="caller"><a class="snippet-reference" href="#xi-13"> gnuplot.go 程序开头 </a></span>
+</pre>
+<p>gnuplot.go 的网页界面保存在全局变量 <code>page</code> 中，</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-15"> gnuplot 的网页界面 </span><span class="snippet-name-stop">#</span>
+var page = `&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;form method="POST" style="width: 480px"&gt;
+    &lt;textarea name="gnuplot-code" rows="8"
+              spellcheck="false"
+              style="display: block;
+                     width: 100%;
+                     box-sizing: border-box;
+                     resize: vertical"&gt;{{CODE}}&lt;/textarea&gt;
+    &lt;button style="display: block;
+                   margin-left: auto;
+                   margin-bottom: 1em"&gt;提交&lt;/button&gt;
+  &lt;/form&gt;
+  {{IMG}}
+&lt;/body&gt;
+&lt;/html&gt;`
+=><span class="caller"><a class="snippet-reference" href="#xi-18"> gnuplot.go 程序 </a></span>
+</pre>
+<p>对于用户从网页文本框中提交的文本，处理过程为</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-16"> gnuplot 函数 [v2] </span><span class="snippet-name-stop">#</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-10"> gp_id 锁 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-2"> 计数器 gp_id </a><span class="snippet-name-stop">@</span>
+func gnuplot(w http.ResponseWriter, r *http.Request) {
+        var code = "plot sin(1/x)"
+        out := strings.Replace(page, "{{CODE}}", code, 1)
+        input := r.FormValue("gnuplot-code")
+        if input != "" {
+                <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-9"> 更新 gp_id </a><span class="snippet-name-stop">@</span>
+                gp_name := fmt.Sprintf("drawing-%d", gp_id)
+                gp_file_name := gp_name + ".gp"
+                os.WriteFile(gp_file_name, []byte(new_input), 0644)
+                cmd := exec.Command("gnuplot", gp_file_name)
+                cmd.Run()
+                out = strings.Replace(page, "{{CODE}}", input, 1)
+                img := `&lt;img src="` + gp_name + `.png" width="480px" /&gt;`
+                out = strings.Replace(out, "{{IMG}}", img, 1)
+        }
+        fmt.Fprint(w, out)
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-18"> gnuplot.go 程序 </a></span>
+</pre>
+<p>在 gnuplot.go 的 <code>main</code>
+函数中，设定路由函数，并启动网络服务，</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-17"> gnuplot.go 的 main 函数 </span><span class="snippet-name-stop">#</span>
+func main() {
+    http.HandleFunc("/gnuplot", gnuplot)
+    http.Handle("/", http.FileServer(http.Dir(".")))
+    http.ListenAndServe(":8080", nil)
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-18"> gnuplot.go 程序 </a></span>
+</pre>
+<p>将上述代码片段组装起来，便可得到 gnuplot.go 程序，</p>
+<pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-18"> gnuplot.go 程序 </span><span class="snippet-name-stop">#</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-13"> gnuplot.go 程序开头 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-15"> gnuplot 的网页界面 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-16"> gnuplot 函数 [v2] </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-17"> gnuplot.go 的 main 函数 </a><span class="snippet-name-stop">@</span>
+</pre>
+<p>若已经装了 xi 程序，且已获得本文档的源文件「<a
+href="https://liyanrui.github.io/2026/go-with-me/go-with-me.xi">go-with-me.xi</a>」，执行</p>
+<pre class="console"><code>$ xi -t -e &quot;gnuplot.go 程序&quot; -o gnuplot.go go-with-me.xi</code></pre>
+<p>便可得到完整的且含有本节更新内容的 gnuplot.go
+程序，它已经是一个可以真正使用的网络服务程序了，只是该程序调用的
+<code>gnuplot</code>
+命令不是足够安全，不过运行该程序，仅向自己的朋友提供服务是完全可行的。</p>
+<p><img src="figures/13.png" /></p>
+<h1 id="君子终日行不离辎重">君子终日行，不离辎重</h1>
+<p>在「百手观音」一节，为了让用户的浏览器端能够获得 Gnuplot
+生成的位图文件，使用了以下代码</p>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>http<span class="op">.</span>Handle<span class="op">(</span><span class="st">&quot;/&quot;</span><span class="op">,</span> http<span class="op">.</span>FileServer<span class="op">(</span>http<span class="op">.</span>Dir<span class="op">(</span><span class="st">&quot;.&quot;</span><span class="op">)))</span></span></code></pre></div>
+<p>将 gnuplot.go
+程序的工作目录暴露出来，让浏览器端觉得该目录即这个网站根目录。若此时
+gnuplot.go 程序正在运行，在浏览器端访问
+<code>127.0.0.1:8080</code>，所见景象为</p>
+<p><img src="figures/14.png" /></p>
+<p>这意味着，当浏览器端向 gnuplot.go
+程序发来根路径的请求是，后者会将自身工作目录里的文件列表作为响应发送给浏览器端，这也意味着浏览器端可以访问该目录里的任何一个文件。</p>
+<p><code>http.FileServer</code>
+还有一个特殊作用，假如它暴露出的目录中含有 index.html
+文件，则浏览器不再显示文件列表，而是显示这个网页。这意味着即使 Go
+程序没有在该目录内生成任何东西，该目录也可以作为一个静态网站使用。</p>
+<p>我曾写过一个可以构建静态网站的 Bash 脚本，见「<a
+href="https://zhuanlan.zhihu.com/p/2097600582026637372">如何用 90
+行代码写一个静态网站构造工具</a>」，实际上这个脚本建立的只是一些目录，且每个目录内皆有
+index.html 文件。以前，我若想让他人访问该网站，需要借助
+nginx，而现在只需 Go 程序将该网站的根目录暴露出来即可。</p>
+<p>假设，我在 <code>/home/garfileo/public</code> 目录中用上述 Bash
+脚本构建了一个静态网站，其根目录为 <code>my-site</code>，则下面的这个 Go
+程序便可让他人访问这个网站，</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-19"> my-site.go </span><span class="snippet-name-stop">#</span>
+package main
+import ("net/http")
+
+func main() {
+    http.Handle("/", http.FileServer(http.Dir("/home/garfileo/public")))
+    http.ListenAndServe(":8080", nil)
+}
+</pre>
+
+<div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
+class="email">lyr.m2@live.cn</a> 或在<a
+href="https://github.com/liyanrui/liyanrui.github.io/issues">讨论区</a>提问。</div>
+</body>
+</html>
