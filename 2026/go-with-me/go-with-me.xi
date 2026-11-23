@@ -6,7 +6,7 @@ date: 2026 年 11 月 11 日
 
 # 前言
 
-AI 编程的兴起，让以往的编程范式快速步入末法时代，而我在不经意中发现，Go 语言并非如我以前所想，不值得我涉足。之前我有一些想写的程序，若用 Go 语言来写，应该比用我现在熟悉的语言更为容易。若能对 Go 语言有所把握，驱动 AI 替我用 Go 语言写出这些程序，未必能襄我大业，至少也能卸下心里一些块垒。
+Ai 编程的兴起，让以往的编程范式快速步入末法时代，而我在不经意中发现，Go 语言并非如我以前所想，不值得我涉足。之前我有一些想写的程序，若用 Go 语言来写，应该比用我现在熟悉的语言更为容易。若能对 Go 语言有所把握，驱动 AI 替我用 Go 语言写出这些程序，未必能襄我大业，至少也能卸下心里一些块垒。
 
 在此番学习 Go 语言的过程中，我决定让 AI 充当助教，加快进度。我会尽力忠实记录这一过程。本文最终会成为一份另类的 Go 语言教程，它不会追求向你展示 Go 语言的一切，只是忠实于我个人的需求。弱水三千，我只能让你领略一瓢，但它应该足够精彩。我通常无法忍受乏味的事情，会尽力不让它们出现在这份文档里。若你觉得这份文档甚为乏味，也只是我内心存在着我无法觉察的乏味，而非你的品味出现了问题。
 
@@ -44,7 +44,7 @@ func main() {
 }
 @
 
-先等等……我的机器上好像还没有 Go 编译器。DeepSeek 说，最好没有，你的 Linux mint 官方仓库里的 Go 编译器包 golang-go 太旧了，用最新的吧！去 Go 官方下载页面 _ESC_LT_https://go.dev/dl/_ESC_GT_，找到 Linux 对应的 go1.xx.x.linux-amd64.tar.gz 压缩包链接，下载，解包，安装到 /usr/local/go 目录，
+先等等……我的机器上好像还没有 Go 编译器。DeepSeek 说，最好没有，你的 Linux mint 官方仓库里的 Go 编译器包 golang-go 太旧了，用最新的吧！去 Go 官方下载页面 <https://go.dev/dl/>，找到 Linux 对应的 go1.xx.x.linux-amd64.tar.gz 压缩包链接，下载，解包，安装到 /usr/local/go 目录，
 
 ```console
 $ wget https://go.dev/dl/go1.27.4.linux-amd64.tar.gz
@@ -158,16 +158,16 @@ expose 为了避免自身被大家滥用，便设立了一道门槛，要求大�
 一个能让他人输入一些文字的网页，若使让它足够简单，则其 HTML 代码为
 
 ```html
-_ESC_LT_!DOCTYPE html_ESC_GT_
-_ESC_LT_html_ESC_GT_
-_ESC_LT_head_ESC_GT__ESC_LT_meta charset="utf-8"_ESC_GT__ESC_LT_/head_ESC_GT_
-_ESC_LT_body_ESC_GT_
-    _ESC_LT_form method="POST"_ESC_GT_
-        _ESC_LT_input type="text" name="from-lilei"_ESC_GT_
-        _ESC_LT_button_ESC_GT_提交_ESC_LT_/button_ESC_GT_
-    _ESC_LT_/form_ESC_GT_
-_ESC_LT_/body_ESC_GT_
-_ESC_LT_/html_ESC_GT_
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body>
+    <form method="POST">
+        <input type="text" name="from-lilei">
+        <button>提交</button>
+    </form>
+</body>
+</html>
 ```
 
 如果你将上述代码保存至一份本地文件 foo.html，然后用浏览器打开它，所见网页会类似于
@@ -178,20 +178,20 @@ _ESC_LT_/html_ESC_GT_
 
 ```go
 http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprint(w, `_ESC_LT_!DOCTYPE html_ESC_GT_
-_ESC_LT_html_ESC_GT_
-_ESC_LT_head_ESC_GT__ESC_LT_meta charset="utf-8"_ESC_GT__ESC_LT_/head_ESC_GT_
-_ESC_LT_body_ESC_GT_
-    _ESC_LT_form method="POST"_ESC_GT_
-        _ESC_LT_input type="text" name="from-lilei"_ESC_GT_
-        _ESC_LT_button_ESC_GT_提交_ESC_LT_/button_ESC_GT_
-    _ESC_LT_/form_ESC_GT_
-_ESC_LT_/body_ESC_GT_
-_ESC_LT_/html_ESC_GT_`)
+        fmt.Fprint(w, `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body>
+    <form method="POST">
+        <input type="text" name="from-lilei">
+        <button>提交</button>
+    </form>
+</body>
+</html>`)
 })
 ```
 
-_ESC_GT_ Go 语言字符串的字面值有两种形式，可以是`"李雷，你好啊！"` 这种双引号形式，也可以是上述代码里所用的反引号形式，前者可用于表达含有一些转义字符的文本，例如可以用 `\n` 表示换行符，而后者通常用于表达多行文本的原始形式，亦即不支持任何字符的转义。
+> Go 语言字符串的字面值有两种形式，可以是`"李雷，你好啊！"` 这种双引号形式，也可以是上述代码里所用的反引号形式，前者可用于表达含有一些转义字符的文本，例如可以用 `\n` 表示换行符，而后者通常用于表达多行文本的原始形式，亦即不支持任何字符的转义。
 
 重新运行这个 Go 程序，李雷便可以看到这个含有一个文本输入框的网页了，只是无论他输入什么，这个 Go 程序都尚无法知悉。当李雷真的在输入框里敲下「韩梅梅」并点击「提交」按钮时，页面会闪烁一下，输入框里的「韩梅梅」会消失不见，因为这个 Go 程序目前不管收到什么请求，都原样返回这段 HTML 代码。
 
@@ -201,20 +201,20 @@ _ESC_GT_ Go 语言字符串的字面值有两种形式，可以是`"李雷，你
 http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
         input := r.FormValue("from-lilei")
         fmt.Printf("李雷的输入：%s\n", input)
-        fmt.Fprint(w, `_ESC_LT_!DOCTYPE html_ESC_GT_
-_ESC_LT_html_ESC_GT_
-_ESC_LT_head_ESC_GT__ESC_LT_meta charset="utf-8"_ESC_GT__ESC_LT_/head_ESC_GT_
-_ESC_LT_body_ESC_GT_
-    _ESC_LT_form method="POST"_ESC_GT_
-        _ESC_LT_input type="text" name="from-lilei"_ESC_GT_
-        _ESC_LT_button_ESC_GT_提交_ESC_LT_/button_ESC_GT_
-    _ESC_LT_/form_ESC_GT_
-_ESC_LT_/body_ESC_GT_
-_ESC_LT_/html_ESC_GT_`)
+        fmt.Fprint(w, `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body>
+    <form method="POST">
+        <input type="text" name="from-lilei">
+        <button>提交</button>
+    </form>
+</body>
+</html>`)
 })
 ```
 
-_ESC_GT_ `fmt.Printf` 将格式化的文本在本地终端里输出，而 `fmt.Fprint` 是将格式化的文本输出到指定的对象，例如 `w`。
+> `fmt.Printf` 将格式化的文本在本地终端里输出，而 `fmt.Fprint` 是将格式化的文本输出到指定的对象，例如 `w`。
 
 重新运行修改后的 Go 程序，若李雷在页面里输入了「韩梅梅」并提交，则这个程序会在其运行的终端里输出
 
@@ -234,7 +234,7 @@ if input != "" {
 }
 ```
 
-_ESC_GT_ Go 语言的条件语句与 C 语言相似，只是条件表达式无需括号。
+> Go 语言的条件语句与 C 语言相似，只是条件表达式无需括号。
 
 现在，将 hi-lilei.go 写完整，
 
@@ -252,16 +252,16 @@ func main() {
                 if input != "" {
                         fmt.Printf("李雷的输入：%s\n", input)
                 }
-                fmt.Fprint(w, `_ESC_LT_!DOCTYPE html_ESC_GT_
-                               _ESC_LT_html_ESC_GT_
-                                 _ESC_LT_head_ESC_GT__ESC_LT_meta charset="utf-8"_ESC_GT__ESC_LT_/head_ESC_GT_
-                                 _ESC_LT_body_ESC_GT_
-                                   _ESC_LT_form method="POST"_ESC_GT_
-                                     _ESC_LT_input type="text" name="from-lilei"_ESC_GT_
-                                     _ESC_LT_button_ESC_GT_提交_ESC_LT_/button_ESC_GT_
-                                   _ESC_LT_/form_ESC_GT_
-                                 _ESC_LT_/body_ESC_GT_
-                               _ESC_LT_/html_ESC_GT_`)
+                fmt.Fprint(w, `<!DOCTYPE html>
+                               <html>
+                                 <head><meta charset="utf-8"></head>
+                                 <body>
+                                   <form method="POST">
+                                     <input type="text" name="from-lilei">
+                                     <button>提交</button>
+                                   </form>
+                                 </body>
+                               </html>`)
         })
         http.ListenAndServe(":8080", nil)
 }
@@ -271,7 +271,7 @@ func main() {
 
 `fmt.Fprint` 和 `fmt.Printf` 皆为 `fmt` 的函数，而 `http.HandleFunc` 和 `http.ListenAndServe` 皆为 `net/http` 的函数。`fmt` 和 `net/http` 也都是包，只是它们无法像 `main` 包那样作为程序运行，而是为其他包提供一些功能。要在 Go 程序中使用某些包的函数，须先用 `import` 载入这些包。
 
-`http.HandleFunc` 函数为根路径指派的匿名函数的参数 `r`，现在大概能从直觉上确定它的意义了。它是一个指针，所指对象应该含有用户从浏览器发来的请求（request），而请求是什么呢？应该是一个数据包。当李雷在浏览器的一些孔洞里输入了内容并提交，则该数据包便包含李雷的输入且由浏览器发送给 Go 程序。浏览器的地址栏以及 HTML 的 `_ESC_LT_input_ESC_GT_` 标记都是孔洞，前者的内容可被 `http.HandleFunc` 接收，后者的内容则包含在 `http.Request` 对象中，在程序里通过 `FormValue` 根据 `_ESC_LT_input_ESC_GT_` 标记的名字获得。
+`http.HandleFunc` 函数为根路径指派的匿名函数的参数 `r`，现在大概能从直觉上确定它的意义了。它是一个指针，所指对象应该含有用户从浏览器发来的请求（request），而请求是什么呢？应该是一个数据包。当李雷在浏览器的一些孔洞里输入了内容并提交，则该数据包便包含李雷的输入且由浏览器发送给 Go 程序。浏览器的地址栏以及 HTML 的 `<input>` 标记都是孔洞，前者的内容可被 `http.HandleFunc` 接收，后者的内容则包含在 `http.Request` 对象中，在程序里通过 `FormValue` 根据 `<input>` 标记的名字获得。
 
 匿名函数的另一个参数 `w`，顾名思义便是回应者（response writer）。Go 程序从浏览器发来的请求中获得数据，对其作出处理后，将结果格式化为 HTML 代码后交给 `w`，由后者将其写入数据包并发给浏览器。于是，从浏览器端来看，它向 Go 程序发送的一次请求，得到了一次回应，回应的结果便是网页的内容发生了变化。实际上，hi-lilei.go 已经创造了一个极为微小的动态网站。
 
@@ -367,19 +367,19 @@ $ go run ls.go
 
 既然能够用 Go 语言将 `echo` 和 `ls` 等 Linux 命令封装为网络服务，对于更为复杂一些的软件，例如 Gnuplot，是否也能将其封装为网络服务呢？倘若可以，他人便可通过网页间接调用 Gnuplot 画出一些数学图形了。
 
-若想实现上述需求，首先需要让网页能够支持用户输入多行文本。在网页的 HTML 代码里，将 `_ESC_LT_input_ESC_GT_` 标记换成 `_ESC_LT_textarea_ESC_GT_`，便可为用户构造支持多行文本的输入框，其初始尺寸可容纳 8 行文本，每行文本有 60 个字符的宽度，
+若想实现上述需求，首先需要让网页能够支持用户输入多行文本。在网页的 HTML 代码里，将 `<input>` 标记换成 `<textarea>`，便可为用户构造支持多行文本的输入框，其初始尺寸可容纳 8 行文本，每行文本有 60 个字符的宽度，
 
 ```html
-_ESC_LT_!DOCTYPE html_ESC_GT_
-_ESC_LT_html_ESC_GT_
-_ESC_LT_head_ESC_GT__ESC_LT_meta charset="utf-8"_ESC_GT__ESC_LT_/head_ESC_GT_
-_ESC_LT_body_ESC_GT_
-    _ESC_LT_form method="POST"_ESC_GT_
-        _ESC_LT_textarea name="gnuplot-code" rows="8" cols="60"_ESC_GT__ESC_LT_/textarea_ESC_GT_
-        _ESC_LT_button_ESC_GT_提交_ESC_LT_/button_ESC_GT_
-    _ESC_LT_/form_ESC_GT_
-_ESC_LT_/body_ESC_GT_
-_ESC_LT_/html_ESC_GT_
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body>
+    <form method="POST">
+        <textarea name="gnuplot-code" rows="8" cols="60"></textarea>
+        <button>提交</button>
+    </form>
+</body>
+</html>
 ```
 
 ![](figures/07.png)
@@ -387,22 +387,22 @@ _ESC_LT_/html_ESC_GT_
 若让页面的外观略微正式一些，需要为 HTML 标记增加一些样式设定，
 
 ```html
-_ESC_LT_!DOCTYPE html_ESC_GT_
-_ESC_LT_html_ESC_GT_
-_ESC_LT_head_ESC_GT__ESC_LT_meta charset="utf-8"_ESC_GT__ESC_LT_/head_ESC_GT_
-_ESC_LT_body_ESC_GT_
-  _ESC_LT_form method="POST" style="width: 480px"_ESC_GT_
-    _ESC_LT_textarea name="gnuplot-code" rows="8"
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body>
+  <form method="POST" style="width: 480px">
+    <textarea name="gnuplot-code" rows="8"
               style="display: block;
                      width: 100%;
                      box-sizing: border-box;
-                     resize: vertical"_ESC_GT__ESC_LT_/textarea_ESC_GT_
-    _ESC_LT_button style="display: block;
+                     resize: vertical"></textarea>
+    <button style="display: block;
                    margin-left: auto;
-                   margin-bottom: 1em"_ESC_GT_提交_ESC_LT_/button_ESC_GT_
-  _ESC_LT_/form_ESC_GT_
-_ESC_LT_/body_ESC_GT_
-_ESC_LT_/html_ESC_GT_
+                   margin-bottom: 1em">提交</button>
+  </form>
+</body>
+</html>
 ```
 
 ![](figures/08.png)
@@ -410,23 +410,23 @@ _ESC_LT_/html_ESC_GT_
 这些 HTML 样式的作用，我也不尽了然，我只知道它主要是设定了文本框的宽度以及「提交」按钮的位置。将这些 HTML 代码保存在全局变量 `page` 里，
 
 ```go
-var page = `_ESC_LT_!DOCTYPE html_ESC_GT_
-_ESC_LT_html_ESC_GT_
-_ESC_LT_head_ESC_GT__ESC_LT_meta charset="utf-8"_ESC_GT__ESC_LT_/head_ESC_GT_
-_ESC_LT_body_ESC_GT_
-  _ESC_LT_form method="POST" style="width: 480px"_ESC_GT_
-    _ESC_LT_textarea name="gnuplot-code" rows="8"
+var page = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body>
+  <form method="POST" style="width: 480px">
+    <textarea name="gnuplot-code" rows="8"
               style="display: block;
                      width: 100%;
                      box-sizing: border-box;
-                     resize: vertical"_ESC_GT_{{CODE}}_ESC_LT_/textarea_ESC_GT_
-    _ESC_LT_button style="display: block;
+                     resize: vertical">{{CODE}}</textarea>
+    <button style="display: block;
                    margin-left: auto;
-                   margin-bottom: 1em"_ESC_GT_提交_ESC_LT_/button_ESC_GT_
-  _ESC_LT_/form_ESC_GT_
+                   margin-bottom: 1em">提交</button>
+  </form>
   {{IMG}}
-_ESC_LT_/body_ESC_GT_
-_ESC_LT_/html_ESC_GT_`
+</body>
+</html>`
 ```
 
 Go 语言的变量有两种声明方式，第一种是短变量声明，亦即前文所用的 `:=` 形式，例如
@@ -457,7 +457,7 @@ d = 3.1415
 需要注意的是，在全局变量 `page` 的值内，我特意放置了占位符 `{{CODE}}` 与 `{{IMG}}`，前者表示用户输入的 Gnuplot 代码，后者是我机器里的 `gnuplot` 命令生成的位图文件。若想将占位符替换为具体的文本，可使用 `strings` 包的 `Replace` 函数，例如
 
 ```go
-img := `_ESC_LT_img src="demo.png" width="300px" /_ESC_GT_`
+img := `<img src="demo.png" width="300px" />`
 page_with_img := strings.Replace(page, "{{IMG}}", img, 1)
 ```
 
@@ -488,29 +488,29 @@ import (
         "strings"
 )
 
-var page = `_ESC_LT_!DOCTYPE html_ESC_GT_
-_ESC_LT_html_ESC_GT_
-_ESC_LT_head_ESC_GT__ESC_LT_meta charset="utf-8"_ESC_GT__ESC_LT_/head_ESC_GT_
-_ESC_LT_body_ESC_GT_
-  _ESC_LT_form method="POST" style="width: 480px"_ESC_GT_
-    _ESC_LT_textarea name="gnuplot-code" rows="8"
+var page = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body>
+  <form method="POST" style="width: 480px">
+    <textarea name="gnuplot-code" rows="8"
               style="display: block;
                      width: 100%;
                      box-sizing: border-box;
-                     resize: vertical"_ESC_GT_{{CODE}}_ESC_LT_/textarea_ESC_GT_
-    _ESC_LT_button style="display: block;
+                     resize: vertical">{{CODE}}</textarea>
+    <button style="display: block;
                    margin-left: auto;
-                   margin-bottom: 1em"_ESC_GT_提交_ESC_LT_/button_ESC_GT_
-  _ESC_LT_/form_ESC_GT_
+                   margin-bottom: 1em">提交</button>
+  </form>
   {{IMG}}
-_ESC_LT_/body_ESC_GT_
-_ESC_LT_/html_ESC_GT_`
+</body>
+</html>`
 
 func gnuplot(w http.ResponseWriter, r *http.Request) {
         var code = `set terminal png
 set output "demo.png"
 plot sin(1/x)`
-        img := `_ESC_LT_img src="demo.png" width="480px" /_ESC_GT_`
+        img := `<img src="demo.png" width="480px" />`
         out := strings.Replace(page, "{{CODE}}", code, 1)
         input := r.FormValue("gnuplot-code")
         if input != "" {
@@ -537,7 +537,7 @@ $ go run gnuplot.go
 
 ![](figures/09.png)
 
-当我向 gnuplot.go 初次发送请求时，它检测到 `input` 为空，则写入网页的内容中会出现占位符 `{{IMG}}`，此时若是在网页里点「提交」按钮，则 gnuplot.go 再次接到请求，此时 `input` 不再为空，而是文本框里的代码，于是该程序便向网页中写入 `_ESC_LT_img_ESC_GT_` 标签，以显示一张图片，只是该图片尚不存在，网页中会显示一个表示图片无效的图标，
+当我向 gnuplot.go 初次发送请求时，它检测到 `input` 为空，则写入网页的内容中会出现占位符 `{{IMG}}`，此时若是在网页里点「提交」按钮，则 gnuplot.go 再次接到请求，此时 `input` 不再为空，而是文本框里的代码，于是该程序便向网页中写入 `<img>` 标签，以显示一张图片，只是该图片尚不存在，网页中会显示一个表示图片无效的图标，
 
 ![](figures/10.png)
 
@@ -586,30 +586,30 @@ import (
         "os/exec"
 )
 
-var page = `_ESC_LT_!DOCTYPE html_ESC_GT_
-_ESC_LT_html_ESC_GT_
-_ESC_LT_head_ESC_GT__ESC_LT_meta charset="utf-8"_ESC_GT__ESC_LT_/head_ESC_GT_
-_ESC_LT_body_ESC_GT_
-  _ESC_LT_form method="POST" style="width: 480px"_ESC_GT_
-    _ESC_LT_textarea name="gnuplot-code" rows="8"
+var page = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body>
+  <form method="POST" style="width: 480px">
+    <textarea name="gnuplot-code" rows="8"
               style="display: block;
                      width: 100%;
                      box-sizing: border-box;
-                     resize: vertical"_ESC_GT_{{CODE}}_ESC_LT_/textarea_ESC_GT_
-    _ESC_LT_button style="display: block;
+                     resize: vertical">{{CODE}}</textarea>
+    <button style="display: block;
                    margin-left: auto;
-                   margin-bottom: 1em"_ESC_GT_提交_ESC_LT_/button_ESC_GT_
-  _ESC_LT_/form_ESC_GT_
+                   margin-bottom: 1em">提交</button>
+  </form>
   {{IMG}}
-_ESC_LT_/body_ESC_GT_
-_ESC_LT_/html_ESC_GT_`
+</body>
+</html>`
 
 func gnuplot(w http.ResponseWriter, r *http.Request) {
         var code = `set terminal png
 set output "demo.png"
 plot sin(1/x)`
         out := strings.Replace(page, "{{CODE}}", code, 1)
-        img := `_ESC_LT_img src="demo.png" width="480px" /_ESC_GT_`
+        img := `<img src="demo.png" width="480px" />`
         input := r.FormValue("gnuplot-code")
         if input != "" {
                 os.WriteFile("demo.gp", []byte(input), 0644)
@@ -627,7 +627,7 @@ func main() {
 }
 ```
 
-只是，执行这个程序后，若访问 `127.0.0.1:8080/gnuplot` 服务，即使向 gnuplot.go 提交了 Gnuplot 代码，网页里文本框的下方依然是图像无效标志，但是在 gnuplot.go 所在的目录中，的确已经有了 demo.png 文件。造成问题的原因是，浏览器得到 gnuplot.go 传来的网页后，会对 HTML 解析和渲染，当它遇到 `_ESC_LT_img src="demo.png" /_ESC_GT_` 标记时，会自动向 gnuplot.go 再次发起请求，所用路径为 `/demo.png`，而 gnuplot.go 没有为该路径提供路由函数。
+只是，执行这个程序后，若访问 `127.0.0.1:8080/gnuplot` 服务，即使向 gnuplot.go 提交了 Gnuplot 代码，网页里文本框的下方依然是图像无效标志，但是在 gnuplot.go 所在的目录中，的确已经有了 demo.png 文件。造成问题的原因是，浏览器得到 gnuplot.go 传来的网页后，会对 HTML 解析和渲染，当它遇到 `<img src="demo.png" />` 标记时，会自动向 gnuplot.go 再次发起请求，所用路径为 `/demo.png`，而 gnuplot.go 没有为该路径提供路由函数。
 
 现在，为 `/demo.png` 提供路由函数，
 
@@ -719,9 +719,9 @@ http.Handle("/", http.FileServer(http.Dir(".")))
 
 @ 设置了网站根目录的 main 函数 #
 func main() {
-	http.HandleFunc("/gnuplot", gnuplot)
-	# 设置网站根目录 @
-	http.ListenAndServe(":8080", nil)
+        http.HandleFunc("/gnuplot", gnuplot)
+        # 设置网站根目录 @
+        http.ListenAndServe(":8080", nil)
 }
 @
 
@@ -743,13 +743,13 @@ gp_name := fmt.Sprintf("drawing-%d", gp_id)
 
 当多个用户同时向 gnuplot.go 发起请求时，后者便会同时执行上述代码多次，由于 `gp_id` 是全局变量，于是又出现了多次同时修改同一个对象的情况。可能用户 A 拿到的 `gp_id` 值本该是 1，但是用户 B 同时执行了这段代码，导致 A 拿到的值是 2，亦即 A 得到的文件名 `gp_name` 实际上是 B 之所求。观音虽有百手，但其本体却只有 1 个，`gp_id` 则是其本体的一部分。
 
-为了克服这类问题，Go 语言的 `sync` 包提供了互斥锁机制。该机制的想法非常简单，就是给一段代码加一把锁，所有的同时发生的事情，在这把锁面前，都要排队，然后再逐一穿过这段代码。锁本身也是一个全局变量，例如
+为了克服这类问题，Go 语言的 `sync` 包提供了互斥锁机制。该机制的想法非常简单，就是给一段代码加一把锁。锁本身也是一个全局变量，例如
 
 @ gp_id 锁 #
 var gp_id_mu sync.Mutex
 @
 
-对上述代码加锁和解锁的过程可写为
+对上述的「更新 gp_id」代码片段加锁和解锁的过程可表示为
 
 @ 更新 gp_id # ^+
 gp_id_mu.Lock()
@@ -775,7 +775,7 @@ gp_id_mu.Unlock()
 
 ```
 gp_id_mu.Lock()
-if gp_id _ESC_GT_ 99 {
+if gp_id > 99 {
         gp_id = 0
 }
 gp_id++
@@ -785,7 +785,7 @@ gp_id_mu.Unlock()
 
 如此一来，对 `gp_id` 的修改和取值操作便会被 `gp_id_mu` 的 `Lock` 和 `Unlock` 构成的区域保护起来，这段区域称为临界区。
 
-当多个用户同时发起请求，为其服务的 Go 程序里必须构造相应数量的程序流。这些程序流是同时运行的，至少是让人在感觉上是同时运行的，当它们抵达临界区时，其中某个程序流会得到一把锁，例如 `gp_id_mu`。持锁者可将临界区锁起（Lock），如此一来，其他程序流只能在外等候，直到持锁者解锁（Unlock）亦即将锁归还，下一个得锁的幸运者才有机会进入临界区。这个过程自然是要以时间为代价的，亦即 gnuplot.go 程序不如之前的版本跑得快，只是用户通常感受不到这点差异，毕竟 gnuplot.go 在调用 gnuplot 命令时耗费的时间远大于更新 `gp_id` 的值。
+当多个用户同时发起请求，为其服务的 Go 程序里必须构造相应数量的程序流。这些程序流是同时运行的，至少是让人在感觉上是同时运行的，当它们抵达临界区时，其中某个程序流会得到一把锁，例如 `gp_id_mu`。持锁者可将临界区锁起（Lock），如此一来，其他程序流只能临界区外等候，直到持锁者在走出临界区时解锁（Unlock），下一个得锁的幸运者才有机会进入临界区，如此交替，直至所有程序流穿过临界区。这个过程自然是要以时间为代价的，亦即 gnuplot.go 程序不如之前的版本跑得快，只是用户通常感受不到这点差异，毕竟 gnuplot.go 在调用 gnuplot 命令时耗费的时间远大于更新 `gp_id` 的值。
 
 现在，正式写出一个真正可用的 gnuplot.go 程序，并且再普及如何用文学编程的方式定义一些代码片段，并将其组装为完整的程序。首先，需要写出程序几乎千篇一律的开头，它们的区别通常仅仅是所需要的包有所不同，
 
@@ -858,9 +858,9 @@ func gnuplot(w http.ResponseWriter, r *http.Request) {
 
 @ gnuplot.go 的 main 函数 #
 func main() {
-	http.HandleFunc("/gnuplot", gnuplot)
-	http.Handle("/", http.FileServer(http.Dir(".")))
-	http.ListenAndServe(":8080", nil)
+        http.HandleFunc("/gnuplot", gnuplot)
+        http.Handle("/", http.FileServer(http.Dir(".")))
+        http.ListenAndServe(":8080", nil)
 }
 @
 
@@ -883,7 +883,7 @@ $ xi -t -e "gnuplot.go 程序" -o gnuplot.go go-with-me.xi
 
 ![](figures/13.png)
 
-# 君子终日行，不离辎重
+# 创建一个网站
 
 在「百手观音」一节，为了让用户的浏览器端能够获得 Gnuplot 生成的位图文件，使用了以下代码
 
@@ -895,20 +895,1517 @@ http.Handle("/", http.FileServer(http.Dir(".")))
 
 ![](figures/14.png)
 
-这意味着，当浏览器端向 gnuplot.go 程序发来根路径的请求是，后者会将自身工作目录里的文件列表作为响应发送给浏览器端，这也意味着浏览器端可以访问该目录里的任何一个文件。
+这意味着，当浏览器端向 gnuplot.go 程序发来根路径的请求是，后者会将自身工作目录里的文件列表作为响应发送给浏览器端，这也意味着浏览器端可以访问该目录里的任何一个文件。DeepSeek 在审阅前文时，已多次指出这个问题。它把写教程，当成做项目了。
 
-`http.FileServer` 还有一个特殊作用，假如它暴露出的目录中含有 index.html 文件，则浏览器不再显示文件列表，而是显示这个网页。这意味着即使 Go 程序没有在该目录内生成任何东西，该目录也可以作为一个静态网站使用。
+`http.FileServer` 有一个特殊效用，它暴露出的目录若含有 index.html 文件，则浏览器不再显示文件列表，而是显示这个网页。这意味着即使 Go 程序没有在该目录内生成任何东西，该目录也可以作为一个静态网站使用。
 
-我曾写过一个可以构建静态网站的 Bash 脚本，见「[如何用 90 行代码写一个静态网站构造工具](https://zhuanlan.zhihu.com/p/2097600582026637372)」，实际上这个脚本建立的只是一些目录，且每个目录内皆有 index.html 文件。以前，我若想让他人访问该网站，需要借助 nginx，而现在只需 Go 程序将该网站的根目录暴露出来即可。
-
-假设，我在 `/home/garfileo/public` 目录中用上述 Bash 脚本构建了一个静态网站，其根目录为 `my-site`，则下面的这个 Go 程序便可让他人访问这个网站，
+我曾写过一个可以构建静态网站的 Bash 脚本，见「[如何用 90 行代码写一个静态网站构造工具](https://zhuanlan.zhihu.com/p/2097600582026637372)」，实际上这个脚本建立的只是一些目录，且每个目录内皆有 index.html 文件。以前，我若想让他人访问该网站，需要在 nginx 中部署，虽然不难，但是现在用 Go 程序部署这个网站，也只是三言两语。例如，我在 `/home/garfileo/public` 目录中用上述 Bash 脚本构建了一个静态网站，其根目录为 `my-site`，则下面的这个 Go 程序便可将该目录部署为可让他人访问的网站，
 
 @ my-site.go #
 package main
 import ("net/http")
-
 func main() {
-	http.Handle("/", http.FileServer(http.Dir("/home/garfileo/public")))
-	http.ListenAndServe(":8080", nil)
+        http.Handle("/", http.FileServer(http.Dir("/home/garfileo/public/my-site")))
+        http.ListenAndServe(":8080", nil)
 }
 @
+
+如此一来，每当他人用浏览器访问我的网站时，若需要载入图片之类的资源，例如浏览器遇到
+
+```html
+<img src="drawing-1.png" />
+```
+
+它会向 my-site.go 程序发起请求，要求后者处理 `/drawing-1.png` 路径。由于 my-site.go 没有为该路径设定路由函数，故而会以 `/` 路径的路由函数兜底。于是 `http.FileServer` 会接手这个请求，它先将 `http.Dir("/home/garfileo/public/my-site")` 当作网站根目录，然后将请求路径 `/drawing-1.png` 映射成文件路径 `/home/garfileo/public/my-site/drawing-1.png`，若该文件存在，它便将文件内容作为此次请求的最终响应传给浏览器。
+
+若是大致能明白 `http.FileServer` 所做的工作，便可对前文中已经多次修改的 gnuplot.go 程序再作一些修改，将其输入数据和输出的位图文件放在一个专门划定目录里，如此可让 gnuplot.go 的工作目录不再充满许多 drawing-xx.gp 和 drawing-xx.png 之类的文件了。不过，我不打算尝试。虽然这的确是一件有意义的事，可是出现在教程里，会过于乏味，不过倒是可以作为一道练习题。
+
+# 相似性
+
+关于 Go 语言的 http 包的故事至此应该结束了，再继续下去，会陷入到蜂拥而至的网络技术细节里，而理解 Go 语言之精髓的机会变得越来越小，更何况我现在并没有打算向成为网络编程专家的方向发展。不过，这个教程仍需继续，因为我还没学会 Go 语言。为了维持这个目标，我需要将问题变换为，如何使用 Go 语言写一些命令行程序，在单机环境里模拟网络后端程序效果。我这样说，可能会让你产生错觉，认为我要重新写一个自己的 http 包，至少 DeepSeek 有这种错觉。实际上并非如此，例如这一节的任务是写一个简单的命令行程序，使之能响应 `echo` 命令传给它的路径，例如
+
+```console
+$ echo "127.0.0.1:8080/" | go run hi.go
+There is no place like it.
+```
+
+亦即 hi.go 程序通过管道，将 `echo` 命令的输出作为请求，给出的响应是在终端输出的很随便的一句话，然而 `echo` 命令的行为很像浏览器地址栏里输入 `127.0.0.1:8080` 并回车提交。
+
+在 Linux 或其他类 Unix 系统中，一个普通的命令行程序通常会假设其输入来自标准输入设备（例如键盘），程序运行结果则发送给标准输出设备（例如计算机屏幕）。管道 `|` 可以将一个命令的输出作为另一个命令的输入，如此便可将多个命令行程序衔接起来。上述的 `echo` 命令和 `go run hi.go` 命令用管道衔接起来之后，你便可以从直觉上认为，`echo` 在向一个程序提交请求。换言之，你所理解的网络服务机制，在单机环境里存在着与之结构相似的机制，且后者更为简单。再例如，你觉得微分与积分很难，却不会觉得数数与求和很难。简单的机制可以帮助你建立思维模型，亦即形成某种直觉。
+
+在 Go 语言中，标准输入设备即 `os.Stdin`，可以用 `io.ReadAll` 从标准输入中获取全部数据，例如
+
+```
+package main
+
+import (
+        "fmt"
+        "io"
+        "os"
+)
+
+func main() {
+        data, _ := io.ReadAll(os.Stdin)
+        fmt.Print(string(data))
+}
+```
+
+假设上述代码即 hi.go 程序，运行它，
+
+```console
+$ go run hi.go
+```
+
+便会发现这个程序什么都不做，但也不退出，而在准备从标准输入设备里读取数据，然而此刻无数据可读。利用管道，便可将 `echo` 命令的输出与 hi.go 的 `os.Stdin` 对接，后者便有数据可读，它将读出来的数据保存在 `data` 变量里，然后调用 `fmt.Print` 函数将 `data` 的值写入默认的标准输出设备亦即屏幕，于是便造就了一个很无聊的程序，
+
+```console
+$ echo "127.0.0.1:8080/" | go run hi.go
+127.0.0.1:8080/
+```
+
+实际上借助管道，还能将 Go 程序的输出再作为另一个命令的输入，例如
+
+```console
+$ echo "127.0.0.1:8080/" | go run hi.go | cat
+127.0.0.1:8080/
+```
+
+> `cat` 命令可以读取标准输入中的内容，然后将读取结果写入标准输出。
+
+现在，我希望 hi.go 能够识别根路径，并作出响应。`strings.Index` 可以从一个字符串中搜索指定目标，搜索结果是目标在字符串中首次出现的位置，例如
+
+```go
+// 导入 strings 包
+import (
+        ...
+        "strings"
+)
+
+// 输出 14，即查找目标在字符串中的下标，是字节下标，而非字符下标
+fmt.Printf("%d\n", strings.Index("127.0.0.1:8080/", "/"))
+```
+
+Go 语言允许字符串使用字节切片语法，基于字节下标，从字符串里截取一段，例如
+
+```go
+a := "hello"
+// 输出字符串 "ll"
+fmt.Printf("%s", a[2:4])
+```
+
+用下标设定切片范围时，下标从 0 开始，且构造的区间是左闭右开的。如果切片范围未指定区间右界，则默认以字符串长度作为右界，接上例，
+
+```go
+// 输出字符串 "llo"
+fmt.Printf("%s", a[2:])
+```
+
+上述代码等效于
+
+```go
+// 输出字符串 "llo"
+fmt.Printf("%s", a[2:len(a)])
+```
+
+基于 `strings.Index` 和字符串切片语法，可将 `127.0.0.1:8080/` 中根路径之前文本消除，
+
+```go
+url := "127.0.0.1:8080/"
+// 输出字符串 "/"
+fmt.Printf("%s", url[strings.Index(url, "/"):]) 
+```
+
+现在，可以写出符合需求的 hi.go 了，
+
+@ hi.go #
+package main
+
+import (
+        "fmt"
+        "io"
+        "os"
+        "strings"
+)
+
+func main() {
+        data, _ := io.ReadAll(os.Stdin)
+        url := string(data)
+        request := url[strings.Index(url, "/"):]
+        response := "There is no place like it."
+        if request == "/" {
+                fmt.Printf("%s\n", response)
+        }
+}
+@
+
+可是，此时若执行
+
+```console
+$ echo "127.0.0.1:8080/" | go run hi.go
+```
+
+不会得到任何输出，因为 `echo` 会自动在其输出的文本之后添加换行符 `\n`，故而代码里与 `request` 比较的应该是 `"/\n"`。不过，不改动 hi.go 也无妨，`echo` 命令可以用 `-n` 选项禁止在文本之后添加换行符，例如
+
+```console
+$ echo -n "127.0.0.1:8080/" | go run hi.go
+There is no place like it.
+```
+
+需要注意的是，若 `strings.Index` 未能在字符串中发现目标的存在，会返回 -1，为了让 hi.go 更为健壮，需要处理这种特殊情况，
+
+```go
+i := strings.Index(url, "/")
+if i < 0 {
+        return
+}
+request := url[i:]
+```
+
+实际上，还有一种意外情况，即读取 `os.Stdin` 中的内容时，`io.ReadAll` 可能会返回错误值，然而本文档在前文中一向是用 `_` 忽略错误值的情况。从现在开始，应尽力不推卸处理错误的责任，故而需将 `os.Stdin` 获取数据的过程写得更稳严谨一些，
+
+```go
+data, err := io.ReadAll(os.Stdin)
+if err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        return
+}
+```
+
+> Go 语言的 fmt 包中常用的几种 `print` 函数，若以 `ln` 为后缀，表示会在输出的信息尾部添加换行符；若以 `f` 为后缀，则支持字符串格式化；若以 `F` 为前缀，表示将字符串写入某个对象，例如文件；若以 `S` 为前缀，表示返回新的字符串。`f` 与 `ln` 二选一，不会同时出现。
+
+错误处理，通常只需输出错误信息，然后让函数提前返回。注意，错误信息是用 `fmt.Fprinfln` 写到标注错误设备，如此可防止错误信息出现在程序的正常输出中。`nil` 表示「无值」。
+
+# 小题大做
+
+当 hi.go 程序看到路径 `/` 时，它的内心并未出现任何异样，因为这不过是仅含有 1 个字符的字符串，直到有一天它忽然明白了，出来混，面子要自己给，即使自身如此简陋，依然不妨碍自己郑重宣布 `/` 是根路径，并且认为它的出现会触发一个函数，也不妨碍它雇佣一个叫做 `handle_func` 的函数，将路径与其要触发的函数关联起来。
+
+`handle_func` 函数需要接受两个参数，
+
+```go
+func handle_func(path string, 第 2 个参数的类型是什么？) {
+        ... ... ...
+}
+```
+
+第 2 个参数是函数，可是函数类型该如何写呢？由于我希望第 2 个参数的样子像
+
+```go
+func handle_func(w *string, r string) {
+        ... ... ...
+}
+```
+
+故而 `handle_func` 函数的第 2 个参数的类型可写为 `func(*string, string)`，其中 `*string` 是字符串指针类型。若对指针类型一无所知，可暂且保持无知，先写出 `handle_func` 的定义，
+
+```go
+func handle_func(path string, handler func(*string, string)) {
+        如何建立 path 与 handler 的映射？
+}
+```
+
+Go 语言提供了 `map` 容器，可用于关联两个对象，只是创建这种容器对象的语法有些古怪，例如，
+
+@ 路由表 #
+var routers = make(map[string]func(*string, string))
+@
+
+要创建 `map` 容器需要用 `make` 函数。上述代码所创建的 `map` 容器，可以容纳 `string` 类型到 `func(*string, string)` 类型的映射，也可将方括号内的类型理解为「键」类型，将方括号之后跟随的类型理解为「值」类型，亦即将 `map` 理解为散列表。
+
+将 `handle_func` 函数的两个参数存入 `routers` 便可建立二者的映射，
+
+@ handle_func 函数 #
+func handle_func(path string, handler func(*string, string)) {
+        routers[path] = handler
+}
+@
+
+假设有一个 `func(*string, string)` 类型的函数，其定义为
+
+@ handle 实例 foo #
+func foo(w *string, r string) {
+        *w = fmt.Sprintf("对于 %s，我认为烟涛微茫信难求！", r)
+}
+@
+
+若让 `/` 映射到 `foo`，只需
+
+@ 建立路径 / 到 foo 的映射 #
+handle_func("/", foo)
+@
+
+hi.go 程序从标准输入中获取其他程序请求的路径，
+
+@ 获取其他程序请求的路径 #
+data, err := io.ReadAll(os.Stdin)
+if err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        return
+}
+url := string(data)
+i := strings.Index(url, "/")
+if i < 0 {
+        return
+}
+request := url[i:]
+@
+
+然后通过 `routers[request]` 便可调用路由表中的函数，
+
+@ 触发路由函数 #
+var response string
+if routers[request] != nil {
+        routers[request](&response, request)
+} else {
+        routers["/"](&response, request)
+}
+fmt.Println(response)
+@
+
+于是，一个颇有气势的 hi.go 程序就此诞生，
+
+@ 有面子的 hi.go 程序 # [GO]
+package main
+
+import (
+        "fmt"
+        "io"
+        "os"
+        "strings"
+)
+
+# 路由表 @
+# handle_func 函数 @
+# handle 实例 foo @
+
+func main() {
+        # 建立路径 / 到 foo 的映射 @
+        # 获取其他程序请求的路径 @
+        # 触发路由函数 @
+}
+@
+
+hi.go 程序的面子里，有几分是指针类型添的彩。在触发路由函数的语句里，
+
+```go
+var response string
+routers[request](&response, request)
+```
+
+路由函数的第一个参数是 `reponse` 的地址，而在路由函数 `foo` 的定义中，会更新该地址中的数据，亦即
+
+```go
+*w = fmt.Sprintf("对于 %s，我认为烟涛微茫信难求！", r)
+```
+
+`request` 变量是在 `main` 函数中定义的，但是却能在 `foo` 函数中修改。即使你对指针一无所知，也可以将其理解为，基于指针可以「远程」操作变量，指针就像网线，通过它可以传递数据。
+
+试着运行新的 hi.go 程序，
+
+```console
+$ echo -n "127.0.0.1:8080" | go run hi.go
+$ echo -n "127.0.0.1:8080/" | go run hi.go
+对于 /，我认为烟涛微茫信难求！
+$ echo -n "127.0.0.1:8080/foo" | go run hi.go
+对于 /foo，我认为烟涛微茫信难求！
+```
+
+若一个 Go 程序，要反复运行测试，每次都用 `go run` 命令，意味着每次都要用 Go 语言编译器 go 编译该程序，这是没必要的资源和时间浪费。go 可以将 Go 程序从源码编译为可执行文件，若反复运行后者，便可省去其编译过程，例如
+
+```console
+$ go build hi.go
+$ echo -n "127.0.0.1:8080" | ./hi
+$ echo -n "127.0.0.1:8080/" | ./hi
+对于 /，我认为烟涛微茫信难求！
+$ echo -n "127.0.0.1:8080/foo" | ./hi
+对于 /foo，我认为烟涛微茫信难求！
+```
+
+go 在编译 hi.go 时，生成的可执行文件默认与 Go 程序源码文件同名，故而生成的可执行文件名为 hi，它是可以独立运行的程序。
+
+# 可以长生吗？
+
+hi.go 有一天忽然问我，这世上有长生之道吗？我没有回答，只是敲了它三下脑袋。它貌似心领神会，入夜，候在我门外，待我传授一些法门。我告诉它，所谓长生，不过是重生。
+
+有些代码片段，天造地设，出现在一种叫做 `for` 的语句里，例如
+
+```go
+for {
+        var i = 42
+        fmt.Printf("长生 i，其值为 %d\n", i)
+}
+```
+
+于是这段代码在一轮又一轮的重生中得以长生。
+
+在 `for` 语句里，也能够给一段代码的重生设定次数，亦即赋予它寿命，例如
+
+```go
+for i := 0; i < 10; i++ {
+        fmt.Printf("%d 岁了\n", i)
+}
+```
+
+上述代码等效于 `for` 语句的另一种形式，即
+
+```go
+i := 0
+for i < 10 {
+        fmt.Printf("%d 岁了\n", i)
+        i++
+}
+```
+
+hi.go 若有所悟，它认为自己若想得到长生，只需在 `main` 函数内如此使用 `for` 语句，
+
+@ 需要长生的代码片段 #
+for {
+        # 获取其他程序请求的路径 @
+        # 触发路由函数 @
+}
+@
+
+我说方向是对的，但实际上在管道命令里无法成功，例如
+
+```console
+$ echo -n "127.0.0.1:8080/" | go run hi.go
+```
+
+原因在于，hi.go 程序从标准输入中获取数据时，首次便已将 `os.Stdin` 中的数据读取殆尽。当 `for` 语句中的代码首次重生时，从 `os.Stdin` 里读不到任何数据，亦即以下代码
+
+```go
+data, err := io.ReadAll(os.Stdin)
+if err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        return
+}
+```
+
+所得 `data` 中没有数据，继而触发以下代码中的条件语句，导致 `main` 函数提前返回，
+
+```go
+url := string(data)
+i := strings.Index(url, "/")
+if i < 0 {
+        return
+}
+```
+
+于是， 你就会失去长生的机会，我拍了拍 hi.go 的肩膀说。
+
+hi.go 甚是沮丧，那么，难道我无法以长生的形式获得其他程序发来的请求吗？
+
+我说，现在倘若你独立运行，你构想的 `for` 语句可以不断重生，而且每次重生时，都会等待 `os.Stdin` 的输入。例如
+
+```console
+$ go run hi.go
+```
+
+然后输入 `127.0.0.1:8080/`，敲击回车键，便可将该输入提交到 `os.Stdin`，然后再摁 `Ctrl + D` 键，则 `io.ReadAll` 便可从 `os.Stdin` 获得数据。`Ctrl + D` 键表示 EOF，即 End of File，亦即文件自此结束。完成这个输入过程后，hi.go 会对所获请求予以响应，之后便进入 `for` 语句中代码的首次重生过程，此时 `io.ReadAll` 再次等待 `os.Stdin` 中出现数据。
+
+不过，hi.go 听了这个方案之后，并未高兴起来，它不想这样运行。它觉得这种工作方式，像是在强求别人的施舍，宛若独裁者。它还是喜欢管道的方式，那样会让它觉得能够与世上许多有输出的程序平等合作，共同发展。
+
+我想了一会，才缓缓说道，也许可以试试命名管道。它其实是一个文件，其他程序可将提交给你的请求写入该文件，每一行表示一个请求。你只需从你开始运行到你每次重生的过程里，每次从该文件里读取一行，亦即你得到了一个请求，随后你对其做出响应即可。听了这个方案，hi.go 的眼中一亮，翻了个跟头，急切追问，此法可得长生吗？我说，在 Linux 或类 Unix 系统中应该可以，我们不妨一试。
+
+首先用 `mkfifo` 命令在 /tmp 目录创建命名管道 hi-pipe，
+
+```console
+$ mkfifo /tmp/hi-pipe
+```
+
+但是，在 hi.go 的 `for` 语句里，每一次都要用 `os.Open` 以文件的形式打开该管道，
+
+
+@ 从命名管道获取数据 #
+input, err := os.Open("/tmp/hi-pipe")
+if err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        return
+}
+data, err := io.ReadAll(input)
+input.Close() // 关闭命名管道
+if err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        return
+}
+@
+
+另外，为了让 hi.go 不会在 `for` 语句里提前终止，需要将
+
+```go
+url := string(data)
+i := strings.Index(url, "/")
+if i < 0 {
+        return
+}
+request := url[i:]
+```
+
+中的 `return` 换成 `continue`，亦即
+
+@ 获取请求，若失败则重生 #
+url := string(data)
+i := strings.Index(url, "/")
+if i < 0 {
+        continue
+}
+request := url[i:]
+@
+
+
+这意味着即使 hi.go 并未从管道中获得有效请求，也需要让 `for` 循环继续，而非自裁身亡。
+
+如此一来，hi.go 需要独立运行，
+
+```console
+$ go run hi.go
+```
+
+其他命令只需向 /tmp/hi-pipe 写入请求即可，例如
+
+```console
+$ echo -n "127.0.0.1:8080/foo" > /tmp/hi-pipe
+```
+
+当 `echo` 命令结束后，hi.go 程序会随即做出响应，输出
+
+```console
+对于 /foo，我认为烟涛微茫信难求！
+```
+
+![](figures/15.png)
+
+现在，我给出全新的 hi.go 程序的全貌，
+
+@ hi.go 长生之一 #
+package main
+
+import (
+        "fmt"
+        "io"
+        "os"
+        "strings"
+)
+
+# 路由表 @
+# handle_func 函数 @
+# handle 实例 foo @
+
+func main() {
+        # 建立路径 / 到 foo 的映射 @
+        for {
+                # 从命名管道获取数据 @
+                # 获取请求，若失败则重生 @
+                # 触发路由函数 @
+        }
+}
+@
+
+此时，hi.go 说，我觉得我像一个服务器。
+
+# 惯性
+
+我想试试 hi.go 的长生能力，在它运行时，我在另一个命令行窗口里输入了
+
+```console
+$ for ((i = 0; i < 30; i++)); do echo -n "/" > /tmp/hi-pipe; done
+```
+
+这行命令可以向 hi.go 发起 30 次请求，然而 hi.go 却只给出两句响应，且不尽正确，
+
+```
+对于 //，我认为烟涛微茫信难求！
+对于 /，我认为烟涛微茫信难求！
+```
+
+更奇怪的是，执行我的命令的命令行窗口被一种神秘力量关闭了。hi.go 摊开自己的双手，愣了一会，我练出了什么神通？
+
+是的……也许所有的神通，都是愚蠢而勇敢的尝试所带来的副作用。这 30 条 `echo` 命令里，可能会出现死亡事故，吓得命令行窗口立马主动关闭了。
+
+管道两端分别成为读端和写端。/tmp/hi-pipe 的读端由 hi.go 掌控，它的 `for` 语句每一次执行时，都会打开读端，若管道内没有数据，则等待，否则读取管道内的所有数据，然后再关闭读端。/tmp/hi-pipe 的写端是由批量的 30 次 `echo` 命令掌控。每一条 `echo` 命令在打开管道的写端时，若管道的读端是打开的，便将内容写入，否则等待读端打开。这是管道的正常读写过程。
+
+然而上述示例里的管道读写出现了一种异常情况，一条 `echo` 命令检测到管道读端是打开的，待它正要向其中写入数据时，读端却被 hi.go 当前的一轮循环关闭了，然而此时的这条 `echo` 命令像是一辆速度很快的车在惯性的作用下狠狠地撞上了已被关闭的隧道出口，一命归西。
+
+hi.go 听得目瞪口呆，他未曾想到自己的长生无意中祸及了无辜。我说，幸好 `echo` 本是蜉蝣之命，但是这长生之术需要改进，以免酿成更大的祸事。
+
+首先，管道的读端只应打开和关闭一次，在读取管道是，不可再用 `io.ReadAll` 一次读尽，而是每次只读一行。之前做的几次试验，虽然很像逐行读取管道，然而那只不过是 `echo -n` 命令所造成的假象。
+
+如何从文件里每次只读一行呢？Go 语言的方式有些特别，它需要 `bufio` 包提供的文件扫描器功能。假设 /tmp/hi-pipe 已经以文件 `input` 的形式打开，以下代码可为该文件创造一个扫描器，
+
+```go
+scanner := bufio.NewScanner(input)
+```
+
+之后，每次执行 `scanner.Scan` 函数，便可从 `input` 里读取一行数据（不包括换行符），若数据是文本，可使用 `scanner.Text` 函数取出，例如
+
+```go
+for scanner.Scan() {
+        fmt.Printf("%s\n", scanner.Text())
+}
+```
+
+`scanner.Scan` 的返回值类型是 `bool`，成功读取一行数据，返回 `true`，否则返回 `false`，后者又分为两种情况，一种是读到 EOF，即文件末尾，另一种是读取过程中出现错误。
+
+于是，hi.go 处理输入的过程可改造为，
+
+@ 从当前一行的内容中获取请求 #
+url := scanner.Text()
+i := strings.Index(url, "/")
+if i < 0 {
+        continue
+}
+request := url[i:]
+@
+
+其他过程可保持不变，于是一个不会祸及无辜的长生 hi.go 程序诞生了，
+
+@ hi.go 长生之二 #
+package main
+
+import (
+        "fmt"
+        "os"
+        "strings"
+        "bufio"
+)
+
+# 路由表 @
+# handle_func 函数 @
+# handle 实例 foo @
+
+func main() {
+        # 建立路径 / 到 foo 的映射 @
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+                fmt.Fprintln(os.Stderr, err)
+                return
+        }
+        for {
+                scanner := bufio.NewScanner(input)
+                for scanner.Scan() {
+                        # 从当前一行的内容中获取请求 @
+                        # 触发路由函数 @
+                }
+        }
+        input.Close()
+}
+@
+
+hi.go 让我再度将其运转起来，等待着我在另一个命令行窗口里输入
+
+```console
+$ for ((i = 0; i < 30; i++)); do echo "/" > /tmp/hi-pipe; done
+```
+
+> 因为 hi.go 已经具备按行读入文本的能力，故而在 `echo` 命令里无需再用 `-n` 选项去消除 `cho` 命令为文本自动添加的换行符。
+
+这一次，我输入命令的窗口不再消失，hi.go 也着实响应了三十次 `echo` 命令提交的请求，一切看似甚好。然而没过一会，hi.go 央求我将它停下来，他说这次的长生太令人晕眩了。我急忙查看 hi 程序的 CPU 占用情况，
+
+```console
+$ top -p $(pgrep -n hi)
+```
+
+之所以要查 hi 程序，是因为 `go run hi.go` 本质上将 hi.go 编译成可执行文件 hi，然后运行 hi。我看到的结果是，hi 程序正在让 CPU 全速奔跑，
+
+![](figures/16.png)
+
+看来，hi.go 程序的 `main` 函数中的外层 `for` 语句不能再像之前的版本那样，在遇到管道内无数据时则等待。现在即使管道内无数据，外层的 `for` 也会持续运行，因为其内部任何一条语句都无法产生等待效应。之前所用的 `io.ReadAll` 函数是具备等待效应的，在操作系统的术语上，这种效应称为 I/O 阻塞，亦即当 `io.ReadAll` 遇到文件无内容时，会让整个程序停下来等待，亦即 CPU 无需再继续运行该程序。
+
+我现在没有什么好办法了，只能在 hi.go 的内层 `for` 语句里插入一条主动阻塞 3 秒的语句，
+
+@ 有请求则响应，否则静默片刻 #
+for {
+        scanner := bufio.NewScanner(input)
+        for {
+                if !scanner.Scan() {
+                        time.Sleep(3 * time.Second)
+                        break
+                }
+                # 从当前一行的内容中获取请求 @
+                # 触发路由函数 @
+        }
+}
+@
+
+`time.Sleep` 能够让程序主动停下指定的时间长度，`timeSecond` 是 1 秒。待 hi.go 逐渐平静下来，我无奈地叹了口气，对它说，惯性是物体的固有属性，而我们却幻想着能消灭它，最后增加的这 3 秒静默时间，可以体现出你的惯性……
+
+hi.go 可以接受这个方案，且为自己每周能有 3 秒的休息时间略感幸福……
+
+@ hi.go 长生之三 #
+package main
+
+import (
+        "fmt"
+        "os"
+        "strings"
+        "bufio"
+        "time"
+)
+
+# 路由表 @
+# handle_func 函数 @
+# handle 实例 foo @
+
+func main() {
+        # 建立路径 / 到 foo 的映射 @
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+                fmt.Fprintln(os.Stderr, err)
+                return
+        }
+        # 有请求则响应，否则静默片刻 @
+        input.Close()
+}
+@
+
+# 三极管
+
+hi.go 程序现在遇到的最大问题是，如果它希望每一个向它提交请求的命令不会死于非命，那么它自身需要疲于奔命。我想了很久，试着尽力只凭现有的知识来解决这个问题。
+
+若让 hi.go 彻底不疲于奔命，最简单的办法是使之重新获得阻塞能力。我们现在所掌握的知识，只有几个与标准输入/输出设备以及命名管道相关的操作才能使得程序阻塞。例如，用 `os.Open` 打开一个写端尚未开启的命名管道，会发生阻塞。用 `io.ReadAll` 读取已开启写端的命名管道时，只要未读到 EOF，也会发生阻塞。可以用一个简单的例子将这两种阻塞现象激发出来，先写出 foo.go 程序，
+
+@ foo.go：演示管道阻塞 # [GO]
+package main
+
+import (
+	"os"
+	"fmt"
+	"io"
+)
+
+func main() {
+	fmt.Println("开始")
+	input, _ := os.Open("/tmp/demo.pipe")
+	fmt.Println("等待接收管道数据")
+	data, _ := io.ReadAll(input)
+	fmt.Printf("管道数据接收完毕，收到 %d 字节\n", len(data))
+	input.Close()
+	fmt.Println("结束")
+}
+@
+
+然后创建管道 /tmp/demo.pipe，
+
+```console
+$ mkfifo /tmp/demo.pipe
+```
+
+继而运行 foo.go 程序，
+
+```console
+$ go run foo.go
+开始
+```
+
+foo.go 会先在屏幕上输出「开始」，然后等待 /tmp/demo.pipe 的写端被打开。可以用 Linux 的 `cat` 命令打开管道写端，只需另开一个命令行窗口，执行
+
+```console
+$ cat > /tmp/demo.pipe
+
+```
+
+当 `cat` 命令运行后，它需要我们通过标准输入向其提交数据，然后它再将所得数据写入管道，亦即此时 `cat` 命令尚未将任何数据写入 /tmp/demo.pipe，但是该管道的写端已经打开了，foo.go 程序里的 `os.Open` 语句便失去阻塞能力，于是 foo.go 程序会输出
+
+```
+等待接收管道数据
+```
+
+但是 foo.go 会立刻被 `io.ReadAll` 阻塞。此时，我们在执行 `cat` 的命令行窗口里随意输入一些内容，然后回车提交，
+
+```console
+$ cat > /tmp/demo.pipe
+今天天气不错
+```
+
+当我们输入「今天天气不错」之后敲回车键，所输入的内容便会进入 `cat` 的标准输入，然后 `cat` 会将其写入 /tmp/demo.pipe，此时 foo.go 中的 `io.ReadAll` 虽然开始工作，但是由于它未读到 EOF，所以会继续阻塞 foo.go。在上述试验环节里，根据 `cat` 的运行状况，可以确认程序从标准输入中读取数据时，也会发生阻塞。
+
+当我们在执行 `cat` 的命令行窗口里摁下组合键 `Ctrl + D` 时，`cat` 认为我们输入了 EOF，亦即它认为已经得到了全部的输入，便将 EOF 写入 /tmp/demo.pipe，然后退出。此时，foo.go 程序得到了 `cat` 发来的 EOF，于是 `io.ReadAll` 也完成自己的工作，结束对 foo.go 的阻塞，随后 foo.go 便继续输出
+
+```
+管道数据接收完毕，收到 %d 字节 19
+结束
+```
+
+![](figures/17.png)
+
+
+用 `bufio.NewScanner` 为读取命名管道而创建的扫描器在工作时也具有阻塞效应。现在，将 foo.go 程序的工作过程改写为逐行读取管道内容，
+
+@ foo.go：演示 Scanner 阻塞 # [GO]
+package main
+
+import (
+	"os"
+	"fmt"
+	"bufio"
+)
+
+func main() {
+	fmt.Println("开始")
+	input, _ := os.Open("/tmp/demo.pipe")
+	scanner := bufio.NewScanner(input)
+	for scanner.Scan() {
+		fmt.Printf("收到：%s\n", scanner.Text())
+	}
+	input.Close()
+	fmt.Println("结束")
+}
+@
+
+重复上述试验过程，只是在执行 `cat` 命令时，多输入几行文字，最后 `Ctrl + D` 键终止，则 foo.go 便可将 `cat` 命令获得的输入逐行输出。
+
+![](figures/18.png)
+
+当一个命名管道的读端未开启时，若有程序要向其写入数据，会在打开该管道时出现阻塞。例如，创建一个新的管道，
+
+```console
+$ mkfifo /tmp/8080.pipe
+```
+
+然后执行 `echo` 命令，向这个新管道写入数据，
+
+```console
+$ echo "hi" > /tmp/8080.pipe
+```
+
+这条命令会卡住，无法完成，除非在此期间其他程序开启了该管道的读端。
+
+只要以 `os.Open` 函数打开管道，便意味着开启了管道读端，所以要让上述 `echo` 命令得以完成，只需在其运行后，再运行一次 foo.go 程序即可。
+
+我对 hi.go 说，也许我可以为你创建一个 /tmp/hi.sig 管道，以该管道的打开操作阻塞你的 `for` 语句，当该管道能打开时，你就读取其全部数据，亦即将其清空，至于你读到什么，并不重要。这个管道像是一个开关，有内容，便意味着开，无内容便意味着关。不过，你只是负责关掉这个开关，至于它如何打开，需要交给另一个程序，后者负责观察 /tmp/hi-pipe 管道，若它能发现该管道的写端已被打开，便会向 /tmp/hi.sig 管道写入数据，对你而言意味着开关打开了，你便可以从 /tmp/hi-pipe 管道读取数据。
+
+hi.go 被我绕晕了，我忽然意识到管道很像二极管，而我似乎发明了三极管，/tmp/hi-pipe 管道的写端是集电极，其读端则是发射极，而 /tmp/hi.sig 管道是基极。
+
+围绕 /tmp/hi.sig 的电路……哦……程序可以写成 observer.go，
+
+@ observer.go：/tmp/hi-pipe 的观察者 #
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+        	fmt.Fprintln(os.Stderr, err)
+        	return
+        }
+        os.WriteFile("/tmp/hi.sig", []byte("!"), 0)
+        input.Close()
+}
+@
+
+observer.go 负责监控 /tmp/hi-pipe 管道，一旦有其他程序打开该管道的写端，则 `os.Open` 语句便失去阻塞作用，`os.WriteFile` 语句便向 /tmp/hi.sig 管道写入一个 `!`，随后 observer.go 关闭 /tmp/hi-pipe 管道并退出。需要注意的是，`os.WriteFile` 语句实际上包含了打开文件和关闭文件的操作，亦即它大概等效于
+
+```go
+output, err := os.OpenFile("/tmp/hi.sig", O_WRONLY, 0)
+if err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        return
+}
+n, err := output.Write([]byte("!"))
+if err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        return
+}
+output.Close()
+```
+
+需要注意的是，要向管道或文件写入数据，不能用 `os.Open` 函数，因为该函数打开的管道或文件仅支持读，不支持写。`os.OpenFile` 是更为通用的管道/文件打开函数，上述示例是以「只写」的方式打开管道 /tmp/hi.sig。
+
+我对 hi.go 说，现在我要对你做一个简单的手术。hi.go 说，来吧，我当效关云长刮骨疗毒之遗风。于是，我将 hi.go 的外层 `for` 语句修改为
+
+@ 受 /tmp/hi.sig 控制的请求/响应过程 #
+for {
+        // 阻塞
+        sig, _ := os.Open("/tmp/hi.sig")
+        io.ReadAll(sig)
+        sig.Close()
+        // 获取每个请求并给出响应
+        scanner := bufio.NewScanner(input)
+        for scanner.Scan() {
+                # 从当前一行的内容中获取请求 @
+                # 触发路由函数 @
+        }
+}
+@
+
+注意，为了让上述代码更能体现意图，我忽略了一些错误处理过程。新的 hi.go 的全部内容为
+
+@ hi.go 长生之四 #
+package main
+
+import (
+        "fmt"
+        "os"
+        "io"
+        "strings"
+        "bufio"
+)
+
+# 路由表 @
+# handle_func 函数 @
+# handle 实例 foo @
+
+func main() {
+        # 建立路径 / 到 foo 的映射 @
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+                fmt.Fprintln(os.Stderr, err)
+                return
+        }
+        # 受 /tmp/hi.sig 控制的请求/响应过程 @
+        input.Close()
+}
+@
+
+现在开始验证 /tmp/hi-pipe 和 /tmp/hi.sig 这两个管道所构成的三极管是否可作为一个完美的开关，去控制 hi.go 读取 /tmp/hi-pipe 的过程，我们需要先运行 hi.go，
+
+```console
+$ go run hi.go
+```
+
+然后另开一个命令行窗口运行 observer.go，
+
+```console
+$ go run observer.go
+```
+
+再开一个命令行窗口执行 `echo` 命令，
+
+```console
+$ for ((i = 0; i < 7; i++)); do echo "/foo" > /tmp/hi-pipe; done
+```
+
+试验记过是，observer.go 会结束，而 hi.go 在输出以下内容后，继续保持运行，且 CPU 占用率为 0%。
+
+```
+对于 /foo-0，我认为烟涛微茫信难求！
+对于 /foo-1，我认为烟涛微茫信难求！
+对于 /foo-2，我认为烟涛微茫信难求！
+对于 /foo-3，我认为烟涛微茫信难求！
+对于 /foo-4，我认为烟涛微茫信难求！
+对于 /foo-5，我认为烟涛微茫信难求！
+对于 /foo-6，我认为烟涛微茫信难求！
+```
+
+observer.go 退出是正常的，因为我并未让它长生。现在可以让它长生了，
+
+@ 长生的 observer.go #
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+        for {
+                input, err := os.Open("/tmp/hi-pipe")
+                if err != nil {
+                	fmt.Fprintln(os.Stderr, err)
+                	return
+                }
+                os.WriteFile("/tmp/hi.sig", []byte("!"), 0)
+                input.Close()
+        }
+}
+@
+
+若在重复一次上述的试验过程，hi.go 便在响应批量 `echo` 命令时，不会再有 `echo` 命令撞死在 /tmp/hi-pipe 管道的读端，因为该管道的读端在 hi.go 内打开后直到 hi.go 退出时才会关闭。
+
+不过，需要注意，当 observer.go 在向 /tmp/hi.sig 管道写数据时，依然会遇到该管道被 hi.go 关闭的情况，此时 observer.go 的 `os.WriteFile` 语句便会出错，但是这种错误不会影响 observer.go 继续运行下去，而且出错的概率通常很小。
+
+这个三极管方案并没有消除惯性，只是将惯性集中到了 observer.go 中，并承认它具有合法性，而且整个过程中没有哪个程序或命令死于非命。hi.go 认为此法极秒，然而我却有些茫然，三极管有了，后面的路我一时竟不知该如何前进了。难道所有的程序，不过是运行在计算机上的模拟电路？
+
+# 分身有术
+
+今天早上我还没起床时下过了雨。到了中午，天蓝得不像话，风也冷得不像话，树上的黄叶簌簌落下，却也无法达到真正意义上的归根。在这样清冷而宏大的气氛里，我对正在窗外愉快翻着跟头的 hi.go 说，其实那个 observer.go 没必要存在。它之所以存在，是因为你还没学会分身术。
+
+hi.go 从窗外跳进来，给我泡了一杯茶，浓得不像话。好学吗？它问。似乎不难，我也只是听说过，从未试验过。大概就是写一个函数，然后对它说一句「敕」之类的咒语……表面上是你调用了这个函数，实际上它可以与你同时运行。我话音刚落，hi.go 便纵身跳入我的硬盘，来改我一试！
+
+我为 hi.go 增加了一个函数 `observer`，其定义直接就是 observer.go 的 `main` 函数中的内容，
+
+@ observer 函数 #
+func observer() {
+	for {
+                input, err := os.Open("/tmp/hi-pipe")
+                if err != nil {
+                	fmt.Fprintln(os.Stderr, err)
+                	return
+                }
+                os.WriteFile("/tmp/hi.sig", []byte("!"), 0)
+                input.Close()
+        }
+}
+@
+
+然后在 hi.go 的 `main` 函数的起始处调用 `observer` 函数，只是在调用语句之前增加了 `go`，
+
+@ 启动 observer #
+go observer()
+@
+
+于是，修改后的 hi.go 的样子为
+
+@ 可分身的 hi.go #
+package main
+
+import (
+        "fmt"
+        "os"
+        "io"
+        "strings"
+        "bufio"
+)
+
+# 路由表 @
+# handle_func 函数 @
+# handle 实例 foo @
+# observer 函数 @
+
+func main() {
+        # 启动 observer @
+        # 建立路径 / 到 foo 的映射 @
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+                fmt.Fprintln(os.Stderr, err)
+                return
+        }
+        # 受 /tmp/hi.sig 控制的请求/响应过程 @
+        input.Close()
+}
+@
+
+在保证 /tmp/hi-pipe 和 /tmp/hi.sig 两个管道存在的前提下，重新运行 hi.go，然后在另一个命令行窗口里批量执行一组 `echo` 命令，所得结果与上一节的试验没有区别。
+
+hi.go 说，一切居然简单得不像话，这到底发生了什么？我调用了 `observer` 函数后，它本应该将我阻塞了，可我后面的代码为何还能执行？我说，这就是并发。`go` 语句可以让被调用的函数与你的本体同时运行。如此运行的函数，称为 goroutine，亦称 go 协程。
+
+事实上，/tmp/hi.sig 管道也是不必要的，因为 go 协程与你的本体，或者不同的 go 协程之间，可以用 `channel` 通信。我们可以将 `channel` 称为信道，它与我们之前已经打过多次交道的管道相似，与信道相关的一些操作也具有阻塞效果，所以可以用它取代 /tmp/hi.sig。
+
+hi.go 睁大了眼睛，信道用起来，也简单得不像话吗？
+
+我说，好像是吧，我也只是听说过……信道是一个变量，之前我们构造映射容器的时候用的 `make` 也能构造信道。例如，
+
+@ 构造 sig 信道 #
+hi_sig := make(chan int)
+@
+
+`hi_sig` 便是一个信道对象，它可以存储整数，它的类型是 `chan int`。为了简单起见，假设 `hi_sig` 为全局对象，亦即 `observer` 函数和 `main` 函数皆能访问它。
+
+Go 语言提供了 `<-` 符号用于信道的读写，若信道对象在其左侧，表示向信道对象写入数据；若信道对象在其右侧，表示从信道对象读取数据。若信道对象没有数据，其读取数据的操作便会阻塞。信道对象里的数据一经读取，就会消失。
+
+为了更清楚信道的用法，我们需要写一个简单的例子，预演一番，而不是直接上手术台折腾 hi.go。在这个简单的例子是
+
+@ chan-demo.go #
+package main
+
+import (
+        "fmt"
+        "time"
+)
+
+var sig = make(chan int)
+
+func foo() {
+	fmt.Println("foo 开始")
+        time.Sleep(3 * time.Second)
+        sig <- 42
+	fmt.Println("foo 结束")
+}
+
+func main() {
+	fmt.Println("main 开始")
+        go foo()
+        fmt.Println("等待接收信道数据")
+        a := <- sig
+        fmt.Printf("收到 %d\n", a)
+        fmt.Println("main 结束")
+}
+@
+
+运行 chan-demo.go，
+
+```console
+$ go run chan-demo.go
+main 开始
+等待接收信道数据
+foo 开始
+foo 结束
+收到 42
+main 结束
+```
+
+chan-demo.go 演示了是 `main` 和 `foo` 这两个函数如何通过一条管道协同工作。在 `main` 函数里，`foo` 以 go 协程的方式运行，然后变量 `a` 在等待接收信道 `sig` 中的值，若此时信道无值，则 chan-demo.go 会阻塞于这条 `a` 的定义语句处。大概要等 3 秒，`foo` 函数会向 `sig` 里写入值 42，于是 `main` 函数中的变量 `a` 便接收到了这个值。
+
+上述试验也展现了 `foo` 函数与 `main` 函数是同时运行的，因为虽然在 `main` 函数输出「等待接收信道数据」之前便调用了 `foo` 函数，然而该函数输出的「foo 开始」却出现在 `main` 函数输出的「等待接收信道数据」之后。注意，所谓同时，意思是不分先后。
+
+现在对 chan-demo.go 略作修改，让 `foo` 函数写信道三次，再让 `main` 函数读信道三次，
+
+@ 可活三岁的 chan-demo.go #
+package main
+
+import (
+        "fmt"
+        "time"
+)
+
+var sig = make(chan int)
+
+func foo() {
+        for i := 0; i < 3; i++ {
+	        fmt.Println("foo 开始")
+                time.Sleep(3 * time.Second)
+                sig <- i
+	        fmt.Println("foo 结束")
+        }
+}
+
+func main() {
+	fmt.Println("main 开始")
+        go foo()
+        for i := 0; i < 3; i++ {
+                fmt.Println("等待接收信道数据")
+                a := <- sig
+                fmt.Printf("收到 %d\n", a)
+        }
+        fmt.Println("main 结束")
+}
+@
+
+运行新的 chan-demo.go，会在大概 9 秒的时间里陆续输出以下内容，
+
+```
+main 开始
+等待接收信道数据
+foo 开始
+收到 0
+等待接收信道数据
+foo 结束
+foo 开始
+foo 结束
+收到 1
+等待接收信道数据
+foo 开始
+foo 结束
+收到 2
+main 结束
+```
+
+我对 hi.go 说，现在可以作手术了。hi.go 说，我觉得刚才的 `observer` 已经很符合我的气质了，而且我觉得我们对信道的认识还是不太够。
+
+# 从容不迫，有条不紊
+
+自从习得 go 协程，hi.go 在初冬的白杨树下苦思 1 日，似有所得。它说，若有命令通过 /tmp/hi-pipe 管道向我发来请求时，该请求会触发路由函数，若将路由函数化为 go 协程，岂不意味着我可以同时响应很多请求么？我让它先写出代码来看。它写出
+
+@ 触发路由函数，以协程形式运行 #
+var response string
+if routers[request] != nil {
+        go routers[request](&response, request)
+} else {
+        go routers["/"](&response, request)
+}
+fmt.Println(response)
+@
+
+这想法大致可行，只是路由函数会与 `main` 函数同时运行，`response` 变量的值由前者赋予，故而它在后者中得以输出时，可能尚未有值。hi.go 说，`response` 的值是路由函数赋予的，既然如此，为何不直接在路由函数直接将其输出呢？
+
+我说，也许以后我们要对 `response` 的值再作一些包装，例如在其前后增加一些信息。若是在路由函数内便将其输出，就失去包装它的机会了。若是让路由函数代为包装，则意味着可能每个路由函数都要重复写一段包装代码。实际上，我们应该将 `response` 改为信道变量，亦即
+
+@ response 信道 #
+response := make(chan string)
+@
+
+路由表以及 `handle_func` 函数也要改为信道形式，
+
+@ 路由表：信道版本 #
+var routers = make(map[string]func(chan string, string))
+@
+
+@ handle_func 函数：信道版本 #
+func handle_func(path string, handler func(chan string, string)) {
+        routers[path] = handler
+}
+@
+
+用作示例的路由函数 `foo` 需要修改为
+
+@ handle 实例 foo：信道版本 #
+func foo(w chan string, r string) {
+        w <- fmt.Sprintf("对于 %s，我认为烟涛微茫信难求！", r)
+}
+@
+
+依然基于 /tmp/hi.sig 管道实现 hi.go 的阻塞，
+
+@ /tmp/hi.sig 开关 #
+sig, _ := os.Open("/tmp/hi.sig")
+io.ReadAll(sig)
+sig.Close()
+@
+
+然后将路由函数的触发过程修改为
+
+@ 触发路由函数，以协程 + 信道形式运行 #
+if routers[request] != nil {
+        go routers[request](response, request)
+} else {
+        go routers["/"](response, request)
+}
+result := <- response
+fmt.Println(result)
+@
+
+现在，将 hi.go 升级为
+
+@ hi.go：协程 + 信道 #
+package main
+
+import (
+        "fmt"
+        "os"
+        "io"
+        "strings"
+        "bufio"
+)
+
+# 路由表：信道版本 @
+# handle_func 函数：信道版本 @
+# handle 实例 foo：信道版本 @
+# observer 函数 @
+
+func main() {
+        # 启动 observer @
+        # 建立路径 / 到 foo 的映射 @
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+                fmt.Fprintln(os.Stderr, err)
+                return
+        }
+        # response 信道 @
+        for {
+                # /tmp/hi.sig 开关 @
+                scanner := bufio.NewScanner(input)
+                for scanner.Scan() {
+                        # 从当前一行的内容中获取请求 @
+                        # 触发路由函数，以协程 + 信道形式运行 @
+                }
+        }
+        input.Close()
+}
+@
+
+我让 hi.go 跑了一下试试。hi.go 认为，现在觉得一举一动，轻松自如。我说，这应该只是 go 协程给了你某种心理暗示，导致你产生了错觉，实际上你跟之前几乎一样笨重。
+
+当你用 `go` 运行函数 `foo` 时，它的确是与 `main` 函数同时运行了，可是随后从 `response` 信道取值时，`main` 函数中的内层 `for` 循环会被阻塞，亦即在该循环里没处理一次请求，都会被 `response` 信道取值语句阻塞一次。这样相当于所有的请求依然是在排队且被逐一处理，而不是你所想象的，有一组请求同时被处理了。
+
+hi.go 思索片刻说，我明白了，应该将信道取值过程从 `main` 函数的内层 `for` 语句里移出来，单独构成一个循环，亦即
+
+@ 并发处理请求，逐一作出响应 #
+n := 0
+scanner := bufio.NewScanner(input)
+for scanner.Scan() {
+        # 从当前一行的内容中获取请求 @
+        if routers[request] != nil {
+                go routers[request](response, request)
+        } else {
+                go routers["/"](response, request)
+        }
+        n++
+}
+for i:= 0; i < n; i++ {
+        result := <- response
+        fmt.Println(result)
+}
+@
+
+我说，你能想到要统计信道写入数据的次数，并基于该次数从信道取数据，甚为明智。hi.go 说，过奖了，有没有无需统计的办法？我说，不知道，即使有，未必就比统计更好。现在，我将你更新为
+
+@ hi.go：并发 + 信道 #
+package main
+
+import (
+        "fmt"
+        "os"
+        "io"
+        "strings"
+        "bufio"
+)
+
+# 路由表：信道版本 @
+# handle_func 函数：信道版本 @
+# handle 实例 foo：信道版本 @
+# observer 函数 @
+
+func main() {
+        # 启动 observer @
+        # 建立路径 / 到 foo 的映射 @
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+                fmt.Fprintln(os.Stderr, err)
+                return
+        }
+        # response 信道 @
+        for {
+                # /tmp/hi.sig 开关 @
+                # 并发处理请求，逐一作出响应 @
+        }
+        input.Close()
+}
+@
+
+hi.go 又跑了几次，感慨道，现在的确身轻如燕……处理请求的过程可谓从容不迫，作出响应的过程可谓有条不紊。
+
+# 祖传老中医
+
+hi.go 说，我发现有很多人觉得 Go 语言的错误处理机制在设计上实属败笔。
+
+我说，我有同感。不过，瑕不掩瑜。何况对于多数错误处理代码，我们可以用宏将其遮掩起来。
+
+hi.go 说，Go 语言没有宏啊。
+
+我说，我们有 GNU 家的 m4 宏语言和 awk 文本处理语言，若将这两种微型语言组合起来，为 Go 语言设计一些错误处理宏，问题应该能解决。
+
+> 注：我有《[m4 的咒语](https://zhuanlan.zhihu.com/p/2099184764834025671)》一文。
+
+先容我设计两条基本咒语。第一条形如
+
+```go
+_safe([[a, b, err := /os.Open/("/tmp/hi-pipe")]])
+```
+
+我希望它能展开为
+
+```go
+a, b, err:= os.Open("/tmp/hi-pipe"); if err != nil { fmt.Fprintln(os.Stderr, err); return }
+```
+
+这种咒语适合在 `main` 函数里用。
+
+第二条咒语形如
+
+```go
+_safe([[a, b, err = /os.Open/("/tmp/hi-pipe") => c, d]])
+```
+
+我希望它能展开为
+
+```go
+a, b, err= os.Open("/tmp/hi-pipe"); if err != nil { return c, d, fmt.Errorf("os.Open: %w", err) }
+```
+
+如何实现这两种咒语到合法 Go 代码的转换呢？用 m4 语言实现宏 `_safe`，用于抓取代码。再写一个 awk 脚本解析，用于解析 `_safe` 所抓取的代码。
+
+上述咒语里所用的 `[[` 和 `]]` 皆为 m4 默认引号的替代， 亦即
+
+```m4
+changequote(`[[', `]]')
+```
+
+m4 默认的引号是反引号太像飞尘，我相信你不会想这样念咒语，
+
+```go
+_safe(`a, b, err = /os.Open/("/tmp/hi-pipe") => c, d')
+```
+
+然后便可定义 `_safe` 宏，
+
+```m4
+define([[_safe]], [[esyscmd([[awk -f go-err.awk <<'_M4EOF'
+$1
+_M4EOF]])]])
+```
+
+这个宏其实很简单，就是通过 GNU m4 的 `esyscmd` 将 `_safe` 的参数转发给 awk 脚本 go-err.awk，只是为了避免 `_safe` 的参数里出现单引号之类奇怪的东西而导致 Shell 晕掉，故而使用了 Shell 的 HERE DOCUMENT 功能。
+
+以下 `_safe` 调用语句
+
+```go
+_safe([[a, b, err = /os.Open/("/tmp/hi-pipe") => c, d]])
+```
+
+展开结果中包含的 awk 命令为
+
+```shell
+awk -f go-err.awk <<'_M4EOF'
+a, b, err = /os.Open/("/tmp/hi-pipe") => c, d
+_M4EOF
+```
+
+当 Shell 遇到第 2 个 `_M4EO`F 时，便告诉 awk，输入就此结束，你可以工作了。然后 awk 便执行 go-err.awk 脚本处理输入。
+
+go-err.awk 脚本该如何写呢？由于最近 DeepSeek 限流，每天我问不了它几个问题，它就 BUSY 了。我叛变到豆包那边，让豆包去写出这个脚本，这种脏活累活，让谁干都一样，
+
+```awk
+#!/usr/bin/gawk -f
+BEGIN {
+    RS=""
+}
+
+function process(s,    c, i, n, state, lhs, op, fn, call, ret, buf, inStr)
+{
+    state = 0
+    lhs = ""; op = ""; fn = ""; call = ""; ret = ""; buf = ""
+    inStr = 0   # 是否在双引号字符串内
+    n = length(s)
+
+    for(i=1; i<=n; i++) {
+        c = substr(s,i,1)
+
+        # 字符串内，只处理引号，其它原样收集
+        if (inStr) {
+            buf = buf c
+            if (c == "\"") {
+                inStr = 0
+            }
+            continue
+        }
+
+        if (state == 0) {
+            # S0: 收集LHS，匹配 := 或者 =
+            if (c == ":" && substr(s,i+1,1)=="=") {
+                lhs = buf
+                op = ":="
+                buf = ""
+                state = 1
+                i++
+            } else if (c == "=") {
+                lhs = buf
+                op = "="
+                buf = ""
+                state = 1
+            } else {
+                buf = buf c
+            }
+        }
+        else if (state == 1) {
+            # S1: 跳过空白，等待 /
+            if (c ~ /[ \t]/) continue
+            if (c == "/") {
+                state = 2
+            }
+        }
+        else if (state == 2) {
+            # S2: 收集函数名直到 /
+            if (c == "/") {
+                fn = buf
+                buf = ""
+                state = 3
+            } else {
+                buf = buf c
+            }
+        }
+        else if (state == 3) {
+            # S3:收集函数调用，检测 =>；遇到双引号进入字符串模式
+            if (c == "\"") {
+                buf = buf c
+                inStr = 1
+                continue
+            }
+            if (c == " " && substr(s,i+1,2)=="=>") {
+                call = buf
+                buf = ""
+                state = 4
+                i += 2
+            } else {
+                buf = buf c
+            }
+        }
+        else if (state == 4) {
+            # S4:收集return列表
+            ret = ret c
+        }
+    }
+    # 循环结束，仍在S3，buf是call
+    if (state ==3) {
+        call = buf
+    }
+
+    # 清理两端空白
+    gsub(/^[ \t]+|[ \t]+$/, "", lhs)
+    gsub(/^[ \t]+|[ \t]+$/, "", call)
+    gsub(/^[ \t]+|[ \t]+$/, "", ret)
+
+    # 拆分lhs取error变量
+    errVar=""
+    if (lhs != "") {
+        m = split(lhs,vars,/,/)
+        errVar = vars[m]
+        gsub(/[ \t]/,"",errVar)
+    }
+
+    if (ret != "") {
+        return lhs op " " fn call "; if " errVar " != nil { return " ret ", fmt.Errorf(\"" fn ": %w\", " errVar ") }"
+    } else {
+        return lhs op " " fn call "; if " errVar " != nil { fmt.Fprintln(os.Stderr, " errVar "); return }"
+    }
+}
+
+{
+    line = $0
+    # 简单前置判断，有模板标记才处理
+    if (match(line, /.*(=|:=).*\/.*\//)) {
+        printf "%s", process(line)
+    } else {
+        printf "%s", line
+    }
+}
+```
+
+代码都写好了，怎么用呢？
+
+先制作一份 m4 脚本，名曰 safe.m4，其内容为
+
+```m4
+divert(-1)
+changequote(`[[', `]]')
+define([[_safe]], [[esyscmd([[awk -f go-err.awk <<'_M4EOF'
+$1
+_M4EOF]])]])
+divert(0)dnl
+```
+
+然后便可以在 Go 代码里使用 _safe，例如 demo.go 有以下代码
+
+```go
+func do_work() int, error {
+    return 42, fmt.Errorf("oops")
+}
+func foo() int, error {
+
+        _safe([[a, err := /do_work/() => 0]])
+}
+func main() {
+        _safe([[input, err := /os.Open/("/tmp/hi-pipe")]])
+	response := make(chan string)
+        for {
+                _safe([[sig, err := /os.Open/("/tmp/hi.sig")]])
+                ... ... ...
+        }
+}
+```
+
+需要注意，函数名一定要用一对 `/` 围着，在需要返回错误时，要用函数名包装错误信息，go-err.awk 脚本能够基于 `/.../` 提取函数名，然后才能构造出 `fmt.Errorf` 语句。例如，
+
+```go
+_safe([[a, err := /do_work/() => 0]])
+```
+
+`=>` 符号之后的值是错误处理部分需要返回的值，而错误 `err` 会被包装为
+
+```go
+fmt.Errorf("do_work: %w", err)
+```
+
+作为最后一个返回值。
+
+safe.m4 脚本的用法为，
+
+```console
+$ m4 safe.m4 demo.go > real-demo.go
+```
+
+我知道，一定会有一些意外情况，只是我对 Go 语言了解甚浅，也不知以后会遇到什么怪物。不过，遇到问题也不怕，重新设计咒语，然后让 AI 去改 go-err.awk 脚本即可。
+
+hi.go 看完我这一系列操作，有些鄙夷，觉得我这是中医保守疗法。我说，管用就行，以后我们再写代码，就尽量用 `_safe` 宏。

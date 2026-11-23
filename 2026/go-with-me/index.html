@@ -113,13 +113,22 @@
   <li><a href="#百手观音" id="toc-百手观音">百手观音</a></li>
   <li><a href="#多闻数穷不若守中"
   id="toc-多闻数穷不若守中">多闻数穷，不若守中</a></li>
-  <li><a href="#君子终日行不离辎重"
-  id="toc-君子终日行不离辎重">君子终日行，不离辎重</a></li>
+  <li><a href="#创建一个网站"
+  id="toc-创建一个网站">创建一个网站</a></li>
+  <li><a href="#相似性" id="toc-相似性">相似性</a></li>
+  <li><a href="#小题大做" id="toc-小题大做">小题大做</a></li>
+  <li><a href="#可以长生吗" id="toc-可以长生吗">可以长生吗？</a></li>
+  <li><a href="#惯性" id="toc-惯性">惯性</a></li>
+  <li><a href="#三极管" id="toc-三极管">三极管</a></li>
+  <li><a href="#分身有术" id="toc-分身有术">分身有术</a></li>
+  <li><a href="#从容不迫有条不紊"
+  id="toc-从容不迫有条不紊">从容不迫，有条不紊</a></li>
+  <li><a href="#祖传老中医" id="toc-祖传老中医">祖传老中医</a></li>
   </ul>
 </nav>
 
 <h1 id="前言">前言</h1>
-<p>AI
+<p>Ai
 编程的兴起，让以往的编程范式快速步入末法时代，而我在不经意中发现，Go
 语言并非如我以前所想，不值得我涉足。之前我有一些想写的程序，若用 Go
 语言来写，应该比用我现在熟悉的语言更为容易。若能对 Go 语言有所把握，驱动
@@ -816,7 +825,7 @@ var gp_id uint = 0
 人在线访问。Go
 语言提供了字符串格式化函数，可以将计数器的值转化为字面符号，作为文件名后缀，例如</p>
 <pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-3"> 构造唯一的文件名 </span><span class="snippet-name-stop">#</span>
-if gp_id &gt; 99 {
+if gp_id > 99 {
         gp_id = 0
 }
 gp_id++
@@ -879,9 +888,9 @@ http.Handle("/", http.FileServer(http.Dir(".")))
 <p>现在只需将 gnuplot.go 的 <code>main</code> 函数修改为</p>
 <pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-8"> 设置了网站根目录的 main 函数 </span><span class="snippet-name-stop">#</span>
 func main() {
-    http.HandleFunc("/gnuplot", gnuplot)
-    <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-7"> 设置网站根目录 </a><span class="snippet-name-stop">@</span>
-    http.ListenAndServe(":8080", nil)
+        http.HandleFunc("/gnuplot", gnuplot)
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-7"> 设置网站根目录 </a><span class="snippet-name-stop">@</span>
+        http.ListenAndServe(":8080", nil)
 }
 </pre>
 <p>便有了一个新的 Gnuplot 网络服务程序了，若用户 A 向它提交 drawing-1.gp
@@ -899,21 +908,23 @@ if gp_id &gt; 99 {
         gp_id = 0
 }
 gp_id++
+gp_name := fmt.Sprintf("drawing-%d", gp_id)
 =><span class="caller"><a class="snippet-reference" href="#xi-16"> gnuplot 函数 [v2] </a></span>
 </pre>
 <p>当多个用户同时向 gnuplot.go
 发起请求时，后者便会同时执行上述代码多次，由于 <code>gp_id</code>
 是全局变量，于是又出现了多次同时修改同一个对象的情况。可能用户 A 拿到的
 <code>gp_id</code> 值本该是 1，但是用户 B 同时执行了这段代码，导致 A
-拿到的值是 2。观音虽有百手，但其本体却只有 1 个，<code>gp_id</code>
+拿到的值是 2，亦即 A 得到的文件名 <code>gp_name</code> 实际上是 B
+之所求。观音虽有百手，但其本体却只有 1 个，<code>gp_id</code>
 则是其本体的一部分。</p>
 <p>为了克服这类问题，Go 语言的 <code>sync</code>
-包提供了互斥锁机制。该机制的想法非常简单，就是给一段代码加一把锁，所有的同时发生的事情，在这把锁面前，都要排队，然后再逐一穿过这段代码。锁本身也是一个全局变量，例如</p>
+包提供了互斥锁机制。该机制的想法非常简单，就是给一段代码加一把锁。锁本身也是一个全局变量，例如</p>
 <pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-10"> gp_id 锁 </span><span class="snippet-name-stop">#</span>
 var gp_id_mu sync.Mutex
 =><span class="caller"><a class="snippet-reference" href="#xi-16"> gnuplot 函数 [v2] </a></span>
 </pre>
-<p>对上述代码加锁和解锁的过程可写为</p>
+<p>对上述的「更新 gp_id」代码片段加锁和解锁的过程可表示为</p>
 <pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-11"> 更新 gp_id </span><span class="snippet-name-stop">#</span> ^+
 gp_id_mu.Lock()
 </pre>
@@ -934,12 +945,17 @@ if gp_id &gt; 99 {
         gp_id = 0
 }
 gp_id++
+gp_name := fmt.Sprintf(&quot;drawing-%d&quot;, gp_id)
 gp_id_mu.Unlock()</code></pre>
-<p>如此便可保证所有同时修改 <code>gp_id</code> 的操作变成排队修改
-<code>gp_id</code>。排队自然是要以时间为代价，亦即 gnuplot.go
-程序不如之前的版本跑得快，只是用户通常感受不到这点差异，毕竟 gnuplot.go
-在调用 <code>gnuplot</code> 命令时耗费的时间远大于更新
-<code>gp_id</code> 的值。</p>
+<p>如此一来，对 <code>gp_id</code> 的修改和取值操作便会被
+<code>gp_id_mu</code> 的 <code>Lock</code> 和 <code>Unlock</code>
+构成的区域保护起来，这段区域称为临界区。</p>
+<p>当多个用户同时发起请求，为其服务的 Go
+程序里必须构造相应数量的程序流。这些程序流是同时运行的，至少是让人在感觉上是同时运行的，当它们抵达临界区时，其中某个程序流会得到一把锁，例如
+<code>gp_id_mu</code>。持锁者可将临界区锁起（Lock），如此一来，其他程序流只能临界区外等候，直到持锁者在走出临界区时解锁（Unlock），下一个得锁的幸运者才有机会进入临界区，如此交替，直至所有程序流穿过临界区。这个过程自然是要以时间为代价的，亦即
+gnuplot.go 程序不如之前的版本跑得快，只是用户通常感受不到这点差异，毕竟
+gnuplot.go 在调用 gnuplot 命令时耗费的时间远大于更新 <code>gp_id</code>
+的值。</p>
 <p>现在，正式写出一个真正可用的 gnuplot.go
 程序，并且再普及如何用文学编程的方式定义一些代码片段，并将其组装为完整的程序。首先，需要写出程序几乎千篇一律的开头，它们的区别通常仅仅是所需要的包有所不同，</p>
 <pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-13"> gnuplot.go 程序开头 </span><span class="snippet-name-stop">#</span>
@@ -992,7 +1008,6 @@ func gnuplot(w http.ResponseWriter, r *http.Request) {
         input := r.FormValue("gnuplot-code")
         if input != "" {
                 <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-9"> 更新 gp_id </a><span class="snippet-name-stop">@</span>
-                gp_name := fmt.Sprintf("drawing-%d", gp_id)
                 gp_file_name := gp_name + ".gp"
                 os.WriteFile(gp_file_name, []byte(new_input), 0644)
                 cmd := exec.Command("gnuplot", gp_file_name)
@@ -1009,9 +1024,9 @@ func gnuplot(w http.ResponseWriter, r *http.Request) {
 函数中，设定路由函数，并启动网络服务，</p>
 <pre class="go-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-17"> gnuplot.go 的 main 函数 </span><span class="snippet-name-stop">#</span>
 func main() {
-    http.HandleFunc("/gnuplot", gnuplot)
-    http.Handle("/", http.FileServer(http.Dir(".")))
-    http.ListenAndServe(":8080", nil)
+        http.HandleFunc("/gnuplot", gnuplot)
+        http.Handle("/", http.FileServer(http.Dir(".")))
+        http.ListenAndServe(":8080", nil)
 }
 =><span class="caller"><a class="snippet-reference" href="#xi-18"> gnuplot.go 程序 </a></span>
 </pre>
@@ -1028,9 +1043,9 @@ href="https://liyanrui.github.io/2026/go-with-me/go-with-me.xi">go-with-me.xi</a
 <p>便可得到完整的且含有本节更新内容的 gnuplot.go
 程序，它已经是一个可以真正使用的网络服务程序了，只是该程序调用的
 <code>gnuplot</code>
-命令不是足够安全，不过运行该程序，仅向自己的朋友提供服务是完全可行的。</p>
+命令不是足够安全，不过运行该程序，仅向自己的朋友提供服务基本可行。</p>
 <p><img src="figures/13.png" /></p>
-<h1 id="君子终日行不离辎重">君子终日行，不离辎重</h1>
+<h1 id="创建一个网站">创建一个网站</h1>
 <p>在「百手观音」一节，为了让用户的浏览器端能够获得 Gnuplot
 生成的位图文件，使用了以下代码</p>
 <div class="sourceCode" id="cb44"><pre
@@ -1041,28 +1056,1480 @@ gnuplot.go 程序正在运行，在浏览器端访问
 <code>127.0.0.1:8080</code>，所见景象为</p>
 <p><img src="figures/14.png" /></p>
 <p>这意味着，当浏览器端向 gnuplot.go
-程序发来根路径的请求是，后者会将自身工作目录里的文件列表作为响应发送给浏览器端，这也意味着浏览器端可以访问该目录里的任何一个文件。</p>
-<p><code>http.FileServer</code>
-还有一个特殊作用，假如它暴露出的目录中含有 index.html
+程序发来根路径的请求是，后者会将自身工作目录里的文件列表作为响应发送给浏览器端，这也意味着浏览器端可以访问该目录里的任何一个文件。DeepSeek
+在审阅前文时，已多次指出这个问题。它把写教程，当成做项目了。</p>
+<p><code>http.FileServer</code> 有一个特殊效用，它暴露出的目录若含有
+index.html
 文件，则浏览器不再显示文件列表，而是显示这个网页。这意味着即使 Go
 程序没有在该目录内生成任何东西，该目录也可以作为一个静态网站使用。</p>
 <p>我曾写过一个可以构建静态网站的 Bash 脚本，见「<a
 href="https://zhuanlan.zhihu.com/p/2097600582026637372">如何用 90
 行代码写一个静态网站构造工具</a>」，实际上这个脚本建立的只是一些目录，且每个目录内皆有
-index.html 文件。以前，我若想让他人访问该网站，需要借助
-nginx，而现在只需 Go 程序将该网站的根目录暴露出来即可。</p>
-<p>假设，我在 <code>/home/garfileo/public</code> 目录中用上述 Bash
+index.html 文件。以前，我若想让他人访问该网站，需要在 nginx
+中部署，虽然不难，但是现在用 Go
+程序部署这个网站，也只是三言两语。例如，我在
+<code>/home/garfileo/public</code> 目录中用上述 Bash
 脚本构建了一个静态网站，其根目录为 <code>my-site</code>，则下面的这个 Go
-程序便可让他人访问这个网站，</p>
+程序便可将该目录部署为可让他人访问的网站，</p>
 <pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-19"> my-site.go </span><span class="snippet-name-stop">#</span>
 package main
 import ("net/http")
-
 func main() {
-    http.Handle("/", http.FileServer(http.Dir("/home/garfileo/public")))
-    http.ListenAndServe(":8080", nil)
+        http.Handle("/", http.FileServer(http.Dir("/home/garfileo/public/my-site")))
+        http.ListenAndServe(":8080", nil)
 }
 </pre>
+<p>如此一来，每当他人用浏览器访问我的网站时，若需要载入图片之类的资源，例如浏览器遇到</p>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode html"><code class="sourceCode html"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span> <span class="er">src</span><span class="ot">=</span><span class="st">&quot;drawing-1.png&quot;</span> <span class="dt">/&gt;</span></span></code></pre></div>
+<p>它会向 my-site.go 程序发起请求，要求后者处理
+<code>/drawing-1.png</code> 路径。由于 my-site.go
+没有为该路径设定路由函数，故而会以 <code>/</code>
+路径的路由函数兜底。于是 <code>http.FileServer</code>
+会接手这个请求，它先将
+<code>http.Dir("/home/garfileo/public/my-site")</code>
+当作网站根目录，然后将请求路径 <code>/drawing-1.png</code>
+映射成文件路径
+<code>/home/garfileo/public/my-site/drawing-1.png</code>，若该文件存在，它便将文件内容作为此次请求的最终响应传给浏览器。</p>
+<p>若是大致能明白 <code>http.FileServer</code>
+所做的工作，便可对前文中已经多次修改的 gnuplot.go
+程序再作一些修改，将其输入数据和输出的位图文件放在一个专门划定目录里，如此可让
+gnuplot.go 的工作目录不再充满许多 drawing-xx.gp 和 drawing-xx.png
+之类的文件了。不过，我不打算尝试。虽然这的确是一件有意义的事，可是出现在教程里，会过于乏味，不过倒是可以作为一道练习题。</p>
+<h1 id="相似性">相似性</h1>
+<p>关于 Go 语言的 http
+包的故事至此应该结束了，再继续下去，会陷入到蜂拥而至的网络技术细节里，而理解
+Go
+语言之精髓的机会变得越来越小，更何况我现在并没有打算向成为网络编程专家的方向发展。不过，这个教程仍需继续，因为我还没学会
+Go 语言。为了维持这个目标，我需要将问题变换为，如何使用 Go
+语言写一些命令行程序，在单机环境里模拟网络后端程序效果。我这样说，可能会让你产生错觉，认为我要重新写一个自己的
+http 包，至少 DeepSeek
+有这种错觉。实际上并非如此，例如这一节的任务是写一个简单的命令行程序，使之能响应
+<code>echo</code> 命令传给它的路径，例如</p>
+<pre class="console"><code>$ echo &quot;127.0.0.1:8080/&quot; | go run hi.go
+There is no place like it.</code></pre>
+<p>亦即 hi.go 程序通过管道，将 <code>echo</code>
+命令的输出作为请求，给出的响应是在终端输出的很随便的一句话，然而
+<code>echo</code> 命令的行为很像浏览器地址栏里输入
+<code>127.0.0.1:8080</code> 并回车提交。</p>
+<p>在 Linux 或其他类 Unix
+系统中，一个普通的命令行程序通常会假设其输入来自标准输入设备（例如键盘），程序运行结果则发送给标准输出设备（例如计算机屏幕）。管道
+<code>|</code>
+可以将一个命令的输出作为另一个命令的输入，如此便可将多个命令行程序衔接起来。上述的
+<code>echo</code> 命令和 <code>go run hi.go</code>
+命令用管道衔接起来之后，你便可以从直觉上认为，<code>echo</code>
+在向一个程序提交请求。换言之，你所理解的网络服务机制，在单机环境里存在着与之结构相似的机制，且后者更为简单。再例如，你觉得微分与积分很难，却不会觉得数数与求和很难。简单的机制可以帮助你建立思维模型，亦即形成某种直觉。</p>
+<p>在 Go 语言中，标准输入设备即 <code>os.Stdin</code>，可以用
+<code>io.ReadAll</code> 从标准输入中获取全部数据，例如</p>
+<pre><code>package main
+
+import (
+        &quot;fmt&quot;
+        &quot;io&quot;
+        &quot;os&quot;
+)
+
+func main() {
+        data, _ := io.ReadAll(os.Stdin)
+        fmt.Print(string(data))
+}</code></pre>
+<p>假设上述代码即 hi.go 程序，运行它，</p>
+<pre class="console"><code>$ go run hi.go</code></pre>
+<p>便会发现这个程序什么都不做，但也不退出，而在准备从标准输入设备里读取数据，然而此刻无数据可读。利用管道，便可将
+<code>echo</code> 命令的输出与 hi.go 的 <code>os.Stdin</code>
+对接，后者便有数据可读，它将读出来的数据保存在 <code>data</code>
+变量里，然后调用 <code>fmt.Print</code> 函数将 <code>data</code>
+的值写入默认的标准输出设备亦即屏幕，于是便造就了一个很无聊的程序，</p>
+<pre class="console"><code>$ echo &quot;127.0.0.1:8080/&quot; | go run hi.go
+127.0.0.1:8080/</code></pre>
+<p>实际上借助管道，还能将 Go 程序的输出再作为另一个命令的输入，例如</p>
+<pre class="console"><code>$ echo &quot;127.0.0.1:8080/&quot; | go run hi.go | cat
+127.0.0.1:8080/</code></pre>
+<blockquote>
+<p><code>cat</code>
+命令可以读取标准输入中的内容，然后将读取结果写入标准输出。</p>
+</blockquote>
+<p>现在，我希望 hi.go
+能够识别根路径，并作出响应。<code>strings.Index</code>
+可以从一个字符串中搜索指定目标，搜索结果是目标在字符串中首次出现的位置，例如</p>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 导入 strings 包</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;strings&quot;</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="co">// 输出 14，即查找目标在字符串中的下标，是字节下标，而非字符下标</span></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;%d</span><span class="ch">\n</span><span class="st">&quot;</span><span class="op">,</span> strings<span class="op">.</span>Index<span class="op">(</span><span class="st">&quot;127.0.0.1:8080/&quot;</span><span class="op">,</span> <span class="st">&quot;/&quot;</span><span class="op">))</span></span></code></pre></div>
+<p>Go
+语言允许字符串使用字节切片语法，基于字节下标，从字符串里截取一段，例如</p>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">:=</span> <span class="st">&quot;hello&quot;</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="co">// 输出字符串 &quot;ll&quot;</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;%s&quot;</span><span class="op">,</span> a<span class="op">[</span><span class="dv">2</span><span class="op">:</span><span class="dv">4</span><span class="op">])</span></span></code></pre></div>
+<p>用下标设定切片范围时，下标从 0
+开始，且构造的区间是左闭右开的。如果切片范围未指定区间右界，则默认以字符串长度作为右界，接上例，</p>
+<div class="sourceCode" id="cb53"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 输出字符串 &quot;llo&quot;</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;%s&quot;</span><span class="op">,</span> a<span class="op">[</span><span class="dv">2</span><span class="op">:])</span></span></code></pre></div>
+<p>上述代码等效于</p>
+<div class="sourceCode" id="cb54"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co">// 输出字符串 &quot;llo&quot;</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;%s&quot;</span><span class="op">,</span> a<span class="op">[</span><span class="dv">2</span><span class="op">:</span><span class="bu">len</span><span class="op">(</span>a<span class="op">)])</span></span></code></pre></div>
+<p>基于 <code>strings.Index</code> 和字符串切片语法，可将
+<code>127.0.0.1:8080/</code> 中根路径之前文本消除，</p>
+<div class="sourceCode" id="cb55"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">:=</span> <span class="st">&quot;127.0.0.1:8080/&quot;</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="co">// 输出字符串 &quot;/&quot;</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;%s&quot;</span><span class="op">,</span> url<span class="op">[</span>strings<span class="op">.</span>Index<span class="op">(</span>url<span class="op">,</span> <span class="st">&quot;/&quot;</span><span class="op">):])</span> </span></code></pre></div>
+<p>现在，可以写出符合需求的 hi.go 了，</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-20"> hi.go </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+        "fmt"
+        "io"
+        "os"
+        "strings"
+)
+
+func main() {
+        data, _ := io.ReadAll(os.Stdin)
+        url := string(data)
+        request := url[strings.Index(url, "/"):]
+        response := "There is no place like it."
+        if request == "/" {
+                fmt.Printf("%s\n", response)
+        }
+}
+</pre>
+<p>可是，此时若执行</p>
+<pre class="console"><code>$ echo &quot;127.0.0.1:8080/&quot; | go run hi.go</code></pre>
+<p>不会得到任何输出，因为 <code>echo</code>
+会自动在其输出的文本之后添加换行符 <code>\n</code>，故而代码里与
+<code>request</code> 比较的应该是 <code>"/\n"</code>。不过，不改动 hi.go
+也无妨，<code>echo</code> 命令可以用 <code>-n</code>
+选项禁止在文本之后添加换行符，例如</p>
+<pre class="console"><code>$ echo -n &quot;127.0.0.1:8080/&quot; | go run hi.go
+There is no place like it.</code></pre>
+<p>需要注意的是，若 <code>strings.Index</code>
+未能在字符串中发现目标的存在，会返回 -1，为了让 hi.go
+更为健壮，需要处理这种特殊情况，</p>
+<div class="sourceCode" id="cb58"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>i <span class="op">:=</span> strings<span class="op">.</span>Index<span class="op">(</span>url<span class="op">,</span> <span class="st">&quot;/&quot;</span><span class="op">)</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> i <span class="op">&lt;</span> <span class="dv">0</span> <span class="op">{</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>request <span class="op">:=</span> url<span class="op">[</span>i<span class="op">:]</span></span></code></pre></div>
+<p>实际上，还有一种意外情况，即读取 <code>os.Stdin</code>
+中的内容时，<code>io.ReadAll</code>
+可能会返回错误值，然而本文档在前文中一向是用 <code>_</code>
+忽略错误值的情况。从现在开始，应尽力不推卸处理错误的责任，故而需将
+<code>os.Stdin</code> 获取数据的过程写得更稳严谨一些，</p>
+<div class="sourceCode" id="cb59"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>data<span class="op">,</span> err <span class="op">:=</span> io<span class="op">.</span>ReadAll<span class="op">(</span>os<span class="op">.</span>Stdin<span class="op">)</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Fprintln<span class="op">(</span>os<span class="op">.</span>Stderr<span class="op">,</span> err<span class="op">)</span></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<blockquote>
+<p>Go 语言的 fmt 包中常用的几种 <code>print</code> 函数，若以
+<code>ln</code> 为后缀，表示会在输出的信息尾部添加换行符；若以
+<code>f</code> 为后缀，则支持字符串格式化；若以 <code>F</code>
+为前缀，表示将字符串写入某个对象，例如文件；若以 <code>S</code>
+为前缀，表示返回新的字符串。<code>f</code> 与 <code>ln</code>
+二选一，不会同时出现。</p>
+</blockquote>
+<p>错误处理，通常只需输出错误信息，然后让函数提前返回。注意，错误信息是用
+<code>fmt.Fprinfln</code>
+写到标注错误设备，如此可防止错误信息出现在程序的正常输出中。<code>nil</code>
+表示「无值」。</p>
+<h1 id="小题大做">小题大做</h1>
+<p>当 hi.go 程序看到路径 <code>/</code>
+时，它的内心并未出现任何异样，因为这不过是仅含有 1
+个字符的字符串，直到有一天它忽然明白了，出来混，面子要自己给，即使自身如此简陋，依然不妨碍自己郑重宣布
+<code>/</code>
+是根路径，并且认为它的出现会触发一个函数，也不妨碍它雇佣一个叫做
+<code>handle_func</code> 的函数，将路径与其要触发的函数关联起来。</p>
+<p><code>handle_func</code> 函数需要接受两个参数，</p>
+<div class="sourceCode" id="cb60"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> handle_func<span class="op">(</span>path <span class="dt">string</span><span class="op">,</span> 第 <span class="dv">2</span> 个参数的类型是什么？<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>第 2 个参数是函数，可是函数类型该如何写呢？由于我希望第 2
+个参数的样子像</p>
+<div class="sourceCode" id="cb61"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> handle_func<span class="op">(</span>w <span class="op">*</span><span class="dt">string</span><span class="op">,</span> r <span class="dt">string</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>        <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>故而 <code>handle_func</code> 函数的第 2 个参数的类型可写为
+<code>func(*string, string)</code>，其中 <code>*string</code>
+是字符串指针类型。若对指针类型一无所知，可暂且保持无知，先写出
+<code>handle_func</code> 的定义，</p>
+<div class="sourceCode" id="cb62"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> handle_func<span class="op">(</span>path <span class="dt">string</span><span class="op">,</span> handler <span class="kw">func</span><span class="op">(*</span><span class="dt">string</span><span class="op">,</span> <span class="dt">string</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>        如何建立 path 与 handler 的映射？</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Go 语言提供了 <code>map</code>
+容器，可用于关联两个对象，只是创建这种容器对象的语法有些古怪，例如，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-21"> 路由表 </span><span class="snippet-name-stop">#</span>
+var routers = make(map[string]func(*string, string))
+=><span class="caller"><a class="snippet-reference" href="#xi-27"> 有面子的 hi.go 程序 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-31"> hi.go 长生之一 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-33"> hi.go 长生之二 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-35"> hi.go 长生之三 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-40"> hi.go 长生之四 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-44"> 可分身的 hi.go </a></span>
+</pre>
+<p>要创建 <code>map</code> 容器需要用 <code>make</code>
+函数。上述代码所创建的 <code>map</code> 容器，可以容纳
+<code>string</code> 类型到 <code>func(*string, string)</code>
+类型的映射，也可将方括号内的类型理解为「键」类型，将方括号之后跟随的类型理解为「值」类型，亦即将
+<code>map</code> 理解为散列表。</p>
+<p>将 <code>handle_func</code> 函数的两个参数存入 <code>routers</code>
+便可建立二者的映射，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-22"> handle_func 函数 </span><span class="snippet-name-stop">#</span>
+func handle_func(path string, handler func(*string, string)) {
+        routers[path] = handler
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-27"> 有面子的 hi.go 程序 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-31"> hi.go 长生之一 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-33"> hi.go 长生之二 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-35"> hi.go 长生之三 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-40"> hi.go 长生之四 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-44"> 可分身的 hi.go </a></span>
+</pre>
+<p>假设有一个 <code>func(*string, string)</code>
+类型的函数，其定义为</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-23"> handle 实例 foo </span><span class="snippet-name-stop">#</span>
+func foo(w *string, r string) {
+        *w = fmt.Sprintf("对于 %s，我认为烟涛微茫信难求！", r)
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-27"> 有面子的 hi.go 程序 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-31"> hi.go 长生之一 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-33"> hi.go 长生之二 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-35"> hi.go 长生之三 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-40"> hi.go 长生之四 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-44"> 可分身的 hi.go </a></span>
+</pre>
+<p>若让 <code>/</code> 映射到 <code>foo</code>，只需</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-24"> 建立路径 / 到 foo 的映射 </span><span class="snippet-name-stop">#</span>
+handle_func("/", foo)
+=><span class="caller"><a class="snippet-reference" href="#xi-27"> 有面子的 hi.go 程序 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-31"> hi.go 长生之一 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-33"> hi.go 长生之二 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-35"> hi.go 长生之三 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-40"> hi.go 长生之四 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-44"> 可分身的 hi.go </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-55"> hi.go：协程 + 信道 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-57"> hi.go：并发 + 信道 </a></span>
+</pre>
+<p>hi.go 程序从标准输入中获取其他程序请求的路径，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-25"> 获取其他程序请求的路径 </span><span class="snippet-name-stop">#</span>
+data, err := io.ReadAll(os.Stdin)
+if err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        return
+}
+url := string(data)
+i := strings.Index(url, "/")
+if i &lt; 0 {
+        return
+}
+request := url[i:]
+=><span class="caller"><a class="snippet-reference" href="#xi-27"> 有面子的 hi.go 程序 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-28"> 需要长生的代码片段 </a></span>
+</pre>
+<p>然后通过 <code>routers[request]</code> 便可调用路由表中的函数，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-26"> 触发路由函数 </span><span class="snippet-name-stop">#</span>
+var response string
+if routers[request] != nil {
+        routers[request](&amp;response, request)
+} else {
+        routers["/"](&amp;response, request)
+}
+fmt.Println(response)
+=><span class="caller"><a class="snippet-reference" href="#xi-27"> 有面子的 hi.go 程序 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-28"> 需要长生的代码片段 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-31"> hi.go 长生之一 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-33"> hi.go 长生之二 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-34"> 有请求则响应，否则静默片刻 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-39"> 受 /tmp/hi.sig 控制的请求/响应过程 </a></span>
+</pre>
+<p>于是，一个颇有气势的 hi.go 程序就此诞生，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-27"> 有面子的 hi.go 程序 </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+        "fmt"
+        "io"
+        "os"
+        "strings"
+)
+
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-21"> 路由表 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-22"> handle_func 函数 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-23"> handle 实例 foo </a><span class="snippet-name-stop">@</span>
+
+func main() {
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-24"> 建立路径 / 到 foo 的映射 </a><span class="snippet-name-stop">@</span>
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-25"> 获取其他程序请求的路径 </a><span class="snippet-name-stop">@</span>
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-26"> 触发路由函数 </a><span class="snippet-name-stop">@</span>
+}
+</pre>
+<p>hi.go
+程序的面子里，有几分是指针类型添的彩。在触发路由函数的语句里，</p>
+<div class="sourceCode" id="cb63"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> response <span class="dt">string</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>routers<span class="op">[</span>request<span class="op">](&amp;</span>response<span class="op">,</span> request<span class="op">)</span></span></code></pre></div>
+<p>路由函数的第一个参数是 <code>reponse</code> 的地址，而在路由函数
+<code>foo</code> 的定义中，会更新该地址中的数据，亦即</p>
+<div class="sourceCode" id="cb64"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="op">*</span>w <span class="op">=</span> fmt<span class="op">.</span>Sprintf<span class="op">(</span><span class="st">&quot;对于 %s，我认为烟涛微茫信难求！&quot;</span><span class="op">,</span> r<span class="op">)</span></span></code></pre></div>
+<p><code>request</code> 变量是在 <code>main</code>
+函数中定义的，但是却能在 <code>foo</code>
+函数中修改。即使你对指针一无所知，也可以将其理解为，基于指针可以「远程」操作变量，指针就像网线，通过它可以传递数据。</p>
+<p>试着运行新的 hi.go 程序，</p>
+<pre class="console"><code>$ echo -n &quot;127.0.0.1:8080&quot; | go run hi.go
+$ echo -n &quot;127.0.0.1:8080/&quot; | go run hi.go
+对于 /，我认为烟涛微茫信难求！
+$ echo -n &quot;127.0.0.1:8080/foo&quot; | go run hi.go
+对于 /foo，我认为烟涛微茫信难求！</code></pre>
+<p>若一个 Go 程序，要反复运行测试，每次都用 <code>go run</code>
+命令，意味着每次都要用 Go 语言编译器 go
+编译该程序，这是没必要的资源和时间浪费。go 可以将 Go
+程序从源码编译为可执行文件，若反复运行后者，便可省去其编译过程，例如</p>
+<pre class="console"><code>$ go build hi.go
+$ echo -n &quot;127.0.0.1:8080&quot; | ./hi
+$ echo -n &quot;127.0.0.1:8080/&quot; | ./hi
+对于 /，我认为烟涛微茫信难求！
+$ echo -n &quot;127.0.0.1:8080/foo&quot; | ./hi
+对于 /foo，我认为烟涛微茫信难求！</code></pre>
+<p>go 在编译 hi.go 时，生成的可执行文件默认与 Go
+程序源码文件同名，故而生成的可执行文件名为
+hi，它是可以独立运行的程序。</p>
+<h1 id="可以长生吗">可以长生吗？</h1>
+<p>hi.go
+有一天忽然问我，这世上有长生之道吗？我没有回答，只是敲了它三下脑袋。它貌似心领神会，入夜，候在我门外，待我传授一些法门。我告诉它，所谓长生，不过是重生。</p>
+<p>有些代码片段，天造地设，出现在一种叫做 <code>for</code>
+的语句里，例如</p>
+<div class="sourceCode" id="cb67"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="op">{</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>        <span class="kw">var</span> i <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;长生 i，其值为 %d</span><span class="ch">\n</span><span class="st">&quot;</span><span class="op">,</span> i<span class="op">)</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>于是这段代码在一轮又一轮的重生中得以长生。</p>
+<p>在 <code>for</code>
+语句里，也能够给一段代码的重生设定次数，亦即赋予它寿命，例如</p>
+<div class="sourceCode" id="cb68"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="op">:=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">10</span><span class="op">;</span> i<span class="op">++</span> <span class="op">{</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;%d 岁了</span><span class="ch">\n</span><span class="st">&quot;</span><span class="op">,</span> i<span class="op">)</span></span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>上述代码等效于 <code>for</code> 语句的另一种形式，即</p>
+<div class="sourceCode" id="cb69"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>i <span class="op">:=</span> <span class="dv">0</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="op">&lt;</span> <span class="dv">10</span> <span class="op">{</span></span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;%d 岁了</span><span class="ch">\n</span><span class="st">&quot;</span><span class="op">,</span> i<span class="op">)</span></span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>        i<span class="op">++</span></span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>hi.go 若有所悟，它认为自己若想得到长生，只需在 <code>main</code>
+函数内如此使用 <code>for</code> 语句，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-28"> 需要长生的代码片段 </span><span class="snippet-name-stop">#</span>
+for {
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-25"> 获取其他程序请求的路径 </a><span class="snippet-name-stop">@</span>
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-26"> 触发路由函数 </a><span class="snippet-name-stop">@</span>
+}
+</pre>
+<p>我说方向是对的，但实际上在管道命令里无法成功，例如</p>
+<pre class="console"><code>$ echo -n &quot;127.0.0.1:8080/&quot; | go run hi.go</code></pre>
+<p>原因在于，hi.go 程序从标准输入中获取数据时，首次便已将
+<code>os.Stdin</code> 中的数据读取殆尽。当 <code>for</code>
+语句中的代码首次重生时，从 <code>os.Stdin</code>
+里读不到任何数据，亦即以下代码</p>
+<div class="sourceCode" id="cb71"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>data<span class="op">,</span> err <span class="op">:=</span> io<span class="op">.</span>ReadAll<span class="op">(</span>os<span class="op">.</span>Stdin<span class="op">)</span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Fprintln<span class="op">(</span>os<span class="op">.</span>Stderr<span class="op">,</span> err<span class="op">)</span></span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>所得 <code>data</code> 中没有数据，继而触发以下代码中的条件语句，导致
+<code>main</code> 函数提前返回，</p>
+<div class="sourceCode" id="cb72"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">:=</span> <span class="dt">string</span><span class="op">(</span>data<span class="op">)</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>i <span class="op">:=</span> strings<span class="op">.</span>Index<span class="op">(</span>url<span class="op">,</span> <span class="st">&quot;/&quot;</span><span class="op">)</span></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> i <span class="op">&lt;</span> <span class="dv">0</span> <span class="op">{</span></span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>于是， 你就会失去长生的机会，我拍了拍 hi.go 的肩膀说。</p>
+<p>hi.go
+甚是沮丧，那么，难道我无法以长生的形式获得其他程序发来的请求吗？</p>
+<p>我说，现在倘若你独立运行，你构想的 <code>for</code>
+语句可以不断重生，而且每次重生时，都会等待 <code>os.Stdin</code>
+的输入。例如</p>
+<pre class="console"><code>$ go run hi.go</code></pre>
+<p>然后输入 <code>127.0.0.1:8080/</code>，敲击回车键，便可将该输入提交到
+<code>os.Stdin</code>，然后再摁 <code>Ctrl + D</code> 键，则
+<code>io.ReadAll</code> 便可从 <code>os.Stdin</code>
+获得数据。<code>Ctrl + D</code> 键表示 EOF，即 End of
+File，亦即文件自此结束。完成这个输入过程后，hi.go
+会对所获请求予以响应，之后便进入 <code>for</code>
+语句中代码的首次重生过程，此时 <code>io.ReadAll</code> 再次等待
+<code>os.Stdin</code> 中出现数据。</p>
+<p>不过，hi.go
+听了这个方案之后，并未高兴起来，它不想这样运行。它觉得这种工作方式，像是在强求别人的施舍，宛若独裁者。它还是喜欢管道的方式，那样会让它觉得能够与世上许多有输出的程序平等合作，共同发展。</p>
+<p>我想了一会，才缓缓说道，也许可以试试命名管道。它其实是一个文件，其他程序可将提交给你的请求写入该文件，每一行表示一个请求。你只需从你开始运行到你每次重生的过程里，每次从该文件里读取一行，亦即你得到了一个请求，随后你对其做出响应即可。听了这个方案，hi.go
+的眼中一亮，翻了个跟头，急切追问，此法可得长生吗？我说，在 Linux 或类
+Unix 系统中应该可以，我们不妨一试。</p>
+<p>首先用 <code>mkfifo</code> 命令在 /tmp 目录创建命名管道 hi-pipe，</p>
+<pre class="console"><code>$ mkfifo /tmp/hi-pipe</code></pre>
+<p>但是，在 hi.go 的 <code>for</code> 语句里，每一次都要用
+<code>os.Open</code> 以文件的形式打开该管道，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-29"> 从命名管道获取数据 </span><span class="snippet-name-stop">#</span>
+input, err := os.Open("/tmp/hi-pipe")
+if err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        return
+}
+data, err := io.ReadAll(input)
+input.Close() // 关闭命名管道
+if err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        return
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-31"> hi.go 长生之一 </a></span>
+</pre>
+<p>另外，为了让 hi.go 不会在 <code>for</code> 语句里提前终止，需要将</p>
+<div class="sourceCode" id="cb75"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">:=</span> <span class="dt">string</span><span class="op">(</span>data<span class="op">)</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>i <span class="op">:=</span> strings<span class="op">.</span>Index<span class="op">(</span>url<span class="op">,</span> <span class="st">&quot;/&quot;</span><span class="op">)</span></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> i <span class="op">&lt;</span> <span class="dv">0</span> <span class="op">{</span></span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>request <span class="op">:=</span> url<span class="op">[</span>i<span class="op">:]</span></span></code></pre></div>
+<p>中的 <code>return</code> 换成 <code>continue</code>，亦即</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-30"> 获取请求，若失败则重生 </span><span class="snippet-name-stop">#</span>
+url := string(data)
+i := strings.Index(url, "/")
+if i &lt; 0 {
+        continue
+}
+request := url[i:]
+=><span class="caller"><a class="snippet-reference" href="#xi-31"> hi.go 长生之一 </a></span>
+</pre>
+<p>这意味着即使 hi.go 并未从管道中获得有效请求，也需要让
+<code>for</code> 循环继续，而非自裁身亡。</p>
+<p>如此一来，hi.go 需要独立运行，</p>
+<pre class="console"><code>$ go run hi.go</code></pre>
+<p>其他命令只需向 /tmp/hi-pipe 写入请求即可，例如</p>
+<pre class="console"><code>$ echo -n &quot;127.0.0.1:8080/foo&quot; &gt; /tmp/hi-pipe</code></pre>
+<p>当 <code>echo</code> 命令结束后，hi.go 程序会随即做出响应，输出</p>
+<pre class="console"><code>对于 /foo，我认为烟涛微茫信难求！</code></pre>
+<p><img src="figures/15.png" /></p>
+<p>现在，我给出全新的 hi.go 程序的全貌，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-31"> hi.go 长生之一 </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+        "fmt"
+        "io"
+        "os"
+        "strings"
+)
+
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-21"> 路由表 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-22"> handle_func 函数 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-23"> handle 实例 foo </a><span class="snippet-name-stop">@</span>
+
+func main() {
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-24"> 建立路径 / 到 foo 的映射 </a><span class="snippet-name-stop">@</span>
+        for {
+                <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-29"> 从命名管道获取数据 </a><span class="snippet-name-stop">@</span>
+                <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-30"> 获取请求，若失败则重生 </a><span class="snippet-name-stop">@</span>
+                <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-26"> 触发路由函数 </a><span class="snippet-name-stop">@</span>
+        }
+}
+</pre>
+<p>此时，hi.go 说，我觉得我像一个服务器。</p>
+<h1 id="惯性">惯性</h1>
+<p>我想试试 hi.go
+的长生能力，在它运行时，我在另一个命令行窗口里输入了</p>
+<pre class="console"><code>$ for ((i = 0; i &lt; 30; i++)); do echo -n &quot;/&quot; &gt; /tmp/hi-pipe; done</code></pre>
+<p>这行命令可以向 hi.go 发起 30 次请求，然而 hi.go
+却只给出两句响应，且不尽正确，</p>
+<pre><code>对于 //，我认为烟涛微茫信难求！
+对于 /，我认为烟涛微茫信难求！</code></pre>
+<p>更奇怪的是，执行我的命令的命令行窗口被一种神秘力量关闭了。hi.go
+摊开自己的双手，愣了一会，我练出了什么神通？</p>
+<p>是的……也许所有的神通，都是愚蠢而勇敢的尝试所带来的副作用。这 30 条
+<code>echo</code>
+命令里，可能会出现死亡事故，吓得命令行窗口立马主动关闭了。</p>
+<p>管道两端分别成为读端和写端。/tmp/hi-pipe 的读端由 hi.go 掌控，它的
+<code>for</code>
+语句每一次执行时，都会打开读端，若管道内没有数据，则等待，否则读取管道内的所有数据，然后再关闭读端。/tmp/hi-pipe
+的写端是由批量的 30 次 <code>echo</code> 命令掌控。每一条
+<code>echo</code>
+命令在打开管道的写端时，若管道的读端是打开的，便将内容写入，否则等待读端打开。这是管道的正常读写过程。</p>
+<p>然而上述示例里的管道读写出现了一种异常情况，一条 <code>echo</code>
+命令检测到管道读端是打开的，待它正要向其中写入数据时，读端却被 hi.go
+当前的一轮循环关闭了，然而此时的这条 <code>echo</code>
+命令像是一辆速度很快的车在惯性的作用下狠狠地撞上了已被关闭的隧道出口，一命归西。</p>
+<p>hi.go 听得目瞪口呆，他未曾想到自己的长生无意中祸及了无辜。我说，幸好
+<code>echo</code>
+本是蜉蝣之命，但是这长生之术需要改进，以免酿成更大的祸事。</p>
+<p>首先，管道的读端只应打开和关闭一次，在读取管道是，不可再用
+<code>io.ReadAll</code>
+一次读尽，而是每次只读一行。之前做的几次试验，虽然很像逐行读取管道，然而那只不过是
+<code>echo -n</code> 命令所造成的假象。</p>
+<p>如何从文件里每次只读一行呢？Go 语言的方式有些特别，它需要
+<code>bufio</code> 包提供的文件扫描器功能。假设 /tmp/hi-pipe 已经以文件
+<code>input</code> 的形式打开，以下代码可为该文件创造一个扫描器，</p>
+<div class="sourceCode" id="cb81"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>scanner <span class="op">:=</span> bufio<span class="op">.</span>NewScanner<span class="op">(</span>input<span class="op">)</span></span></code></pre></div>
+<p>之后，每次执行 <code>scanner.Scan</code> 函数，便可从
+<code>input</code> 里读取一行数据（不包括换行符），若数据是文本，可使用
+<code>scanner.Text</code> 函数取出，例如</p>
+<div class="sourceCode" id="cb82"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> scanner<span class="op">.</span>Scan<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;%s</span><span class="ch">\n</span><span class="st">&quot;</span><span class="op">,</span> scanner<span class="op">.</span>Text<span class="op">())</span></span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>scanner.Scan</code> 的返回值类型是
+<code>bool</code>，成功读取一行数据，返回 <code>true</code>，否则返回
+<code>false</code>，后者又分为两种情况，一种是读到
+EOF，即文件末尾，另一种是读取过程中出现错误。</p>
+<p>于是，hi.go 处理输入的过程可改造为，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-32"> 从当前一行的内容中获取请求 </span><span class="snippet-name-stop">#</span>
+url := scanner.Text()
+i := strings.Index(url, "/")
+if i &lt; 0 {
+        continue
+}
+request := url[i:]
+=><span class="caller"><a class="snippet-reference" href="#xi-33"> hi.go 长生之二 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-34"> 有请求则响应，否则静默片刻 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-39"> 受 /tmp/hi.sig 控制的请求/响应过程 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-55"> hi.go：协程 + 信道 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-56"> 并发处理请求，逐一作出响应 </a></span>
+</pre>
+<p>其他过程可保持不变，于是一个不会祸及无辜的长生 hi.go 程序诞生了，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-33"> hi.go 长生之二 </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+        "fmt"
+        "os"
+        "strings"
+        "bufio"
+)
+
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-21"> 路由表 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-22"> handle_func 函数 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-23"> handle 实例 foo </a><span class="snippet-name-stop">@</span>
+
+func main() {
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-24"> 建立路径 / 到 foo 的映射 </a><span class="snippet-name-stop">@</span>
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+                fmt.Fprintln(os.Stderr, err)
+                return
+        }
+        for {
+                scanner := bufio.NewScanner(input)
+                for scanner.Scan() {
+                        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-32"> 从当前一行的内容中获取请求 </a><span class="snippet-name-stop">@</span>
+                        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-26"> 触发路由函数 </a><span class="snippet-name-stop">@</span>
+                }
+        }
+        input.Close()
+}
+</pre>
+<p>hi.go 让我再度将其运转起来，等待着我在另一个命令行窗口里输入</p>
+<pre class="console"><code>$ for ((i = 0; i &lt; 30; i++)); do echo &quot;/&quot; &gt; /tmp/hi-pipe; done</code></pre>
+<blockquote>
+<p>因为 hi.go 已经具备按行读入文本的能力，故而在 <code>echo</code>
+命令里无需再用 <code>-n</code> 选项去消除 <code>cho</code>
+命令为文本自动添加的换行符。</p>
+</blockquote>
+<p>这一次，我输入命令的窗口不再消失，hi.go 也着实响应了三十次
+<code>echo</code> 命令提交的请求，一切看似甚好。然而没过一会，hi.go
+央求我将它停下来，他说这次的长生太令人晕眩了。我急忙查看 hi 程序的 CPU
+占用情况，</p>
+<pre class="console"><code>$ top -p $(pgrep -n hi)</code></pre>
+<p>之所以要查 hi 程序，是因为 <code>go run hi.go</code> 本质上将 hi.go
+编译成可执行文件 hi，然后运行 hi。我看到的结果是，hi 程序正在让 CPU
+全速奔跑，</p>
+<p><img src="figures/16.png" /></p>
+<p>看来，hi.go 程序的 <code>main</code> 函数中的外层 <code>for</code>
+语句不能再像之前的版本那样，在遇到管道内无数据时则等待。现在即使管道内无数据，外层的
+<code>for</code>
+也会持续运行，因为其内部任何一条语句都无法产生等待效应。之前所用的
+<code>io.ReadAll</code>
+函数是具备等待效应的，在操作系统的术语上，这种效应称为 I/O 阻塞，亦即当
+<code>io.ReadAll</code> 遇到文件无内容时，会让整个程序停下来等待，亦即
+CPU 无需再继续运行该程序。</p>
+<p>我现在没有什么好办法了，只能在 hi.go 的内层 <code>for</code>
+语句里插入一条主动阻塞 3 秒的语句，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-34"> 有请求则响应，否则静默片刻 </span><span class="snippet-name-stop">#</span>
+for {
+        scanner := bufio.NewScanner(input)
+        for {
+                if !scanner.Scan() {
+                        time.Sleep(3 * time.Second)
+                        break
+                }
+                <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-32"> 从当前一行的内容中获取请求 </a><span class="snippet-name-stop">@</span>
+                <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-26"> 触发路由函数 </a><span class="snippet-name-stop">@</span>
+        }
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-35"> hi.go 长生之三 </a></span>
+</pre>
+<p><code>time.Sleep</code>
+能够让程序主动停下指定的时间长度，<code>timeSecond</code> 是 1 秒。待
+hi.go
+逐渐平静下来，我无奈地叹了口气，对它说，惯性是物体的固有属性，而我们却幻想着能消灭它，最后增加的这
+3 秒静默时间，可以体现出你的惯性……</p>
+<p>hi.go 可以接受这个方案，且为自己每周能有 3 秒的休息时间略感幸福……</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-35"> hi.go 长生之三 </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+        "fmt"
+        "os"
+        "strings"
+        "bufio"
+        "time"
+)
+
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-21"> 路由表 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-22"> handle_func 函数 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-23"> handle 实例 foo </a><span class="snippet-name-stop">@</span>
+
+func main() {
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-24"> 建立路径 / 到 foo 的映射 </a><span class="snippet-name-stop">@</span>
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+                fmt.Fprintln(os.Stderr, err)
+                return
+        }
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-34"> 有请求则响应，否则静默片刻 </a><span class="snippet-name-stop">@</span>
+        input.Close()
+}
+</pre>
+<h1 id="三极管">三极管</h1>
+<p>hi.go
+程序现在遇到的最大问题是，如果它希望每一个向它提交请求的命令不会死于非命，那么它自身需要疲于奔命。我想了很久，试着尽力只凭现有的知识来解决这个问题。</p>
+<p>若让 hi.go
+彻底不疲于奔命，最简单的办法是使之重新获得阻塞能力。我们现在所掌握的知识，只有几个与标准输入/输出设备以及命名管道相关的操作才能使得程序阻塞。例如，用
+<code>os.Open</code> 打开一个写端尚未开启的命名管道，会发生阻塞。用
+<code>io.ReadAll</code> 读取已开启写端的命名管道时，只要未读到
+EOF，也会发生阻塞。可以用一个简单的例子将这两种阻塞现象激发出来，先写出
+foo.go 程序，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-36"> foo.go：演示管道阻塞 </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+    "os"
+    "fmt"
+    "io"
+)
+
+func main() {
+    fmt.Println("开始")
+    input, _ := os.Open("/tmp/demo.pipe")
+    fmt.Println("等待接收管道数据")
+    data, _ := io.ReadAll(input)
+    fmt.Printf("管道数据接收完毕，收到 %d 字节\n", len(data))
+    input.Close()
+    fmt.Println("结束")
+}
+</pre>
+<p>然后创建管道 /tmp/demo.pipe，</p>
+<pre class="console"><code>$ mkfifo /tmp/demo.pipe</code></pre>
+<p>继而运行 foo.go 程序，</p>
+<pre class="console"><code>$ go run foo.go
+开始</code></pre>
+<p>foo.go 会先在屏幕上输出「开始」，然后等待 /tmp/demo.pipe
+的写端被打开。可以用 Linux 的 <code>cat</code>
+命令打开管道写端，只需另开一个命令行窗口，执行</p>
+<pre class="console"><code>$ cat &gt; /tmp/demo.pipe
+</code></pre>
+<p>当 <code>cat</code>
+命令运行后，它需要我们通过标准输入向其提交数据，然后它再将所得数据写入管道，亦即此时
+<code>cat</code> 命令尚未将任何数据写入
+/tmp/demo.pipe，但是该管道的写端已经打开了，foo.go 程序里的
+<code>os.Open</code> 语句便失去阻塞能力，于是 foo.go 程序会输出</p>
+<pre><code>等待接收管道数据</code></pre>
+<p>但是 foo.go 会立刻被 <code>io.ReadAll</code> 阻塞。此时，我们在执行
+<code>cat</code> 的命令行窗口里随意输入一些内容，然后回车提交，</p>
+<pre class="console"><code>$ cat &gt; /tmp/demo.pipe
+今天天气不错</code></pre>
+<p>当我们输入「今天天气不错」之后敲回车键，所输入的内容便会进入
+<code>cat</code> 的标准输入，然后 <code>cat</code> 会将其写入
+/tmp/demo.pipe，此时 foo.go 中的 <code>io.ReadAll</code>
+虽然开始工作，但是由于它未读到 EOF，所以会继续阻塞
+foo.go。在上述试验环节里，根据 <code>cat</code>
+的运行状况，可以确认程序从标准输入中读取数据时，也会发生阻塞。</p>
+<p>当我们在执行 <code>cat</code> 的命令行窗口里摁下组合键
+<code>Ctrl + D</code> 时，<code>cat</code> 认为我们输入了
+EOF，亦即它认为已经得到了全部的输入，便将 EOF 写入
+/tmp/demo.pipe，然后退出。此时，foo.go 程序得到了 <code>cat</code>
+发来的 EOF，于是 <code>io.ReadAll</code> 也完成自己的工作，结束对 foo.go
+的阻塞，随后 foo.go 便继续输出</p>
+<pre><code>管道数据接收完毕，收到 %d 字节 19
+结束</code></pre>
+<p><img src="figures/17.png" /></p>
+<p>用 <code>bufio.NewScanner</code>
+为读取命名管道而创建的扫描器在工作时也具有阻塞效应。现在，将 foo.go
+程序的工作过程改写为逐行读取管道内容，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-37"> foo.go：演示 Scanner 阻塞 </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+    "os"
+    "fmt"
+    "bufio"
+)
+
+func main() {
+    fmt.Println("开始")
+    input, _ := os.Open("/tmp/demo.pipe")
+    scanner := bufio.NewScanner(input)
+    for scanner.Scan() {
+        fmt.Printf("收到：%s\n", scanner.Text())
+    }
+    input.Close()
+    fmt.Println("结束")
+}
+</pre>
+<p>重复上述试验过程，只是在执行 <code>cat</code>
+命令时，多输入几行文字，最后 <code>Ctrl + D</code> 键终止，则 foo.go
+便可将 <code>cat</code> 命令获得的输入逐行输出。</p>
+<p><img src="figures/18.png" /></p>
+<p>当一个命名管道的读端未开启时，若有程序要向其写入数据，会在打开该管道时出现阻塞。例如，创建一个新的管道，</p>
+<pre class="console"><code>$ mkfifo /tmp/8080.pipe</code></pre>
+<p>然后执行 <code>echo</code> 命令，向这个新管道写入数据，</p>
+<pre class="console"><code>$ echo &quot;hi&quot; &gt; /tmp/8080.pipe</code></pre>
+<p>这条命令会卡住，无法完成，除非在此期间其他程序开启了该管道的读端。</p>
+<p>只要以 <code>os.Open</code>
+函数打开管道，便意味着开启了管道读端，所以要让上述 <code>echo</code>
+命令得以完成，只需在其运行后，再运行一次 foo.go 程序即可。</p>
+<p>我对 hi.go 说，也许我可以为你创建一个 /tmp/hi.sig
+管道，以该管道的打开操作阻塞你的 <code>for</code>
+语句，当该管道能打开时，你就读取其全部数据，亦即将其清空，至于你读到什么，并不重要。这个管道像是一个开关，有内容，便意味着开，无内容便意味着关。不过，你只是负责关掉这个开关，至于它如何打开，需要交给另一个程序，后者负责观察
+/tmp/hi-pipe 管道，若它能发现该管道的写端已被打开，便会向 /tmp/hi.sig
+管道写入数据，对你而言意味着开关打开了，你便可以从 /tmp/hi-pipe
+管道读取数据。</p>
+<p>hi.go
+被我绕晕了，我忽然意识到管道很像二极管，而我似乎发明了三极管，/tmp/hi-pipe
+管道的写端是集电极，其读端则是发射极，而 /tmp/hi.sig 管道是基极。</p>
+<p>围绕 /tmp/hi.sig 的电路……哦……程序可以写成 observer.go，</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-38"> observer.go：/tmp/hi-pipe 的观察者 </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+    "fmt"
+    "os"
+)
+
+func main() {
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+            fmt.Fprintln(os.Stderr, err)
+            return
+        }
+        os.WriteFile("/tmp/hi.sig", []byte("!"), 0)
+        input.Close()
+}
+</pre>
+<p>observer.go 负责监控 /tmp/hi-pipe
+管道，一旦有其他程序打开该管道的写端，则 <code>os.Open</code>
+语句便失去阻塞作用，<code>os.WriteFile</code> 语句便向 /tmp/hi.sig
+管道写入一个 <code>!</code>，随后 observer.go 关闭 /tmp/hi-pipe
+管道并退出。需要注意的是，<code>os.WriteFile</code>
+语句实际上包含了打开文件和关闭文件的操作，亦即它大概等效于</p>
+<div class="sourceCode" id="cb93"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>output<span class="op">,</span> err <span class="op">:=</span> os<span class="op">.</span>OpenFile<span class="op">(</span><span class="st">&quot;/tmp/hi.sig&quot;</span><span class="op">,</span> O_WRONLY<span class="op">,</span> <span class="dv">0</span><span class="op">)</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Fprintln<span class="op">(</span>os<span class="op">.</span>Stderr<span class="op">,</span> err<span class="op">)</span></span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a>n<span class="op">,</span> err <span class="op">:=</span> output<span class="op">.</span>Write<span class="op">([]</span><span class="dt">byte</span><span class="op">(</span><span class="st">&quot;!&quot;</span><span class="op">))</span></span>
+<span id="cb93-7"><a href="#cb93-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb93-8"><a href="#cb93-8" aria-hidden="true" tabindex="-1"></a>        fmt<span class="op">.</span>Fprintln<span class="op">(</span>os<span class="op">.</span>Stderr<span class="op">,</span> err<span class="op">)</span></span>
+<span id="cb93-9"><a href="#cb93-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb93-10"><a href="#cb93-10" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb93-11"><a href="#cb93-11" aria-hidden="true" tabindex="-1"></a>output<span class="op">.</span>Close<span class="op">()</span></span></code></pre></div>
+<p>需要注意的是，要向管道或文件写入数据，不能用 <code>os.Open</code>
+函数，因为该函数打开的管道或文件仅支持读，不支持写。<code>os.OpenFile</code>
+是更为通用的管道/文件打开函数，上述示例是以「只写」的方式打开管道
+/tmp/hi.sig。</p>
+<p>我对 hi.go 说，现在我要对你做一个简单的手术。hi.go
+说，来吧，我当效关云长刮骨疗毒之遗风。于是，我将 hi.go 的外层
+<code>for</code> 语句修改为</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-39"> 受 /tmp/hi.sig 控制的请求/响应过程 </span><span class="snippet-name-stop">#</span>
+for {
+        // 阻塞
+        sig, _ := os.Open("/tmp/hi.sig")
+        io.ReadAll(sig)
+        sig.Close()
+        // 获取每个请求并给出响应
+        scanner := bufio.NewScanner(input)
+        for scanner.Scan() {
+                <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-32"> 从当前一行的内容中获取请求 </a><span class="snippet-name-stop">@</span>
+                <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-26"> 触发路由函数 </a><span class="snippet-name-stop">@</span>
+        }
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-40"> hi.go 长生之四 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-44"> 可分身的 hi.go </a></span>
+</pre>
+<p>注意，为了让上述代码更能体现意图，我忽略了一些错误处理过程。新的
+hi.go 的全部内容为</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-40"> hi.go 长生之四 </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+        "fmt"
+        "os"
+        "io"
+        "strings"
+        "bufio"
+)
+
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-21"> 路由表 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-22"> handle_func 函数 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-23"> handle 实例 foo </a><span class="snippet-name-stop">@</span>
+
+func main() {
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-24"> 建立路径 / 到 foo 的映射 </a><span class="snippet-name-stop">@</span>
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+                fmt.Fprintln(os.Stderr, err)
+                return
+        }
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-39"> 受 /tmp/hi.sig 控制的请求/响应过程 </a><span class="snippet-name-stop">@</span>
+        input.Close()
+}
+</pre>
+<p>现在开始验证 /tmp/hi-pipe 和 /tmp/hi.sig
+这两个管道所构成的三极管是否可作为一个完美的开关，去控制 hi.go 读取
+/tmp/hi-pipe 的过程，我们需要先运行 hi.go，</p>
+<pre class="console"><code>$ go run hi.go</code></pre>
+<p>然后另开一个命令行窗口运行 observer.go，</p>
+<pre class="console"><code>$ go run observer.go</code></pre>
+<p>再开一个命令行窗口执行 <code>echo</code> 命令，</p>
+<pre class="console"><code>$ for ((i = 0; i &lt; 7; i++)); do echo &quot;/foo&quot; &gt; /tmp/hi-pipe; done</code></pre>
+<p>试验记过是，observer.go 会结束，而 hi.go
+在输出以下内容后，继续保持运行，且 CPU 占用率为 0%。</p>
+<pre><code>对于 /foo-0，我认为烟涛微茫信难求！
+对于 /foo-1，我认为烟涛微茫信难求！
+对于 /foo-2，我认为烟涛微茫信难求！
+对于 /foo-3，我认为烟涛微茫信难求！
+对于 /foo-4，我认为烟涛微茫信难求！
+对于 /foo-5，我认为烟涛微茫信难求！
+对于 /foo-6，我认为烟涛微茫信难求！</code></pre>
+<p>observer.go
+退出是正常的，因为我并未让它长生。现在可以让它长生了，</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-41"> 长生的 observer.go </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+    "fmt"
+    "os"
+)
+
+func main() {
+        for {
+                input, err := os.Open("/tmp/hi-pipe")
+                if err != nil {
+                    fmt.Fprintln(os.Stderr, err)
+                    return
+                }
+                os.WriteFile("/tmp/hi.sig", []byte("!"), 0)
+                input.Close()
+        }
+}
+</pre>
+<p>若在重复一次上述的试验过程，hi.go 便在响应批量 <code>echo</code>
+命令时，不会再有 <code>echo</code> 命令撞死在 /tmp/hi-pipe
+管道的读端，因为该管道的读端在 hi.go 内打开后直到 hi.go
+退出时才会关闭。</p>
+<p>不过，需要注意，当 observer.go 在向 /tmp/hi.sig
+管道写数据时，依然会遇到该管道被 hi.go 关闭的情况，此时 observer.go 的
+<code>os.WriteFile</code> 语句便会出错，但是这种错误不会影响 observer.go
+继续运行下去，而且出错的概率通常很小。</p>
+<p>这个三极管方案并没有消除惯性，只是将惯性集中到了 observer.go
+中，并承认它具有合法性，而且整个过程中没有哪个程序或命令死于非命。hi.go
+认为此法极秒，然而我却有些茫然，三极管有了，后面的路我一时竟不知该如何前进了。难道所有的程序，不过是运行在计算机上的模拟电路？</p>
+<h1 id="分身有术">分身有术</h1>
+<p>今天早上我还没起床时下过了雨。到了中午，天蓝得不像话，风也冷得不像话，树上的黄叶簌簌落下，却也无法达到真正意义上的归根。在这样清冷而宏大的气氛里，我对正在窗外愉快翻着跟头的
+hi.go 说，其实那个 observer.go
+没必要存在。它之所以存在，是因为你还没学会分身术。</p>
+<p>hi.go
+从窗外跳进来，给我泡了一杯茶，浓得不像话。好学吗？它问。似乎不难，我也只是听说过，从未试验过。大概就是写一个函数，然后对它说一句「敕」之类的咒语……表面上是你调用了这个函数，实际上它可以与你同时运行。我话音刚落，hi.go
+便纵身跳入我的硬盘，来改我一试！</p>
+<p>我为 hi.go 增加了一个函数 <code>observer</code>，其定义直接就是
+observer.go 的 <code>main</code> 函数中的内容，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-42"> observer 函数 </span><span class="snippet-name-stop">#</span>
+func observer() {
+    for {
+                input, err := os.Open("/tmp/hi-pipe")
+                if err != nil {
+                    fmt.Fprintln(os.Stderr, err)
+                    return
+                }
+                os.WriteFile("/tmp/hi.sig", []byte("!"), 0)
+                input.Close()
+        }
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-44"> 可分身的 hi.go </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-55"> hi.go：协程 + 信道 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-57"> hi.go：并发 + 信道 </a></span>
+</pre>
+<p>然后在 hi.go 的 <code>main</code> 函数的起始处调用
+<code>observer</code> 函数，只是在调用语句之前增加了
+<code>go</code>，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-43"> 启动 observer </span><span class="snippet-name-stop">#</span>
+go observer()
+=><span class="caller"><a class="snippet-reference" href="#xi-44"> 可分身的 hi.go </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-55"> hi.go：协程 + 信道 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-57"> hi.go：并发 + 信道 </a></span>
+</pre>
+<p>于是，修改后的 hi.go 的样子为</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-44"> 可分身的 hi.go </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+        "fmt"
+        "os"
+        "io"
+        "strings"
+        "bufio"
+)
+
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-21"> 路由表 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-22"> handle_func 函数 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-23"> handle 实例 foo </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-42"> observer 函数 </a><span class="snippet-name-stop">@</span>
+
+func main() {
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-43"> 启动 observer </a><span class="snippet-name-stop">@</span>
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-24"> 建立路径 / 到 foo 的映射 </a><span class="snippet-name-stop">@</span>
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+                fmt.Fprintln(os.Stderr, err)
+                return
+        }
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-39"> 受 /tmp/hi.sig 控制的请求/响应过程 </a><span class="snippet-name-stop">@</span>
+        input.Close()
+}
+</pre>
+<p>在保证 /tmp/hi-pipe 和 /tmp/hi.sig 两个管道存在的前提下，重新运行
+hi.go，然后在另一个命令行窗口里批量执行一组 <code>echo</code>
+命令，所得结果与上一节的试验没有区别。</p>
+<p>hi.go 说，一切居然简单得不像话，这到底发生了什么？我调用了
+<code>observer</code>
+函数后，它本应该将我阻塞了，可我后面的代码为何还能执行？我说，这就是并发。<code>go</code>
+语句可以让被调用的函数与你的本体同时运行。如此运行的函数，称为
+goroutine，亦称 go 协程。</p>
+<p>事实上，/tmp/hi.sig 管道也是不必要的，因为 go
+协程与你的本体，或者不同的 go 协程之间，可以用 <code>channel</code>
+通信。我们可以将 <code>channel</code>
+称为信道，它与我们之前已经打过多次交道的管道相似，与信道相关的一些操作也具有阻塞效果，所以可以用它取代
+/tmp/hi.sig。</p>
+<p>hi.go 睁大了眼睛，信道用起来，也简单得不像话吗？</p>
+<p>我说，好像是吧，我也只是听说过……信道是一个变量，之前我们构造映射容器的时候用的
+<code>make</code> 也能构造信道。例如，</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-45"> 构造 sig 信道 </span><span class="snippet-name-stop">#</span>
+hi_sig := make(chan int)
+</pre>
+<p><code>hi_sig</code> 便是一个信道对象，它可以存储整数，它的类型是
+<code>chan int</code>。为了简单起见，假设 <code>hi_sig</code>
+为全局对象，亦即 <code>observer</code> 函数和 <code>main</code>
+函数皆能访问它。</p>
+<p>Go 语言提供了 <code>&lt;-</code>
+符号用于信道的读写，若信道对象在其左侧，表示向信道对象写入数据；若信道对象在其右侧，表示从信道对象读取数据。若信道对象没有数据，其读取数据的操作便会阻塞。信道对象里的数据一经读取，就会消失。</p>
+<p>为了更清楚信道的用法，我们需要写一个简单的例子，预演一番，而不是直接上手术台折腾
+hi.go。在这个简单的例子是</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-46"> chan-demo.go </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+        "fmt"
+        "time"
+)
+
+var sig = make(chan int)
+
+func foo() {
+    fmt.Println("foo 开始")
+        time.Sleep(3 * time.Second)
+        sig &lt;- 42
+    fmt.Println("foo 结束")
+}
+
+func main() {
+    fmt.Println("main 开始")
+        go foo()
+        fmt.Println("等待接收信道数据")
+        a := &lt;- sig
+        fmt.Printf("收到 %d\n", a)
+        fmt.Println("main 结束")
+}
+</pre>
+<p>运行 chan-demo.go，</p>
+<pre class="console"><code>$ go run chan-demo.go
+main 开始
+等待接收信道数据
+foo 开始
+foo 结束
+收到 42
+main 结束</code></pre>
+<p>chan-demo.go 演示了是 <code>main</code> 和 <code>foo</code>
+这两个函数如何通过一条管道协同工作。在 <code>main</code>
+函数里，<code>foo</code> 以 go 协程的方式运行，然后变量 <code>a</code>
+在等待接收信道 <code>sig</code> 中的值，若此时信道无值，则 chan-demo.go
+会阻塞于这条 <code>a</code> 的定义语句处。大概要等 3
+秒，<code>foo</code> 函数会向 <code>sig</code> 里写入值 42，于是
+<code>main</code> 函数中的变量 <code>a</code> 便接收到了这个值。</p>
+<p>上述试验也展现了 <code>foo</code> 函数与 <code>main</code>
+函数是同时运行的，因为虽然在 <code>main</code>
+函数输出「等待接收信道数据」之前便调用了 <code>foo</code>
+函数，然而该函数输出的「foo 开始」却出现在 <code>main</code>
+函数输出的「等待接收信道数据」之后。注意，所谓同时，意思是不分先后。</p>
+<p>现在对 chan-demo.go 略作修改，让 <code>foo</code>
+函数写信道三次，再让 <code>main</code> 函数读信道三次，</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-47"> 可活三岁的 chan-demo.go </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+        "fmt"
+        "time"
+)
+
+var sig = make(chan int)
+
+func foo() {
+        for i := 0; i &lt; 3; i++ {
+            fmt.Println("foo 开始")
+                time.Sleep(3 * time.Second)
+                sig &lt;- i
+            fmt.Println("foo 结束")
+        }
+}
+
+func main() {
+    fmt.Println("main 开始")
+        go foo()
+        for i := 0; i &lt; 3; i++ {
+                fmt.Println("等待接收信道数据")
+                a := &lt;- sig
+                fmt.Printf("收到 %d\n", a)
+        }
+        fmt.Println("main 结束")
+}
+</pre>
+<p>运行新的 chan-demo.go，会在大概 9 秒的时间里陆续输出以下内容，</p>
+<pre><code>main 开始
+等待接收信道数据
+foo 开始
+收到 0
+等待接收信道数据
+foo 结束
+foo 开始
+foo 结束
+收到 1
+等待接收信道数据
+foo 开始
+foo 结束
+收到 2
+main 结束</code></pre>
+<p>我对 hi.go 说，现在可以作手术了。hi.go 说，我觉得刚才的
+<code>observer</code>
+已经很符合我的气质了，而且我觉得我们对信道的认识还是不太够。</p>
+<h1 id="从容不迫有条不紊">从容不迫，有条不紊</h1>
+<p>自从习得 go 协程，hi.go 在初冬的白杨树下苦思 1
+日，似有所得。它说，若有命令通过 /tmp/hi-pipe
+管道向我发来请求时，该请求会触发路由函数，若将路由函数化为 go
+协程，岂不意味着我可以同时响应很多请求么？我让它先写出代码来看。它写出</p>
+<pre class="${language}-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-48"> 触发路由函数，以协程形式运行 </span><span class="snippet-name-stop">#</span>
+var response string
+if routers[request] != nil {
+        go routers[request](&amp;response, request)
+} else {
+        go routers["/"](&amp;response, request)
+}
+fmt.Println(response)
+</pre>
+<p>这想法大致可行，只是路由函数会与 <code>main</code>
+函数同时运行，<code>response</code>
+变量的值由前者赋予，故而它在后者中得以输出时，可能尚未有值。hi.go
+说，<code>response</code>
+的值是路由函数赋予的，既然如此，为何不直接在路由函数直接将其输出呢？</p>
+<p>我说，也许以后我们要对 <code>response</code>
+的值再作一些包装，例如在其前后增加一些信息。若是在路由函数内便将其输出，就失去包装它的机会了。若是让路由函数代为包装，则意味着可能每个路由函数都要重复写一段包装代码。实际上，我们应该将
+<code>response</code> 改为信道变量，亦即</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-49"> response 信道 </span><span class="snippet-name-stop">#</span>
+response := make(chan string)
+=><span class="caller"><a class="snippet-reference" href="#xi-55"> hi.go：协程 + 信道 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-57"> hi.go：并发 + 信道 </a></span>
+</pre>
+<p>路由表以及 <code>handle_func</code> 函数也要改为信道形式，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-50"> 路由表：信道版本 </span><span class="snippet-name-stop">#</span>
+var routers = make(map[string]func(chan string, string))
+=><span class="caller"><a class="snippet-reference" href="#xi-55"> hi.go：协程 + 信道 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-57"> hi.go：并发 + 信道 </a></span>
+</pre>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-51"> handle_func 函数：信道版本 </span><span class="snippet-name-stop">#</span>
+func handle_func(path string, handler func(chan string, string)) {
+        routers[path] = handler
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-55"> hi.go：协程 + 信道 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-57"> hi.go：并发 + 信道 </a></span>
+</pre>
+<p>用作示例的路由函数 <code>foo</code> 需要修改为</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-52"> handle 实例 foo：信道版本 </span><span class="snippet-name-stop">#</span>
+func foo(w chan string, r string) {
+        w &lt;- fmt.Sprintf("对于 %s，我认为烟涛微茫信难求！", r)
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-55"> hi.go：协程 + 信道 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-57"> hi.go：并发 + 信道 </a></span>
+</pre>
+<p>依然基于 /tmp/hi.sig 管道实现 hi.go 的阻塞，</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-53"> /tmp/hi.sig 开关 </span><span class="snippet-name-stop">#</span>
+sig, _ := os.Open("/tmp/hi.sig")
+io.ReadAll(sig)
+sig.Close()
+=><span class="caller"><a class="snippet-reference" href="#xi-55"> hi.go：协程 + 信道 </a></span>
+=><span class="caller"><a class="snippet-reference" href="#xi-57"> hi.go：并发 + 信道 </a></span>
+</pre>
+<p>然后将路由函数的触发过程修改为</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-54"> 触发路由函数，以协程 + 信道形式运行 </span><span class="snippet-name-stop">#</span>
+if routers[request] != nil {
+        go routers[request](response, request)
+} else {
+        go routers["/"](response, request)
+}
+result := &lt;- response
+fmt.Println(result)
+=><span class="caller"><a class="snippet-reference" href="#xi-55"> hi.go：协程 + 信道 </a></span>
+</pre>
+<p>现在，将 hi.go 升级为</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-55"> hi.go：协程 + 信道 </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+        "fmt"
+        "os"
+        "io"
+        "strings"
+        "bufio"
+)
+
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-50"> 路由表：信道版本 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-51"> handle_func 函数：信道版本 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-52"> handle 实例 foo：信道版本 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-42"> observer 函数 </a><span class="snippet-name-stop">@</span>
+
+func main() {
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-43"> 启动 observer </a><span class="snippet-name-stop">@</span>
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-24"> 建立路径 / 到 foo 的映射 </a><span class="snippet-name-stop">@</span>
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+                fmt.Fprintln(os.Stderr, err)
+                return
+        }
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-49"> response 信道 </a><span class="snippet-name-stop">@</span>
+        for {
+                <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-53"> /tmp/hi.sig 开关 </a><span class="snippet-name-stop">@</span>
+                scanner := bufio.NewScanner(input)
+                for scanner.Scan() {
+                        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-32"> 从当前一行的内容中获取请求 </a><span class="snippet-name-stop">@</span>
+                        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-54"> 触发路由函数，以协程 + 信道形式运行 </a><span class="snippet-name-stop">@</span>
+                }
+        }
+        input.Close()
+}
+</pre>
+<p>我让 hi.go 跑了一下试试。hi.go
+认为，现在觉得一举一动，轻松自如。我说，这应该只是 go
+协程给了你某种心理暗示，导致你产生了错觉，实际上你跟之前几乎一样笨重。</p>
+<p>当你用 <code>go</code> 运行函数 <code>foo</code> 时，它的确是与
+<code>main</code> 函数同时运行了，可是随后从 <code>response</code>
+信道取值时，<code>main</code> 函数中的内层 <code>for</code>
+循环会被阻塞，亦即在该循环里没处理一次请求，都会被 <code>response</code>
+信道取值语句阻塞一次。这样相当于所有的请求依然是在排队且被逐一处理，而不是你所想象的，有一组请求同时被处理了。</p>
+<p>hi.go 思索片刻说，我明白了，应该将信道取值过程从 <code>main</code>
+函数的内层 <code>for</code> 语句里移出来，单独构成一个循环，亦即</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-56"> 并发处理请求，逐一作出响应 </span><span class="snippet-name-stop">#</span>
+n := 0
+scanner := bufio.NewScanner(input)
+for scanner.Scan() {
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-32"> 从当前一行的内容中获取请求 </a><span class="snippet-name-stop">@</span>
+        if routers[request] != nil {
+                go routers[request](response, request)
+        } else {
+                go routers["/"](response, request)
+        }
+        n++
+}
+for i:= 0; i &lt; n; i++ {
+        result := &lt;- response
+        fmt.Println(result)
+}
+=><span class="caller"><a class="snippet-reference" href="#xi-57"> hi.go：并发 + 信道 </a></span>
+</pre>
+<p>我说，你能想到要统计信道写入数据的次数，并基于该次数从信道取数据，甚为明智。hi.go
+说，过奖了，有没有无需统计的办法？我说，不知道，即使有，未必就比统计更好。现在，我将你更新为</p>
+<pre class="GO-lang"><span class="snippet-name-start">@</span><span class="snippet-name" id="xi-57"> hi.go：并发 + 信道 </span><span class="snippet-name-stop">#</span>
+package main
+
+import (
+        "fmt"
+        "os"
+        "io"
+        "strings"
+        "bufio"
+)
+
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-50"> 路由表：信道版本 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-51"> handle_func 函数：信道版本 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-52"> handle 实例 foo：信道版本 </a><span class="snippet-name-stop">@</span>
+<span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-42"> observer 函数 </a><span class="snippet-name-stop">@</span>
+
+func main() {
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-43"> 启动 observer </a><span class="snippet-name-stop">@</span>
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-24"> 建立路径 / 到 foo 的映射 </a><span class="snippet-name-stop">@</span>
+        input, err := os.Open("/tmp/hi-pipe")
+        if err != nil {
+                fmt.Fprintln(os.Stderr, err)
+                return
+        }
+        <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-49"> response 信道 </a><span class="snippet-name-stop">@</span>
+        for {
+                <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-53"> /tmp/hi.sig 开关 </a><span class="snippet-name-stop">@</span>
+                <span class="snippet-name-start">#</span><a class="snippet-reference" href="#xi-56"> 并发处理请求，逐一作出响应 </a><span class="snippet-name-stop">@</span>
+        }
+        input.Close()
+}
+</pre>
+<p>hi.go
+又跑了几次，感慨道，现在的确身轻如燕……处理请求的过程可谓从容不迫，作出响应的过程可谓有条不紊。</p>
+<h1 id="祖传老中医">祖传老中医</h1>
+<p>hi.go 说，我发现有很多人觉得 Go
+语言的错误处理机制在设计上实属败笔。</p>
+<p>我说，我有同感。不过，瑕不掩瑜。何况对于多数错误处理代码，我们可以用宏将其遮掩起来。</p>
+<p>hi.go 说，Go 语言没有宏啊。</p>
+<p>我说，我们有 GNU 家的 m4 宏语言和 awk
+文本处理语言，若将这两种微型语言组合起来，为 Go
+语言设计一些错误处理宏，问题应该能解决。</p>
+<blockquote>
+<p>注：我有《<a
+href="https://zhuanlan.zhihu.com/p/2099184764834025671">m4
+的咒语</a>》一文。</p>
+</blockquote>
+<p>先容我设计两条基本咒语。第一条形如</p>
+<div class="sourceCode" id="cb100"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>_safe<span class="op">([[</span>a<span class="op">,</span> b<span class="op">,</span> err <span class="op">:=</span> <span class="op">/</span>os<span class="op">.</span>Open<span class="op">/(</span><span class="st">&quot;/tmp/hi-pipe&quot;</span><span class="op">)]])</span></span></code></pre></div>
+<p>我希望它能展开为</p>
+<div class="sourceCode" id="cb101"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>a<span class="op">,</span> b<span class="op">,</span> err<span class="op">:=</span> os<span class="op">.</span>Open<span class="op">(</span><span class="st">&quot;/tmp/hi-pipe&quot;</span><span class="op">);</span> <span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span> fmt<span class="op">.</span>Fprintln<span class="op">(</span>os<span class="op">.</span>Stderr<span class="op">,</span> err<span class="op">);</span> <span class="cf">return</span> <span class="op">}</span></span></code></pre></div>
+<p>这种咒语适合在 <code>main</code> 函数里用。</p>
+<p>第二条咒语形如</p>
+<div class="sourceCode" id="cb102"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>_safe<span class="op">([[</span>a<span class="op">,</span> b<span class="op">,</span> err <span class="op">=</span> <span class="op">/</span>os<span class="op">.</span>Open<span class="op">/(</span><span class="st">&quot;/tmp/hi-pipe&quot;</span><span class="op">)</span> <span class="op">=&gt;</span> c<span class="op">,</span> d<span class="op">]])</span></span></code></pre></div>
+<p>我希望它能展开为</p>
+<div class="sourceCode" id="cb103"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>a<span class="op">,</span> b<span class="op">,</span> err<span class="op">=</span> os<span class="op">.</span>Open<span class="op">(</span><span class="st">&quot;/tmp/hi-pipe&quot;</span><span class="op">);</span> <span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span> <span class="cf">return</span> c<span class="op">,</span> d<span class="op">,</span> fmt<span class="op">.</span>Errorf<span class="op">(</span><span class="st">&quot;os.Open: %w&quot;</span><span class="op">,</span> err<span class="op">)</span> <span class="op">}</span></span></code></pre></div>
+<p>如何实现这两种咒语到合法 Go 代码的转换呢？用 m4 语言实现宏
+<code>_safe</code>，用于抓取代码。再写一个 awk 脚本解析，用于解析
+<code>_safe</code> 所抓取的代码。</p>
+<p>上述咒语里所用的 <code>[[</code> 和 <code>]]</code> 皆为 m4
+默认引号的替代， 亦即</p>
+<div class="sourceCode" id="cb104"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="kw">changequote</span><span class="ch">(</span>`[[&#39;<span class="ch">,</span> `]]&#39;<span class="ch">)</span></span></code></pre></div>
+<p>m4 默认的引号是反引号太像飞尘，我相信你不会想这样念咒语，</p>
+<div class="sourceCode" id="cb105"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>_safe<span class="op">(</span><span class="st">`a, b, err = /os.Open/(&quot;/tmp/hi-pipe&quot;) =&gt; c, d&#39;)</span></span></code></pre></div>
+<p>然后便可定义 <code>_safe</code> 宏，</p>
+<div class="sourceCode" id="cb106"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>[[_safe]]<span class="ch">,</span> [[<span class="kw">esyscmd</span><span class="ch">(</span>[[awk <span class="ch">-</span>f go<span class="ch">-</span>err.awk <span class="ch">&lt;&lt;</span>&#39;_M4EOF&#39;</span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a><span class="ch">$1</span></span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>_M4EOF]]<span class="ch">)</span>]]<span class="ch">)</span></span></code></pre></div>
+<p>这个宏其实很简单，就是通过 GNU m4 的 <code>esyscmd</code> 将
+<code>_safe</code> 的参数转发给 awk 脚本 go-err.awk，只是为了避免
+<code>_safe</code> 的参数里出现单引号之类奇怪的东西而导致 Shell
+晕掉，故而使用了 Shell 的 HERE DOCUMENT 功能。</p>
+<p>以下 <code>_safe</code> 调用语句</p>
+<div class="sourceCode" id="cb107"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>_safe<span class="op">([[</span>a<span class="op">,</span> b<span class="op">,</span> err <span class="op">=</span> <span class="op">/</span>os<span class="op">.</span>Open<span class="op">/(</span><span class="st">&quot;/tmp/hi-pipe&quot;</span><span class="op">)</span> <span class="op">=&gt;</span> c<span class="op">,</span> d<span class="op">]])</span></span></code></pre></div>
+<p>展开结果中包含的 awk 命令为</p>
+<pre class="shell"><code>awk -f go-err.awk &lt;&lt;&#39;_M4EOF&#39;
+a, b, err = /os.Open/(&quot;/tmp/hi-pipe&quot;) =&gt; c, d
+_M4EOF</code></pre>
+<p>当 Shell 遇到第 2 个 <code>_M4EO</code>F 时，便告诉
+awk，输入就此结束，你可以工作了。然后 awk 便执行 go-err.awk
+脚本处理输入。</p>
+<p>go-err.awk 脚本该如何写呢？由于最近 DeepSeek
+限流，每天我问不了它几个问题，它就 BUSY
+了。我叛变到豆包那边，让豆包去写出这个脚本，这种脏活累活，让谁干都一样，</p>
+<div class="sourceCode" id="cb109"><pre
+class="sourceCode awk"><code class="sourceCode awk"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/gawk -f</span></span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a><span class="cf">BEGIN</span> <span class="op">{</span></span>
+<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">RS</span><span class="op">=</span><span class="st">&quot;&quot;</span></span>
+<span id="cb109-4"><a href="#cb109-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb109-5"><a href="#cb109-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-6"><a href="#cb109-6" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> process<span class="op">(</span>s<span class="op">,</span>    c<span class="op">,</span> i<span class="op">,</span> n<span class="op">,</span> state<span class="op">,</span> lhs<span class="op">,</span> op<span class="op">,</span> fn<span class="op">,</span> call<span class="op">,</span> ret<span class="op">,</span> buf<span class="op">,</span> inStr<span class="op">)</span></span>
+<span id="cb109-7"><a href="#cb109-7" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb109-8"><a href="#cb109-8" aria-hidden="true" tabindex="-1"></a>    state <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb109-9"><a href="#cb109-9" aria-hidden="true" tabindex="-1"></a>    lhs <span class="op">=</span> <span class="st">&quot;&quot;</span><span class="op">;</span> op <span class="op">=</span> <span class="st">&quot;&quot;</span><span class="op">;</span> fn <span class="op">=</span> <span class="st">&quot;&quot;</span><span class="op">;</span> call <span class="op">=</span> <span class="st">&quot;&quot;</span><span class="op">;</span> ret <span class="op">=</span> <span class="st">&quot;&quot;</span><span class="op">;</span> buf <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb109-10"><a href="#cb109-10" aria-hidden="true" tabindex="-1"></a>    inStr <span class="op">=</span> <span class="dv">0</span>   <span class="co"># 是否在双引号字符串内</span></span>
+<span id="cb109-11"><a href="#cb109-11" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="fu">length</span><span class="op">(</span>s<span class="op">)</span></span>
+<span id="cb109-12"><a href="#cb109-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-13"><a href="#cb109-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>i<span class="op">=</span><span class="dv">1</span><span class="op">;</span> i<span class="op">&lt;=</span>n<span class="op">;</span> i<span class="op">++)</span> <span class="op">{</span></span>
+<span id="cb109-14"><a href="#cb109-14" aria-hidden="true" tabindex="-1"></a>        c <span class="op">=</span> <span class="fu">substr</span><span class="op">(</span>s<span class="op">,</span>i<span class="op">,</span><span class="dv">1</span><span class="op">)</span></span>
+<span id="cb109-15"><a href="#cb109-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-16"><a href="#cb109-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 字符串内，只处理引号，其它原样收集</span></span>
+<span id="cb109-17"><a href="#cb109-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>inStr<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-18"><a href="#cb109-18" aria-hidden="true" tabindex="-1"></a>            buf <span class="op">=</span> buf c</span>
+<span id="cb109-19"><a href="#cb109-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;</span><span class="sc">\</span><span class="er">&quot;</span><span class="st">&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-20"><a href="#cb109-20" aria-hidden="true" tabindex="-1"></a>                inStr <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb109-21"><a href="#cb109-21" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb109-22"><a href="#cb109-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb109-23"><a href="#cb109-23" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb109-24"><a href="#cb109-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-25"><a href="#cb109-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-26"><a href="#cb109-26" aria-hidden="true" tabindex="-1"></a>            <span class="co"># S0: 收集LHS，匹配 := 或者 =</span></span>
+<span id="cb109-27"><a href="#cb109-27" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;:&quot;</span> <span class="op">&amp;&amp;</span> <span class="fu">substr</span><span class="op">(</span>s<span class="op">,</span>i<span class="op">+</span><span class="dv">1</span><span class="op">,</span><span class="dv">1</span><span class="op">)==</span><span class="st">&quot;=&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-28"><a href="#cb109-28" aria-hidden="true" tabindex="-1"></a>                lhs <span class="op">=</span> buf</span>
+<span id="cb109-29"><a href="#cb109-29" aria-hidden="true" tabindex="-1"></a>                op <span class="op">=</span> <span class="st">&quot;:=&quot;</span></span>
+<span id="cb109-30"><a href="#cb109-30" aria-hidden="true" tabindex="-1"></a>                buf <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb109-31"><a href="#cb109-31" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb109-32"><a href="#cb109-32" aria-hidden="true" tabindex="-1"></a>                i<span class="op">++</span></span>
+<span id="cb109-33"><a href="#cb109-33" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;=&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-34"><a href="#cb109-34" aria-hidden="true" tabindex="-1"></a>                lhs <span class="op">=</span> buf</span>
+<span id="cb109-35"><a href="#cb109-35" aria-hidden="true" tabindex="-1"></a>                op <span class="op">=</span> <span class="st">&quot;=&quot;</span></span>
+<span id="cb109-36"><a href="#cb109-36" aria-hidden="true" tabindex="-1"></a>                buf <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb109-37"><a href="#cb109-37" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb109-38"><a href="#cb109-38" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb109-39"><a href="#cb109-39" aria-hidden="true" tabindex="-1"></a>                buf <span class="op">=</span> buf c</span>
+<span id="cb109-40"><a href="#cb109-40" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb109-41"><a href="#cb109-41" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb109-42"><a href="#cb109-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="dv">1</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-43"><a href="#cb109-43" aria-hidden="true" tabindex="-1"></a>            <span class="co"># S1: 跳过空白，等待 /</span></span>
+<span id="cb109-44"><a href="#cb109-44" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">~</span> <span class="ot">/[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]/</span><span class="op">)</span> <span class="cf">continue</span></span>
+<span id="cb109-45"><a href="#cb109-45" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;/&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-46"><a href="#cb109-46" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb109-47"><a href="#cb109-47" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb109-48"><a href="#cb109-48" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb109-49"><a href="#cb109-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="dv">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-50"><a href="#cb109-50" aria-hidden="true" tabindex="-1"></a>            <span class="co"># S2: 收集函数名直到 /</span></span>
+<span id="cb109-51"><a href="#cb109-51" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;/&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-52"><a href="#cb109-52" aria-hidden="true" tabindex="-1"></a>                fn <span class="op">=</span> buf</span>
+<span id="cb109-53"><a href="#cb109-53" aria-hidden="true" tabindex="-1"></a>                buf <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb109-54"><a href="#cb109-54" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb109-55"><a href="#cb109-55" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb109-56"><a href="#cb109-56" aria-hidden="true" tabindex="-1"></a>                buf <span class="op">=</span> buf c</span>
+<span id="cb109-57"><a href="#cb109-57" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb109-58"><a href="#cb109-58" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb109-59"><a href="#cb109-59" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="dv">3</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-60"><a href="#cb109-60" aria-hidden="true" tabindex="-1"></a>            <span class="co"># S3:收集函数调用，检测 =&gt;；遇到双引号进入字符串模式</span></span>
+<span id="cb109-61"><a href="#cb109-61" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot;</span><span class="sc">\</span><span class="er">&quot;</span><span class="st">&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-62"><a href="#cb109-62" aria-hidden="true" tabindex="-1"></a>                buf <span class="op">=</span> buf c</span>
+<span id="cb109-63"><a href="#cb109-63" aria-hidden="true" tabindex="-1"></a>                inStr <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb109-64"><a href="#cb109-64" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb109-65"><a href="#cb109-65" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb109-66"><a href="#cb109-66" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>c <span class="op">==</span> <span class="st">&quot; &quot;</span> <span class="op">&amp;&amp;</span> <span class="fu">substr</span><span class="op">(</span>s<span class="op">,</span>i<span class="op">+</span><span class="dv">1</span><span class="op">,</span><span class="dv">2</span><span class="op">)==</span><span class="st">&quot;=&gt;&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-67"><a href="#cb109-67" aria-hidden="true" tabindex="-1"></a>                call <span class="op">=</span> buf</span>
+<span id="cb109-68"><a href="#cb109-68" aria-hidden="true" tabindex="-1"></a>                buf <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb109-69"><a href="#cb109-69" aria-hidden="true" tabindex="-1"></a>                state <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb109-70"><a href="#cb109-70" aria-hidden="true" tabindex="-1"></a>                i <span class="op">+=</span> <span class="dv">2</span></span>
+<span id="cb109-71"><a href="#cb109-71" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb109-72"><a href="#cb109-72" aria-hidden="true" tabindex="-1"></a>                buf <span class="op">=</span> buf c</span>
+<span id="cb109-73"><a href="#cb109-73" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb109-74"><a href="#cb109-74" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb109-75"><a href="#cb109-75" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span> <span class="dv">4</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-76"><a href="#cb109-76" aria-hidden="true" tabindex="-1"></a>            <span class="co"># S4:收集return列表</span></span>
+<span id="cb109-77"><a href="#cb109-77" aria-hidden="true" tabindex="-1"></a>            ret <span class="op">=</span> ret c</span>
+<span id="cb109-78"><a href="#cb109-78" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb109-79"><a href="#cb109-79" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb109-80"><a href="#cb109-80" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 循环结束，仍在S3，buf是call</span></span>
+<span id="cb109-81"><a href="#cb109-81" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>state <span class="op">==</span><span class="dv">3</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-82"><a href="#cb109-82" aria-hidden="true" tabindex="-1"></a>        call <span class="op">=</span> buf</span>
+<span id="cb109-83"><a href="#cb109-83" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb109-84"><a href="#cb109-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-85"><a href="#cb109-85" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 清理两端空白</span></span>
+<span id="cb109-86"><a href="#cb109-86" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+|[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+$/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> lhs<span class="op">)</span></span>
+<span id="cb109-87"><a href="#cb109-87" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+|[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+$/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> call<span class="op">)</span></span>
+<span id="cb109-88"><a href="#cb109-88" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub</span><span class="op">(</span><span class="ot">/^[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+|[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]+$/</span><span class="op">,</span> <span class="st">&quot;&quot;</span><span class="op">,</span> ret<span class="op">)</span></span>
+<span id="cb109-89"><a href="#cb109-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-90"><a href="#cb109-90" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 拆分lhs取error变量</span></span>
+<span id="cb109-91"><a href="#cb109-91" aria-hidden="true" tabindex="-1"></a>    errVar<span class="op">=</span><span class="st">&quot;&quot;</span></span>
+<span id="cb109-92"><a href="#cb109-92" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>lhs <span class="op">!=</span> <span class="st">&quot;&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-93"><a href="#cb109-93" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> <span class="fu">split</span><span class="op">(</span>lhs<span class="op">,</span>vars<span class="op">,</span><span class="ot">/</span><span class="ss">,</span><span class="ot">/</span><span class="op">)</span></span>
+<span id="cb109-94"><a href="#cb109-94" aria-hidden="true" tabindex="-1"></a>        errVar <span class="op">=</span> vars[m]</span>
+<span id="cb109-95"><a href="#cb109-95" aria-hidden="true" tabindex="-1"></a>        <span class="fu">gsub</span><span class="op">(</span><span class="ot">/[</span><span class="ss"> </span><span class="ot">\</span><span class="sc">t</span><span class="ot">]/</span><span class="op">,</span><span class="st">&quot;&quot;</span><span class="op">,</span>errVar<span class="op">)</span></span>
+<span id="cb109-96"><a href="#cb109-96" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb109-97"><a href="#cb109-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-98"><a href="#cb109-98" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>ret <span class="op">!=</span> <span class="st">&quot;&quot;</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb109-99"><a href="#cb109-99" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> lhs op <span class="st">&quot; &quot;</span> fn call <span class="st">&quot;; if &quot;</span> errVar <span class="st">&quot; != nil { return &quot;</span> ret <span class="st">&quot;, fmt.Errorf(</span><span class="sc">\</span><span class="er">&quot;</span><span class="st">&quot;</span> fn <span class="st">&quot;: %w</span><span class="sc">\</span><span class="er">&quot;</span><span class="st">, &quot;</span> errVar <span class="st">&quot;) }&quot;</span></span>
+<span id="cb109-100"><a href="#cb109-100" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb109-101"><a href="#cb109-101" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> lhs op <span class="st">&quot; &quot;</span> fn call <span class="st">&quot;; if &quot;</span> errVar <span class="st">&quot; != nil { fmt.Fprintln(os.Stderr, &quot;</span> errVar <span class="st">&quot;); return }&quot;</span></span>
+<span id="cb109-102"><a href="#cb109-102" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb109-103"><a href="#cb109-103" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb109-104"><a href="#cb109-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-105"><a href="#cb109-105" aria-hidden="true" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb109-106"><a href="#cb109-106" aria-hidden="true" tabindex="-1"></a>    line <span class="op">=</span> <span class="dt">$0</span></span>
+<span id="cb109-107"><a href="#cb109-107" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 简单前置判断，有模板标记才处理</span></span>
+<span id="cb109-108"><a href="#cb109-108" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span><span class="fu">match</span><span class="op">(</span>line<span class="op">,</span> <span class="ot">/.*(</span><span class="ss">=</span><span class="ot">|</span><span class="ss">:=</span><span class="ot">).*\</span><span class="sc">/</span><span class="ot">.*\</span><span class="sc">/</span><span class="ot">/</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb109-109"><a href="#cb109-109" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;%s&quot;</span><span class="op">,</span> process<span class="op">(</span>line<span class="op">)</span></span>
+<span id="cb109-110"><a href="#cb109-110" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb109-111"><a href="#cb109-111" aria-hidden="true" tabindex="-1"></a>        <span class="kw">printf</span> <span class="st">&quot;%s&quot;</span><span class="op">,</span> line</span>
+<span id="cb109-112"><a href="#cb109-112" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb109-113"><a href="#cb109-113" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>代码都写好了，怎么用呢？</p>
+<p>先制作一份 m4 脚本，名曰 safe.m4，其内容为</p>
+<div class="sourceCode" id="cb110"><pre
+class="sourceCode m4"><code class="sourceCode m4"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(-</span><span class="dv">1</span><span class="ch">)</span></span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a><span class="kw">changequote</span><span class="ch">(</span>`[[&#39;<span class="ch">,</span> `]]&#39;<span class="ch">)</span></span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a><span class="kw">define</span><span class="ch">(</span>[[_safe]]<span class="ch">,</span> [[<span class="kw">esyscmd</span><span class="ch">(</span>[[awk <span class="ch">-</span>f go<span class="ch">-</span>err.awk <span class="ch">&lt;&lt;</span>&#39;_M4EOF&#39;</span>
+<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a><span class="ch">$1</span></span>
+<span id="cb110-5"><a href="#cb110-5" aria-hidden="true" tabindex="-1"></a>_M4EOF]]<span class="ch">)</span>]]<span class="ch">)</span></span>
+<span id="cb110-6"><a href="#cb110-6" aria-hidden="true" tabindex="-1"></a><span class="kw">divert</span><span class="ch">(</span><span class="dv">0</span><span class="ch">)</span><span class="kw">dnl</span></span></code></pre></div>
+<p>然后便可以在 Go 代码里使用 _safe，例如 demo.go 有以下代码</p>
+<div class="sourceCode" id="cb111"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> do_work<span class="op">()</span> <span class="dt">int</span><span class="op">,</span> <span class="dt">error</span> <span class="op">{</span></span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">42</span><span class="op">,</span> fmt<span class="op">.</span>Errorf<span class="op">(</span><span class="st">&quot;oops&quot;</span><span class="op">)</span></span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> foo<span class="op">()</span> <span class="dt">int</span><span class="op">,</span> <span class="dt">error</span> <span class="op">{</span></span>
+<span id="cb111-5"><a href="#cb111-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb111-6"><a href="#cb111-6" aria-hidden="true" tabindex="-1"></a>        _safe<span class="op">([[</span>a<span class="op">,</span> err <span class="op">:=</span> <span class="op">/</span>do_work<span class="op">/()</span> <span class="op">=&gt;</span> <span class="dv">0</span><span class="op">]])</span></span>
+<span id="cb111-7"><a href="#cb111-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb111-8"><a href="#cb111-8" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb111-9"><a href="#cb111-9" aria-hidden="true" tabindex="-1"></a>        _safe<span class="op">([[</span>input<span class="op">,</span> err <span class="op">:=</span> <span class="op">/</span>os<span class="op">.</span>Open<span class="op">/(</span><span class="st">&quot;/tmp/hi-pipe&quot;</span><span class="op">)]])</span></span>
+<span id="cb111-10"><a href="#cb111-10" aria-hidden="true" tabindex="-1"></a>    response <span class="op">:=</span> <span class="bu">make</span><span class="op">(</span><span class="kw">chan</span> <span class="dt">string</span><span class="op">)</span></span>
+<span id="cb111-11"><a href="#cb111-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> <span class="op">{</span></span>
+<span id="cb111-12"><a href="#cb111-12" aria-hidden="true" tabindex="-1"></a>                _safe<span class="op">([[</span>sig<span class="op">,</span> err <span class="op">:=</span> <span class="op">/</span>os<span class="op">.</span>Open<span class="op">/(</span><span class="st">&quot;/tmp/hi.sig&quot;</span><span class="op">)]])</span></span>
+<span id="cb111-13"><a href="#cb111-13" aria-hidden="true" tabindex="-1"></a>                <span class="op">...</span> <span class="op">...</span> <span class="op">...</span></span>
+<span id="cb111-14"><a href="#cb111-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb111-15"><a href="#cb111-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>需要注意，函数名一定要用一对 <code>/</code>
+围着，在需要返回错误时，要用函数名包装错误信息，go-err.awk 脚本能够基于
+<code>/.../</code> 提取函数名，然后才能构造出 <code>fmt.Errorf</code>
+语句。例如，</p>
+<div class="sourceCode" id="cb112"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>_safe<span class="op">([[</span>a<span class="op">,</span> err <span class="op">:=</span> <span class="op">/</span>do_work<span class="op">/()</span> <span class="op">=&gt;</span> <span class="dv">0</span><span class="op">]])</span></span></code></pre></div>
+<p><code>=&gt;</code> 符号之后的值是错误处理部分需要返回的值，而错误
+<code>err</code> 会被包装为</p>
+<div class="sourceCode" id="cb113"><pre
+class="sourceCode go"><code class="sourceCode go"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>fmt<span class="op">.</span>Errorf<span class="op">(</span><span class="st">&quot;do_work: %w&quot;</span><span class="op">,</span> err<span class="op">)</span></span></code></pre></div>
+<p>作为最后一个返回值。</p>
+<p>safe.m4 脚本的用法为，</p>
+<pre class="console"><code>$ m4 safe.m4 demo.go &gt; real-demo.go</code></pre>
+<p>我知道，一定会有一些意外情况，只是我对 Go
+语言了解甚浅，也不知以后会遇到什么怪物。不过，遇到问题也不怕，重新设计咒语，然后让
+AI 去改 go-err.awk 脚本即可。</p>
+<p>hi.go
+看完我这一系列操作，有些鄙夷，觉得我这是中医保守疗法。我说，管用就行，以后我们再写代码，就尽量用
+<code>_safe</code> 宏。</p>
 
 <div class="footer">我的联系方式：<a href="mailto:lyr.m2@live.cn"
 class="email">lyr.m2@live.cn</a> 或在<a
